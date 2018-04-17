@@ -68,6 +68,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MainWindowViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -92,6 +93,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Ui.Wpf.Common\Ui.Wpf.Common.csproj">
+      <Project>{fdb62508-affa-4281-8472-8d00fc1403ba}</Project>
+      <Name>Ui.Wpf.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Ui.Wpf.KanbanControl\Ui.Wpf.KanbanControl.csproj">
+      <Project>{7f46f76e-ee01-4e40-9c31-bb61fff33e47}</Project>
+      <Name>Ui.Wpf.KanbanControl</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
