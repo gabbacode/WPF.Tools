@@ -11,15 +11,23 @@ namespace Ui.Wpf.KanbanControl
         public DefaultShowKanbanStrategey(IKanbanBoard kanbanBoard)
         {
             KanbanBoard = kanbanBoard;
+            ElementsDispenser = new DefaultElementsDispenser();
         }
 
-        public void Show(KanbanChangeObjectType changeObjectType)
+        public void AddActionsToShow(KanbanChangeObjectType changeObjectType)
         {
+            ClearItems();
             ClearSplitters();
             ClearDefinitions();
 
+            ElementsDispenser.DispenceItems(
+                KanbanBoard.Cards,
+                KanbanBoard.HorisontalCategories,
+                KanbanBoard.VerticalCategories);
+
             BuildGridDefenitions();
             BuildGridSpliters();
+            BuildItems();
         }
 
         public IKanbanBoard KanbanBoard { get; }
@@ -33,17 +41,17 @@ namespace Ui.Wpf.KanbanControl
             for (int i = 0; i < KanbanBoard.VerticalCategories.Count - 1; i++)
             {
                 KanbanBoard.KanbanGrid.Children.Add(
-                    BuildVerticalSpliter(i, KanbanBoard.HorisontalCategories.Count));
+                    BuildHorizontalSpliter(i, KanbanBoard.HorisontalCategories.Count));
             }
 
             for (int i = 0; i < KanbanBoard.HorisontalCategories.Count - 1; i++)
             {
                 KanbanBoard.KanbanGrid.Children.Add(
-                    BuildHorizontalSpliter(i, KanbanBoard.VerticalCategories.Count));
+                    BuildVerticalSpliter(i, KanbanBoard.VerticalCategories.Count));
             }
         }
 
-        private GridSplitter BuildVerticalSpliter(int index, int horizontalCategoriescount)
+        private GridSplitter BuildVerticalSpliter(int index, int verticalCategoriesCount)
         {
             var newSpliter = new GridSplitter
             {
@@ -54,12 +62,12 @@ namespace Ui.Wpf.KanbanControl
 
             Grid.SetRow(newSpliter, 0);
             Grid.SetColumn(newSpliter, index);
-            Grid.SetRowSpan(newSpliter, horizontalCategoriescount);
+            Grid.SetRowSpan(newSpliter, verticalCategoriesCount);
 
             return newSpliter;
         }
 
-        private GridSplitter BuildHorizontalSpliter(int index, int verticalCategoriesCount)
+        private GridSplitter BuildHorizontalSpliter(int index, int horizontalCategoriescount)
         {
             var newSpliter = new GridSplitter
             {
@@ -72,7 +80,7 @@ namespace Ui.Wpf.KanbanControl
 
             Grid.SetColumn(newSpliter, 0);
             Grid.SetRow(newSpliter, index);
-            Grid.SetColumnSpan(newSpliter, verticalCategoriesCount);
+            Grid.SetColumnSpan(newSpliter, horizontalCategoriescount);
 
             return newSpliter;
         }
@@ -81,12 +89,12 @@ namespace Ui.Wpf.KanbanControl
         {
             foreach (var hCategory in KanbanBoard.HorisontalCategories)
             {
-                KanbanBoard.KanbanGrid.RowDefinitions.Add(new RowDefinition());
+                KanbanBoard.KanbanGrid.ColumnDefinitions.Add(new ColumnDefinition());
             }
 
             foreach (var vCategory in KanbanBoard.VerticalCategories)
             {
-                KanbanBoard.KanbanGrid.ColumnDefinitions.Add(new ColumnDefinition());
+                KanbanBoard.KanbanGrid.RowDefinitions.Add(new RowDefinition());
             }
         }
 
@@ -107,5 +115,25 @@ namespace Ui.Wpf.KanbanControl
                 KanbanBoard.KanbanGrid.Children.Remove(itemToRemove);
             }
         }
+
+        private void BuildItems()
+        {
+            foreach (var card in KanbanBoard.Cards)
+            {
+                KanbanBoard.KanbanGrid.Children.Add(card.View);
+                Grid.SetColumn(card.View, card.HorizontalCategoryIndex);
+                Grid.SetRow(card.View, card.VerticalCategoryIndex);
+            }
+        }
+
+        private void ClearItems()
+        {
+            foreach (var card in KanbanBoard.Cards)
+            {
+                KanbanBoard.KanbanGrid.Children.Remove(card.View);
+            }
+        }
+
+        private DefaultElementsDispenser ElementsDispenser;
     }
 }

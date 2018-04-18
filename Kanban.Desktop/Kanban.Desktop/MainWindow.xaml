@@ -10,6 +10,7 @@
     <Grid>
         <kanbancontrol:Kanban 
             VerticalCategories="{Binding VerticalCategories}"
-            HorisontalCategories="{Binding HorizontalCategories}"/>
+            HorisontalCategories="{Binding HorizontalCategories}"
+            CardItems="{Binding Tickets}"/>
     </Grid>
 </Window>

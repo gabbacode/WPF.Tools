@@ -4,6 +4,6 @@ namespace Ui.Wpf.KanbanControl
 {
     public interface IShowKanbanStrategy
     {
-        void Show(KanbanChangeObjectType changeObjectType);
+        void AddActionsToShow(KanbanChangeObjectType changeObjectType);
     }
 }

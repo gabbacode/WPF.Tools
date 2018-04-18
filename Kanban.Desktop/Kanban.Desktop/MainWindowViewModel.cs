@@ -13,6 +13,8 @@ namespace Kanban.Desktop
                 new DimensionCategory(),
                 new DimensionCategory(),
                 new DimensionCategory(),
+                new DimensionCategory(),
+                new DimensionCategory(),
             };
 
             HorizontalCategories = new ObservableCollection<IDimensionCategory>()
@@ -21,11 +23,22 @@ namespace Kanban.Desktop
                 new DimensionCategory(),
                 new DimensionCategory(),
                 new DimensionCategory(),
-                new DimensionCategory(),
-                new DimensionCategory(),
             };
 
+            Tickets = new ObservableCollection<Ticket>()
+            {
+                new Ticket(),
+                new Ticket(),
+                new Ticket(),
+                new Ticket(),
+                new Ticket(),
+                new Ticket(),
+                new Ticket(),
+                new Ticket(),
+            };
         }
+
+        public ObservableCollection<Ticket> Tickets { get; }
 
         public ObservableCollection<IDimensionCategory> VerticalCategories { get; }
 

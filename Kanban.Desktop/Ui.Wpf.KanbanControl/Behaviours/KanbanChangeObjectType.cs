@@ -7,7 +7,7 @@ namespace Ui.Wpf.KanbanControl.Behaviours
     {
         VerticalCategories = 0,
         HorizontalCategories = 1,
-        Items = 2,
+        CardItems = 2,
         ShowStrategy = 4,
         DispenseStrategy = 8
     }
