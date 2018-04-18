@@ -2,9 +2,9 @@
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace Ui.Wpf.KanbanControl
+namespace Ui.Wpf.KanbanControl.Elements
 {
-    internal interface IKanbanBoardView
+    internal interface IKanbanBoard
     {
         Grid KanbanGrid { get; }
 

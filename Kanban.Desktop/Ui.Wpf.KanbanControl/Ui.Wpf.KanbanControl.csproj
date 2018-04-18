@@ -47,13 +47,14 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DefaultElementsDispencer.cs" />
-    <Compile Include="DefaultShowKanbanStrategey.cs" />
-    <Compile Include="DimensionCategory.cs" />
-    <Compile Include="IDimensionCategory.cs" />
-    <Compile Include="IElementsDispenser.cs" />
-    <Compile Include="IKanbanBoardView.cs" />
-    <Compile Include="IShowKanbanStrategy.cs" />
+    <Compile Include="Behaviours\DefaultElementsDispencer.cs" />
+    <Compile Include="Behaviours\DefaultShowKanbanStrategey.cs" />
+    <Compile Include="Categories\DimensionCategory.cs" />
+    <Compile Include="Categories\IDimensionCategory.cs" />
+    <Compile Include="Behaviours\IElementsDispenser.cs" />
+    <Compile Include="Elements\Card.cs" />
+    <Compile Include="Elements\IKanbanBoardView.cs" />
+    <Compile Include="Behaviours\IShowKanbanStrategy.cs" />
     <Compile Include="Kanban.xaml.cs">
       <DependentUpon>Kanban.xaml</DependentUpon>
     </Compile>
@@ -84,6 +85,9 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Workflow\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

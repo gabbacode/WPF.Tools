@@ -1,12 +1,13 @@
 ﻿using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using Ui.Wpf.KanbanControl.Elements;
 
 namespace Ui.Wpf.KanbanControl
 {
     internal class DefaultShowKanbanStrategey : IShowKanbanStrategy
     {
-        public DefaultShowKanbanStrategey(IKanbanBoardView kanbanBoard)
+        public DefaultShowKanbanStrategey(IKanbanBoard kanbanBoard)
         {
             KanbanBoard = kanbanBoard;
         }
@@ -20,7 +21,7 @@ namespace Ui.Wpf.KanbanControl
             BuildGridSpliters();
         }
 
-        public IKanbanBoardView KanbanBoard { get; }
+        public IKanbanBoard KanbanBoard { get; }
 
         private void BuildGridSpliters()
         {

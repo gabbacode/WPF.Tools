@@ -3,13 +3,14 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using Ui.Wpf.KanbanControl.Elements;
 
 namespace Ui.Wpf.KanbanControl
 {
     /// <summary>
     /// Логика взаимодействия для Kanban.xaml
     /// </summary>
-    public partial class Kanban : UserControl, IKanbanBoardView
+    public partial class Kanban : UserControl, IKanbanBoard
     {
         public Kanban()
         {
@@ -67,7 +68,7 @@ namespace Ui.Wpf.KanbanControl
 
         public Brush SpliterBackground { get; private set; } = Brushes.Silver;
 
-        Grid IKanbanBoardView.KanbanGrid => Grid;
+        Grid IKanbanBoard.KanbanGrid => Grid;
 
         #endregion
 
