@@ -13,6 +13,8 @@ namespace Ui.Wpf.KanbanControl.Elements
 
         List<Card> Cards { get; }
 
+        Cell[,] Cells { get; }
+
         IDimension HorizontalDimension { get; }
 
         IDimension VerticalDimension { get; }

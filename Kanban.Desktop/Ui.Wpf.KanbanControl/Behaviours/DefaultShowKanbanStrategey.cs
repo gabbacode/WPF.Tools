@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using Ui.Wpf.KanbanControl.Behaviours;
@@ -22,7 +23,9 @@ namespace Ui.Wpf.KanbanControl
                 || KanbanBoard.VerticalDimension.Categories.Count == 0)
                 return;
 
-            ClearItems();
+            RemoveItems();
+            RemoveCells();
+
             ClearSplitters();
             ClearDefinitions();
 
@@ -33,7 +36,9 @@ namespace Ui.Wpf.KanbanControl
 
             BuildGridDefenitions();
             BuildGridSpliters();
-            BuildItems();
+
+            PlaceCells();
+            PlaceItems();
         }
 
         public IKanbanBoard KanbanBoard { get; }
@@ -122,21 +127,50 @@ namespace Ui.Wpf.KanbanControl
             }
         }
 
-        private void BuildItems()
+        private void PlaceCells()
         {
-            foreach (var card in KanbanBoard.Cards)
+            for (int i = 0; i < KanbanBoard.HorizontalDimension.Categories.Count; i++)
             {
-                KanbanBoard.KanbanGrid.Children.Add(card.View);
-                Grid.SetColumn(card.View, card.HorizontalCategoryIndex);
-                Grid.SetRow(card.View, card.VerticalCategoryIndex);
+                for (int j = 0; j < KanbanBoard.VerticalDimension.Categories.Count; j++)
+                {
+                    var cell = KanbanBoard.Cells[i, j].View;
+
+                    Grid.SetColumn(cell, i);
+                    Grid.SetRow(cell, j);
+
+                    KanbanBoard.KanbanGrid.Children.Add(cell);
+                }
             }
         }
 
-        private void ClearItems()
+        private void PlaceItems()
         {
             foreach (var card in KanbanBoard.Cards)
             {
-                KanbanBoard.KanbanGrid.Children.Remove(card.View);
+                KanbanBoard.Cells[card.HorizontalCategoryIndex, card.VerticalCategoryIndex].View.ItemContainer.Children.Add(card.View);
+            }
+        }
+
+        private void RemoveItems()
+        {
+            for (int i = 0; i < KanbanBoard.HorizontalDimension.Categories.Count; i++)
+            {
+                for (int j = 0; j < KanbanBoard.VerticalDimension.Categories.Count; j++)
+                {
+                    KanbanBoard.Cells[i, j].View.ItemContainer.Children.Clear();
+                }
+            }
+        }
+
+        private void RemoveCells()
+        {
+            var toRemoveItems = KanbanBoard.KanbanGrid.Children
+                .OfType<CellView>()
+                .ToArray();
+
+            foreach (var toRemove in toRemoveItems)
+            {
+                KanbanBoard.KanbanGrid.Children.Remove(toRemove);
             }
         }
 

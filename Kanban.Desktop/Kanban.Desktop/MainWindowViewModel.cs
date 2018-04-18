@@ -35,6 +35,10 @@ namespace Kanban.Desktop
             Tickets = new ObservableCollection<Ticket>()
             {
                 new Ticket(status: "A", state: "A"),
+                new Ticket(status: "A", state: "A"),
+                new Ticket(status: "A", state: "A"),
+                new Ticket(status: "A", state: "A"),
+                new Ticket(status: "A", state: "A"),
                 new Ticket(status: "A", state: "B"),
                 new Ticket(status: "A", state: "C"),
                 new Ticket(status: "B", state: "A"),

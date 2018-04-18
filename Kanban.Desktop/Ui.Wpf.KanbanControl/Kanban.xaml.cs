@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Windows;
@@ -27,7 +28,29 @@ namespace Ui.Wpf.KanbanControl
             // ugly destory and build
             // TODO beautiful transition
             // TODO store changesets and animate last little part of it with some low frequency
+            if (HorizontalDimension == null
+                || HorizontalDimension.Categories.Count == 0
+                || VerticalDimension == null
+                || VerticalDimension.Categories.Count == 0)
+                return;
+
+
+            BuildCells();
+            BuildCards();
+
             showKanbanStrategy.AddActionsToShow(changeObjectType);
+        }
+
+        private void BuildCells()
+        {
+            cells = new Cell[HorizontalDimension.Categories.Count, VerticalDimension.Categories.Count];
+            for (int i = 0; i < HorizontalDimension.Categories.Count; i++)
+            {
+                for (int j = 0; j < VerticalDimension.Categories.Count; j++)
+                {
+                    cells[i, j] = new Cell(new CellView());
+                }
+            }
         }
 
         private void SetCardItems(object oldValue, object newValue)
@@ -40,7 +63,6 @@ namespace Ui.Wpf.KanbanControl
             if (newNotifyableCollection != null)
                 newNotifyableCollection.CollectionChanged += OnItemsChanged;
 
-            BuildCards(this);
             AddActionsToShow(KanbanChangeObjectType.CardItems);
         }
 
@@ -48,22 +70,36 @@ namespace Ui.Wpf.KanbanControl
             object sender, 
             NotifyCollectionChangedEventArgs e)
         {
-            BuildCards(this);
             AddActionsToShow(KanbanChangeObjectType.CardItems);
         }
 
-        private void BuildCards(IKanbanBoard board)
+        private void BuildCards()
         {
-            board.Cards.Clear();
+            cards.Clear();
             foreach (var item in CardItems)
             {
-                board.Cards.Add(new Card(item));
+                cards.Add(new Card(item));
             }
         }
 
         #region [ IKanbanBoard ]
 
-        List<Card> IKanbanBoard.Cards { get; } = new List<Card>();
+        private List<Card> cards = new List<Card>();
+        List<Card> IKanbanBoard.Cards
+        {
+            get
+            {
+                return cards;
+            }
+        } 
+
+        private Cell[,] cells;
+        Cell[,] IKanbanBoard.Cells {
+            get
+            {
+                return cells;
+            }
+        }
 
         Grid IKanbanBoard.KanbanGrid => Grid;
 

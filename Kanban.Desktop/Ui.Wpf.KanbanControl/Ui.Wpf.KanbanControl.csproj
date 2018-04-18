@@ -61,6 +61,10 @@
     <Compile Include="Elements\CardView.xaml.cs">
       <DependentUpon>CardView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Elements\Cell.cs" />
+    <Compile Include="Elements\CellView.xaml.cs">
+      <DependentUpon>CellView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Elements\HorizontalCategoryHeaderView.xaml.cs">
       <DependentUpon>HorizontalCategoryHeaderView.xaml</DependentUpon>
     </Compile>
@@ -94,6 +98,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Elements\CardView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Elements\CellView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

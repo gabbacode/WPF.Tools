@@ -10,7 +10,7 @@ namespace Ui.Wpf.KanbanControl.Elements
             View = new CardView();
         }
 
-        public UIElement View { get; private set; }
+        public CardView View { get; private set; }
 
         public int VerticalCategoryIndex { get; internal set; }
 
