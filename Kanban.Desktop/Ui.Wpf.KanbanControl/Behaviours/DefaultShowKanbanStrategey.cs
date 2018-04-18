@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using Ui.Wpf.KanbanControl.Behaviours;
 using Ui.Wpf.KanbanControl.Elements;
 
 namespace Ui.Wpf.KanbanControl
@@ -12,7 +13,7 @@ namespace Ui.Wpf.KanbanControl
             KanbanBoard = kanbanBoard;
         }
 
-        public void Show()
+        public void Show(KanbanChangeObjectType changeObjectType)
         {
             ClearSplitters();
             ClearDefinitions();

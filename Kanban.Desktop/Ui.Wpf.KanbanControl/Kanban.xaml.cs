@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using Ui.Wpf.KanbanControl.Behaviours;
 using Ui.Wpf.KanbanControl.Elements;
 
 namespace Ui.Wpf.KanbanControl
@@ -20,14 +21,18 @@ namespace Ui.Wpf.KanbanControl
 
             InitializeComponent();
 
-            ShowKanbanBoard();
+            ShowKanbanBoard(
+                KanbanChangeObjectType.HorizontalCategories
+                | KanbanChangeObjectType.VerticalCategories
+                | KanbanChangeObjectType.Items);
         }
 
-        private void ShowKanbanBoard()
+        private void ShowKanbanBoard(KanbanChangeObjectType changeObjectType)
         {
             // ugly destory and build
             // TODO beautiful transition
-            showKanbanStrategy.Show();
+            // TODO store changesets and animate last little part of it with some low frequency
+            showKanbanStrategy.Show(changeObjectType);
         }
 
 
@@ -46,7 +51,7 @@ namespace Ui.Wpf.KanbanControl
             set
             {
                 showKanbanStrategy = value;
-                ShowKanbanBoard();
+                ShowKanbanBoard(KanbanChangeObjectType.ShowStrategy);
             }
         }
 
@@ -60,7 +65,7 @@ namespace Ui.Wpf.KanbanControl
             set
             {
                 elementsDispenser = value;
-                ShowKanbanBoard();
+                ShowKanbanBoard(KanbanChangeObjectType.DispenseStrategy);
             }
         }
 
@@ -73,6 +78,15 @@ namespace Ui.Wpf.KanbanControl
         #endregion
 
         #region [ dependency property ]
+
+        public ObservableCollection<object> Items
+        {
+            get { return (ObservableCollection<object>)GetValue(ItemsProperty); }
+            set { SetValue(ItemsProperty, value); }
+        }
+
+        public static readonly DependencyProperty ItemsProperty =
+            DependencyProperty.Register("Items", typeof(ObservableCollection<object>), typeof(Kanban), new PropertyMetadata(0));
 
 
         public ObservableCollection<IDimensionCategory> VerticalCategories
@@ -94,7 +108,7 @@ namespace Ui.Wpf.KanbanControl
             DependencyPropertyChangedEventArgs e)
         {
             var control = (Kanban)obj;
-            control.ShowKanbanBoard();
+            control.ShowKanbanBoard(KanbanChangeObjectType.VerticalCategories);
         }
 
         public ObservableCollection<IDimensionCategory> HorisontalCategories
@@ -117,7 +131,7 @@ namespace Ui.Wpf.KanbanControl
             DependencyPropertyChangedEventArgs e)
         {
             var control = (Kanban)obj;
-            control.ShowKanbanBoard();
+            control.ShowKanbanBoard(KanbanChangeObjectType.HorizontalCategories);
         }
 
     #endregion

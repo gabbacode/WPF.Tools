@@ -6,6 +6,7 @@ namespace Ui.Wpf.KanbanControl.Elements
 {
     internal interface IKanbanBoard
     {
+        // TODO replace to abstract methods, so we easy can use not only grid
         Grid KanbanGrid { get; }
 
         ObservableCollection<IDimensionCategory> HorisontalCategories { get; }

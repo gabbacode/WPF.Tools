@@ -49,6 +49,7 @@
   <ItemGroup>
     <Compile Include="Behaviours\DefaultElementsDispencer.cs" />
     <Compile Include="Behaviours\DefaultShowKanbanStrategey.cs" />
+    <Compile Include="Behaviours\KanbanChangeObjectType.cs" />
     <Compile Include="Categories\DimensionCategory.cs" />
     <Compile Include="Categories\IDimensionCategory.cs" />
     <Compile Include="Behaviours\IElementsDispenser.cs" />
