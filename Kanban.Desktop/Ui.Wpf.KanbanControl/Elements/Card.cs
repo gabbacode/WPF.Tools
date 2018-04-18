@@ -1,6 +1,4 @@
-﻿using System.Windows;
-
-namespace Ui.Wpf.KanbanControl.Elements
+﻿namespace Ui.Wpf.KanbanControl.Elements
 {
     internal class Card
     {
@@ -8,6 +6,8 @@ namespace Ui.Wpf.KanbanControl.Elements
         {
             Item = item;
             View = new CardView();
+            View.Content = Item;
+
         }
 
         public CardView View { get; private set; }

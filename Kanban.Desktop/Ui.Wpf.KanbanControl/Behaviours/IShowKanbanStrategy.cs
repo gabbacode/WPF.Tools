@@ -1,6 +1,4 @@
-﻿using Ui.Wpf.KanbanControl.Behaviours;
-
-namespace Ui.Wpf.KanbanControl
+﻿namespace Ui.Wpf.KanbanControl.Behaviours
 {
     public interface IShowKanbanStrategy
     {

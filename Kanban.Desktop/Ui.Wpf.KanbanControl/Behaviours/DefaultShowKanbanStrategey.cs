@@ -1,18 +1,16 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using Ui.Wpf.KanbanControl.Behaviours;
 using Ui.Wpf.KanbanControl.Elements;
 
-namespace Ui.Wpf.KanbanControl
+namespace Ui.Wpf.KanbanControl.Behaviours
 {
     internal class DefaultShowKanbanStrategey : IShowKanbanStrategy
     {
         public DefaultShowKanbanStrategey(IKanbanBoard kanbanBoard)
         {
             KanbanBoard = kanbanBoard;
-            ElementsDispenser = new DefaultElementsDispenser();
+            elementsDispenser = new DefaultElementsDispenser();
         }
 
         public void AddActionsToShow(KanbanChangeObjectType changeObjectType)
@@ -29,7 +27,7 @@ namespace Ui.Wpf.KanbanControl
             ClearSplitters();
             ClearDefinitions();
 
-            ElementsDispenser.DispenceItems(
+            elementsDispenser.DispenceItems(
                 KanbanBoard.Cards,
                 KanbanBoard.HorizontalDimension,
                 KanbanBoard.VerticalDimension);
@@ -40,8 +38,6 @@ namespace Ui.Wpf.KanbanControl
             PlaceCells();
             PlaceItems();
         }
-
-        public IKanbanBoard KanbanBoard { get; }
 
         private void BuildGridSpliters()
         {
@@ -174,6 +170,8 @@ namespace Ui.Wpf.KanbanControl
             }
         }
 
-        private DefaultElementsDispenser ElementsDispenser;
+        private IKanbanBoard KanbanBoard { get; }
+
+        private readonly DefaultElementsDispenser elementsDispenser;
     }
 }

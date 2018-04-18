@@ -3,7 +3,16 @@ using Ui.Wpf.KanbanControl.Dimensions;
 
 namespace Kanban.Desktop
 {
-    internal class MainWindowViewModel
+    interface IMainWindowViewModel
+    {
+        ObservableCollection<Ticket> Tickets { get; }
+        
+        TagDimension<string, Ticket> VerticalDimension { get; }
+
+        TagDimension<string, Ticket> HorizontalDimension { get; }
+    }
+    
+    internal class MainWindowViewModel : IMainWindowViewModel
     {
         public MainWindowViewModel()
         {
@@ -54,10 +63,7 @@ namespace Kanban.Desktop
 
         public TagDimension<string, Ticket> VerticalDimension { get; }
 
-        public ObservableCollection<IDimensionCategory> VerticalCategories { get; }
-
         public TagDimension<string, Ticket> HorizontalDimension { get; }
 
-        public ObservableCollection<IDimensionCategory> HorizontalCategories { get; }
     }
 }

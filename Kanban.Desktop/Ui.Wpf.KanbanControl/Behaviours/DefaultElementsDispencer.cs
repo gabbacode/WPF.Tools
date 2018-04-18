@@ -2,11 +2,11 @@
 using Ui.Wpf.KanbanControl.Dimensions;
 using Ui.Wpf.KanbanControl.Elements;
 
-namespace Ui.Wpf.KanbanControl
+namespace Ui.Wpf.KanbanControl.Behaviours
 {
     internal class DefaultElementsDispenser : IElementsDispenser
     {
-        internal void DispenceItems(
+        public void DispenceItems(
             ICollection<Card> cards, 
             IDimension horizontalDimention,
             IDimension verticalDimension)

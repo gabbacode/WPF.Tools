@@ -3,14 +3,44 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Kanban.Desktop"
         xmlns:kanbancontrol="clr-namespace:Ui.Wpf.KanbanControl;assembly=Ui.Wpf.KanbanControl"
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
+    <Window.Resources>
+        <LinearGradientBrush x:Key="Gr" StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="White" Offset="0" />
+            <GradientStop Color="WhiteSmoke" Offset="0.4" />
+        </LinearGradientBrush>
+        
+        <DataTemplate x:Key="Card">
+            <Border 
+                Margin="3"
+                BorderBrush="Silver"
+                Background="{StaticResource Gr}"
+                BorderThickness="1,1,1,1" 
+                CornerRadius="4">
+                <Grid Margin="3" HorizontalAlignment="Stretch">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Grid.Column="0" Margin="12,0" Text="Status:"/>
+                    <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Status}"/>                        
+                    <TextBlock Grid.Row="1" Grid.Column="0" Margin="12,0" Text="State:"/>
+                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding State}"/>
+                </Grid>
+            </Border>
+        </DataTemplate>
+    </Window.Resources>
     <Grid>
         <kanbancontrol:Kanban 
-            VerticalDimension ="{Binding VerticalDimension}"
-            HorizontalDimension ="{Binding HorizontalDimension}"
-            CardItems="{Binding Tickets}"/>
+            VerticalDimension = "{Binding VerticalDimension}"
+            HorizontalDimension = "{Binding HorizontalDimension}"
+            CardItems = "{Binding Tickets}"
+            CardItemTemplate = "{StaticResource Card}"/>
     </Grid>
 </Window>

@@ -1,6 +1,4 @@
-﻿using System.Windows;
-
-namespace Ui.Wpf.KanbanControl.Elements
+﻿namespace Ui.Wpf.KanbanControl.Elements
 {
     public class Cell
     {

@@ -3,7 +3,7 @@
 namespace Ui.Wpf.KanbanControl.Elements
 {
     /// <summary>
-    /// Логика взаимодействия для HorizontalCategoryHeader.xaml
+    /// codebehind for HorizontalCategoryHeader.xaml
     /// </summary>
     public partial class HorizontalCategoryHeader : UserControl
     {

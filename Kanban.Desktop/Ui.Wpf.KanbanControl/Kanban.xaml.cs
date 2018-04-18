@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Windows;
@@ -14,7 +13,7 @@ namespace Ui.Wpf.KanbanControl
     /// <summary>
     /// codebehind for Kanban.xaml
     /// </summary>
-    public partial class Kanban : UserControl, IKanbanBoard
+    public partial class Kanban : IKanbanBoard
     {
         public Kanban()
         {
@@ -78,28 +77,20 @@ namespace Ui.Wpf.KanbanControl
             cards.Clear();
             foreach (var item in CardItems)
             {
-                cards.Add(new Card(item));
+                var card = new Card(item);
+                card.View.ContentTemplate = CardItemTemplate;
+
+                cards.Add(card);
             }
         }
 
         #region [ IKanbanBoard ]
 
-        private List<Card> cards = new List<Card>();
-        List<Card> IKanbanBoard.Cards
-        {
-            get
-            {
-                return cards;
-            }
-        } 
+        private readonly List<Card> cards = new List<Card>();
+        List<Card> IKanbanBoard.Cards => cards;
 
         private Cell[,] cells;
-        Cell[,] IKanbanBoard.Cells {
-            get
-            {
-                return cells;
-            }
-        }
+        Cell[,] IKanbanBoard.Cells => cells;
 
         Grid IKanbanBoard.KanbanGrid => Grid;
 
@@ -113,10 +104,7 @@ namespace Ui.Wpf.KanbanControl
         private IShowKanbanStrategy showKanbanStrategy;
         public IShowKanbanStrategy ShowKanbanStrategy
         {
-            get
-            {
-                return showKanbanStrategy;
-            }
+            get => showKanbanStrategy;
             set
             {
                 showKanbanStrategy = value;
@@ -126,12 +114,12 @@ namespace Ui.Wpf.KanbanControl
 
         #endregion
 
-        #region [ dependency property ]
+        #region [ dependency properties ]
 
         public System.Collections.IEnumerable CardItems
         {
-            get { return (System.Collections.IEnumerable)GetValue(CardItemsProperty); }
-            set { SetValue(CardItemsProperty, value); }
+            get => (System.Collections.IEnumerable)GetValue(CardItemsProperty);
+            set => SetValue(CardItemsProperty, value);
         }
 
         public static readonly DependencyProperty CardItemsProperty =
@@ -152,8 +140,8 @@ namespace Ui.Wpf.KanbanControl
 
         public IDimension VerticalDimension
         {
-            get { return (IDimension)GetValue(VerticalDimensionProperty); }
-            set { SetValue(VerticalDimensionProperty, value); }
+            get => (IDimension)GetValue(VerticalDimensionProperty);
+            set => SetValue(VerticalDimensionProperty, value);
         }
 
         public static readonly DependencyProperty VerticalDimensionProperty =
@@ -174,8 +162,8 @@ namespace Ui.Wpf.KanbanControl
 
         public IDimension HorizontalDimension
         {
-            get { return (IDimension)GetValue(HorizontalDimensionProperty); }
-            set { SetValue(HorizontalDimensionProperty, value); }
+            get => (IDimension)GetValue(HorizontalDimensionProperty);
+            set => SetValue(HorizontalDimensionProperty, value);
         }
 
         public static readonly DependencyProperty HorizontalDimensionProperty =
@@ -196,8 +184,8 @@ namespace Ui.Wpf.KanbanControl
 
         public double SpliterWidth
         {
-            get { return (double)GetValue(SpliterWidthProperty); }
-            set { SetValue(SpliterWidthProperty, value); }
+            get => (double)GetValue(SpliterWidthProperty);
+            set => SetValue(SpliterWidthProperty, value);
         }
 
         public static readonly DependencyProperty SpliterWidthProperty =
@@ -205,13 +193,40 @@ namespace Ui.Wpf.KanbanControl
 
         public Brush SpliterBackground
         {
-            get { return (Brush)GetValue(SpliterBackgroundProperty); }
-            set { SetValue(SpliterBackgroundProperty, value); }
+            get => (Brush)GetValue(SpliterBackgroundProperty);
+            set => SetValue(SpliterBackgroundProperty, value);
         }
 
         public static readonly DependencyProperty SpliterBackgroundProperty =
-            DependencyProperty.Register("SpliterBackground", typeof(Brush), typeof(Kanban), new PropertyMetadata(Brushes.Silver));
+            DependencyProperty.Register("SpliterBackground", typeof(Brush), typeof(Kanban), new PropertyMetadata(Brushes.WhiteSmoke));
 
+
+        public DataTemplate CardItemTemplate
+        {
+            get => (DataTemplate)GetValue(CardItemTemplateProperty);
+            set => SetValue(CardItemTemplateProperty, value);
+        }
+
+        public static readonly DependencyProperty CardItemTemplateProperty =
+            DependencyProperty.Register("CardItemTemplate", 
+                typeof(DataTemplate), 
+                typeof(Kanban), 
+                new PropertyMetadata());
+
+        
+        public DataTemplate CellTemplate
+        {
+            get => (DataTemplate)GetValue(CellTemplateProperty);
+            set => SetValue(CellTemplateProperty, value);
+        }
+
+        public static readonly DependencyProperty CellTemplateProperty =
+            DependencyProperty.Register("CellTemplate", 
+                typeof(DataTemplate), 
+                typeof(Kanban), 
+                new PropertyMetadata());
+        
+        
         #endregion
     }
 }

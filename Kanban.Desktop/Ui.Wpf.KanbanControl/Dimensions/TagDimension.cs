@@ -8,17 +8,17 @@ namespace Ui.Wpf.KanbanControl.Dimensions
     {
         public TagDimension(
             TTag[] tags, 
-            Func<TElement, IEnumerable<TTag>> getItemTags,
-            IDimensionCategory[] categories)
+            Func<TElement, ICollection<TTag>> getItemTags,
+            IList<IDimensionCategory> categories)
         {
             Tags = tags;
-            GetItemTags = getItemTags;
+            this.getItemTags = getItemTags;
             Categories = categories;
         }
 
         public override int GetDimensionIndex(object item)
         {
-            var itemTags = GetItemTags((TElement)item);
+            var itemTags = getItemTags((TElement)item);
 
             var categoryIndex = 0;
             // all Categories must be TagsDimensionCategory
@@ -38,6 +38,6 @@ namespace Ui.Wpf.KanbanControl.Dimensions
 
         public TTag[] Tags { get; set; }
 
-        private Func<TElement, IEnumerable<TTag>> GetItemTags;
+        private readonly Func<TElement, ICollection<TTag>> getItemTags;
     }
 }

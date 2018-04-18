@@ -1,11 +1,9 @@
-﻿using System.Windows.Controls;
-
-namespace Ui.Wpf.KanbanControl.Elements
+﻿namespace Ui.Wpf.KanbanControl.Elements
 {
     /// <summary>
-    /// Логика взаимодействия для CardView.xaml
+    /// codebehind for CardView.xaml
     /// </summary>
-    public partial class CardView : UserControl
+    public partial class CardView
     {
         public CardView()
         {

@@ -73,7 +73,6 @@
     <Compile Include="Kanban.xaml.cs">
       <DependentUpon>Kanban.xaml</DependentUpon>
     </Compile>
-    <Compile Include="KanbanViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

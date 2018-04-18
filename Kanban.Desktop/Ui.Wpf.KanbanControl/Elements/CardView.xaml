@@ -6,7 +6,4 @@
              xmlns:local="clr-namespace:Ui.Wpf.KanbanControl.Elements"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <Grid>
-        <TextBlock>card</TextBlock>
-    </Grid>
 </UserControl>
