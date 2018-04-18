@@ -16,14 +16,20 @@ namespace Ui.Wpf.KanbanControl
 
         public void AddActionsToShow(KanbanChangeObjectType changeObjectType)
         {
+            if (KanbanBoard.HorizontalDimension == null
+                || KanbanBoard.HorizontalDimension.Categories.Count == 0
+                || KanbanBoard.VerticalDimension == null
+                || KanbanBoard.VerticalDimension.Categories.Count == 0)
+                return;
+
             ClearItems();
             ClearSplitters();
             ClearDefinitions();
 
             ElementsDispenser.DispenceItems(
                 KanbanBoard.Cards,
-                KanbanBoard.HorisontalCategories,
-                KanbanBoard.VerticalCategories);
+                KanbanBoard.HorizontalDimension,
+                KanbanBoard.VerticalDimension);
 
             BuildGridDefenitions();
             BuildGridSpliters();
@@ -34,20 +40,20 @@ namespace Ui.Wpf.KanbanControl
 
         private void BuildGridSpliters()
         {
-            if (KanbanBoard.VerticalCategories.Count == 0
-                || KanbanBoard.HorisontalCategories.Count == 0)
+            if (KanbanBoard.VerticalDimension.Categories.Count == 0
+                || KanbanBoard.HorizontalDimension.Categories.Count == 0)
                 return;
 
-            for (int i = 0; i < KanbanBoard.VerticalCategories.Count - 1; i++)
+            for (int i = 0; i < KanbanBoard.VerticalDimension.Categories.Count - 1; i++)
             {
                 KanbanBoard.KanbanGrid.Children.Add(
-                    BuildHorizontalSpliter(i, KanbanBoard.HorisontalCategories.Count));
+                    BuildHorizontalSpliter(i, KanbanBoard.HorizontalDimension.Categories.Count));
             }
 
-            for (int i = 0; i < KanbanBoard.HorisontalCategories.Count - 1; i++)
+            for (int i = 0; i < KanbanBoard.HorizontalDimension.Categories.Count - 1; i++)
             {
                 KanbanBoard.KanbanGrid.Children.Add(
-                    BuildVerticalSpliter(i, KanbanBoard.VerticalCategories.Count));
+                    BuildVerticalSpliter(i, KanbanBoard.VerticalDimension.Categories.Count));
             }
         }
 
@@ -87,12 +93,12 @@ namespace Ui.Wpf.KanbanControl
 
         private void BuildGridDefenitions()
         {
-            foreach (var hCategory in KanbanBoard.HorisontalCategories)
+            foreach (var hCategory in KanbanBoard.HorizontalDimension.Categories)
             {
                 KanbanBoard.KanbanGrid.ColumnDefinitions.Add(new ColumnDefinition());
             }
 
-            foreach (var vCategory in KanbanBoard.VerticalCategories)
+            foreach (var vCategory in KanbanBoard.VerticalDimension.Categories)
             {
                 KanbanBoard.KanbanGrid.RowDefinitions.Add(new RowDefinition());
             }

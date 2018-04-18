@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Windows.Controls;
 using System.Windows.Media;
+using Ui.Wpf.KanbanControl.Dimensions;
 
 namespace Ui.Wpf.KanbanControl.Elements
 {
@@ -12,9 +13,9 @@ namespace Ui.Wpf.KanbanControl.Elements
 
         List<Card> Cards { get; }
 
-        ObservableCollection<IDimensionCategory> HorisontalCategories { get; }
+        IDimension HorizontalDimension { get; }
 
-        ObservableCollection<IDimensionCategory> VerticalCategories { get; }
+        IDimension VerticalDimension { get; }
 
         double SpliterWidth { get; }
 

@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using Ui.Wpf.KanbanControl.Dimensions;
 using Ui.Wpf.KanbanControl.Elements;
 
 namespace Ui.Wpf.KanbanControl
@@ -8,19 +8,13 @@ namespace Ui.Wpf.KanbanControl
     {
         internal void DispenceItems(
             ICollection<Card> cards, 
-            ObservableCollection<IDimensionCategory> horisontalCategories, 
-            ObservableCollection<IDimensionCategory> verticalCategories)
+            IDimension horizontalDimention,
+            IDimension verticalDimension)
         {
-            if (verticalCategories.Count == 0
-                || horisontalCategories.Count == 0)
-                return;
-
-            var i = 0;
             foreach (var card in cards)
             {
-                card.HorizontalCategoryIndex = i % horisontalCategories.Count;
-                card.VerticalCategoryIndex = (i / horisontalCategories.Count) % verticalCategories.Count;
-                i++;
+                card.HorizontalCategoryIndex = horizontalDimention.GetDimensionIndex(card.Item);
+                card.VerticalCategoryIndex = verticalDimension.GetDimensionIndex(card.Item);
             }
         }
     }

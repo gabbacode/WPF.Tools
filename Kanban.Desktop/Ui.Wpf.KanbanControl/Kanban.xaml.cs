@@ -5,12 +5,13 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using Ui.Wpf.KanbanControl.Behaviours;
+using Ui.Wpf.KanbanControl.Dimensions;
 using Ui.Wpf.KanbanControl.Elements;
 
 namespace Ui.Wpf.KanbanControl
 {
     /// <summary>
-    /// Логика взаимодействия для Kanban.xaml
+    /// codebehind for Kanban.xaml
     /// </summary>
     public partial class Kanban : UserControl, IKanbanBoard
     {
@@ -113,44 +114,43 @@ namespace Ui.Wpf.KanbanControl
             control.SetCardItems(e.OldValue, e.NewValue);
         }
 
-        public ObservableCollection<IDimensionCategory> VerticalCategories
+        public IDimension VerticalDimension
         {
-            get { return (ObservableCollection<IDimensionCategory>)GetValue(VerticalCategoriesProperty); }
-            set { SetValue(VerticalCategoriesProperty, value); }
+            get { return (IDimension)GetValue(VerticalDimensionProperty); }
+            set { SetValue(VerticalDimensionProperty, value); }
         }
 
-        public static readonly DependencyProperty VerticalCategoriesProperty =
-            DependencyProperty.Register("VerticalCategories",
-                typeof(ObservableCollection<IDimensionCategory>),
+        public static readonly DependencyProperty VerticalDimensionProperty =
+            DependencyProperty.Register("VerticalDimension", 
+                typeof(IDimension), 
                 typeof(Kanban), 
                 new PropertyMetadata(
-                    new ObservableCollection<IDimensionCategory>(),
-                    OnVerticalCategoriesChanged));
+                    null,
+                    OnVerticalDimensionChanged));
 
-        private static void OnVerticalCategoriesChanged(
-            DependencyObject obj, 
+        private static void OnVerticalDimensionChanged(
+            DependencyObject obj,
             DependencyPropertyChangedEventArgs e)
         {
             var control = (Kanban)obj;
             control.AddActionsToShow(KanbanChangeObjectType.VerticalCategories);
         }
 
-        public ObservableCollection<IDimensionCategory> HorisontalCategories
+        public IDimension HorizontalDimension
         {
-            get { return (ObservableCollection<IDimensionCategory>)GetValue(HorisontalCategoriesProperty); }
-            set { SetValue(HorisontalCategoriesProperty, value); }
+            get { return (IDimension)GetValue(HorizontalDimensionProperty); }
+            set { SetValue(HorizontalDimensionProperty, value); }
         }
 
-        public static readonly DependencyProperty HorisontalCategoriesProperty =
-            DependencyProperty.Register("HorisontalCategories",
-                typeof(ObservableCollection<IDimensionCategory>),
-                typeof(Kanban), 
+        public static readonly DependencyProperty HorizontalDimensionProperty =
+            DependencyProperty.Register("HorizontalDimension",
+                typeof(IDimension),
+                typeof(Kanban),
                 new PropertyMetadata(
-                    new ObservableCollection<IDimensionCategory>(),
-                    OnHorizontalCategoriesChanged)
-                );
+                    null,
+                    HorizontalDimensionChanged));
 
-        private static void OnHorizontalCategoriesChanged(
+        private static void HorizontalDimensionChanged(
             DependencyObject obj,
             DependencyPropertyChangedEventArgs e)
         {

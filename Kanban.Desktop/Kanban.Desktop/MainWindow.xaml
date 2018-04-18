@@ -9,8 +9,8 @@
         Title="MainWindow" Height="350" Width="525">
     <Grid>
         <kanbancontrol:Kanban 
-            VerticalCategories="{Binding VerticalCategories}"
-            HorisontalCategories="{Binding HorizontalCategories}"
+            VerticalDimension ="{Binding VerticalDimension}"
+            HorizontalDimension ="{Binding HorizontalDimension}"
             CardItems="{Binding Tickets}"/>
     </Grid>
 </Window>

@@ -50,12 +50,19 @@
     <Compile Include="Behaviours\DefaultElementsDispencer.cs" />
     <Compile Include="Behaviours\DefaultShowKanbanStrategey.cs" />
     <Compile Include="Behaviours\KanbanChangeObjectType.cs" />
-    <Compile Include="Categories\DimensionCategory.cs" />
-    <Compile Include="Categories\IDimensionCategory.cs" />
+    <Compile Include="Dimensions\BaseDimension.cs" />
+    <Compile Include="Dimensions\BaseDimensionCategory.cs" />
+    <Compile Include="Dimensions\IDimension.cs" />
+    <Compile Include="Dimensions\IDimensionCategory.cs" />
     <Compile Include="Behaviours\IElementsDispenser.cs" />
+    <Compile Include="Dimensions\TagDimension.cs" />
+    <Compile Include="Dimensions\TagsDimensionCategory.cs" />
     <Compile Include="Elements\Card.cs" />
     <Compile Include="Elements\CardView.xaml.cs">
       <DependentUpon>CardView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Elements\HorizontalCategoryHeaderView.xaml.cs">
+      <DependentUpon>HorizontalCategoryHeaderView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Elements\IKanbanBoardView.cs" />
     <Compile Include="Behaviours\IShowKanbanStrategy.cs" />
@@ -87,6 +94,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Elements\CardView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Elements\HorizontalCategoryHeaderView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

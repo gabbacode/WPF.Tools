@@ -11,9 +11,11 @@ namespace Ui.Wpf.KanbanControl.Elements
         }
 
         public UIElement View { get; private set; }
+
         public int VerticalCategoryIndex { get; internal set; }
+
         public int HorizontalCategoryIndex { get; internal set; }
 
-        private readonly object Item;
+        internal object Item { get; private set; }
     }
 }
