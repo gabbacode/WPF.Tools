@@ -1,20 +1,20 @@
 ﻿using System.Collections.ObjectModel;
 using Ui.Wpf.KanbanControl.Dimensions;
 
-namespace Kanban.Desktop
+namespace Kanban.Desktop.KanbanBoard
 {
-    interface IMainWindowViewModel
+    public interface IKanbanBoardViewModel
     {
         ObservableCollection<Ticket> Tickets { get; }
-        
+
         TagDimension<string, Ticket> VerticalDimension { get; }
 
         TagDimension<string, Ticket> HorizontalDimension { get; }
     }
-    
-    internal class MainWindowViewModel : IMainWindowViewModel
+
+    public class KanbanBoardViewModel : IKanbanBoardViewModel
     {
-        public MainWindowViewModel()
+        public KanbanBoardViewModel()
         {
             VerticalDimension = new TagDimension<string, Ticket>
                 (
@@ -30,7 +30,7 @@ namespace Kanban.Desktop
 
             HorizontalDimension = new TagDimension<string, Ticket>
                 (
-                    tags: new []{"A", "B", "C" },
+                    tags: new[] { "A", "B", "C" },
                     getItemTags: (e) => new[] { e.State },
                     categories: new IDimensionCategory[]
                     {
@@ -64,6 +64,5 @@ namespace Kanban.Desktop
         public TagDimension<string, Ticket> VerticalDimension { get; }
 
         public TagDimension<string, Ticket> HorizontalDimension { get; }
-
     }
 }

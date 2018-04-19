@@ -1,6 +1,6 @@
-﻿namespace Kanban.Desktop
-{
-    internal class Ticket
+﻿namespace Kanban.Desktop.KanbanBoard
+{ 
+    public class Ticket
     {
         public Ticket(string status, string state)
         {

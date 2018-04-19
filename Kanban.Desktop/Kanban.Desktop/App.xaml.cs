@@ -1,17 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Kanban.Desktop.KanbanBoard;
 using System.Windows;
+using Ui.Wpf.Common;
 
 namespace Kanban.Desktop
 {
     /// <summary>
-    /// Логика взаимодействия для App.xaml
+    /// App.xaml
     /// </summary>
     public partial class App : Application
     {
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
+
+            UiStarter.Start<IDockWindow, IKanbanBoardView>(
+                new Bootstrap());
+        }
     }
 }
