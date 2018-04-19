@@ -50,6 +50,7 @@
     <Compile Include="Behaviours\DefaultElementsDispencer.cs" />
     <Compile Include="Behaviours\DefaultShowKanbanStrategey.cs" />
     <Compile Include="Behaviours\KanbanChangeObjectType.cs" />
+    <Compile Include="DefaultTemplates.cs" />
     <Compile Include="Dimensions\BaseDimension.cs" />
     <Compile Include="Dimensions\BaseDimensionCategory.cs" />
     <Compile Include="Dimensions\IDimension.cs" />
@@ -112,6 +113,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Kanban.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DefaultTemplates.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

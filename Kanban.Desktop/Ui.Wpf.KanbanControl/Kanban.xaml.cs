@@ -126,6 +126,7 @@ namespace Ui.Wpf.KanbanControl
 
         #region [ properties ]
 
+        private static readonly DefaultTemplates defaultTemplates = new DefaultTemplates();
 
         //TODO dependency properties
 
@@ -264,7 +265,8 @@ namespace Ui.Wpf.KanbanControl
             DependencyProperty.Register("HorizontalHeaderTemplate", 
                 typeof(DataTemplate), 
                 typeof(Kanban), 
-                new PropertyMetadata());
+                new PropertyMetadata(
+                    defaultTemplates["DefaultHorizontalHeaderTemplate"]));
         
         public DataTemplate VerticalHeaderTemplate
         {
@@ -276,7 +278,8 @@ namespace Ui.Wpf.KanbanControl
             DependencyProperty.Register("VerticalHeaderTemplate", 
                 typeof(DataTemplate), 
                 typeof(Kanban), 
-                new PropertyMetadata());
+                new PropertyMetadata(
+                    defaultTemplates["DefaulVerticalHeaderTemplate"]));
         
         #endregion
     }
