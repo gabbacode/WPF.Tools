@@ -18,44 +18,44 @@ namespace Kanban.Desktop
         {
             VerticalDimension = new TagDimension<string, Ticket>
                 (
-                    tags: new []{"A", "B", "C" },
+                    tags: new[] { "X", "Y", "O" },
                     getItemTags: (e) => new[] { e.Status },
                     categories: new IDimensionCategory[]
                     {
-                        new TagsDimensionCategory<string>("A"),
-                        new TagsDimensionCategory<string>("B"),
-                        new TagsDimensionCategory<string>("C"),
+                        new TagsDimensionCategory<string>("Chi", "X"),
+                        new TagsDimensionCategory<string>("Psi", "Y"),
+                        new TagsDimensionCategory<string>("Omega", "O"),
                     }
                 );
 
             HorizontalDimension = new TagDimension<string, Ticket>
                 (
-                    tags: new[] { "A", "B", "C" },
+                    tags: new []{"A", "B", "C" },
                     getItemTags: (e) => new[] { e.State },
                     categories: new IDimensionCategory[]
                     {
-                        new TagsDimensionCategory<string>("A"),
-                        new TagsDimensionCategory<string>("B"),
-                        new TagsDimensionCategory<string>("C"),
+                        new TagsDimensionCategory<string>("Alpha", "A"),
+                        new TagsDimensionCategory<string>("Bravo", "B"),
+                        new TagsDimensionCategory<string>("Charlie", "C"),
                     }
                 );
 
 
             Tickets = new ObservableCollection<Ticket>()
             {
-                new Ticket(status: "A", state: "A"),
-                new Ticket(status: "A", state: "A"),
-                new Ticket(status: "A", state: "A"),
-                new Ticket(status: "A", state: "A"),
-                new Ticket(status: "A", state: "A"),
-                new Ticket(status: "A", state: "B"),
-                new Ticket(status: "A", state: "C"),
-                new Ticket(status: "B", state: "A"),
-                new Ticket(status: "B", state: "B"),
-                new Ticket(status: "B", state: "C"),
-                new Ticket(status: "C", state: "A"),
-                new Ticket(status: "C", state: "B"),
-                new Ticket(status: "C", state: "C"),
+                new Ticket(status: "X", state: "A"),
+                new Ticket(status: "X", state: "A"),
+                new Ticket(status: "X", state: "A"),
+                new Ticket(status: "X", state: "A"),
+                new Ticket(status: "X", state: "A"),
+                new Ticket(status: "X", state: "B"),
+                new Ticket(status: "X", state: "C"),
+                new Ticket(status: "Y", state: "A"),
+                new Ticket(status: "Y", state: "B"),
+                new Ticket(status: "Y", state: "C"),
+                new Ticket(status: "O", state: "A"),
+                new Ticket(status: "O", state: "B"),
+                new Ticket(status: "O", state: "C"),
             };
         }
 

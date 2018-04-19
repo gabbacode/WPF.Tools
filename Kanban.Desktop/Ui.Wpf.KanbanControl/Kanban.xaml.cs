@@ -36,6 +36,7 @@ namespace Ui.Wpf.KanbanControl
 
             BuildCells();
             BuildCards();
+            BuildHeaders();            
 
             showKanbanStrategy.AddActionsToShow(changeObjectType);
         }
@@ -84,7 +85,34 @@ namespace Ui.Wpf.KanbanControl
             }
         }
 
+        private void BuildHeaders()
+        {
+            horizontalHeaders.Clear();
+            for (int i = 0; i < HorizontalDimension.Categories.Count; i++)
+            {
+                var head = new HeaderView();
+                head.ContentTemplate = HorizontalHeaderTemplate;
+                head.Content = HorizontalDimension.Categories[i];
+                horizontalHeaders.Add(new Header(head));
+            }
+
+            verticalHeaders.Clear();
+            for (int j = 0; j < VerticalDimension.Categories.Count; j++)
+            {
+                var head = new HeaderView();
+                head.ContentTemplate = VerticalHeaderTemplate;
+                head.Content = VerticalDimension.Categories[j];
+                verticalHeaders.Add(new Header(head));
+            }
+        }
+
         #region [ IKanbanBoard ]
+
+        private readonly List<Header> verticalHeaders = new List<Header>();
+        List<Header> IKanbanBoard.VerticalHeaders => verticalHeaders;
+
+        private readonly List<Header> horizontalHeaders = new List<Header>();
+        List<Header> IKanbanBoard.HorizontalHeaders => horizontalHeaders;
 
         private readonly List<Card> cards = new List<Card>();
         List<Card> IKanbanBoard.Cards => cards;
@@ -226,6 +254,29 @@ namespace Ui.Wpf.KanbanControl
                 typeof(Kanban), 
                 new PropertyMetadata());
         
+        public DataTemplate HorizontalHeaderTemplate
+        {
+            get => (DataTemplate)GetValue(HorizontalHeaderTemplateProperty);
+            set => SetValue(HorizontalHeaderTemplateProperty , value);
+        }
+
+        public static readonly DependencyProperty HorizontalHeaderTemplateProperty =
+            DependencyProperty.Register("HorizontalHeaderTemplate", 
+                typeof(DataTemplate), 
+                typeof(Kanban), 
+                new PropertyMetadata());
+        
+        public DataTemplate VerticalHeaderTemplate
+        {
+            get => (DataTemplate)GetValue(VerticalHeaderTemplateProperty);
+            set => SetValue(VerticalHeaderTemplateProperty , value);
+        }
+
+        public static readonly DependencyProperty VerticalHeaderTemplateProperty =
+            DependencyProperty.Register("VerticalHeaderTemplate", 
+                typeof(DataTemplate), 
+                typeof(Kanban), 
+                new PropertyMetadata());
         
         #endregion
     }

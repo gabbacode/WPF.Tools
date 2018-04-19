@@ -35,12 +35,40 @@
                 </Grid>
             </Border>
         </DataTemplate>
+        
+        <DataTemplate x:Key="hHead">
+            <Border 
+                Margin="3"
+                Background="Beige"
+                CornerRadius="4">
+                <TextBlock Margin="12" Text="{Binding Caption}"/>
+            </Border>
+        </DataTemplate>        
+        <DataTemplate x:Key="vHead">
+            <Border 
+                Margin="3"
+                Background="Beige"
+                CornerRadius="4">
+                <TextBlock 
+                    Margin="12" 
+                    VerticalAlignment="Center"
+                    RenderTransformOrigin="0.5,0.5"
+                    Text="{Binding Caption}">
+                    <TextBlock.RenderTransform>
+                        <RotateTransform Angle="270"/>
+                    </TextBlock.RenderTransform>                    
+                </TextBlock>
+            </Border>
+        </DataTemplate>        
     </Window.Resources>
     <Grid>
         <kanbancontrol:Kanban 
             VerticalDimension = "{Binding VerticalDimension}"
             HorizontalDimension = "{Binding HorizontalDimension}"
             CardItems = "{Binding Tickets}"
+
+            HorizontalHeaderTemplate="{StaticResource hHead}"
+            VerticalHeaderTemplate="{StaticResource vHead}"
             CardItemTemplate = "{StaticResource Card}"/>
     </Grid>
 </Window>

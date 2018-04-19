@@ -65,6 +65,8 @@
     <Compile Include="Elements\CellView.xaml.cs">
       <DependentUpon>CellView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Elements\Header.cs" />
+    <Compile Include="Elements\HeaderView.xaml.cs" />
     <Compile Include="Elements\HorizontalCategoryHeaderView.xaml.cs">
       <DependentUpon>HorizontalCategoryHeaderView.xaml</DependentUpon>
     </Compile>
@@ -104,6 +106,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Elements\HeaderView.xaml" />
     <Page Include="Elements\HorizontalCategoryHeaderView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

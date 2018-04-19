@@ -10,6 +10,10 @@ namespace Ui.Wpf.KanbanControl.Elements
         // TODO replace to abstract methods, so we easy can use not only grid
         Grid KanbanGrid { get; }
 
+        List<Header> HorizontalHeaders { get; }
+ 
+        List<Header> VerticalHeaders { get; }
+
         List<Card> Cards { get; }
 
         Cell[,] Cells { get; }
@@ -21,6 +25,5 @@ namespace Ui.Wpf.KanbanControl.Elements
         double SpliterWidth { get; }
 
         Brush SpliterBackground { get; }
-
     }
 }

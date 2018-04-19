@@ -23,6 +23,7 @@ namespace Ui.Wpf.KanbanControl.Behaviours
 
             RemoveItems();
             RemoveCells();
+            RemoveHeaders();
 
             ClearSplitters();
             ClearDefinitions();
@@ -35,9 +36,11 @@ namespace Ui.Wpf.KanbanControl.Behaviours
             BuildGridDefenitions();
             BuildGridSpliters();
 
+            PlaceHeaders();
             PlaceCells();
             PlaceItems();
         }
+
 
         private void BuildGridSpliters()
         {
@@ -68,8 +71,8 @@ namespace Ui.Wpf.KanbanControl.Behaviours
             };
 
             Grid.SetRow(newSpliter, 0);
-            Grid.SetColumn(newSpliter, index);
-            Grid.SetRowSpan(newSpliter, verticalCategoriesCount);
+            Grid.SetColumn(newSpliter, index + HeaderCellCount);
+            Grid.SetRowSpan(newSpliter, verticalCategoriesCount + HeaderCellCount);
 
             return newSpliter;
         }
@@ -86,19 +89,30 @@ namespace Ui.Wpf.KanbanControl.Behaviours
             };
 
             Grid.SetColumn(newSpliter, 0);
-            Grid.SetRow(newSpliter, index);
-            Grid.SetColumnSpan(newSpliter, horizontalCategoriescount);
+            Grid.SetRow(newSpliter, index + HeaderCellCount);
+            Grid.SetColumnSpan(newSpliter, horizontalCategoriescount + HeaderCellCount);
 
             return newSpliter;
         }
 
         private void BuildGridDefenitions()
         {
+            // header
+            KanbanBoard.KanbanGrid.ColumnDefinitions.Add(new ColumnDefinition()
+            {
+                Width = GridLength.Auto
+            });
+            
             foreach (var hCategory in KanbanBoard.HorizontalDimension.Categories)
             {
                 KanbanBoard.KanbanGrid.ColumnDefinitions.Add(new ColumnDefinition());
             }
 
+            // header
+            KanbanBoard.KanbanGrid.RowDefinitions.Add(new RowDefinition()
+            {
+                Height = GridLength.Auto
+            });
             foreach (var vCategory in KanbanBoard.VerticalDimension.Categories)
             {
                 KanbanBoard.KanbanGrid.RowDefinitions.Add(new RowDefinition());
@@ -123,6 +137,40 @@ namespace Ui.Wpf.KanbanControl.Behaviours
             }
         }
 
+        private void RemoveHeaders()
+        {
+            var itemsToRemove = KanbanBoard.KanbanGrid.Children
+                .OfType<HeaderView>()
+                .ToArray();
+
+            foreach (var itemToRemove in itemsToRemove)
+            {
+                KanbanBoard.KanbanGrid.Children.Remove(itemToRemove);
+            }
+        }
+        
+        private void PlaceHeaders()
+        {
+            for (int i = 0; i < KanbanBoard.HorizontalDimension.Categories.Count; i++)
+            {
+                var head = KanbanBoard.HorizontalHeaders[i].View;
+                Grid.SetColumn(head, i + HeaderCellCount);
+                Grid.SetRow(head, 0);
+                
+                KanbanBoard.KanbanGrid.Children.Add(head);
+            }
+
+            for (int j = 0; j < KanbanBoard.VerticalDimension.Categories.Count; j++)
+            {
+                var head = KanbanBoard.VerticalHeaders[j].View;
+                Grid.SetColumn(head, 0);
+                Grid.SetRow(head, j + HeaderCellCount);
+                
+                KanbanBoard.KanbanGrid.Children.Add(head);
+            }
+            
+        }
+        
         private void PlaceCells()
         {
             for (int i = 0; i < KanbanBoard.HorizontalDimension.Categories.Count; i++)
@@ -131,8 +179,8 @@ namespace Ui.Wpf.KanbanControl.Behaviours
                 {
                     var cell = KanbanBoard.Cells[i, j].View;
 
-                    Grid.SetColumn(cell, i);
-                    Grid.SetRow(cell, j);
+                    Grid.SetColumn(cell, i + HeaderCellCount);
+                    Grid.SetRow(cell, j + HeaderCellCount);
 
                     KanbanBoard.KanbanGrid.Children.Add(cell);
                 }
@@ -143,6 +191,10 @@ namespace Ui.Wpf.KanbanControl.Behaviours
         {
             foreach (var card in KanbanBoard.Cards)
             {
+                if (card.HorizontalCategoryIndex < 0
+                    || card.VerticalCategoryIndex < 0)
+                    continue;
+                
                 KanbanBoard.Cells[card.HorizontalCategoryIndex, card.VerticalCategoryIndex].View.ItemContainer.Children.Add(card.View);
             }
         }
@@ -170,6 +222,8 @@ namespace Ui.Wpf.KanbanControl.Behaviours
             }
         }
 
+        private const int HeaderCellCount = 1;
+        
         private IKanbanBoard KanbanBoard { get; }
 
         private readonly DefaultElementsDispenser elementsDispenser;

@@ -8,8 +8,9 @@ namespace Ui.Wpf.KanbanControl.Dimensions
         {
         }
 
-        public TagsDimensionCategory(TTag tag)
+        public TagsDimensionCategory(string caption, TTag tag)
         {
+            Caption = caption;
             Tags = new HashSet<TTag> { tag };
         }
 

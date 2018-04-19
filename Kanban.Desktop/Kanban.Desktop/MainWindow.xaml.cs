@@ -1,11 +1,9 @@
-﻿using System.Windows;
-
-namespace Kanban.Desktop
+﻿namespace Kanban.Desktop
 {
     /// <summary>
-    /// Логика взаимодействия для MainWindow.xaml
+    /// codebehind for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow
     {
         public MainWindow()
         {
