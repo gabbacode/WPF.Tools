@@ -26,7 +26,7 @@ namespace Ui.Wpf.Common
             DataContext = Shell;
         }
 
-        private void ActiveContentChanged(object sender, System.EventArgs e)
+        private void ActiveContentChanged(object sender, EventArgs e)
         {
 
         }

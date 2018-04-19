@@ -1,68 +1,38 @@
-﻿using System.Collections.ObjectModel;
+﻿using Data.Entities.Common.Redmine;
+using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
+using System.Collections.ObjectModel;
 using Ui.Wpf.KanbanControl.Dimensions;
 
 namespace Kanban.Desktop.KanbanBoard
 {
     public interface IKanbanBoardViewModel
     {
-        ObservableCollection<Ticket> Tickets { get; }
+        ObservableCollection<Issue> Issues { get; }
 
-        TagDimension<string, Ticket> VerticalDimension { get; }
+        TagDimension<string, Issue> VerticalDimension { get; }
 
-        TagDimension<string, Ticket> HorizontalDimension { get; }
+        TagDimension<string, Issue> HorizontalDimension { get; }
     }
 
-    public class KanbanBoardViewModel : IKanbanBoardViewModel
+    public class KanbanBoardViewModel : ReactiveObject, IKanbanBoardViewModel
     {
-        public KanbanBoardViewModel()
+        public KanbanBoardViewModel(IKanbanConfigurationRepository kanbanRepository)
         {
-            VerticalDimension = new TagDimension<string, Ticket>
-                (
-                    tags: new[] { "X", "Y", "O" },
-                    getItemTags: (e) => new[] { e.Status },
-                    categories: new IDimensionCategory[]
-                    {
-                        new TagsDimensionCategory<string>("Chi", "X"),
-                        new TagsDimensionCategory<string>("Psi", "Y"),
-                        new TagsDimensionCategory<string>("Omega", "O"),
-                    }
-                );
+            var data = kanbanRepository.GetKanbanData();
 
-            HorizontalDimension = new TagDimension<string, Ticket>
-                (
-                    tags: new[] { "A", "B", "C" },
-                    getItemTags: (e) => new[] { e.State },
-                    categories: new IDimensionCategory[]
-                    {
-                        new TagsDimensionCategory<string>("Alpha", "A"),
-                        new TagsDimensionCategory<string>("Bravo", "B"),
-                        new TagsDimensionCategory<string>("Charlie", "C"),
-                    }
-                );
-
-
-            Tickets = new ObservableCollection<Ticket>()
+            VerticalDimension = data.VerticalDimension;
+            HorizontalDimension = data.HorizontalDimension;
+            foreach (var issue in data.Issues)
             {
-                new Ticket(status: "X", state: "A"),
-                new Ticket(status: "X", state: "A"),
-                new Ticket(status: "X", state: "A"),
-                new Ticket(status: "X", state: "A"),
-                new Ticket(status: "X", state: "A"),
-                new Ticket(status: "X", state: "B"),
-                new Ticket(status: "X", state: "C"),
-                new Ticket(status: "Y", state: "A"),
-                new Ticket(status: "Y", state: "B"),
-                new Ticket(status: "Y", state: "C"),
-                new Ticket(status: "O", state: "A"),
-                new Ticket(status: "O", state: "B"),
-                new Ticket(status: "O", state: "C"),
-            };
+                Issues.Add(issue);
+            }
         }
 
-        public ObservableCollection<Ticket> Tickets { get; }
+        [Reactive] public ObservableCollection<Issue> Issues { get; private set; }
 
-        public TagDimension<string, Ticket> VerticalDimension { get; }
+        [Reactive] public TagDimension<string, Issue> VerticalDimension { get; private set; }
 
-        public TagDimension<string, Ticket> HorizontalDimension { get; }
+        [Reactive] public TagDimension<string, Issue> HorizontalDimension { get; private set; }
     }
 }

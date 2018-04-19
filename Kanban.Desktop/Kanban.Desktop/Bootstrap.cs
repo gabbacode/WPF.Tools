@@ -1,4 +1,7 @@
-﻿using Autofac;
+﻿using System;
+using Autofac;
+using Data.Sources.Common.Redmine;
+using Data.Sources.Redmine;
 using Kanban.Desktop.KanbanBoard;
 using Ui.Wpf.Common;
 
@@ -26,6 +29,8 @@ namespace Kanban.Desktop
 
             ConfigureKanbanBoard(builder);
 
+            ConfigureRemine(builder);
+
             return builder.Build();
         }
 
@@ -38,6 +43,18 @@ namespace Kanban.Desktop
             builder
                 .RegisterType<KanbanBoardView>()
                 .As<IKanbanBoardView>();
+
+
+            builder
+                .RegisterType<KanbanConfigurationRepository>()
+                .As<IKanbanConfigurationRepository>();
+        }
+
+        private static void ConfigureRemine(ContainerBuilder builder)
+        {
+            builder
+                .RegisterType<RedmineRepository>()
+                .As<IRedmineRepository>();
         }
     }
 }

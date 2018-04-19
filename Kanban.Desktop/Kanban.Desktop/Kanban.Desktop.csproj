@@ -110,14 +110,16 @@
     </ApplicationDefinition>
     <Compile Include="Bootstrap.cs" />
     <Compile Include="KanbanBoard\IKanbanBoardView.cs" />
+    <Compile Include="KanbanBoard\IKanbanConfigurationRepository.cs" />
     <Compile Include="KanbanBoard\KanbanBoardView.xaml.cs">
       <DependentUpon>KanbanBoardView.xaml</DependentUpon>
     </Compile>
     <Compile Include="KanbanBoard\KanbanBoardViewModel.cs" />
+    <Compile Include="KanbanBoard\KanbanConfiguration.cs" />
+    <Compile Include="KanbanBoard\KanbanConfigurationRepository.cs" />
     <Compile Include="Settings\SettingsView.xaml.cs">
       <DependentUpon>SettingsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="KanbanBoard\Ticket.cs" />
     <Page Include="KanbanBoard\KanbanBoardView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -160,6 +162,18 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Data.Entities.Common\Data.Entities.Common.csproj">
+      <Project>{d70d3f81-6b4f-4f6c-873f-53482de2de52}</Project>
+      <Name>Data.Entities.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Data.Sources.Common\Data.Sources.Common.csproj">
+      <Project>{c1d73699-7c75-48bb-8076-913018db6852}</Project>
+      <Name>Data.Sources.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Data.Sources.Redmine\Data.Sources.Redmine.csproj">
+      <Project>{dc43f550-84b8-4950-835c-b16b8bca5f12}</Project>
+      <Name>Data.Sources.Redmine</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Ui.Wpf.Common\Ui.Wpf.Common.csproj">
       <Project>{fdb62508-affa-4281-8472-8d00fc1403ba}</Project>
       <Name>Ui.Wpf.Common</Name>
