@@ -2,11 +2,13 @@
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
+using Ui.Wpf.Common.ViewModels;
 using Ui.Wpf.KanbanControl.Dimensions;
 
 namespace Kanban.Desktop.KanbanBoard
 {
-    public interface IKanbanBoardViewModel
+    public interface IKanbanBoardViewModel : IInitializibleViewModel
     {
         ObservableCollection<Issue> Issues { get; }
 
@@ -19,7 +21,12 @@ namespace Kanban.Desktop.KanbanBoard
     {
         public KanbanBoardViewModel(IKanbanConfigurationRepository kanbanRepository)
         {
-            var data = kanbanRepository.GetKanbanData();
+            KanbanRepository = kanbanRepository;
+        }
+
+        public async void Initialize()
+        {
+            var data = await Task.Run(() => KanbanRepository.GetKanbanData());
 
             VerticalDimension = data.VerticalDimension;
             HorizontalDimension = data.HorizontalDimension;
@@ -31,5 +38,7 @@ namespace Kanban.Desktop.KanbanBoard
         [Reactive] public TagDimension<string, Issue> VerticalDimension { get; private set; }
 
         [Reactive] public TagDimension<string, Issue> HorizontalDimension { get; private set; }
+
+        private readonly IKanbanConfigurationRepository KanbanRepository;
     }
 }

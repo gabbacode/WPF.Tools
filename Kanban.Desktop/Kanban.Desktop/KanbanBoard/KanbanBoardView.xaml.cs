@@ -8,6 +8,8 @@
         public KanbanBoardView(IKanbanBoardViewModel kanbanBoardViewModel)
         {
             InitializeComponent();
+            kanbanBoardViewModel.Initialize();
+
             DataContext = kanbanBoardViewModel;
         }
     }
