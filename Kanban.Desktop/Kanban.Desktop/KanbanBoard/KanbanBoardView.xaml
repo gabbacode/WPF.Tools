@@ -21,7 +21,10 @@
                 Background="{StaticResource Gr}"
                 BorderThickness="1,1,1,1" 
                 CornerRadius="4">
-                <Grid Margin="3" HorizontalAlignment="Stretch">
+                <Grid 
+                    Margin="3"
+                    MaxHeight="100"
+                    HorizontalAlignment="Stretch">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"></ColumnDefinition>
                         <ColumnDefinition></ColumnDefinition>

@@ -39,6 +39,9 @@ namespace Ui.Wpf.KanbanControl.Behaviours
             PlaceHeaders();
             PlaceCells();
             PlaceItems();
+
+            //TODO rewrite
+            KanbanBoard.KanbanGrid.Height = KanbanBoard.VerticalDimension.Categories.Count * 250;
         }
 
 

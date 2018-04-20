@@ -218,7 +218,7 @@ namespace Ui.Wpf.KanbanControl
         }
 
         public static readonly DependencyProperty SpliterWidthProperty =
-            DependencyProperty.Register("SpliterWidth", typeof(double), typeof(Kanban), new PropertyMetadata(1d));
+            DependencyProperty.Register("SpliterWidth", typeof(double), typeof(Kanban), new PropertyMetadata(3d));
 
         public Brush SpliterBackground
         {
