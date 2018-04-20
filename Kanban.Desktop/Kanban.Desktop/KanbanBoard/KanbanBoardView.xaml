@@ -30,27 +30,22 @@
                         <RowDefinition Height="Auto"></RowDefinition>
                         <RowDefinition Height="Auto"></RowDefinition>
                     </Grid.RowDefinitions>
-                    <TextBlock Grid.Row="0" Grid.Column="0" Margin="12,0" Text="Status:"/>
-                    <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Status}"/>
-                    <TextBlock Grid.Row="1" Grid.Column="0" Margin="12,0" Text="State:"/>
-                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding State}"/>
+                    <TextBlock Grid.Row="0" Grid.Column="0" Margin="12,0" Text="Subject:"/>
+                    <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Subject}"/>
+                    <TextBlock Grid.Row="1" Grid.Column="0" Margin="12,0" Text="Description:"/>
+                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Description}"/>
                 </Grid>
             </Border>
         </DataTemplate>
-        <DataTemplate x:Key="DefaultHorizontalHeaderTemplate">
-            <Border 
-                Margin="3"
-                Background="Red"
-                CornerRadius="4">
-                <TextBlock Margin="12" Text="{Binding Caption}"/>
-            </Border>
-        </DataTemplate>
     </UserControl.Resources>
-    <Grid>
+    <ScrollViewer
+        Margin="3"
+        VerticalScrollBarVisibility="Auto"
+        HorizontalScrollBarVisibility="Disabled">
         <kanbancontrol:Kanban 
             HorizontalDimension     = "{Binding HorizontalDimension}"
             VerticalDimension       = "{Binding VerticalDimension}"
-            CardItems               = "{Binding Tickets}"
+            CardItems               = "{Binding Issues}"
             CardItemTemplate        = "{StaticResource Card}"/>
-    </Grid>
+    </ScrollViewer>    
 </UserControl>

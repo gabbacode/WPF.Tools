@@ -7,12 +7,12 @@ namespace Data.Sources.Common.Redmine
     {
         IEnumerable<Issue> GetIssues();
 
-        IEnumerable<string> GetStatuses();
+        IEnumerable<Project> GetProjects();
 
-        IEnumerable<string> GetTrackers();
+        IEnumerable<Status> GetStatuses();
 
-        IEnumerable<string> GetProjectTrackers();
+        IEnumerable<Tracker> GetTrackers();
 
-        IEnumerable<string> GetUsers();
+        IEnumerable<User> GetUsers();
     }
 }

@@ -23,10 +23,7 @@ namespace Kanban.Desktop.KanbanBoard
 
             VerticalDimension = data.VerticalDimension;
             HorizontalDimension = data.HorizontalDimension;
-            foreach (var issue in data.Issues)
-            {
-                Issues.Add(issue);
-            }
+            Issues = new ObservableCollection<Issue>(data.Issues);
         }
 
         [Reactive] public ObservableCollection<Issue> Issues { get; private set; }

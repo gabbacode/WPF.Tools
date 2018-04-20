@@ -1,8 +1,10 @@
-﻿using Data.Sources.Common.Redmine;
+﻿using AutoMapper;
+using Data.Sources.Common.Redmine;
 using Redmine.Net.Api;
 using Redmine.Net.Api.Types;
 using System.Collections.Generic;
 using System.Linq;
+using CommonRemineEntities = Data.Entities.Common.Redmine;
 
 namespace Data.Sources.Redmine
 {
@@ -10,58 +12,77 @@ namespace Data.Sources.Redmine
     {
         public RedmineRepository()
         {
-            RedmineManager = new RedmineManager(
-                "x",
-                "x",
-                "x");
+            RedmineManager = new RedmineManager("x","x","x");
+
+
+            EntityMapper = BuildMapper();
         }
 
-        public IEnumerable<Entities.Common.Redmine.Issue> GetIssues()
+        public IEnumerable<CommonRemineEntities.Issue> GetIssues()
         {
-            return RedmineManager.GetObjects<Issue>()
-                .Select(i => new Entities.Common.Redmine.Issue
+            var issues = RedmineManager.GetObjects<Issue>()
+                .Select(i => new CommonRemineEntities.Issue
                 {
-                    AssignedTo = i.AssignedTo != null
-                        ? i.AssignedTo.Name
-                        : i.Author.Name,
-                    Project = i.Project.Name,
-                    Subject = i.Subject,
+                    Id = i.Id,
+                    AssignedTo = EntityMapper.Map<CommonRemineEntities.User>(i.AssignedTo),
                     Description = i.Description,
-                    Priority = i.Priority.Name,
-                    Status = i.Status.Name,
-                    Tracker = i.Tracker.Name
+                    Priority = EntityMapper.Map<CommonRemineEntities.Priority>(i.Priority),
+                    Project = EntityMapper.Map<CommonRemineEntities.Project>(i.Project),
+                    Status = EntityMapper.Map<CommonRemineEntities.Status>(i.Status),
+                    Subject = i.Subject,
+                    Tracker = EntityMapper.Map<CommonRemineEntities.Tracker>(i.Tracker)
                 })
                 .ToArray();
+
+            return issues;
         }
 
-        public IEnumerable<string> GetStatuses()
+        public IEnumerable<CommonRemineEntities.Project> GetProjects()
+        {
+            return RedmineManager.GetObjects<Project>()
+                .Select(p => EntityMapper.Map<CommonRemineEntities.Project>(p))
+                .ToArray();
+        }
+
+        public IEnumerable<CommonRemineEntities.Status> GetStatuses()
         {
             return RedmineManager.GetObjects<IssueStatus>()
-                .Select(s => s.Name)
+                .Select(s => EntityMapper.Map<CommonRemineEntities.Status>(s))
                 .ToArray();
         }
 
-        public IEnumerable<string> GetTrackers()
+        public IEnumerable<CommonRemineEntities.Tracker> GetTrackers()
         {
             return RedmineManager.GetObjects<Tracker>()
-                .Select(s => s.Name)
+                .Select(t => EntityMapper.Map<CommonRemineEntities.Tracker>(t))
                 .ToArray();
         }
 
-        public IEnumerable<string> GetProjectTrackers()
-        {
-            return RedmineManager.GetObjects<ProjectTracker>()
-                .Select(s => s.Name)
-                .ToArray();
-        }
-
-        public IEnumerable<string> GetUsers()
+        public IEnumerable<CommonRemineEntities.User> GetUsers()
         {
             return RedmineManager.GetObjects<User>()
-                .Select(s => s.FirstName)
+                .Select(u => EntityMapper.Map<CommonRemineEntities.User>(u))
                 .ToArray();
+        }
+
+        private IMapper BuildMapper()
+        {
+            var mapConfig = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<Issue, CommonRemineEntities.Issue>();
+                cfg.CreateMap<IssuePriority, CommonRemineEntities.Priority>();
+                cfg.CreateMap<Project, CommonRemineEntities.Project>();
+                cfg.CreateMap<IssueStatus, CommonRemineEntities.Status>();
+                cfg.CreateMap<Tracker, CommonRemineEntities.Tracker>();
+                cfg.CreateMap<User, CommonRemineEntities.User>();
+                cfg.CreateMap<IdentifiableName, CommonRemineEntities.User>();
+            });
+
+            return mapConfig.CreateMapper();
         }
 
         private RedmineManager RedmineManager;
+
+        private IMapper EntityMapper;
     }
 }

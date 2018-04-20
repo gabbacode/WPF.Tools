@@ -2,15 +2,17 @@
 {
     public class Issue
     {
-        public string AssignedTo { get; set; }
+        public int Id { get; set; }
 
-        public string Project { get; set; }
+        public User AssignedTo { get; set; }
 
-        public string Status { get; set; }
+        public Project Project { get; set; }
 
-        public string Priority { get; set; }
+        public Status Status { get; set; }
 
-        public string Tracker { get; set; }
+        public Priority Priority { get; set; }
+
+        public Tracker Tracker { get; set; }
 
         public string Subject { get; set; }
 

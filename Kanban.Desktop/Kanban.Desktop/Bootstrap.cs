@@ -53,7 +53,7 @@ namespace Kanban.Desktop
         private static void ConfigureRemine(ContainerBuilder builder)
         {
             builder
-                .RegisterType<RedmineRepository>()
+                .RegisterType<DemoRedmineRepository>()
                 .As<IRedmineRepository>();
         }
     }

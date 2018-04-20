@@ -17,25 +17,37 @@ namespace Kanban.Desktop.KanbanBoard
         public KanbanConfiguration GetKanbanData()
         {
             var issues = RedmineRepository.GetIssues();
-            var statuses = RedmineRepository.GetStatuses();
-            var users = RedmineRepository.GetUsers();
+
+            var users = issues
+                .Where(i => i.AssignedTo != null)
+                .Select(i => i.AssignedTo.Name)
+                .OrderBy(n => n)
+                .Distinct()
+                .ToArray();
+
+            var statuses = issues
+                .Where(i => i.Status != null)
+                .OrderBy(i => i.Status.Id)
+                .Select(i => i.Status.Name)
+                .Distinct()
+                .ToArray();
 
             var configuration = new KanbanConfiguration
             {
                 VerticalDimension = new TagDimension<string, Issue>
                 (
-                    tags: statuses.ToArray(),
-                    getItemTags: (e) => new[] { e.AssignedTo },
+                    tags: users,
+                    getItemTags: (e) => new[] { e.AssignedTo?.Name },
                     categories : users
-                        .Select(s => new TagsDimensionCategory<string>(s, s))
-                        .Select(s => (IDimensionCategory) s)
+                        .Select(u => new TagsDimensionCategory<string>(u, u))
+                        .Select(c => (IDimensionCategory) c)
                         .ToArray()
                 ),
 
                 HorizontalDimension = new TagDimension<string, Issue>
                 (
-                    tags: statuses.ToArray(),
-                    getItemTags: (e) => new[] { e.Status },
+                    tags: statuses,
+                    getItemTags: (e) => new[] { e.Status.Name },
                     categories: statuses
                         .Select(s => new TagsDimensionCategory<string>(s, s))
                         .Select(s => (IDimensionCategory)s)
