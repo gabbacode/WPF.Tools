@@ -3,6 +3,7 @@ using Data.Sources.Common.Redmine;
 using Redmine.Net.Api;
 using Redmine.Net.Api.Types;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using CommonRemineEntities = Data.Entities.Common.Redmine;
 
@@ -12,7 +13,9 @@ namespace Data.Sources.Redmine
     {
         public RedmineRepository()
         {
-            RedmineManager = new RedmineManager("x","x","x");
+            var redmineHost = ConfigurationManager.AppSettings["RedmineConnectionString"];
+            RedmineManager = new RedmineManager(
+                redmineHost,"x","x");
 
 
             EntityMapper = BuildMapper();
