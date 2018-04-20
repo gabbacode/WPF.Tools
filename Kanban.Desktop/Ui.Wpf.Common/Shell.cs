@@ -15,7 +15,7 @@ namespace Ui.Wpf.Common
         public DockingManager DockingManager { get; private set; }
         public LayoutDocumentPane DocumentPane { get; private set; }
 
-        internal void ShowView<TView>()
+        public void ShowView<TView>()
         {
             var view = Container.Resolve<TView>();
 

@@ -118,6 +118,8 @@
     <Compile Include="KanbanBoard\KanbanBoardViewModel.cs" />
     <Compile Include="KanbanBoard\KanbanConfiguration.cs" />
     <Compile Include="KanbanBoard\KanbanConfigurationRepository.cs" />
+    <Compile Include="Login\AuthProcess.cs" />
+    <Compile Include="Login\Login.cs" />
     <Compile Include="Settings\SettingsView.xaml.cs">
       <DependentUpon>SettingsView.xaml</DependentUpon>
     </Compile>

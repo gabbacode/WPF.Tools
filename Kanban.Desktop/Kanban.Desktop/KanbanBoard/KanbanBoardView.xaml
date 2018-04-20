@@ -43,6 +43,7 @@
     </UserControl.Resources>
     <ScrollViewer
         Margin="3"
+        VerticalAlignment="Top"
         VerticalScrollBarVisibility="Auto"
         HorizontalScrollBarVisibility="Disabled">
         <kanbancontrol:Kanban 

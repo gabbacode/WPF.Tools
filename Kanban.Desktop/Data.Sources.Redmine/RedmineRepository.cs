@@ -13,12 +13,20 @@ namespace Data.Sources.Redmine
     {
         public RedmineRepository()
         {
-            var redmineHost = ConfigurationManager.AppSettings["RedmineConnectionString"];
-            RedmineManager = new RedmineManager(
-                redmineHost,"x","x");
-
-
             EntityMapper = BuildMapper();
+        }
+
+        public void InitCredentials(string username, string password)
+        {
+            var redmineHost = ConfigurationManager.AppSettings["RedmineConnectionString"];
+
+            RedmineManager = new RedmineManager(redmineHost, username, password);
+        }
+
+        public CommonRemineEntities.User GetCurrentUser()
+        {
+            var currentUser = RedmineManager.GetCurrentUser();
+            return EntityMapper.Map<CommonRemineEntities.User>(currentUser);
         }
 
         public IEnumerable<CommonRemineEntities.Issue> GetIssues()

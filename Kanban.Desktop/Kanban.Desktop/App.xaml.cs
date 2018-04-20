@@ -1,4 +1,7 @@
-﻿using Kanban.Desktop.KanbanBoard;
+﻿using Autofac;
+using Data.Sources.Common;
+using Kanban.Desktop.KanbanBoard;
+using Kanban.Desktop.Login;
 using System.Windows;
 using Ui.Wpf.Common;
 
@@ -13,8 +16,20 @@ namespace Kanban.Desktop
         {
             base.OnStartup(e);
 
-            UiStarter.Start<IDockWindow, IKanbanBoardView>(
-                new Bootstrap());
+            var shell = UiStarter.Start<IDockWindow>(new Bootstrap());
+
+            AuthProcess.Start(
+                getAutenticationData:      LoginDialog.GetAutenticationDataTask(),
+                autentification:             (x) =>
+                    {
+                        if (x == null)
+                            return false;
+
+                        var authContext = shell.Container.Resolve<IAutentificationContext>();
+                        return authContext.Login(x.Username, x.Password);
+                    },
+                autenticationSuccess:      () => shell.ShowView<IKanbanBoardView>(),
+                autenticationFail:         () => Current.MainWindow.Close());
         }
     }
 }

@@ -6,7 +6,8 @@
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:dock="http://schemas.xceed.com/wpf/xaml/avalondock"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="MainWindow"
+        WindowState="Maximized">
     <dock:DockingManager 
         Name="DockingManager"
         ActiveContentChanged="ActiveContentChanged">

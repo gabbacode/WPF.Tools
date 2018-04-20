@@ -1,5 +1,5 @@
-﻿using System;
-using Autofac;
+﻿using Autofac;
+using Data.Sources.Common;
 using Data.Sources.Common.Redmine;
 using Data.Sources.Redmine;
 using Kanban.Desktop.KanbanBoard;
@@ -25,11 +25,16 @@ namespace Kanban.Desktop
 
             builder.RegisterType<Shell>().SingleInstance();
 
+            builder
+                .RegisterType<RedmineAutentificationContext>()
+                .As<IAutentificationContext>()
+                .SingleInstance();
+
             builder.RegisterType<MainWindow>().As<IDockWindow>();
 
             ConfigureKanbanBoard(builder);
 
-            ConfigureRemine(builder);
+            ConfigureRedmine(builder);
 
             return builder.Build();
         }
@@ -50,11 +55,12 @@ namespace Kanban.Desktop
                 .As<IKanbanConfigurationRepository>();
         }
 
-        private static void ConfigureRemine(ContainerBuilder builder)
+        private static void ConfigureRedmine(ContainerBuilder builder)
         {
             builder
                 .RegisterType<DemoRedmineRepository>()
-                .As<IRedmineRepository>();
+                .As<IRedmineRepository>()
+                .SingleInstance();
         }
     }
 }

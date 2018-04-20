@@ -42,6 +42,11 @@ namespace Data.Sources.Redmine
 
         };
 
+        public User GetCurrentUser()
+        {
+            return demoUsers[0];
+        }
+
         public IEnumerable<Issue> GetIssues()
         {
             var rnd = new Random();
@@ -84,6 +89,11 @@ namespace Data.Sources.Redmine
         public IEnumerable<User> GetUsers()
         {
             return demoUsers;
+        }
+
+        public void InitCredentials(string username, string password)
+        {
+            
         }
     }
 }

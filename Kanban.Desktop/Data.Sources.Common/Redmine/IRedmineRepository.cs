@@ -5,6 +5,10 @@ namespace Data.Sources.Common.Redmine
 {
     public interface IRedmineRepository
     {
+        void InitCredentials(string username, string password);
+
+        User GetCurrentUser();
+
         IEnumerable<Issue> GetIssues();
 
         IEnumerable<Project> GetProjects();
