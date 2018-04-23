@@ -63,8 +63,6 @@ namespace Ui.Wpf.KanbanControl
             IDimension verticalDimension, 
             PropertyAccessorsExpressionCreator propertyAccessors)
         {
-
-
             if (horizontalDimension is IDynamicDimension)
             {
                 horizontalDimension.Categories = GetDimensionCategories(cardItems, horizontalDimension, propertyAccessors);
@@ -205,15 +203,15 @@ namespace Ui.Wpf.KanbanControl
 
         #region [ dependency properties ]
 
-        public System.Collections.IEnumerable CardItems
+        public IEnumerable CardItems
         {
-            get => (System.Collections.IEnumerable)GetValue(CardItemsProperty);
+            get => (IEnumerable)GetValue(CardItemsProperty);
             set => SetValue(CardItemsProperty, value);
         }
 
         public static readonly DependencyProperty CardItemsProperty =
             DependencyProperty.Register("CardItems", 
-                typeof(System.Collections.IEnumerable), 
+                typeof(IEnumerable), 
                 typeof(Kanban), 
                 new PropertyMetadata(
                     new ObservableCollection<object>(),

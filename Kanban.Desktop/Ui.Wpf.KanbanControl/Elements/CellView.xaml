@@ -9,7 +9,8 @@
     <ScrollViewer
         Margin="3"
         VerticalScrollBarVisibility="Auto"
-        HorizontalScrollBarVisibility="Disabled">
+        HorizontalScrollBarVisibility="Disabled"
+        PreviewMouseWheel="ScrollViewerPreviewMouseWheel">
         <StackPanel
             Name="ItemContainer"
             Orientation="Vertical"/>
