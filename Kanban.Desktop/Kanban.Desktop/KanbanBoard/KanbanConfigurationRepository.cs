@@ -1,10 +1,8 @@
 ﻿using Data.Entities.Common.Redmine;
 using Data.Sources.Common.Redmine;
 using Kanban.Desktop.KanbanBoard.Model;
-using System.Configuration;
-using System.IO;
+using System.Collections.Generic;
 using System.Linq;
-using System.Xml.Serialization;
 using Ui.Wpf.KanbanControl.Dimensions;
 using Ui.Wpf.KanbanControl.Dimensions.Generic;
 using Ui.Wpf.KanbanControl.Elements;
@@ -20,22 +18,25 @@ namespace Kanban.Desktop.KanbanBoard
 
         public IRedmineRepository RedmineRepository { get; }
 
-        public KanbanData GetKanbanData(string configurationName)
+        public KanbanConfiguration GetConfiguration(string configurationName)
         {
             if (string.IsNullOrEmpty(configurationName))
-                return GetDefaultConfiguration();
+                return null;
 
-            return GetStoredConfiguration(configurationName);
-
+            return KanbanConfiguration.Parse((string)Properties.Settings.Default[configurationName]);
         }
 
-        private KanbanData GetStoredConfiguration(string configurationName)
+        public KanbanData GetKanbanData(KanbanConfiguration configuration, IEnumerable<Issue> issues)
         {
-            var config = KanbanConfiguration.Parse((string)Properties.Settings.Default[configurationName]);
+            if (configuration == null)
+                return GetDefaultConfiguration(issues);
 
-            var issues = RedmineRepository.GetIssues()
-                .ToArray();
+            return GetStoredConfiguration(configuration, issues);
 
+        }
+        
+        private KanbanData GetStoredConfiguration(KanbanConfiguration config, IEnumerable<Issue> issues)
+        {
             return new KanbanData
             {
                 HorizontalDimension = new TagDimension(config.HorizontalDimension.DimensionName, config.HorizontalDimension.ValuesFilter),
@@ -45,11 +46,8 @@ namespace Kanban.Desktop.KanbanBoard
             };
         }
 
-        private KanbanData GetDefaultConfiguration()
+        private KanbanData GetDefaultConfiguration(IEnumerable<Issue> issues)
         {
-            var issues = RedmineRepository.GetIssues()
-                .ToArray();
-
             var users = issues
                 .Where(i => i.AssignedTo != null)
                 .Select(i => i.AssignedTo.Name)

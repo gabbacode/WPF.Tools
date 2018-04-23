@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Kanban.Desktop.KanbanBoard"
              xmlns:kanbancontrol="clr-namespace:Ui.Wpf.KanbanControl;assembly=Ui.Wpf.KanbanControl"
+             xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
              mc:Ignorable="d" 
              d:DataContext="IKanbanBoardViewModel"
              d:DesignHeight="300" d:DesignWidth="300">
@@ -41,15 +42,39 @@
             </Border>
         </DataTemplate>
     </UserControl.Resources>
-    <ScrollViewer
-        Margin="3"
-        VerticalAlignment="Top"
-        VerticalScrollBarVisibility="Auto"
-        HorizontalScrollBarVisibility="Disabled">
-        <kanbancontrol:Kanban 
-            HorizontalDimension     = "{Binding HorizontalDimension}"
-            VerticalDimension       = "{Binding VerticalDimension}"
-            CardItems               = "{Binding Issues}"
-            CardItemTemplate        = "{StaticResource Card}"/>
-    </ScrollViewer>    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <StackPanel
+            Grid.Row="0"
+            Orientation="Horizontal">
+            <TextBlock 
+                Margin="15"
+                Text="Project: "/>
+            <controls:SplitButton 
+                Margin="12"
+                HorizontalContentAlignment="Left"
+                VerticalContentAlignment="Center"
+                Width="220"
+                ItemsSource="{Binding Projects}"
+                SelectedItem="{Binding CurrentProject}"
+                DisplayMemberPath="Name"
+                VerticalAlignment="Center" />
+        </StackPanel>
+
+        <ScrollViewer
+            Grid.Row ="1"
+            Margin="3"
+            VerticalAlignment="Top"
+            VerticalScrollBarVisibility="Auto"
+            HorizontalScrollBarVisibility="Disabled">
+            <kanbancontrol:Kanban 
+                HorizontalDimension     = "{Binding HorizontalDimension}"
+                VerticalDimension       = "{Binding VerticalDimension}"
+                CardItems               = "{Binding Issues}"
+                CardItemTemplate        = "{StaticResource Card}"/>
+        </ScrollViewer>
+    </Grid>
 </UserControl>

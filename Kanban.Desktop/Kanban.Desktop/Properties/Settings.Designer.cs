@@ -27,7 +27,7 @@ namespace Kanban.Desktop.Properties {
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
 <KanbanConfiguration xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
-  <ProjectName>Teledata</ProjectName>
+  <ProjectId>12</ProjectId>
   <HorizontalDimension>
     <DimensionName>Status</DimensionName>
   </HorizontalDimension>

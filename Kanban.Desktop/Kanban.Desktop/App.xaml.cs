@@ -41,7 +41,7 @@ namespace Kanban.Desktop
                         shell.ShowView<IKanbanBoardView>(new KanbanShowOptions
                         {
                             Title = "Kanban dynamic dimension",
-                            ConfigutaionName = "h_status_v_assigned_c_subject_treker_details"
+                            ConfigurtaionName = "h_status_v_assigned_c_subject_treker_details"
                         });                        
                     },
                 autenticationFail:         () => Current.MainWindow.Close());

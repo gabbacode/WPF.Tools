@@ -4,6 +4,6 @@ namespace Kanban.Desktop.KanbanBoard
 {
     public class KanbanShowOptions : UiShowOptions
     {
-        public string ConfigutaionName { get; set; }
+        public string ConfigurtaionName { get; set; }
     }
 }

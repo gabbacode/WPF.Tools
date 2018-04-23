@@ -24,7 +24,7 @@ namespace Kanban.Desktop.KanbanBoard.View
             if (ViewModel is IKanbanBoardViewModel kanbanBoardViewModel
                 && options is KanbanShowOptions kanbanOptions )
             {
-                kanbanBoardViewModel.ConfigutaionName = kanbanOptions.ConfigutaionName;
+                kanbanBoardViewModel.ConfigurtaionName = kanbanOptions.ConfigurtaionName;
             }            
             
             ViewModel.Title = options.Title;

@@ -5,7 +5,7 @@ namespace Kanban.Desktop.KanbanBoard
 {
     public class KanbanConfiguration
     {
-        public string ProjectName { get; set; }
+        public int? ProjectId { get; set; }
 
         public DimensionConfiguration HorizontalDimension { get; set; }
 

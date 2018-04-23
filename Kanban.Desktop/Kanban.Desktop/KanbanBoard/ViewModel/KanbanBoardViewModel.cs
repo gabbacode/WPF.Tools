@@ -1,41 +1,89 @@
 ﻿using Data.Entities.Common.Redmine;
+using Data.Sources.Common.Redmine;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
-using System.Collections.ObjectModel;
+using System;
 using System.Threading.Tasks;
 using Ui.Wpf.KanbanControl.Dimensions;
-using Ui.Wpf.KanbanControl.Dimensions.Generic;
 
 namespace Kanban.Desktop.KanbanBoard.ViewModel
 {
 
     public class KanbanBoardViewModel : ReactiveObject, IKanbanBoardViewModel
     {
-        public KanbanBoardViewModel(IKanbanConfigurationRepository kanbanRepository)
+        public KanbanBoardViewModel(
+            IKanbanConfigurationRepository kanbanRepository,
+            IRedmineRepository redmineRepository)
         {
-            this.kanbanRepository = kanbanRepository;
-            Title = "Kanban";            
+            KanbanRepository = kanbanRepository;
+            RedmineRepository = redmineRepository;
+            Title = "Kanban";
+
+            Projects = new ReactiveList<Project>();
+            Issues = new ReactiveList<Issue>();
+
+            this.ObservableForProperty(x => x.CurrentProject)
+                .Subscribe(x =>
+                {
+                    if (CurrentConfiguration != null)
+                    {
+                        CurrentConfiguration.ProjectId = x.Value.Id;
+                    }
+
+                    Refresh();
+                });
+
+            this.ObservableForProperty(x => x.ConfigurtaionName)
+                .Subscribe(x => 
+                {
+                    CurrentConfiguration = KanbanRepository.GetConfiguration(x.Value);
+                });
+        }
+
+        private async void Refresh()
+        {
+            var issues = await Task.Run(() => RedmineRepository.GetIssues(CurrentConfiguration?.ProjectId));
+
+            var data = KanbanRepository.GetKanbanData(CurrentConfiguration, issues);
+
+            VerticalDimension = data.VerticalDimension;
+            HorizontalDimension = data.HorizontalDimension;
+
+            Issues.Clear();
+            Issues.AddRange(data.Issues);
         }
 
         public async void Initialize()
         {
-            var data = await Task.Run(() => kanbanRepository.GetKanbanData(ConfigutaionName));
+            var projects = await Task.Run(() => RedmineRepository.GetProjects());
 
-            VerticalDimension = data.VerticalDimension;
-            HorizontalDimension = data.HorizontalDimension;
-            Issues = new ObservableCollection<Issue>(data.Issues);
+            Projects.Clear();
+            foreach (var project in projects)
+            {
+                Projects.Add(project);
+            }
+
+            Refresh();
         }
         
         [Reactive] public string Title { get; set; }
-        
-        public string ConfigutaionName { get; set; }
 
-        [Reactive] public ObservableCollection<Issue> Issues { get; private set; }
+        [Reactive] public string ConfigurtaionName { get; set; }
+
+        [Reactive] public Project CurrentProject { get; set; }
+
+        [Reactive] public ReactiveList<Project> Projects { get; set; }
+
+        [Reactive] public ReactiveList<Issue> Issues { get; private set; }
 
         [Reactive] public IDimension VerticalDimension { get; private set; }
 
         [Reactive] public IDimension HorizontalDimension { get; private set; }
 
-        private readonly IKanbanConfigurationRepository kanbanRepository;
+        public KanbanConfiguration CurrentConfiguration { get; private set; }
+
+        private readonly IKanbanConfigurationRepository KanbanRepository;
+
+        private readonly IRedmineRepository RedmineRepository;
     }
 }
