@@ -63,29 +63,36 @@ namespace Ui.Wpf.KanbanControl
             IDimension verticalDimension, 
             PropertyAccessorsExpressionCreator propertyAccessors)
         {
-            if (horizontalDimension is IDynamicDimension)
+            if (horizontalDimension is IDynamicDimension dynamicHorizontalDimension)
             {
-                horizontalDimension.Categories = GetDimensionCategories(cardItems, horizontalDimension, propertyAccessors);
+                horizontalDimension.Categories = GetDimensionCategories(cardItems, dynamicHorizontalDimension, propertyAccessors);
             }
 
-            if (verticalDimension is IDynamicDimension)
+            if (verticalDimension is IDynamicDimension dynamicVerticalDimension)
             {
-                verticalDimension.Categories = GetDimensionCategories(cardItems, verticalDimension, propertyAccessors);
+                verticalDimension.Categories = GetDimensionCategories(cardItems, dynamicVerticalDimension, propertyAccessors);
             }
         }
 
         private static IList<IDimensionCategory> GetDimensionCategories(
-            IEnumerable cardItems, 
-            IDimension dimension, 
+            IEnumerable cardItems,
+            IDynamicDimension dimension, 
             PropertyAccessorsExpressionCreator propertyAccessors)
         {
             var getElementCategory = propertyAccessors.TakeGetterForProperty(dimension.FieldName);
+
+            HashSet<object> tagFilter = null;
+            if (dimension.Tags != null)
+            {
+                tagFilter = new HashSet<object>(dimension.Tags);
+            }
 
             if (getElementCategory != null)
             {
                 var categories = cardItems.Cast<object>()
                     .Select(i => getElementCategory(i))
                     .Where(i => i != null)
+                    .Where(i=> tagFilter == null || tagFilter.Contains(i.ToString()))
                     .OrderBy(i => i)
                     .Distinct()
                     .Select(i => (IDimensionCategory)new TagsDimensionCategory(i.ToString(), i))
