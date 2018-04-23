@@ -3,21 +3,11 @@ using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
-using Ui.Wpf.Common.ViewModels;
+using Ui.Wpf.KanbanControl.Dimensions;
 using Ui.Wpf.KanbanControl.Dimensions.Generic;
 
-namespace Kanban.Desktop.KanbanBoard
+namespace Kanban.Desktop.KanbanBoard.ViewModel
 {
-    public interface IKanbanBoardViewModel : IInitializibleViewModel, IViewModel
-    {
-        ObservableCollection<Issue> Issues { get; }
-
-        TagDimension<string, Issue> VerticalDimension { get; }
-
-        TagDimension<string, Issue> HorizontalDimension { get; }
-        
-        bool UseDynamicDimensionts { get; set; }
-    }
 
     public class KanbanBoardViewModel : ReactiveObject, IKanbanBoardViewModel
     {
@@ -29,7 +19,7 @@ namespace Kanban.Desktop.KanbanBoard
 
         public async void Initialize()
         {
-            var data = await Task.Run(() => kanbanRepository.GetKanbanData());
+            var data = await Task.Run(() => kanbanRepository.GetKanbanData(ConfigutaionName));
 
             VerticalDimension = data.VerticalDimension;
             HorizontalDimension = data.HorizontalDimension;
@@ -38,13 +28,13 @@ namespace Kanban.Desktop.KanbanBoard
         
         [Reactive] public string Title { get; set; }
         
-        public bool UseDynamicDimensionts { get; set; }
+        public string ConfigutaionName { get; set; }
 
         [Reactive] public ObservableCollection<Issue> Issues { get; private set; }
 
-        [Reactive] public TagDimension<string, Issue> VerticalDimension { get; private set; }
+        [Reactive] public IDimension VerticalDimension { get; private set; }
 
-        [Reactive] public TagDimension<string, Issue> HorizontalDimension { get; private set; }
+        [Reactive] public IDimension HorizontalDimension { get; private set; }
 
         private readonly IKanbanConfigurationRepository kanbanRepository;
     }

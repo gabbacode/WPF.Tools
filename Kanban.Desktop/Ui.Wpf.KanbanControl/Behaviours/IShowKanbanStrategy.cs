@@ -1,7 +1,9 @@
-﻿namespace Ui.Wpf.KanbanControl.Behaviours
+﻿using Ui.Wpf.KanbanControl.Expressions;
+
+namespace Ui.Wpf.KanbanControl.Behaviours
 {
     public interface IShowKanbanStrategy
     {
-        void AddActionsToShow(KanbanChangeObjectType changeObjectType);
+        void AddActionsToShow(KanbanChangeObjectType changeObjectType, PropertyAccessorsExpressionCreator propertyAccessors);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Ui.Wpf.KanbanControl.Dimensions;
 using Ui.Wpf.KanbanControl.Elements;
+using Ui.Wpf.KanbanControl.Expressions;
 
 namespace Ui.Wpf.KanbanControl.Behaviours
 {
@@ -9,6 +10,7 @@ namespace Ui.Wpf.KanbanControl.Behaviours
         void DispenceItems(
             ICollection<Card> cards,
             IDimension horizontalDimention,
-            IDimension verticalDimension);
+            IDimension verticalDimension,
+            PropertyAccessorsExpressionCreator propertyAccessors);
     }
 }

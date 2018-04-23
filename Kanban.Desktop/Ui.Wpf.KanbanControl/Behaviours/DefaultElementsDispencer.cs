@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Data.Odbc;
 using System.Linq;
 using Ui.Wpf.KanbanControl.Dimensions;
 using Ui.Wpf.KanbanControl.Elements;
@@ -12,13 +11,12 @@ namespace Ui.Wpf.KanbanControl.Behaviours
         public void DispenceItems(
             ICollection<Card> cards, 
             IDimension horizontalDimention,
-            IDimension verticalDimension)
+            IDimension verticalDimension,
+            PropertyAccessorsExpressionCreator propertyAccessors)
         {
             if (cards.Count == 0)
                 return;
             
-            var type = cards.First().Item.GetType();
-            propertyAccessors = new PropertyAccessorsExpressionCreator(type);
             
             foreach (var card in cards)
             {
@@ -28,7 +26,10 @@ namespace Ui.Wpf.KanbanControl.Behaviours
                 }
                 else
                 {
-                    card.HorizontalCategoryIndex = GetDimensionIndex(horizontalDimention, card.Item);
+                    card.HorizontalCategoryIndex = GetDimensionIndex(
+                        horizontalDimention, 
+                        card.Item, 
+                        propertyAccessors);
                 }
 
                 if (verticalDimension is IDimensionIndexSource verticalDimensionWithIndex)
@@ -37,12 +38,18 @@ namespace Ui.Wpf.KanbanControl.Behaviours
                 }
                 else
                 {
-                    card.VerticalCategoryIndex = GetDimensionIndex(verticalDimension, card.Item);
+                    card.VerticalCategoryIndex = GetDimensionIndex(
+                        verticalDimension, 
+                        card.Item,
+                        propertyAccessors);
                 }
             }
         }
         
-        public int GetDimensionIndex(IDimension dimension, object item)
+        public int GetDimensionIndex(
+            IDimension dimension, 
+            object item,
+            PropertyAccessorsExpressionCreator propertyAccessors)
         {
             var getter = propertyAccessors.TakeGetterForProperty(dimension.FieldName);
             var itemTag = getter(item);
@@ -61,7 +68,5 @@ namespace Ui.Wpf.KanbanControl.Behaviours
 
             return -1;
         }
-        
-        private PropertyAccessorsExpressionCreator propertyAccessors;
     }
 }

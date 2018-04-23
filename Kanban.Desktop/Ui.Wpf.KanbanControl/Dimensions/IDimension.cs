@@ -8,6 +8,6 @@ namespace Ui.Wpf.KanbanControl.Dimensions
 
         string FieldName { get; set; }
 
-        IList<IDimensionCategory> Categories { get; }
+        IList<IDimensionCategory> Categories { get; set; }
     }
 }

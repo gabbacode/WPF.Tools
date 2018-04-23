@@ -4,7 +4,7 @@ using Ui.Wpf.Common.ViewModels;
 namespace Kanban.Desktop.Settings
 {
     /// <summary>
-    /// Логика взаимодействия для SettingsView.xaml
+    /// codebehind of SettingsView.xaml
     /// </summary>
     public partial class SettingsView : ISettingsView
     {

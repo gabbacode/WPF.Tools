@@ -1,12 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using Ui.Wpf.KanbanControl.Behaviours;
 using Ui.Wpf.KanbanControl.Dimensions;
 using Ui.Wpf.KanbanControl.Elements;
+using Ui.Wpf.KanbanControl.Expressions;
 
 namespace Ui.Wpf.KanbanControl
 {
@@ -24,25 +28,75 @@ namespace Ui.Wpf.KanbanControl
 
         private void AddActionsToShow(KanbanChangeObjectType changeObjectType)
         {
-            
-            
-            
             // ugly destory and build
             // TODO beautiful transition
             // TODO store changesets and animate last little part of it with some low frequency
+
             if (HorizontalDimension == null
-                || HorizontalDimension.Categories.Count == 0
                 || VerticalDimension == null
-                || VerticalDimension.Categories.Count == 0
                 || CardItems == null)
                 return;
 
+            // TODO create only of type changed
+            propertyAccessors = new PropertyAccessorsExpressionCreator(CardItems);
+            BuildAutoCategories(CardItems, HorizontalDimension, VerticalDimension, propertyAccessors);
 
-            BuildCells();
+            if (HorizontalDimension.Categories == null
+                || HorizontalDimension.Categories.Count == 0
+                || VerticalDimension.Categories == null
+                || VerticalDimension.Categories.Count == 0)
+                return;
+
+
             BuildCards();
+            BuildCells();
             BuildHeaders();            
 
-            showKanbanStrategy.AddActionsToShow(changeObjectType);
+            showKanbanStrategy.AddActionsToShow(
+                changeObjectType, 
+                propertyAccessors);
+        }
+
+        private void BuildAutoCategories(
+            IEnumerable cardItems, 
+            IDimension horizontalDimension, 
+            IDimension verticalDimension, 
+            PropertyAccessorsExpressionCreator propertyAccessors)
+        {
+
+
+            if (horizontalDimension is IDynamicDimension)
+            {
+                horizontalDimension.Categories = GetDimensionCategories(cardItems, horizontalDimension, propertyAccessors);
+            }
+
+            if (verticalDimension is IDynamicDimension)
+            {
+                verticalDimension.Categories = GetDimensionCategories(cardItems, verticalDimension, propertyAccessors);
+            }
+        }
+
+        private static IList<IDimensionCategory> GetDimensionCategories(
+            IEnumerable cardItems, 
+            IDimension dimension, 
+            PropertyAccessorsExpressionCreator propertyAccessors)
+        {
+            var getElementCategory = propertyAccessors.TakeGetterForProperty(dimension.FieldName);
+
+            if (getElementCategory != null)
+            {
+                var categories = cardItems.Cast<object>()
+                    .Select(i => getElementCategory(i))
+                    .Where(i => i != null)
+                    .OrderBy(i => i)
+                    .Distinct()
+                    .Select(i => (IDimensionCategory)new TagsDimensionCategory(i.ToString(), i))
+                    .ToList();
+
+                return categories;
+            }
+
+            return null;
         }
 
         private void BuildCells()
@@ -135,6 +189,8 @@ namespace Ui.Wpf.KanbanControl
         //TODO dependency properties
 
         private IShowKanbanStrategy showKanbanStrategy;
+        private PropertyAccessorsExpressionCreator propertyAccessors;
+
         public IShowKanbanStrategy ShowKanbanStrategy
         {
             get => showKanbanStrategy;

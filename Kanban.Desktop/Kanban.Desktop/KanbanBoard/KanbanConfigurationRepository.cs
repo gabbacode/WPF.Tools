@@ -1,8 +1,13 @@
 ﻿using Data.Entities.Common.Redmine;
 using Data.Sources.Common.Redmine;
+using Kanban.Desktop.KanbanBoard.Model;
+using System.Configuration;
+using System.IO;
 using System.Linq;
+using System.Xml.Serialization;
 using Ui.Wpf.KanbanControl.Dimensions;
 using Ui.Wpf.KanbanControl.Dimensions.Generic;
+using Ui.Wpf.KanbanControl.Elements;
 
 namespace Kanban.Desktop.KanbanBoard
 {
@@ -15,7 +20,32 @@ namespace Kanban.Desktop.KanbanBoard
 
         public IRedmineRepository RedmineRepository { get; }
 
-        public KanbanConfiguration GetKanbanData()
+        public KanbanData GetKanbanData(string configurationName)
+        {
+            if (string.IsNullOrEmpty(configurationName))
+                return GetDefaultConfiguration();
+
+            return GetStoredConfiguration(configurationName);
+
+        }
+
+        private KanbanData GetStoredConfiguration(string configurationName)
+        {
+            var config = KanbanConfiguration.Parse((string)Properties.Settings.Default[configurationName]);
+
+            var issues = RedmineRepository.GetIssues()
+                .ToArray();
+
+            return new KanbanData
+            {
+                HorizontalDimension = new TagDimension(config.HorizontalDimension.DimensionName, config.HorizontalDimension.ValuesFilter),
+                VerticalDimension = new TagDimension(config.VerticalDimension.DimensionName, config.VerticalDimension.ValuesFilter),
+                CardElements = new CardItems(config.CardItems),
+                Issues = issues
+            };
+        }
+
+        private KanbanData GetDefaultConfiguration()
         {
             var issues = RedmineRepository.GetIssues()
                 .ToArray();
@@ -34,15 +64,15 @@ namespace Kanban.Desktop.KanbanBoard
                 .Distinct()
                 .ToArray();
 
-            var configuration = new KanbanConfiguration
+            var configuration = new KanbanData
             {
                 VerticalDimension = new TagDimension<string, Issue>
                 (
                     tags: users,
                     getItemTags: (e) => new[] { e.AssignedTo?.Name },
-                    categories : users
+                    categories: users
                         .Select(u => new TagsDimensionCategory<string>(u, u))
-                        .Select(c => (IDimensionCategory) c)
+                        .Select(c => (IDimensionCategory)c)
                         .ToArray()
                 ),
 
@@ -58,7 +88,6 @@ namespace Kanban.Desktop.KanbanBoard
 
                 Issues = issues
             };
-
             return configuration;
         }
     }

@@ -9,7 +9,7 @@ namespace Data.Sources.Common.Redmine
 
         User GetCurrentUser();
 
-        IEnumerable<Issue> GetIssues();
+        IEnumerable<Issue> GetIssues(int? projectId = null);
 
         IEnumerable<Project> GetProjects();
 

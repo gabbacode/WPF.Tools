@@ -1,13 +1,38 @@
-﻿using System.Collections.Generic;
-using Data.Entities.Common.Redmine;
-using Ui.Wpf.KanbanControl.Dimensions.Generic;
+﻿using System.IO;
+using System.Xml.Serialization;
 
 namespace Kanban.Desktop.KanbanBoard
 {
     public class KanbanConfiguration
     {
-        public TagDimension<string, Issue> VerticalDimension { get; internal set; }
-        public TagDimension<string, Issue> HorizontalDimension { get; internal set; }
-        public IEnumerable<Issue> Issues { get; internal set; }
+        public string ProjectName { get; set; }
+
+        public DimensionConfiguration HorizontalDimension { get; set; }
+
+        public DimensionConfiguration VerticalDimension { get; set; }
+
+        public string[] CardItems { get; set; }
+
+        public static KanbanConfiguration Parse(string configurationData)
+        {
+            var serializer = new XmlSerializer(typeof(KanbanConfiguration));
+            using (var r = new StringReader(configurationData))
+            {
+                return (KanbanConfiguration)serializer.Deserialize(r);
+            }
+        }
+
+        public override string ToString()
+        {
+            var serializer = new XmlSerializer(typeof(KanbanConfiguration));
+            using (var w = new StringWriter())
+            {
+                serializer.Serialize(w, this);
+
+                return w.ToString();
+            }
+
+        }
+
     }
 }

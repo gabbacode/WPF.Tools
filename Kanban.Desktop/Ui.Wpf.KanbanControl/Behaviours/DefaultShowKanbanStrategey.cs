@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using Ui.Wpf.KanbanControl.Elements;
+using Ui.Wpf.KanbanControl.Expressions;
 
 namespace Ui.Wpf.KanbanControl.Behaviours
 {
@@ -13,7 +14,9 @@ namespace Ui.Wpf.KanbanControl.Behaviours
             elementsDispenser = new DefaultElementsDispenser();
         }
 
-        public void AddActionsToShow(KanbanChangeObjectType changeObjectType)
+        public void AddActionsToShow(
+            KanbanChangeObjectType changeObjectType, 
+            PropertyAccessorsExpressionCreator propertyAccessors)
         {
             if (kanbanBoard.HorizontalDimension == null
                 || kanbanBoard.HorizontalDimension.Categories.Count == 0
@@ -31,7 +34,8 @@ namespace Ui.Wpf.KanbanControl.Behaviours
             elementsDispenser.DispenceItems(
                 kanbanBoard.Cards,
                 kanbanBoard.HorizontalDimension,
-                kanbanBoard.VerticalDimension);
+                kanbanBoard.VerticalDimension,
+                propertyAccessors);
 
             BuildGridDefenitions();
             BuildGridSpliters();

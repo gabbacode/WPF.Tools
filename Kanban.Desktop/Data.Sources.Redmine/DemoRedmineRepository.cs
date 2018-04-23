@@ -47,7 +47,7 @@ namespace Data.Sources.Redmine
             return demoUsers[0];
         }
 
-        public IEnumerable<Issue> GetIssues()
+        public IEnumerable<Issue> GetIssues(int? projectId = null)
         {
             var rnd = new Random();
 
@@ -56,17 +56,20 @@ namespace Data.Sources.Redmine
             {
                 for (int i = 0; i < 3; i++)
                 {
-                    yield return new Issue
+                    for (int j = 0; j < 2; j++)
                     {
-                        AssignedTo = user,
-                        Id = --issueId,
-                        Status = statuses[rnd.Next(statuses.Length - 1)],
-                        Description = $"description of task{issueId}",
-                        Priority = priorities[rnd.Next(priorities.Length - 1)],
-                        Project = projects[0],
-                        Subject = $"subject of task{issueId}",
-                        Tracker = trackers[rnd.Next(trackers.Length - 1)],
-                    };
+                        yield return new Issue
+                        {
+                            AssignedTo = user,
+                            Id = --issueId,
+                            Status = statuses[rnd.Next(statuses.Length - 1)],
+                            Description = $"description of task{issueId}",
+                            Priority = priorities[rnd.Next(priorities.Length - 1)],
+                            Project = projects[j],
+                            Subject = $"subject of task{issueId}",
+                            Tracker = trackers[rnd.Next(trackers.Length - 1)],
+                        };
+                    }
                 }
             }
         }

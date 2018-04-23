@@ -1,18 +1,20 @@
-﻿using Ui.Wpf.Common;
+﻿using Kanban.Desktop.KanbanBoard.ViewModel;
+using Ui.Wpf.Common;
 using Ui.Wpf.Common.ViewModels;
 
-namespace Kanban.Desktop.KanbanBoard
+namespace Kanban.Desktop.KanbanBoard.View
 {
     /// <summary>
     /// codebehind for KanbanBoardView.xaml
     /// </summary>
-    public partial class KanbanBoardView : IKanbanBoardView, IInitializibleViewModel
+    public partial class KanbanBoardView : IKanbanBoardView
     {
         public KanbanBoardView(IKanbanBoardViewModel kanbanBoardViewModel)
         {
             InitializeComponent();
 
             ViewModel = kanbanBoardViewModel;
+            DataContext = ViewModel;
         }
 
         public IViewModel ViewModel { get; set; }
@@ -22,17 +24,11 @@ namespace Kanban.Desktop.KanbanBoard
             if (ViewModel is IKanbanBoardViewModel kanbanBoardViewModel
                 && options is KanbanShowOptions kanbanOptions )
             {
-                kanbanBoardViewModel.UseDynamicDimensionts = kanbanOptions.UseDynamicDimensionts;
+                kanbanBoardViewModel.ConfigutaionName = kanbanOptions.ConfigutaionName;
             }            
             
             ViewModel.Title = options.Title;
             
-        }
-
-        public void Initialize()
-        {
-            (ViewModel as IKanbanBoardViewModel)?.Initialize();
-            DataContext = ViewModel;
         }
     }
 }

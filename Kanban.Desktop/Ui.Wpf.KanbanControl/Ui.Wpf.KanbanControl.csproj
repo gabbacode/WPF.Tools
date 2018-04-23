@@ -59,9 +59,11 @@
     <Compile Include="Dimensions\IDimensionCategory.cs" />
     <Compile Include="Behaviours\IElementsDispenser.cs" />
     <Compile Include="Dimensions\IDimensionIndexSource.cs" />
+    <Compile Include="Dimensions\IDynamicDimension.cs" />
     <Compile Include="Dimensions\TagDimension.cs" />
     <Compile Include="Dimensions\TagsDimensionCategory.cs" />
     <Compile Include="Elements\Card.cs" />
+    <Compile Include="Elements\CardItems.cs" />
     <Compile Include="Elements\CardView.xaml.cs">
       <DependentUpon>CardView.xaml</DependentUpon>
     </Compile>
@@ -74,6 +76,7 @@
     <Compile Include="Elements\HorizontalCategoryHeaderView.xaml.cs">
       <DependentUpon>HorizontalCategoryHeaderView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Elements\ICardItems.cs" />
     <Compile Include="Elements\IKanbanBoardView.cs" />
     <Compile Include="Behaviours\IShowKanbanStrategy.cs" />
     <Compile Include="Expressions\PropertyAccessorsExpressionCreator.cs" />

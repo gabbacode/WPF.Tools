@@ -5,6 +5,7 @@ using Kanban.Desktop.Login;
 using System.Windows;
 using Kanban.Desktop.Settings;
 using Ui.Wpf.Common;
+using Kanban.Desktop.KanbanBoard.View;
 
 namespace Kanban.Desktop
 {
@@ -40,7 +41,7 @@ namespace Kanban.Desktop
                         shell.ShowView<IKanbanBoardView>(new KanbanShowOptions
                         {
                             Title = "Kanban dynamic dimension",
-                            UseDynamicDimensionts = true
+                            ConfigutaionName = "h_status_v_assigned_c_subject_treker_details"
                         });                        
                     },
                 autenticationFail:         () => Current.MainWindow.Close());

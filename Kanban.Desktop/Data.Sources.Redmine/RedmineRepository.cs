@@ -3,6 +3,7 @@ using Data.Sources.Common.Redmine;
 using Redmine.Net.Api;
 using Redmine.Net.Api.Types;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Configuration;
 using System.Linq;
 using CommonRemineEntities = Data.Entities.Common.Redmine;
@@ -29,9 +30,13 @@ namespace Data.Sources.Redmine
             return EntityMapper.Map<CommonRemineEntities.User>(currentUser);
         }
 
-        public IEnumerable<CommonRemineEntities.Issue> GetIssues()
+        public IEnumerable<CommonRemineEntities.Issue> GetIssues(int? projectId = null)
         {
-            var issues = RedmineManager.GetObjects<Issue>()
+            var parameters = new NameValueCollection();
+            if (projectId.HasValue)
+                parameters.Add(RedmineKeys.PROJECT_ID, projectId.ToString());
+
+            var issues = RedmineManager.GetObjects<Issue>(parameters)
                 .Select(i => new CommonRemineEntities.Issue
                 {
                     Id = i.Id,

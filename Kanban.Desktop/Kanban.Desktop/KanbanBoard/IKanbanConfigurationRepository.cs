@@ -1,7 +1,9 @@
-﻿namespace Kanban.Desktop.KanbanBoard
+﻿using Kanban.Desktop.KanbanBoard.Model;
+
+namespace Kanban.Desktop.KanbanBoard
 {
     public interface IKanbanConfigurationRepository
     {
-        KanbanConfiguration GetKanbanData();
+        KanbanData GetKanbanData(string configurationName);
     }
 }

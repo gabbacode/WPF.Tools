@@ -3,6 +3,7 @@ using System.Windows;
 using Autofac;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
+using Ui.Wpf.Common.ViewModels;
 using Xceed.Wpf.AvalonDock;
 using Xceed.Wpf.AvalonDock.Layout;
 
@@ -20,6 +21,9 @@ namespace Ui.Wpf.Common
             var view = Container.Resolve<TView>();
             if (options != null)
                 view.Configure(options);
+
+            (view.ViewModel as IInitializableViewModel)?.Initialize();
+
 
             var layoutDocument = new LayoutDocument();
             layoutDocument.Content = view;

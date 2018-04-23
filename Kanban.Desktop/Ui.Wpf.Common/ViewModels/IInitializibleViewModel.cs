@@ -1,6 +1,6 @@
 ﻿namespace Ui.Wpf.Common.ViewModels
 {
-    public interface IInitializibleViewModel
+    public interface IInitializableViewModel
     {
         void Initialize();
     }

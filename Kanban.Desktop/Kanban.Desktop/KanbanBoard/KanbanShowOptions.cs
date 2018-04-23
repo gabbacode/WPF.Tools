@@ -4,6 +4,6 @@ namespace Kanban.Desktop.KanbanBoard
 {
     public class KanbanShowOptions : UiShowOptions
     {
-        public bool UseDynamicDimensionts { get; set; }
+        public string ConfigutaionName { get; set; }
     }
 }

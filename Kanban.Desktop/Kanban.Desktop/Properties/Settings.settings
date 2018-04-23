@@ -1,7 +1,23 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="uri:settings" CurrentProfile="(Default)">
-  <Profiles>
-    <Profile Name="(Default)" />
-  </Profiles>
-  <Settings />
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Kanban.Desktop.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="h_status_v_assigned_c_subject_treker_details" Type="System.String" Scope="User">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;KanbanConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;ProjectName&gt;Teledata&lt;/ProjectName&gt;
+  &lt;HorizontalDimension&gt;
+    &lt;DimensionName&gt;Status&lt;/DimensionName&gt;
+  &lt;/HorizontalDimension&gt;
+  &lt;VerticalDimension&gt;
+    &lt;DimensionName&gt;AssignedTo&lt;/DimensionName&gt;
+  &lt;/VerticalDimension&gt;
+  &lt;CardItems&gt;
+    &lt;string&gt;Subject&lt;/string&gt;
+    &lt;string&gt;Treker&lt;/string&gt;
+    &lt;string&gt;Details&lt;/string&gt;
+  &lt;/CardItems&gt;
+&lt;/KanbanConfiguration&gt;</Value>
+    </Setting>
+  </Settings>
 </SettingsFile>

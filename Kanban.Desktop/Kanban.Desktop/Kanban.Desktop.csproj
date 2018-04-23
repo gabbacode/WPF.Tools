@@ -110,24 +110,28 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Bootstrap.cs" />
-    <Compile Include="KanbanBoard\IKanbanBoardView.cs" />
+    <Compile Include="KanbanBoard\DimensionConfiguration.cs" />
+    <Compile Include="KanbanBoard\KanbanConfiguration.cs" />
+    <Compile Include="KanbanBoard\ViewModel\IKanbanBoardViewModel.cs" />
+    <Compile Include="KanbanBoard\View\IKanbanBoardView.cs" />
     <Compile Include="KanbanBoard\IKanbanConfigurationRepository.cs" />
-    <Compile Include="KanbanBoard\KanbanBoardView.xaml.cs">
+    <Compile Include="KanbanBoard\View\KanbanBoardView.xaml.cs">
       <DependentUpon>KanbanBoardView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="KanbanBoard\KanbanBoardViewModel.cs" />
-    <Compile Include="KanbanBoard\KanbanConfiguration.cs" />
+    <Compile Include="KanbanBoard\ViewModel\KanbanBoardViewModel.cs" />
     <Compile Include="KanbanBoard\KanbanConfigurationRepository.cs" />
+    <Compile Include="KanbanBoard\Model\KanbanData.cs" />
     <Compile Include="KanbanBoard\KanbanShowOptions.cs" />
     <Compile Include="Login\AuthProcess.cs" />
     <Compile Include="Login\Login.cs" />
+    <Compile Include="Settings.cs" />
     <Compile Include="Settings\ISettingsView.cs" />
     <Compile Include="Settings\ISettingsViewModel.cs" />
     <Compile Include="Settings\SettingsView.xaml.cs">
       <DependentUpon>SettingsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Settings\SettingsViewModel.cs" />
-    <Page Include="KanbanBoard\KanbanBoardView.xaml">
+    <Page Include="KanbanBoard\View\KanbanBoardView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -155,13 +159,13 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="FodyWeavers.xml" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
+      <Generator>PublicSettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>

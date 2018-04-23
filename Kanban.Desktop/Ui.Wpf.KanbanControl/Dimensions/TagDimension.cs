@@ -1,10 +1,20 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 
 namespace Ui.Wpf.KanbanControl.Dimensions
 {
-    public class TagDimension : BaseDimension
+    public class TagDimension : BaseDimension, IDynamicDimension
     {
+        public TagDimension(string fieldName)
+        {
+            FieldName = fieldName;
+        }
+
+        public TagDimension(string fieldName, string[] avalibleTags)
+        {
+            FieldName = fieldName;
+            Tags = avalibleTags;
+        }
+
         public TagDimension(
             object[] tags,
             IList<IDimensionCategory> categories)

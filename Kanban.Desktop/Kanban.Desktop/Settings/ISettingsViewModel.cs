@@ -2,7 +2,7 @@
 
 namespace Kanban.Desktop.Settings
 {
-    public interface ISettingsViewModel : IInitializibleViewModel, IViewModel
+    public interface ISettingsViewModel : IInitializableViewModel, IViewModel
     {
     }
 }
