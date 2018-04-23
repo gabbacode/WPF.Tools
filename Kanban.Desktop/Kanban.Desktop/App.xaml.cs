@@ -3,6 +3,7 @@ using Data.Sources.Common;
 using Kanban.Desktop.KanbanBoard;
 using Kanban.Desktop.Login;
 using System.Windows;
+using Kanban.Desktop.Settings;
 using Ui.Wpf.Common;
 
 namespace Kanban.Desktop
@@ -17,6 +18,7 @@ namespace Kanban.Desktop
             base.OnStartup(e);
 
             var shell = UiStarter.Start<IDockWindow>(new Bootstrap());
+            shell.Title = "Kanban.Desktop";
 
             AuthProcess.Start(
                 getAutenticationData:      LoginDialog.GetAutenticationDataTask(),
@@ -28,7 +30,19 @@ namespace Kanban.Desktop
                         var authContext = shell.Container.Resolve<IAutentificationContext>();
                         return authContext.Login(x.Username, x.Password);
                     },
-                autenticationSuccess:      () => shell.ShowView<IKanbanBoardView>(),
+                autenticationSuccess:      () =>
+                    {
+                        shell.ShowView<ISettingsView>(new UiShowOptions
+                        {
+                            Title = "Settings"                            
+                        });
+                        shell.ShowView<IKanbanBoardView>();
+                        shell.ShowView<IKanbanBoardView>(new KanbanShowOptions
+                        {
+                            Title = "Kanban dynamic dimension",
+                            UseDynamicDimensionts = true
+                        });                        
+                    },
                 autenticationFail:         () => Current.MainWindow.Close());
         }
     }

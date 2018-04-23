@@ -9,16 +9,16 @@ namespace Ui.Wpf.KanbanControl.Behaviours
     {
         public DefaultShowKanbanStrategey(IKanbanBoard kanbanBoard)
         {
-            KanbanBoard = kanbanBoard;
+            this.kanbanBoard = kanbanBoard;
             elementsDispenser = new DefaultElementsDispenser();
         }
 
         public void AddActionsToShow(KanbanChangeObjectType changeObjectType)
         {
-            if (KanbanBoard.HorizontalDimension == null
-                || KanbanBoard.HorizontalDimension.Categories.Count == 0
-                || KanbanBoard.VerticalDimension == null
-                || KanbanBoard.VerticalDimension.Categories.Count == 0)
+            if (kanbanBoard.HorizontalDimension == null
+                || kanbanBoard.HorizontalDimension.Categories.Count == 0
+                || kanbanBoard.VerticalDimension == null
+                || kanbanBoard.VerticalDimension.Categories.Count == 0)
                 return;
 
             RemoveItems();
@@ -29,9 +29,9 @@ namespace Ui.Wpf.KanbanControl.Behaviours
             ClearDefinitions();
 
             elementsDispenser.DispenceItems(
-                KanbanBoard.Cards,
-                KanbanBoard.HorizontalDimension,
-                KanbanBoard.VerticalDimension);
+                kanbanBoard.Cards,
+                kanbanBoard.HorizontalDimension,
+                kanbanBoard.VerticalDimension);
 
             BuildGridDefenitions();
             BuildGridSpliters();
@@ -41,26 +41,26 @@ namespace Ui.Wpf.KanbanControl.Behaviours
             PlaceItems();
 
             //TODO rewrite
-            KanbanBoard.KanbanGrid.Height = KanbanBoard.VerticalDimension.Categories.Count * 250;
+            kanbanBoard.KanbanGrid.Height = kanbanBoard.VerticalDimension.Categories.Count * 250;
         }
 
 
         private void BuildGridSpliters()
         {
-            if (KanbanBoard.VerticalDimension.Categories.Count == 0
-                || KanbanBoard.HorizontalDimension.Categories.Count == 0)
+            if (kanbanBoard.VerticalDimension.Categories.Count == 0
+                || kanbanBoard.HorizontalDimension.Categories.Count == 0)
                 return;
 
-            for (int i = 0; i < KanbanBoard.VerticalDimension.Categories.Count - 1; i++)
+            for (int i = 0; i < kanbanBoard.VerticalDimension.Categories.Count - 1; i++)
             {
-                KanbanBoard.KanbanGrid.Children.Add(
-                    BuildHorizontalSpliter(i, KanbanBoard.HorizontalDimension.Categories.Count));
+                kanbanBoard.KanbanGrid.Children.Add(
+                    BuildHorizontalSpliter(i, kanbanBoard.HorizontalDimension.Categories.Count));
             }
 
-            for (int i = 0; i < KanbanBoard.HorizontalDimension.Categories.Count - 1; i++)
+            for (int i = 0; i < kanbanBoard.HorizontalDimension.Categories.Count - 1; i++)
             {
-                KanbanBoard.KanbanGrid.Children.Add(
-                    BuildVerticalSpliter(i, KanbanBoard.VerticalDimension.Categories.Count));
+                kanbanBoard.KanbanGrid.Children.Add(
+                    BuildVerticalSpliter(i, kanbanBoard.VerticalDimension.Categories.Count));
             }
         }
 
@@ -69,8 +69,8 @@ namespace Ui.Wpf.KanbanControl.Behaviours
             var newSpliter = new GridSplitter
             {
                 ResizeDirection = GridResizeDirection.Columns,
-                Width = KanbanBoard.SpliterWidth,
-                Background = KanbanBoard.SpliterBackground,
+                Width = kanbanBoard.SpliterWidth,
+                Background = kanbanBoard.SpliterBackground,
             };
 
             Grid.SetRow(newSpliter, 0);
@@ -85,8 +85,8 @@ namespace Ui.Wpf.KanbanControl.Behaviours
             var newSpliter = new GridSplitter
             {
                 ResizeDirection = GridResizeDirection.Rows,
-                Height = KanbanBoard.SpliterWidth,
-                Background = KanbanBoard.SpliterBackground,
+                Height = kanbanBoard.SpliterWidth,
+                Background = kanbanBoard.SpliterBackground,
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Bottom
             };
@@ -101,133 +101,133 @@ namespace Ui.Wpf.KanbanControl.Behaviours
         private void BuildGridDefenitions()
         {
             // header
-            KanbanBoard.KanbanGrid.ColumnDefinitions.Add(new ColumnDefinition()
+            kanbanBoard.KanbanGrid.ColumnDefinitions.Add(new ColumnDefinition()
             {
                 Width = GridLength.Auto
             });
             
-            foreach (var hCategory in KanbanBoard.HorizontalDimension.Categories)
+            foreach (var hCategory in kanbanBoard.HorizontalDimension.Categories)
             {
-                KanbanBoard.KanbanGrid.ColumnDefinitions.Add(new ColumnDefinition());
+                kanbanBoard.KanbanGrid.ColumnDefinitions.Add(new ColumnDefinition());
             }
 
             // header
-            KanbanBoard.KanbanGrid.RowDefinitions.Add(new RowDefinition()
+            kanbanBoard.KanbanGrid.RowDefinitions.Add(new RowDefinition()
             {
                 Height = GridLength.Auto
             });
-            foreach (var vCategory in KanbanBoard.VerticalDimension.Categories)
+            foreach (var vCategory in kanbanBoard.VerticalDimension.Categories)
             {
-                KanbanBoard.KanbanGrid.RowDefinitions.Add(new RowDefinition());
+                kanbanBoard.KanbanGrid.RowDefinitions.Add(new RowDefinition());
             }
         }
 
         private void ClearDefinitions()
         {
-            KanbanBoard.KanbanGrid.RowDefinitions.Clear();
-            KanbanBoard.KanbanGrid.ColumnDefinitions.Clear();
+            kanbanBoard.KanbanGrid.RowDefinitions.Clear();
+            kanbanBoard.KanbanGrid.ColumnDefinitions.Clear();
         }
 
         private void ClearSplitters()
         {
-            var itemsToRemove = KanbanBoard.KanbanGrid.Children
+            var itemsToRemove = kanbanBoard.KanbanGrid.Children
                 .OfType<GridSplitter>()
                 .ToArray();
 
             foreach (var itemToRemove in itemsToRemove)
             {
-                KanbanBoard.KanbanGrid.Children.Remove(itemToRemove);
+                kanbanBoard.KanbanGrid.Children.Remove(itemToRemove);
             }
         }
 
         private void RemoveHeaders()
         {
-            var itemsToRemove = KanbanBoard.KanbanGrid.Children
+            var itemsToRemove = kanbanBoard.KanbanGrid.Children
                 .OfType<HeaderView>()
                 .ToArray();
 
             foreach (var itemToRemove in itemsToRemove)
             {
-                KanbanBoard.KanbanGrid.Children.Remove(itemToRemove);
+                kanbanBoard.KanbanGrid.Children.Remove(itemToRemove);
             }
         }
         
         private void PlaceHeaders()
         {
-            for (int i = 0; i < KanbanBoard.HorizontalDimension.Categories.Count; i++)
+            for (int i = 0; i < kanbanBoard.HorizontalDimension.Categories.Count; i++)
             {
-                var head = KanbanBoard.HorizontalHeaders[i].View;
+                var head = kanbanBoard.HorizontalHeaders[i].View;
                 Grid.SetColumn(head, i + HeaderCellCount);
                 Grid.SetRow(head, 0);
                 
-                KanbanBoard.KanbanGrid.Children.Add(head);
+                kanbanBoard.KanbanGrid.Children.Add(head);
             }
 
-            for (int j = 0; j < KanbanBoard.VerticalDimension.Categories.Count; j++)
+            for (int j = 0; j < kanbanBoard.VerticalDimension.Categories.Count; j++)
             {
-                var head = KanbanBoard.VerticalHeaders[j].View;
+                var head = kanbanBoard.VerticalHeaders[j].View;
                 Grid.SetColumn(head, 0);
                 Grid.SetRow(head, j + HeaderCellCount);
                 
-                KanbanBoard.KanbanGrid.Children.Add(head);
+                kanbanBoard.KanbanGrid.Children.Add(head);
             }
             
         }
         
         private void PlaceCells()
         {
-            for (int i = 0; i < KanbanBoard.HorizontalDimension.Categories.Count; i++)
+            for (int i = 0; i < kanbanBoard.HorizontalDimension.Categories.Count; i++)
             {
-                for (int j = 0; j < KanbanBoard.VerticalDimension.Categories.Count; j++)
+                for (int j = 0; j < kanbanBoard.VerticalDimension.Categories.Count; j++)
                 {
-                    var cell = KanbanBoard.Cells[i, j].View;
+                    var cell = kanbanBoard.Cells[i, j].View;
 
                     Grid.SetColumn(cell, i + HeaderCellCount);
                     Grid.SetRow(cell, j + HeaderCellCount);
 
-                    KanbanBoard.KanbanGrid.Children.Add(cell);
+                    kanbanBoard.KanbanGrid.Children.Add(cell);
                 }
             }
         }
 
         private void PlaceItems()
         {
-            foreach (var card in KanbanBoard.Cards)
+            foreach (var card in kanbanBoard.Cards)
             {
                 if (card.HorizontalCategoryIndex < 0
                     || card.VerticalCategoryIndex < 0)
                     continue;
                 
-                KanbanBoard.Cells[card.HorizontalCategoryIndex, card.VerticalCategoryIndex].View.ItemContainer.Children.Add(card.View);
+                kanbanBoard.Cells[card.HorizontalCategoryIndex, card.VerticalCategoryIndex].View.ItemContainer.Children.Add(card.View);
             }
         }
 
         private void RemoveItems()
         {
-            for (int i = 0; i < KanbanBoard.HorizontalDimension.Categories.Count; i++)
+            for (int i = 0; i < kanbanBoard.HorizontalDimension.Categories.Count; i++)
             {
-                for (int j = 0; j < KanbanBoard.VerticalDimension.Categories.Count; j++)
+                for (int j = 0; j < kanbanBoard.VerticalDimension.Categories.Count; j++)
                 {
-                    KanbanBoard.Cells[i, j].View.ItemContainer.Children.Clear();
+                    kanbanBoard.Cells[i, j].View.ItemContainer.Children.Clear();
                 }
             }
         }
 
         private void RemoveCells()
         {
-            var toRemoveItems = KanbanBoard.KanbanGrid.Children
+            var toRemoveItems = kanbanBoard.KanbanGrid.Children
                 .OfType<CellView>()
                 .ToArray();
 
             foreach (var toRemove in toRemoveItems)
             {
-                KanbanBoard.KanbanGrid.Children.Remove(toRemove);
+                kanbanBoard.KanbanGrid.Children.Remove(toRemove);
             }
         }
 
         private const int HeaderCellCount = 1;
-        
-        private IKanbanBoard KanbanBoard { get; }
+
+        private readonly IKanbanBoard kanbanBoard;
 
         private readonly DefaultElementsDispenser elementsDispenser;
     }

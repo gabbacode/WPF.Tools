@@ -2,23 +2,23 @@
 
 namespace Ui.Wpf.KanbanControl.Dimensions
 {
-    public class TagsDimensionCategory<TTag> : BaseDimensionCategory
+    public class TagsDimensionCategory : BaseDimensionCategory
     {
         public TagsDimensionCategory()
         {
         }
 
-        public TagsDimensionCategory(string caption, TTag tag)
+        public TagsDimensionCategory(string caption, object tag)
         {
             Caption = caption;
-            Tags = new HashSet<TTag> { tag };
+            Tags = new HashSet<object> { tag };
         }
 
-        public TagsDimensionCategory(IEnumerable<TTag> tags)
+        public TagsDimensionCategory(IEnumerable<object> tags)
         {
-            Tags = new HashSet<TTag>(tags);
+            Tags = new HashSet<object>(tags);
         }
 
-        public HashSet<TTag> Tags { get; private set; }
+        public HashSet<object> Tags { get; private set; }
     }
 }

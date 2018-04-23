@@ -1,12 +1,11 @@
 ﻿using System;
-using MahApps.Metro.Controls;
 
 namespace Ui.Wpf.Common
 {
     /// <summary>
     /// codebehind for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : MetroWindow, IDockWindow
+    public partial class MainWindow : IDockWindow
     {
         public MainWindow(Shell shell)
         {
@@ -14,7 +13,7 @@ namespace Ui.Wpf.Common
             InitializeComponent();
         }
 
-        public Shell Shell { get; }
+        private Shell Shell { get; }
 
         protected override void OnInitialized(EventArgs e)
         {

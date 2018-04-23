@@ -1,6 +1,8 @@
-﻿namespace Kanban.Desktop.KanbanBoard
+﻿using Ui.Wpf.Common;
+
+namespace Kanban.Desktop.KanbanBoard
 {
-    public interface IKanbanBoardView
+    public interface IKanbanBoardView : IView
     {
 
     }

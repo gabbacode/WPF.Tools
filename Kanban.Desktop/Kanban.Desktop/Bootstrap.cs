@@ -3,6 +3,7 @@ using Data.Sources.Common;
 using Data.Sources.Common.Redmine;
 using Data.Sources.Redmine;
 using Kanban.Desktop.KanbanBoard;
+using Kanban.Desktop.Settings;
 using Ui.Wpf.Common;
 
 namespace Kanban.Desktop
@@ -34,6 +35,8 @@ namespace Kanban.Desktop
 
             ConfigureKanbanBoard(builder);
 
+            ConfigureSettings(builder);
+
             ConfigureRedmine(builder);
 
             return builder.Build();
@@ -53,6 +56,17 @@ namespace Kanban.Desktop
             builder
                 .RegisterType<KanbanConfigurationRepository>()
                 .As<IKanbanConfigurationRepository>();
+        }
+
+        private static void ConfigureSettings(ContainerBuilder builder)
+        {
+            builder
+                .RegisterType<SettingsViewModel>()
+                .As<ISettingsViewModel>();
+
+            builder
+                .RegisterType<SettingsView>()
+                .As<ISettingsView>();
         }
 
         private static void ConfigureRedmine(ContainerBuilder builder)

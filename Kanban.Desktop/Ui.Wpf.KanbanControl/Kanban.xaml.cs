@@ -24,13 +24,17 @@ namespace Ui.Wpf.KanbanControl
 
         private void AddActionsToShow(KanbanChangeObjectType changeObjectType)
         {
+            
+            
+            
             // ugly destory and build
             // TODO beautiful transition
             // TODO store changesets and animate last little part of it with some low frequency
             if (HorizontalDimension == null
                 || HorizontalDimension.Categories.Count == 0
                 || VerticalDimension == null
-                || VerticalDimension.Categories.Count == 0)
+                || VerticalDimension.Categories.Count == 0
+                || CardItems == null)
                 return;
 
 

@@ -6,8 +6,8 @@ namespace Ui.Wpf.KanbanControl.Dimensions
     {
         string Caption { get; set; }
 
-        IList<IDimensionCategory> Categories { get; }
+        string FieldName { get; set; }
 
-        int GetDimensionIndex(object item);
+        IList<IDimensionCategory> Categories { get; }
     }
 }

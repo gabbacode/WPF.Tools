@@ -2,6 +2,7 @@
 using Data.Sources.Common.Redmine;
 using System.Linq;
 using Ui.Wpf.KanbanControl.Dimensions;
+using Ui.Wpf.KanbanControl.Dimensions.Generic;
 
 namespace Kanban.Desktop.KanbanBoard
 {
@@ -16,7 +17,8 @@ namespace Kanban.Desktop.KanbanBoard
 
         public KanbanConfiguration GetKanbanData()
         {
-            var issues = RedmineRepository.GetIssues();
+            var issues = RedmineRepository.GetIssues()
+                .ToArray();
 
             var users = issues
                 .Where(i => i.AssignedTo != null)

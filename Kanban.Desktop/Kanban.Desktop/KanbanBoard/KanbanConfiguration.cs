@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using Data.Entities.Common.Redmine;
-using Ui.Wpf.KanbanControl.Dimensions;
+using Ui.Wpf.KanbanControl.Dimensions.Generic;
 
-namespace Kanban.Desktop
+namespace Kanban.Desktop.KanbanBoard
 {
     public class KanbanConfiguration
     {

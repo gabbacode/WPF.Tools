@@ -2,7 +2,8 @@
 {
     public static class UiStarter
     {
-        public static Shell Start<TStartWindow>(IBootstraper bootstraper, UiStartOptions options = null)
+        public static Shell Start<TStartWindow>(IBootstraper bootstraper, UiShowOptions options = null)
+            where TStartWindow : class 
         {
             var shell = bootstraper.Init();
 
@@ -11,7 +12,9 @@
             return shell;
         }
 
-        public static Shell Start<TStartWindow, TStartView>(IBootstraper bootstraper, UiStartOptions options = null)
+        public static Shell Start<TStartWindow, TStartView>(IBootstraper bootstraper, UiShowOptions options = null)
+            where TStartWindow : class
+            where TStartView : class, IView
         {
             var shell = bootstraper.Init();
 
