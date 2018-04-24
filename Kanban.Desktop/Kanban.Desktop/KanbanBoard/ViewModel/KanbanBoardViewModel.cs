@@ -4,6 +4,7 @@ using Kanban.Desktop.KanbanBoard.Model;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Ui.Wpf.KanbanControl.Dimensions;
 using Ui.Wpf.KanbanControl.Elements;
@@ -64,6 +65,12 @@ namespace Kanban.Desktop.KanbanBoard.ViewModel
             foreach (var project in projects)
             {
                 Projects.Add(project);
+            }
+
+            if (CurrentConfiguration != null
+                && CurrentConfiguration.ProjectId.HasValue)
+            {
+                CurrentProject = Projects.FirstOrDefault(x => x.Id == CurrentConfiguration.ProjectId);
             }
 
             Refresh();
