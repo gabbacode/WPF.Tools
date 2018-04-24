@@ -33,11 +33,10 @@
                 FontSize="14"
                 FontWeight="Bold"
                 VerticalAlignment="Center"
-                RenderTransformOrigin="0.5,0.5"
                 Text="{Binding Caption}">
-                <TextBlock.RenderTransform>
+                <TextBlock.LayoutTransform>
                     <RotateTransform Angle="270"/>
-                </TextBlock.RenderTransform>
+                </TextBlock.LayoutTransform>
             </TextBlock>
         </Border>
     </DataTemplate>

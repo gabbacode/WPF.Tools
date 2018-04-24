@@ -111,7 +111,6 @@ namespace Ui.Wpf.KanbanControl.Behaviours
             {
                 Width = GridLength.Auto
             });
-            
             foreach (var hCategory in kanbanBoard.HorizontalDimension.Categories)
             {
                 kanbanBoard.KanbanGrid.ColumnDefinitions.Add(new ColumnDefinition());
