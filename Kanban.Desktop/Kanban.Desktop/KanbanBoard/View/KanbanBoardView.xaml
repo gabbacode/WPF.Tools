@@ -60,6 +60,15 @@
                 DisplayMemberPath="Name"
                 VerticalAlignment="Center" />
         </StackPanel>
+        <StackPanel
+            Grid.Row="0"
+            HorizontalAlignment="Right"
+            Margin="12">
+            <Button 
+                Name="PrintButton"
+                Command="{Binding ElementName=Kanban, Path=PrintCommand}"
+                Content="Print"/>
+        </StackPanel>
 
         <ScrollViewer
             Grid.Row ="1"
@@ -68,6 +77,7 @@
             VerticalScrollBarVisibility="Auto"
             HorizontalScrollBarVisibility="Disabled">
             <kanbancontrol:Kanban 
+                Name="Kanban"
                 HorizontalDimension     = "{Binding HorizontalDimension}"
                 VerticalDimension       = "{Binding VerticalDimension}"
                 Cards                   = "{Binding Issues}"

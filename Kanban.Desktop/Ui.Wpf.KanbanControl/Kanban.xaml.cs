@@ -5,8 +5,10 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using Ui.Wpf.KanbanControl.Behaviours;
+using Ui.Wpf.KanbanControl.Common;
 using Ui.Wpf.KanbanControl.Dimensions;
 using Ui.Wpf.KanbanControl.Elements;
 using Ui.Wpf.KanbanControl.Expressions;
@@ -22,6 +24,7 @@ namespace Ui.Wpf.KanbanControl
         {
             showKanbanStrategy = new DefaultShowKanbanStrategey(this);
             InitializeComponent();
+            BuildCommands();
         }
 
         private void AddActionsToShow(KanbanChangeObjectType changeObjectType)
@@ -182,6 +185,19 @@ namespace Ui.Wpf.KanbanControl
                 head.Content = VerticalDimension.Categories[j];
                 verticalHeaders.Add(new Header(head));
             }
+        }
+
+        private void BuildCommands()
+        {
+            PrintCommand = new DelegateCommand((o) =>
+            {
+                var printDialog = new PrintDialog();
+                var result = printDialog.ShowDialog();
+                if (result.HasValue && result.Value)
+                {
+                    printDialog.PrintVisual(this, "");
+                }
+            });
         }
 
         #region [ IKanbanBoard ]
@@ -383,7 +399,19 @@ namespace Ui.Wpf.KanbanControl
                 typeof(Kanban), 
                 new PropertyMetadata(
                     defaultTemplates["DefaulVerticalHeaderTemplate"]));
-        
+
+        public ICommand PrintCommand
+        {
+            get { return (ICommand)GetValue(PrintCommandProperty); }
+            private set { SetValue(PrintCommandProperty, value); }
+        }
+
+        public static readonly DependencyProperty PrintCommandProperty =
+            DependencyProperty.Register("PrintCommand", 
+                typeof(ICommand), 
+                typeof(Kanban), 
+                new PropertyMetadata());
+
         #endregion
     }
 }

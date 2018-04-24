@@ -53,6 +53,7 @@
     <Compile Include="DefaultTemplates.cs">
       <DependentUpon>DefaultTemplates.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Common\DelegateCommand.cs" />
     <Compile Include="Dimensions\BaseDimension.cs" />
     <Compile Include="Dimensions\BaseDimensionCategory.cs" />
     <Compile Include="Dimensions\Generic\TagDimension.cs" />
