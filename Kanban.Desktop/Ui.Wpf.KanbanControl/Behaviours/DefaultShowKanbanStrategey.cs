@@ -77,6 +77,7 @@ namespace Ui.Wpf.KanbanControl.Behaviours
                 Background = kanbanBoard.SpliterBackground,
             };
 
+            Panel.SetZIndex(newSpliter, int.MaxValue);
             Grid.SetRow(newSpliter, 0);
             Grid.SetColumn(newSpliter, index + HeaderCellCount);
             Grid.SetRowSpan(newSpliter, verticalCategoriesCount + HeaderCellCount);
@@ -95,6 +96,7 @@ namespace Ui.Wpf.KanbanControl.Behaviours
                 VerticalAlignment = VerticalAlignment.Bottom
             };
 
+            Panel.SetZIndex(newSpliter, int.MaxValue);
             Grid.SetColumn(newSpliter, 0);
             Grid.SetRow(newSpliter, index + HeaderCellCount);
             Grid.SetColumnSpan(newSpliter, horizontalCategoriescount + HeaderCellCount);
