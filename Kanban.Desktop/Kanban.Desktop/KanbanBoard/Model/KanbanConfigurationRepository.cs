@@ -1,13 +1,12 @@
 ﻿using Data.Entities.Common.Redmine;
 using Data.Sources.Common.Redmine;
-using Kanban.Desktop.KanbanBoard.Model;
 using System.Collections.Generic;
 using System.Linq;
 using Ui.Wpf.KanbanControl.Dimensions;
 using Ui.Wpf.KanbanControl.Dimensions.Generic;
 using Ui.Wpf.KanbanControl.Elements;
 
-namespace Kanban.Desktop.KanbanBoard
+namespace Kanban.Desktop.KanbanBoard.Model
 {
     public class KanbanConfigurationRepository : IKanbanConfigurationRepository
     {
@@ -41,7 +40,7 @@ namespace Kanban.Desktop.KanbanBoard
             {
                 HorizontalDimension = new TagDimension(config.HorizontalDimension.DimensionName, config.HorizontalDimension.ValuesFilter),
                 VerticalDimension = new TagDimension(config.VerticalDimension.DimensionName, config.VerticalDimension.ValuesFilter),
-                CardElements = new CardItems(config.CardItems),
+                CardElements = new CardContent(config.CardsItemsConfiguration.CardsItemsPaths),
                 Issues = issues
             };
         }
@@ -83,6 +82,11 @@ namespace Kanban.Desktop.KanbanBoard
                         .Select(s => (IDimensionCategory)s)
                         .ToArray()
                 ),
+
+                CardElements = new CardContent(new[] 
+                {
+                    "Subject", "Treker", "Priority", "Details"
+                }),
 
                 Issues = issues
             };

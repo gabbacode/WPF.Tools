@@ -34,11 +34,13 @@ namespace Kanban.Desktop.Properties {
   <VerticalDimension>
     <DimensionName>AssignedTo</DimensionName>
   </VerticalDimension>
-  <CardItems>
-    <string>Subject</string>
-    <string>Treker</string>
-    <string>Details</string>
-  </CardItems>
+  <CardsItemsConfiguration>
+    <CardsItemsPaths>
+      <string>Subject</string>
+      <string>Tracker</string>
+      <string>Description</string>
+    </CardsItemsPaths>
+  </CardsItemsConfiguration>
 </KanbanConfiguration>")]
         public string h_status_v_assigned_c_subject_treker_details {
             get {

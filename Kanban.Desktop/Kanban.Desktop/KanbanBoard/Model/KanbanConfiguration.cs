@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Xml.Serialization;
 
-namespace Kanban.Desktop.KanbanBoard
+namespace Kanban.Desktop.KanbanBoard.Model
 {
     public class KanbanConfiguration
     {
@@ -11,7 +11,7 @@ namespace Kanban.Desktop.KanbanBoard
 
         public DimensionConfiguration VerticalDimension { get; set; }
 
-        public string[] CardItems { get; set; }
+        public CardsItemsConfiguration CardsItemsConfiguration { get; set; }
 
         public static KanbanConfiguration Parse(string configurationData)
         {

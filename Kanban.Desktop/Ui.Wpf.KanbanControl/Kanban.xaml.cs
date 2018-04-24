@@ -32,12 +32,12 @@ namespace Ui.Wpf.KanbanControl
 
             if (HorizontalDimension == null
                 || VerticalDimension == null
-                || CardItems == null)
+                || Cards == null)
                 return;
 
             // TODO create only of type changed
-            propertyAccessors = new PropertyAccessorsExpressionCreator(CardItems);
-            BuildAutoCategories(CardItems, HorizontalDimension, VerticalDimension, propertyAccessors);
+            propertyAccessors = new PropertyAccessorsExpressionCreator(Cards);
+            BuildAutoCategories(Cards, HorizontalDimension, VerticalDimension, propertyAccessors);
 
             if (HorizontalDimension.Categories == null
                 || HorizontalDimension.Categories.Count == 0
@@ -56,24 +56,24 @@ namespace Ui.Wpf.KanbanControl
         }
 
         private void BuildAutoCategories(
-            IEnumerable cardItems, 
+            IEnumerable Cards, 
             IDimension horizontalDimension, 
             IDimension verticalDimension, 
             PropertyAccessorsExpressionCreator propertyAccessors)
         {
             if (horizontalDimension is IDynamicDimension dynamicHorizontalDimension)
             {
-                horizontalDimension.Categories = GetDimensionCategories(cardItems, dynamicHorizontalDimension, propertyAccessors);
+                horizontalDimension.Categories = GetDimensionCategories(Cards, dynamicHorizontalDimension, propertyAccessors);
             }
 
             if (verticalDimension is IDynamicDimension dynamicVerticalDimension)
             {
-                verticalDimension.Categories = GetDimensionCategories(cardItems, dynamicVerticalDimension, propertyAccessors);
+                verticalDimension.Categories = GetDimensionCategories(Cards, dynamicVerticalDimension, propertyAccessors);
             }
         }
 
         private static IList<IDimensionCategory> GetDimensionCategories(
-            IEnumerable cardItems,
+            IEnumerable Cards,
             IDynamicDimension dimension, 
             PropertyAccessorsExpressionCreator propertyAccessors)
         {
@@ -87,7 +87,7 @@ namespace Ui.Wpf.KanbanControl
 
             if (getElementCategory != null)
             {
-                var categories = cardItems.Cast<object>()
+                var categories = Cards.Cast<object>()
                     .Select(i => getElementCategory(i))
                     .Where(i => i != null)
                     .Where(i=> tagFilter == null || tagFilter.Contains(i.ToString()))
@@ -114,7 +114,7 @@ namespace Ui.Wpf.KanbanControl
             }
         }
 
-        private void SetCardItems(object oldValue, object newValue)
+        private void SetCards(object oldValue, object newValue)
         {
             var oldNotifyableCollection = (INotifyCollectionChanged)oldValue;
             if (oldNotifyableCollection != null)
@@ -124,25 +124,42 @@ namespace Ui.Wpf.KanbanControl
             if (newNotifyableCollection != null)
                 newNotifyableCollection.CollectionChanged += OnItemsChanged;
 
-            AddActionsToShow(KanbanChangeObjectType.CardItems);
+            AddActionsToShow(KanbanChangeObjectType.Cards);
         }
 
         private void OnItemsChanged(
             object sender, 
             NotifyCollectionChangedEventArgs e)
         {
-            AddActionsToShow(KanbanChangeObjectType.CardItems);
+            AddActionsToShow(KanbanChangeObjectType.Cards);
         }
 
         private void BuildCards()
         {
-            cards.Clear();
-            foreach (var item in CardItems)
-            {
-                var card = new Card(item);
-                card.View.ContentTemplate = CardItemTemplate;
+            var getters = CardContent?.CardContentItemsPaths
+                .Select(path => new
+                {
+                    path,
+                    getter = propertyAccessors.TakeGetterForProperty(path)
+                })
+                .Where(x => x.getter != null)
+                .ToArray();
 
-                cards.Add(card);
+            cardElements.Clear();
+            foreach (var cardData in Cards)
+            {
+                var cardElement = new Card(cardData);
+
+                if (getters != null)
+                {
+                    cardElement.ContentItems = getters
+                        .Select(g => new ContentItem(cardData, g.getter))
+                        .ToList();
+                }
+
+                cardElement.View.ContentTemplate = CardTemplate;
+
+                cardElements.Add(cardElement);
             }
         }
 
@@ -175,8 +192,8 @@ namespace Ui.Wpf.KanbanControl
         private readonly List<Header> horizontalHeaders = new List<Header>();
         List<Header> IKanbanBoard.HorizontalHeaders => horizontalHeaders;
 
-        private readonly List<Card> cards = new List<Card>();
-        List<Card> IKanbanBoard.Cards => cards;
+        private readonly List<Card> cardElements = new List<Card>();
+        List<Card> IKanbanBoard.CardElements => cardElements;
 
         private Cell[,] cells;
         Cell[,] IKanbanBoard.Cells => cells;
@@ -207,26 +224,49 @@ namespace Ui.Wpf.KanbanControl
 
         #region [ dependency properties ]
 
-        public IEnumerable CardItems
+        public IEnumerable Cards
         {
-            get => (IEnumerable)GetValue(CardItemsProperty);
-            set => SetValue(CardItemsProperty, value);
+            get => (IEnumerable)GetValue(CardsProperty);
+            set => SetValue(CardsProperty, value);
         }
 
-        public static readonly DependencyProperty CardItemsProperty =
-            DependencyProperty.Register("CardItems", 
+        public static readonly DependencyProperty CardsProperty =
+            DependencyProperty.Register("Cards", 
                 typeof(IEnumerable), 
                 typeof(Kanban), 
                 new PropertyMetadata(
                     new ObservableCollection<object>(),
-                    OnCardItemsChanged));
+                    OnCardsChanged));
 
-        private static void OnCardItemsChanged(
+        private static void OnCardsChanged(
             DependencyObject obj, 
             DependencyPropertyChangedEventArgs e)
         {
             var control = (Kanban)obj;
-            control.SetCardItems(e.OldValue, e.NewValue);
+            control.SetCards(e.OldValue, e.NewValue);
+        }
+
+        public ICardContent CardContent
+        {
+            get { return (ICardContent)GetValue(CardContentProperty); }
+            set { SetValue(CardContentProperty, value); }
+        }
+
+        public static readonly DependencyProperty CardContentProperty =
+            DependencyProperty.Register(
+                "CardContent", 
+                typeof(ICardContent), 
+                typeof(Kanban), 
+                new PropertyMetadata(
+                    new CardContent(new[] { "Subject", "Tracker" }),
+                    OnCardContentChanged));
+
+        private static void OnCardContentChanged(
+            DependencyObject obj, 
+            DependencyPropertyChangedEventArgs e)
+        {
+            var control = (Kanban)obj;
+            control.AddActionsToShow(KanbanChangeObjectType.CardContentItems);
         }
 
         public IDimension VerticalDimension
@@ -292,17 +332,18 @@ namespace Ui.Wpf.KanbanControl
             DependencyProperty.Register("SpliterBackground", typeof(Brush), typeof(Kanban), new PropertyMetadata(Brushes.Transparent));
 
 
-        public DataTemplate CardItemTemplate
+        public DataTemplate CardTemplate
         {
-            get => (DataTemplate)GetValue(CardItemTemplateProperty);
-            set => SetValue(CardItemTemplateProperty, value);
+            get => (DataTemplate)GetValue(CardTemplateProperty);
+            set => SetValue(CardTemplateProperty, value);
         }
 
-        public static readonly DependencyProperty CardItemTemplateProperty =
-            DependencyProperty.Register("CardItemTemplate", 
+        public static readonly DependencyProperty CardTemplateProperty =
+            DependencyProperty.Register("CardTemplate", 
                 typeof(DataTemplate), 
                 typeof(Kanban), 
-                new PropertyMetadata());
+                new PropertyMetadata(
+                    defaultTemplates["CardTemplate"]));
 
 
         public DataTemplate CellTemplate

@@ -1,10 +1,12 @@
 ﻿using Data.Entities.Common.Redmine;
 using Data.Sources.Common.Redmine;
+using Kanban.Desktop.KanbanBoard.Model;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
 using System.Threading.Tasks;
 using Ui.Wpf.KanbanControl.Dimensions;
+using Ui.Wpf.KanbanControl.Elements;
 
 namespace Kanban.Desktop.KanbanBoard.ViewModel
 {
@@ -48,6 +50,7 @@ namespace Kanban.Desktop.KanbanBoard.ViewModel
 
             VerticalDimension = data.VerticalDimension;
             HorizontalDimension = data.HorizontalDimension;
+            CardContent = data.CardElements;
 
             Issues.Clear();
             Issues.AddRange(data.Issues);
@@ -79,6 +82,8 @@ namespace Kanban.Desktop.KanbanBoard.ViewModel
         [Reactive] public IDimension VerticalDimension { get; private set; }
 
         [Reactive] public IDimension HorizontalDimension { get; private set; }
+
+        [Reactive] public ICardContent CardContent { get; private set; }
 
         public KanbanConfiguration CurrentConfiguration { get; private set; }
 

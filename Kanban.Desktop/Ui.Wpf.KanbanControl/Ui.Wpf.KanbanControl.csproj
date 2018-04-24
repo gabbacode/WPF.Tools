@@ -50,7 +50,9 @@
     <Compile Include="Behaviours\DefaultElementsDispencer.cs" />
     <Compile Include="Behaviours\DefaultShowKanbanStrategey.cs" />
     <Compile Include="Behaviours\KanbanChangeObjectType.cs" />
-    <Compile Include="DefaultTemplates.cs" />
+    <Compile Include="DefaultTemplates.cs">
+      <DependentUpon>DefaultTemplates.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Dimensions\BaseDimension.cs" />
     <Compile Include="Dimensions\BaseDimensionCategory.cs" />
     <Compile Include="Dimensions\Generic\TagDimension.cs" />
@@ -63,7 +65,7 @@
     <Compile Include="Dimensions\TagDimension.cs" />
     <Compile Include="Dimensions\TagsDimensionCategory.cs" />
     <Compile Include="Elements\Card.cs" />
-    <Compile Include="Elements\CardItems.cs" />
+    <Compile Include="Elements\CardContent.cs" />
     <Compile Include="Elements\CardView.xaml.cs">
       <DependentUpon>CardView.xaml</DependentUpon>
     </Compile>
@@ -71,11 +73,12 @@
     <Compile Include="Elements\CellView.xaml.cs">
       <DependentUpon>CellView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Elements\ContentItem.cs" />
     <Compile Include="Elements\Header.cs" />
     <Compile Include="Elements\HeaderView.xaml.cs">
       <DependentUpon>HeaderView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Elements\ICardItems.cs" />
+    <Compile Include="Elements\ICardContent.cs" />
     <Compile Include="Elements\IKanbanBoardView.cs" />
     <Compile Include="Behaviours\IShowKanbanStrategy.cs" />
     <Compile Include="Expressions\PropertyAccessorsExpressionCreator.cs" />

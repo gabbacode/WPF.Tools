@@ -2,7 +2,7 @@
 using Data.Sources.Common;
 using Data.Sources.Common.Redmine;
 using Data.Sources.Redmine;
-using Kanban.Desktop.KanbanBoard;
+using Kanban.Desktop.KanbanBoard.Model;
 using Kanban.Desktop.KanbanBoard.View;
 using Kanban.Desktop.KanbanBoard.ViewModel;
 using Kanban.Desktop.Settings;

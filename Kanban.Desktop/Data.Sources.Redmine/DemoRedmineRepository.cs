@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Data.Entities.Common.Redmine;
 using Data.Sources.Common.Redmine;
 
@@ -38,7 +39,7 @@ namespace Data.Sources.Redmine
         private Tracker[] trackers =
         {
             new Tracker { Id = 1, Name = "task" },
-            new Tracker { Id = 1, Name = "bug" },
+            new Tracker { Id = 2, Name = "bug" },
 
         };
 
@@ -62,12 +63,12 @@ namespace Data.Sources.Redmine
                         {
                             AssignedTo = user,
                             Id = --issueId,
-                            Status = statuses[rnd.Next(statuses.Length - 1)],
+                            Status = statuses[rnd.Next(statuses.Length)],
                             Description = $"description of task{issueId}",
-                            Priority = priorities[rnd.Next(priorities.Length - 1)],
+                            Priority = priorities[rnd.Next(priorities.Length)],
                             Project = projects[j],
                             Subject = $"subject of task{issueId}",
-                            Tracker = trackers[rnd.Next(trackers.Length - 1)],
+                            Tracker = trackers[rnd.Next(trackers.Length)],
                         };
                     }
                 }

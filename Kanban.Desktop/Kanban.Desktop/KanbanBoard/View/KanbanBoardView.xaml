@@ -33,8 +33,8 @@
                         <RowDefinition Height="Auto"></RowDefinition>
                         <RowDefinition Height="Auto"></RowDefinition>
                     </Grid.RowDefinitions>
-                    <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding Subject}"/>
-                    <TextBlock Grid.Row="1" Grid.Column="0" Text="{Binding Description}"/>
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding Item.Subject}"/>
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="{Binding Item.Description}"/>
                 </Grid>
             </Border>
         </DataTemplate>
@@ -70,8 +70,8 @@
             <kanbancontrol:Kanban 
                 HorizontalDimension     = "{Binding HorizontalDimension}"
                 VerticalDimension       = "{Binding VerticalDimension}"
-                CardItems               = "{Binding Issues}"
-                CardItemTemplate        = "{StaticResource Card}"/>
+                Cards                   = "{Binding Issues}"
+                CardContent             = "{Binding CardContent}"/>
         </ScrollViewer>
     </Grid>
 </UserControl>

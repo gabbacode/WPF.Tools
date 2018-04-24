@@ -14,7 +14,7 @@ namespace Ui.Wpf.KanbanControl.Elements
  
         List<Header> VerticalHeaders { get; }
 
-        List<Card> Cards { get; }
+        List<Card> CardElements { get; }
 
         Cell[,] Cells { get; }
 

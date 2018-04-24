@@ -1,4 +1,4 @@
-﻿namespace Kanban.Desktop.KanbanBoard
+﻿namespace Kanban.Desktop.KanbanBoard.Model
 {
     public class DimensionConfiguration
     {

@@ -32,7 +32,7 @@ namespace Ui.Wpf.KanbanControl.Behaviours
             ClearDefinitions();
 
             elementsDispenser.DispenceItems(
-                kanbanBoard.Cards,
+                kanbanBoard.CardElements,
                 kanbanBoard.HorizontalDimension,
                 kanbanBoard.VerticalDimension,
                 propertyAccessors);
@@ -198,7 +198,7 @@ namespace Ui.Wpf.KanbanControl.Behaviours
 
         private void PlaceItems()
         {
-            foreach (var card in kanbanBoard.Cards)
+            foreach (var card in kanbanBoard.CardElements)
             {
                 if (card.HorizontalCategoryIndex < 0
                     || card.VerticalCategoryIndex < 0)
