@@ -11,14 +11,14 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
         <LinearGradientBrush x:Key="Gr" StartPoint="0,0" EndPoint="0,1">
-            <GradientStop Color="White" Offset="0" />
-            <GradientStop Color="WhiteSmoke" Offset="0.4" />
+            <GradientStop Color="LightYellow" Offset="0" />
+            <GradientStop Color="#FFFFE0" Offset="0.4" />
         </LinearGradientBrush>
 
         <DataTemplate x:Key="Card">
             <Border 
                 Margin="3"
-                BorderBrush="Silver"
+                BorderBrush="#FED22F"
                 Background="{StaticResource Gr}"
                 BorderThickness="1,1,1,1" 
                 CornerRadius="4">
@@ -27,17 +27,14 @@
                     MaxHeight="100"
                     HorizontalAlignment="Stretch">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"></ColumnDefinition>
                         <ColumnDefinition></ColumnDefinition>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"></RowDefinition>
                         <RowDefinition Height="Auto"></RowDefinition>
                     </Grid.RowDefinitions>
-                    <TextBlock Grid.Row="0" Grid.Column="0" Margin="12,0" Text="Subject:"/>
-                    <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Subject}"/>
-                    <TextBlock Grid.Row="1" Grid.Column="0" Margin="12,0" Text="Description:"/>
-                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Description}"/>
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding Subject}"/>
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="{Binding Description}"/>
                 </Grid>
             </Border>
         </DataTemplate>

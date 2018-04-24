@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -22,7 +21,6 @@ namespace Ui.Wpf.KanbanControl
         public Kanban()
         {
             showKanbanStrategy = new DefaultShowKanbanStrategey(this);
-
             InitializeComponent();
         }
 
@@ -192,10 +190,7 @@ namespace Ui.Wpf.KanbanControl
         private static readonly DefaultTemplates defaultTemplates = new DefaultTemplates();
 
         //TODO dependency properties
-
         private IShowKanbanStrategy showKanbanStrategy;
-        private PropertyAccessorsExpressionCreator propertyAccessors;
-
         public IShowKanbanStrategy ShowKanbanStrategy
         {
             get => showKanbanStrategy;
@@ -205,6 +200,8 @@ namespace Ui.Wpf.KanbanControl
                 AddActionsToShow(KanbanChangeObjectType.ShowStrategy);
             }
         }
+
+        private PropertyAccessorsExpressionCreator propertyAccessors;
 
         #endregion
 
@@ -283,7 +280,7 @@ namespace Ui.Wpf.KanbanControl
         }
 
         public static readonly DependencyProperty SpliterWidthProperty =
-            DependencyProperty.Register("SpliterWidth", typeof(double), typeof(Kanban), new PropertyMetadata(3d));
+            DependencyProperty.Register("SpliterWidth", typeof(double), typeof(Kanban), new PropertyMetadata(4d));
 
         public Brush SpliterBackground
         {
@@ -292,7 +289,7 @@ namespace Ui.Wpf.KanbanControl
         }
 
         public static readonly DependencyProperty SpliterBackgroundProperty =
-            DependencyProperty.Register("SpliterBackground", typeof(Brush), typeof(Kanban), new PropertyMetadata(Brushes.WhiteSmoke));
+            DependencyProperty.Register("SpliterBackground", typeof(Brush), typeof(Kanban), new PropertyMetadata(Brushes.Transparent));
 
 
         public DataTemplate CardItemTemplate
@@ -307,7 +304,7 @@ namespace Ui.Wpf.KanbanControl
                 typeof(Kanban), 
                 new PropertyMetadata());
 
-        
+
         public DataTemplate CellTemplate
         {
             get => (DataTemplate)GetValue(CellTemplateProperty);
@@ -315,11 +312,11 @@ namespace Ui.Wpf.KanbanControl
         }
 
         public static readonly DependencyProperty CellTemplateProperty =
-            DependencyProperty.Register("CellTemplate", 
-                typeof(DataTemplate), 
-                typeof(Kanban), 
+            DependencyProperty.Register("CellTemplate",
+                typeof(DataTemplate),
+                typeof(Kanban),
                 new PropertyMetadata());
-        
+
         public DataTemplate HorizontalHeaderTemplate
         {
             get => (DataTemplate)GetValue(HorizontalHeaderTemplateProperty);

@@ -6,13 +6,19 @@
              xmlns:local="clr-namespace:Ui.Wpf.KanbanControl.Elements"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <ScrollViewer
-        Margin="3"
-        VerticalScrollBarVisibility="Auto"
-        HorizontalScrollBarVisibility="Disabled"
-        PreviewMouseWheel="ScrollViewerPreviewMouseWheel">
-        <StackPanel
+    <Grid>
+        <Border
+            Margin="-1,-1,0,0"
+            BorderBrush="#E1E1E1"
+            BorderThickness="1"/>
+        <ScrollViewer
+            Margin="6"
+            VerticalScrollBarVisibility="Auto"
+            HorizontalScrollBarVisibility="Disabled"
+            PreviewMouseWheel="ScrollViewerPreviewMouseWheel">
+            <StackPanel
             Name="ItemContainer"
             Orientation="Vertical"/>
-    </ScrollViewer>
+        </ScrollViewer>
+    </Grid>
 </UserControl>
