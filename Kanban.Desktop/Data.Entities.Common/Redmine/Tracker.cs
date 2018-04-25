@@ -2,7 +2,7 @@
 
 namespace Data.Entities.Common.Redmine
 {
-    public class Tracker : IEquatable<Tracker>, IComparable, IComparable<Status>
+    public class Tracker : IEquatable<Tracker>, IComparable, IComparable<Tracker>
     {
         public int Id { get; set; }
 
@@ -10,12 +10,12 @@ namespace Data.Entities.Common.Redmine
 
         public int CompareTo(object obj)
         {
-            return CompareTo((Status)obj);
+            return CompareTo((Tracker)obj);
         }
 
-        public int CompareTo(Status other)
+        public int CompareTo(Tracker other)
         {
-            return Id.CompareTo(other);
+            return Id.CompareTo(other.Id);
         }
 
         public override bool Equals(object obj)
