@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -39,7 +40,7 @@ namespace Ui.Wpf.KanbanControl
                 || Cards == null)
                 return;
 
-            // TODO create only of type changed
+            // TODO create only when type changed
             propertyAccessors = new PropertyAccessorsExpressionCreator(Cards);
             BuildAutoCategories(Cards, HorizontalDimension, VerticalDimension, propertyAccessors);
 
@@ -170,6 +171,19 @@ namespace Ui.Wpf.KanbanControl
                         .Where(x => x.ci.Area == CardContentArea.Additional)
                         .Select(g => new ContentItem(cardData, g.getter))
                         .ToList();
+                }
+
+                if (CardsColors != null)
+                {
+                    var colorKeyGetter = propertyAccessors.TakeGetterForProperty(CardsColors.Path);
+
+                    ICardColor colors;
+                    if (CardsColors.ColorMap.TryGetValue(colorKeyGetter(cardData).ToString(), out colors))
+                    {
+                        cardElement.Background = colors.Background;
+                        cardElement.BorderBrush = colors.BorderBrush;
+                    }
+
                 }
 
                 cardElement.ActionItems = cardElement.AdditionalContentItems
@@ -347,6 +361,24 @@ namespace Ui.Wpf.KanbanControl
         {
             var control = (Kanban)obj;
             control.AddActionsToShow(KanbanChangeObjectType.HorizontalCategories);
+        }
+
+        public ICardsColors CardsColors
+        {
+            get { return (ICardsColors)GetValue(CardsColorsProperty); }
+            set { SetValue(CardsColorsProperty, value); }
+        }
+
+        public static readonly DependencyProperty CardsColorsProperty =
+            DependencyProperty.Register("CardsColors",
+                typeof(ICardsColors),
+                typeof(Kanban),
+                new PropertyMetadata(null, CardsColorsChanged));
+
+        private static void CardsColorsChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
+        {
+            var control = (Kanban)obj;
+            control.AddActionsToShow(KanbanChangeObjectType.CardsColors);
         }
 
         public double SpliterWidth

@@ -4,10 +4,10 @@ using Kanban.Desktop.KanbanBoard.Model;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Ui.Wpf.KanbanControl.Dimensions;
-using Ui.Wpf.KanbanControl.Elements;
 using Ui.Wpf.KanbanControl.Elements.CardElement;
 
 namespace Kanban.Desktop.KanbanBoard.ViewModel
@@ -53,6 +53,7 @@ namespace Kanban.Desktop.KanbanBoard.ViewModel
             VerticalDimension = data.VerticalDimension;
             HorizontalDimension = data.HorizontalDimension;
             CardContent = data.CardElements;
+            CardsColors = data.CardsColors;
 
             Issues.Clear();
             Issues.AddRange(data.Issues);
@@ -92,6 +93,8 @@ namespace Kanban.Desktop.KanbanBoard.ViewModel
         [Reactive] public IDimension HorizontalDimension { get; private set; }
 
         [Reactive] public ICardContent CardContent { get; private set; }
+
+        [Reactive] public ICardsColors CardsColors { get; private set; }
 
         public KanbanConfiguration CurrentConfiguration { get; private set; }
 

@@ -25,36 +25,36 @@ namespace Kanban.Desktop.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
-<KanbanConfiguration xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
-  <ProjectId>12</ProjectId>
-  <HorizontalDimension>
-    <DimensionName>Status</DimensionName>
-  </HorizontalDimension>
-  <VerticalDimension>
-    <DimensionName>AssignedTo</DimensionName>
-  </VerticalDimension>
-  <CardsItemsConfiguration>
-    <CardsItems>
-        <CardItem>
-          <Area>Main</Area>
-          <Path>Subject</Path>
-        </CardItem>
-        <CardItem>
-          <Area>Short</Area>
-          <Path>Tracker</Path>
-        </CardItem>
-        <CardItem>
-          <Area>Short</Area>
-          <Path>Priority</Path>
-        </CardItem>
-        <CardItem>
-          <Area>Additional</Area>
-          <Path>Description</Path>
-        </CardItem>
-    </CardsItems>
-  </CardsItemsConfiguration>
-</KanbanConfiguration>")]
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<KanbanConfiguration xmlns:xsi=\"http://w" +
+            "ww.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">" +
+            "\r\n  <ProjectId>12</ProjectId>\r\n  <HorizontalDimension>\r\n    <DimensionName>Statu" +
+            "s</DimensionName>\r\n  </HorizontalDimension>\r\n  <VerticalDimension>\r\n    <Dimensi" +
+            "onName>AssignedTo</DimensionName>\r\n  </VerticalDimension>\r\n  <CardItemsConfigura" +
+            "tion>\r\n    <CardsItems>\r\n        <CardItem>\r\n          <Area>Main</Area>\r\n      " +
+            "    <Path>Subject</Path>\r\n        </CardItem>\r\n        <CardItem>\r\n          <Ar" +
+            "ea>Short</Area>\r\n          <Path>Tracker</Path>\r\n        </CardItem>\r\n        <C" +
+            "ardItem>\r\n          <Area>Short</Area>\r\n          <Path>Priority</Path>\r\n       " +
+            " </CardItem>\r\n        <CardItem>\r\n          <Area>Additional</Area>\r\n          <" +
+            "Path>Description</Path>\r\n        </CardItem>\r\n    </CardsItems>\r\n    <ColorSetti" +
+            "ngs>\r\n      <Path>Priority</Path>\r\n      <ColorMaps>\r\n        <ColorMap>\r\n      " +
+            "    <Value>Низкий</Value>\r\n          <CardColors>\r\n            <BorderColor>#7DB" +
+            "B00</BorderColor>\r\n            <BackgroundColor>#DCFFC2</BackgroundColor>\r\n     " +
+            "     </CardColors>\r\n        </ColorMap>\r\n        <ColorMap>\r\n          <Value>Но" +
+            "рмальный</Value>\r\n          <CardColors>\r\n            <BorderColor>#FFB13B</Bord" +
+            "erColor>\r\n            <BackgroundColor>#FFE7B6</BackgroundColor>\r\n          </Ca" +
+            "rdColors>\r\n        </ColorMap>\r\n        <ColorMap>\r\n          <Value>Высокий</Va" +
+            "lue>\r\n          <CardColors>\r\n            <BorderColor>#FF8099</BorderColor>\r\n  " +
+            "          <BackgroundColor>#FFCCD6</BackgroundColor>\r\n          </CardColors>\r\n " +
+            "       </ColorMap>\r\n        <ColorMap>\r\n          <Value>low</Value>\r\n          " +
+            "<CardColors>\r\n            <BorderColor>#7DBB00</BorderColor>\r\n            <Backg" +
+            "roundColor>#DCFFC2</BackgroundColor>\r\n          </CardColors>\r\n        </ColorMa" +
+            "p>\r\n        <ColorMap>\r\n          <Value>normal</Value>\r\n          <CardColors>\r" +
+            "\n            <BorderColor>#FFB13B</BorderColor>\r\n            <BackgroundColor>#F" +
+            "FE7B6</BackgroundColor>\r\n          </CardColors>\r\n        </ColorMap>\r\n        <" +
+            "ColorMap>\r\n          <Value>high</Value>\r\n          <CardColors>\r\n            <B" +
+            "orderColor>#FF8099</BorderColor>\r\n            <BackgroundColor>#FFCCD6</Backgrou" +
+            "ndColor>\r\n          </CardColors>\r\n        </ColorMap>\r\n      </ColorMaps>\r\n    " +
+            "</ColorSettings>\r\n  </CardItemsConfiguration>\r\n</KanbanConfiguration>")]
         public string h_status_v_assigned_c_subject_treker_details {
             get {
                 return ((string)(this["h_status_v_assigned_c_subject_treker_details"]));

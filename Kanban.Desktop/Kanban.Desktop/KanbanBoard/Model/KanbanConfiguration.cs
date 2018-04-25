@@ -11,7 +11,7 @@ namespace Kanban.Desktop.KanbanBoard.Model
 
         public DimensionConfiguration VerticalDimension { get; set; }
 
-        public CardsItemsConfiguration CardsItemsConfiguration { get; set; }
+        public CardItemsConfiguration CardItemsConfiguration { get; set; }
 
         public static KanbanConfiguration Parse(string configurationData)
         {

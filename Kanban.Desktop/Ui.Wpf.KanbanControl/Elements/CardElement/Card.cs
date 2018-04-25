@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace Ui.Wpf.KanbanControl.Elements.CardElement
 {
@@ -17,11 +18,15 @@ namespace Ui.Wpf.KanbanControl.Elements.CardElement
 
         public List<ActionItem> ActionItems { get; internal set; }
 
-        public List<ContentItem> AdditionalContentItems { get; set; }
+        public List<ContentItem> AdditionalContentItems { get; internal set; }
 
         public List<ContentItem> ShortContentItems { get; internal set; }
 
         public List<ContentItem> ContentItems { get; internal set; }
+
+        public Brush BorderBrush { get; internal set; }
+
+        public Brush Background { get; internal set; }
 
         public int VerticalCategoryIndex { get; internal set; }
 

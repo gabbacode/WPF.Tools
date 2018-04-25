@@ -10,6 +10,7 @@ namespace Ui.Wpf.KanbanControl.Behaviours
         Cards = 2,
         ShowStrategy = 4,
         DispenseStrategy = 8,
-        CardContentItems = 16
+        CardContentItems = 16,
+        CardsColors = 32,
     }
 }

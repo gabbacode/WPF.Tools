@@ -3,6 +3,7 @@ using Data.Sources.Common.Redmine;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Media;
 using Ui.Wpf.KanbanControl.Dimensions;
 using Ui.Wpf.KanbanControl.Dimensions.Generic;
 using Ui.Wpf.KanbanControl.Elements;
@@ -38,12 +39,14 @@ namespace Kanban.Desktop.KanbanBoard.Model
         
         private KanbanData GetStoredConfiguration(KanbanConfiguration config, IEnumerable<Issue> issues)
         {
+            var brushConverter = new BrushConverter();
+
             return new KanbanData
             {
                 HorizontalDimension = new TagDimension(config.HorizontalDimension.DimensionName, config.HorizontalDimension.ValuesFilter),
                 VerticalDimension = new TagDimension(config.VerticalDimension.DimensionName, config.VerticalDimension.ValuesFilter),
                 CardElements = new CardContent(
-                    config.CardsItemsConfiguration.CardsItems
+                    config.CardItemsConfiguration.CardsItems
                         .Select(ci =>
                         {
                             var cardContentArea = CardContentArea.Main;
@@ -54,6 +57,18 @@ namespace Kanban.Desktop.KanbanBoard.Model
                                 cardContentArea);
                         })
                     .ToArray()),
+                CardsColors = new CardsColors
+                {
+                    Path = config.CardItemsConfiguration.ColorSettings.Path,
+                    ColorMap = config.CardItemsConfiguration.ColorSettings.ColorMaps
+                        .ToDictionary(
+                            k => (object)k.Value,
+                            v => (ICardColor)new CardColor
+                            {
+                                Background = (SolidColorBrush)(brushConverter).ConvertFromString(v.CardColors.BackgroundColor),
+                                BorderBrush = (SolidColorBrush)(brushConverter).ConvertFromString(v.CardColors.BorderColor)
+                            })
+                },
                 Issues = issues
             };
         }

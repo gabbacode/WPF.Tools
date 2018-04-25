@@ -44,10 +44,13 @@
     
      <!-- Card -->
     
-    <LinearGradientBrush x:Key="Gr" StartPoint="0,0" EndPoint="0,1">
+    <!--<LinearGradientBrush x:Key="Gr" StartPoint="0,0" EndPoint="0,1">
         <GradientStop Color="LightYellow" Offset="0" />
         <GradientStop Color="#FFFFE0" Offset="0.4" />
-    </LinearGradientBrush>
+    </LinearGradientBrush>-->
+
+    <SolidColorBrush x:Key="DefaultCardBorder" Color="#FED22F"/>
+    <SolidColorBrush x:Key="DefaultCardBackground" Color="#FFFFE0"/>
 
     <DataTemplate x:Key="ContentItemTemplate">
         <TextBlock Text="{Binding Value}"/>
@@ -68,10 +71,12 @@
     <DataTemplate x:Key="ActionItemTemplate">
         <ToggleButton 
             Background="Transparent"
-            BorderThickness="0"
-            Command="{Binding Action}"
-            Template="{x:Null}"            
-            Content="..."/>
+            Command="{Binding Action}"         
+            Content="="
+            Margin="0, 3, 3, 3"
+            Width="24"
+            MinHeight="24"
+            Height="24"/>
     </DataTemplate>
     
     <DataTemplate x:Key="AdditionalContentItemTemplate">
@@ -84,8 +89,8 @@
     
     <DataTemplate x:Key="CardTemplate">
         <Border 
-            BorderBrush="#FED22F"
-            Background="{StaticResource Gr}"
+            BorderBrush="{Binding BorderBrush, FallbackValue={StaticResource DefaultCardBorder}, TargetNullValue={StaticResource DefaultCardBorder}}"
+            Background="{Binding Background, FallbackValue={StaticResource DefaultCardBackground},TargetNullValue={StaticResource DefaultCardBackground}}"
             BorderThickness="1,1,1,1" 
             CornerRadius="4"
             Margin="3">
@@ -111,8 +116,7 @@
                 <ItemsControl
                     ItemsSource="{Binding ActionItems}"
                     ItemTemplate="{StaticResource ActionItemTemplate}"
-                    Margin="3, 0, 0, 0"
-                    MaxHeight="24">
+                    Margin="3, 0, 0, 0">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <StackPanel Orientation="Horizontal"/>
@@ -121,7 +125,8 @@
                 </ItemsControl>
                 <ItemsControl
                     ItemsSource="{Binding AdditionalContentItems}"
-                    ItemTemplate="{StaticResource AdditionalContentItemTemplate}">
+                    ItemTemplate="{StaticResource AdditionalContentItemTemplate}"
+                    Margin="3, 0, 0, 0">
                 </ItemsControl>
             </StackPanel>
         </Border>

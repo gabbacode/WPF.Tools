@@ -67,9 +67,13 @@
     <Compile Include="Dimensions\TagsDimensionCategory.cs" />
     <Compile Include="Elements\CardElement\ActionItem.cs" />
     <Compile Include="Elements\CardElement\Card.cs" />
+    <Compile Include="Elements\CardElement\CardColor.cs" />
     <Compile Include="Elements\CardElement\CardContent.cs" />
     <Compile Include="Elements\CardElement\CardContentArea.cs" />
     <Compile Include="Elements\CardElement\CardContentItem.cs" />
+    <Compile Include="Elements\CardElement\CardsColors.cs" />
+    <Compile Include="Elements\CardElement\ICardColor.cs" />
+    <Compile Include="Elements\CardElement\ICardsColors.cs" />
     <Compile Include="Elements\Cell.cs" />
     <Compile Include="Elements\CellView.xaml.cs">
       <DependentUpon>CellView.xaml</DependentUpon>

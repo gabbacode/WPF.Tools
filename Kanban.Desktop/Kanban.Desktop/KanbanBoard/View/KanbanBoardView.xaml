@@ -82,7 +82,8 @@
                 HorizontalDimension     = "{Binding HorizontalDimension}"
                 VerticalDimension       = "{Binding VerticalDimension}"
                 Cards                   = "{Binding Issues}"
-                CardContent             = "{Binding CardContent}"/>
+                CardContent             = "{Binding CardContent}"
+                CardsColors             = "{Binding CardsColors}"/>
         </ScrollViewer>
     </Grid>
 </UserControl>

@@ -16,5 +16,7 @@ namespace Kanban.Desktop.KanbanBoard.Model
         public IEnumerable<Issue> Issues { get; internal set; }
 
         public ICardContent CardElements { get; internal set; }
+
+        public ICardsColors CardsColors { get; internal set; }
     }
 }

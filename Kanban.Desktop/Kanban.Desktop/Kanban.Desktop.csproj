@@ -111,8 +111,11 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Bootstrap.cs" />
+    <Compile Include="KanbanBoard\Model\CardColors.cs" />
+    <Compile Include="KanbanBoard\Model\CardColorSettings.cs" />
     <Compile Include="KanbanBoard\Model\CardItem.cs" />
     <Compile Include="KanbanBoard\Model\CardItemsConfiguration.cs" />
+    <Compile Include="KanbanBoard\Model\ColorMap.cs" />
     <Compile Include="KanbanBoard\Model\DimensionConfiguration.cs" />
     <Compile Include="KanbanBoard\Model\KanbanConfiguration.cs" />
     <Compile Include="KanbanBoard\ViewModel\IKanbanBoardViewModel.cs" />
