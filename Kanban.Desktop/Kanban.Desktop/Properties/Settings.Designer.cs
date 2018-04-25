@@ -41,9 +41,11 @@ namespace Kanban.Desktop.Properties {
           <Path>Subject</Path>
         </CardItem>
         <CardItem>
+          <Area>Short</Area>
           <Path>Tracker</Path>
         </CardItem>
         <CardItem>
+          <Area>Short</Area>
           <Path>Priority</Path>
         </CardItem>
         <CardItem>

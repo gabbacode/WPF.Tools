@@ -19,9 +19,11 @@
           &lt;Path&gt;Subject&lt;/Path&gt;
         &lt;/CardItem&gt;
         &lt;CardItem&gt;
+          &lt;Area&gt;Short&lt;/Area&gt;
           &lt;Path&gt;Tracker&lt;/Path&gt;
         &lt;/CardItem&gt;
         &lt;CardItem&gt;
+          &lt;Area&gt;Short&lt;/Area&gt;
           &lt;Path&gt;Priority&lt;/Path&gt;
         &lt;/CardItem&gt;
         &lt;CardItem&gt;
