@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -42,7 +41,7 @@ namespace Ui.Wpf.KanbanControl
 
             // TODO create only when type changed
             propertyAccessors = new PropertyAccessorsExpressionCreator(Cards);
-            BuildAutoCategories(Cards, HorizontalDimension, VerticalDimension, propertyAccessors);
+            BuildAutoCategories(HorizontalDimension, VerticalDimension);
 
             if (HorizontalDimension.Categories == null
                 || HorizontalDimension.Categories.Count == 0
@@ -61,26 +60,22 @@ namespace Ui.Wpf.KanbanControl
         }
 
         private void BuildAutoCategories(
-            IEnumerable Cards, 
             IDimension horizontalDimension, 
-            IDimension verticalDimension, 
-            PropertyAccessorsExpressionCreator propertyAccessors)
+            IDimension verticalDimension)
         {
             if (horizontalDimension is IDynamicDimension dynamicHorizontalDimension)
             {
-                horizontalDimension.Categories = GetDimensionCategories(Cards, dynamicHorizontalDimension, propertyAccessors);
+                horizontalDimension.Categories = GetDimensionCategories(dynamicHorizontalDimension);
             }
 
             if (verticalDimension is IDynamicDimension dynamicVerticalDimension)
             {
-                verticalDimension.Categories = GetDimensionCategories(Cards, dynamicVerticalDimension, propertyAccessors);
+                verticalDimension.Categories = GetDimensionCategories(dynamicVerticalDimension);
             }
         }
 
-        private static IList<IDimensionCategory> GetDimensionCategories(
-            IEnumerable Cards,
-            IDynamicDimension dimension, 
-            PropertyAccessorsExpressionCreator propertyAccessors)
+        private IList<IDimensionCategory> GetDimensionCategories(
+            IDynamicDimension dimension)
         {
             var getElementCategory = propertyAccessors.TakeGetterForProperty(dimension.FieldName);
 
@@ -150,6 +145,9 @@ namespace Ui.Wpf.KanbanControl
                 .Where(x => x.getter != null)
                 .ToArray();
 
+            var brushConverter = new BrushConverter();
+            
+            
             cardElements.Clear();
             foreach (var cardData in Cards)
             {
@@ -177,11 +175,10 @@ namespace Ui.Wpf.KanbanControl
                 {
                     var colorKeyGetter = propertyAccessors.TakeGetterForProperty(CardsColors.Path);
 
-                    ICardColor colors;
-                    if (CardsColors.ColorMap.TryGetValue(colorKeyGetter(cardData).ToString(), out colors))
+                    if (CardsColors.ColorMap.TryGetValue(colorKeyGetter(cardData).ToString(), out var colors))
                     {
-                        cardElement.Background = colors.Background;
-                        cardElement.BorderBrush = colors.BorderBrush;
+                        cardElement.Background = (SolidColorBrush)(brushConverter).ConvertFromString(colors.Background);
+                        cardElement.BorderBrush = (SolidColorBrush)(brushConverter).ConvertFromString(colors.BorderBrush);
                     }
 
                 }
@@ -223,7 +220,7 @@ namespace Ui.Wpf.KanbanControl
             {
                 var printDialog = new PrintDialog();
                 var result = printDialog.ShowDialog();
-                if (result.HasValue && result.Value)
+                if (result.Value)
                 {
                     printDialog.PrintVisual(this, "");
                 }
@@ -253,18 +250,10 @@ namespace Ui.Wpf.KanbanControl
         private static readonly DefaultTemplates defaultTemplates = new DefaultTemplates();
 
         //TODO dependency properties
-        private IShowKanbanStrategy showKanbanStrategy;
-        public IShowKanbanStrategy ShowKanbanStrategy
-        {
-            get => showKanbanStrategy;
-            set
-            {
-                showKanbanStrategy = value;
-                AddActionsToShow(KanbanChangeObjectType.ShowStrategy);
-            }
-        }
 
         private PropertyAccessorsExpressionCreator propertyAccessors;
+
+        private readonly IShowKanbanStrategy showKanbanStrategy;
 
         #endregion
 
@@ -304,7 +293,7 @@ namespace Ui.Wpf.KanbanControl
                 typeof(ICardContent), 
                 typeof(Kanban), 
                 new PropertyMetadata(
-                    new CardContent(new CardContentItem[] 
+                    new CardContent(new ICardContentItem[] 
                     {
                         new CardContentItem("Subject"),
                         new CardContentItem("Tracker")

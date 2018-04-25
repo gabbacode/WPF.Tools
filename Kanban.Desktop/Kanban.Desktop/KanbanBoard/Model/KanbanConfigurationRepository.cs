@@ -1,25 +1,15 @@
 ﻿using Data.Entities.Common.Redmine;
-using Data.Sources.Common.Redmine;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Media;
 using Ui.Wpf.KanbanControl.Dimensions;
 using Ui.Wpf.KanbanControl.Dimensions.Generic;
-using Ui.Wpf.KanbanControl.Elements;
 using Ui.Wpf.KanbanControl.Elements.CardElement;
 
 namespace Kanban.Desktop.KanbanBoard.Model
 {
     public class KanbanConfigurationRepository : IKanbanConfigurationRepository
     {
-        public KanbanConfigurationRepository(IRedmineRepository redmineRepository)
-        {
-            RedmineRepository = redmineRepository;
-        }
-
-        public IRedmineRepository RedmineRepository { get; }
-
         public KanbanConfiguration GetConfiguration(string configurationName)
         {
             if (string.IsNullOrEmpty(configurationName))
@@ -28,7 +18,7 @@ namespace Kanban.Desktop.KanbanBoard.Model
             return KanbanConfiguration.Parse((string)Properties.Settings.Default[configurationName]);
         }
 
-        public KanbanData GetKanbanData(KanbanConfiguration configuration, IEnumerable<Issue> issues)
+        public KanbanData GetKanbanData(KanbanConfiguration configuration, ICollection<Issue> issues)
         {
             if (configuration == null)
                 return GetDefaultConfiguration(issues);
@@ -39,8 +29,6 @@ namespace Kanban.Desktop.KanbanBoard.Model
         
         private KanbanData GetStoredConfiguration(KanbanConfiguration config, IEnumerable<Issue> issues)
         {
-            var brushConverter = new BrushConverter();
-
             return new KanbanData
             {
                 HorizontalDimension = new TagDimension(config.HorizontalDimension.DimensionName, config.HorizontalDimension.ValuesFilter),
@@ -49,14 +37,14 @@ namespace Kanban.Desktop.KanbanBoard.Model
                     config.CardItemsConfiguration.CardsItems
                         .Select(ci =>
                         {
-                            var cardContentArea = CardContentArea.Main;
-                            Enum.TryParse(ci.Area, out cardContentArea);
+                            Enum.TryParse(ci.Area, out CardContentArea cardContentArea);
 
                             return new CardContentItem(
                                 ci.Path,
                                 cardContentArea);
                         })
-                    .ToArray()),
+                        .OfType<ICardContentItem>()
+                        .ToArray()),
                 CardsColors = new CardsColors
                 {
                     Path = config.CardItemsConfiguration.ColorSettings.Path,
@@ -65,15 +53,15 @@ namespace Kanban.Desktop.KanbanBoard.Model
                             k => (object)k.Value,
                             v => (ICardColor)new CardColor
                             {
-                                Background = (SolidColorBrush)(brushConverter).ConvertFromString(v.CardColors.BackgroundColor),
-                                BorderBrush = (SolidColorBrush)(brushConverter).ConvertFromString(v.CardColors.BorderColor)
+                                Background = v.CardColors.BackgroundColor,
+                                BorderBrush = v.CardColors.BorderColor
                             })
                 },
                 Issues = issues
             };
         }
 
-        private KanbanData GetDefaultConfiguration(IEnumerable<Issue> issues)
+        private KanbanData GetDefaultConfiguration(ICollection<Issue> issues)
         {
             var users = issues
                 .Where(i => i.AssignedTo != null)

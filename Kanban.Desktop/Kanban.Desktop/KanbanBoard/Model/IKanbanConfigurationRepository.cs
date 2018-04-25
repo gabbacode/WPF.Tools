@@ -7,6 +7,6 @@ namespace Kanban.Desktop.KanbanBoard.Model
     {
         KanbanConfiguration GetConfiguration(string configurationName);
 
-        KanbanData GetKanbanData(KanbanConfiguration configuration, IEnumerable<Issue> issues);
+        KanbanData GetKanbanData(KanbanConfiguration configuration, ICollection<Issue> issues);
     }
 }

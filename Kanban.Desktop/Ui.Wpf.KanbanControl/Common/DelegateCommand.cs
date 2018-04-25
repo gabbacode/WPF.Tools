@@ -5,34 +5,40 @@ namespace Ui.Wpf.KanbanControl.Common
 {
     internal class DelegateCommand : ICommand
     {
-        private Action<object> ExecuteAction;
+        private readonly Action<object> executeAction;
 
-        private Func<object, bool> CanExecuteFunc;
+        private readonly Func<object, bool> canExecuteFunc;
 
         public DelegateCommand(Action<object> action)
         {
-            ExecuteAction = action;
+            executeAction = action;
         }
 
         public DelegateCommand(Action<object> action, Func<object, bool> canExecute)
         {
-            ExecuteAction = action;
-            CanExecuteFunc = canExecute;
+            executeAction = action;
+            canExecuteFunc = canExecute;
         }
 
         public event EventHandler CanExecuteChanged;
 
         public bool CanExecute(object parameter)
         {
-            if (CanExecuteFunc == null)
+            if (canExecuteFunc == null)
                 return true;
 
-            return CanExecuteFunc(parameter);
+            return canExecuteFunc(parameter);
         }
 
         public void Execute(object parameter)
         {
-            ExecuteAction(parameter);
+            executeAction(parameter);
         }
+        
+        public void ChangeCanExecute()
+        {
+            var eventHandler = CanExecuteChanged;
+            eventHandler?.Invoke(this, EventArgs.Empty);
+        }        
     }
 }
