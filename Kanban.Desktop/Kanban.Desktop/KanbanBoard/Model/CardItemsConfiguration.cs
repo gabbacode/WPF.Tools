@@ -2,6 +2,6 @@
 {
     public class CardsItemsConfiguration
     {
-        public string[] CardsItemsPaths { get; set; }
+        public CardItem[] CardsItems { get; set; }
     }
 }

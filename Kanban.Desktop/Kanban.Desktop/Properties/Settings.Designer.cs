@@ -35,11 +35,22 @@ namespace Kanban.Desktop.Properties {
     <DimensionName>AssignedTo</DimensionName>
   </VerticalDimension>
   <CardsItemsConfiguration>
-    <CardsItemsPaths>
-      <string>Subject</string>
-      <string>Tracker</string>
-      <string>Description</string>
-    </CardsItemsPaths>
+    <CardsItems>
+        <CardItem>
+          <Area>Main</Area>
+          <Path>Subject</Path>
+        </CardItem>
+        <CardItem>
+          <Path>Tracker</Path>
+        </CardItem>
+        <CardItem>
+          <Path>Priority</Path>
+        </CardItem>
+        <CardItem>
+          <Area>Additional</Area>
+          <Path>Description</Path>
+        </CardItem>
+    </CardsItems>
   </CardsItemsConfiguration>
 </KanbanConfiguration>")]
         public string h_status_v_assigned_c_subject_treker_details {

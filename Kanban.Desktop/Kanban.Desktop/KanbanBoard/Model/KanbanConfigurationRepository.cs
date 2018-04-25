@@ -1,10 +1,12 @@
 ﻿using Data.Entities.Common.Redmine;
 using Data.Sources.Common.Redmine;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Ui.Wpf.KanbanControl.Dimensions;
 using Ui.Wpf.KanbanControl.Dimensions.Generic;
 using Ui.Wpf.KanbanControl.Elements;
+using Ui.Wpf.KanbanControl.Elements.CardElement;
 
 namespace Kanban.Desktop.KanbanBoard.Model
 {
@@ -40,7 +42,18 @@ namespace Kanban.Desktop.KanbanBoard.Model
             {
                 HorizontalDimension = new TagDimension(config.HorizontalDimension.DimensionName, config.HorizontalDimension.ValuesFilter),
                 VerticalDimension = new TagDimension(config.VerticalDimension.DimensionName, config.VerticalDimension.ValuesFilter),
-                CardElements = new CardContent(config.CardsItemsConfiguration.CardsItemsPaths),
+                CardElements = new CardContent(
+                    config.CardsItemsConfiguration.CardsItems
+                        .Select(ci =>
+                        {
+                            var cardContentArea = CardContentArea.Main;
+                            Enum.TryParse(ci.Area, out cardContentArea);
+
+                            return new CardContentItem(
+                                ci.Path,
+                                cardContentArea);
+                        })
+                    .ToArray()),
                 Issues = issues
             };
         }
@@ -83,9 +96,12 @@ namespace Kanban.Desktop.KanbanBoard.Model
                         .ToArray()
                 ),
 
-                CardElements = new CardContent(new[] 
+                CardElements = new CardContent(new ICardContentItem[] 
                 {
-                    "Subject", "Treker", "Priority", "Details"
+                    new CardContentItem("Subject"),
+                    new CardContentItem("Tracker"),
+                    new CardContentItem("Priority"),
+                    new CardContentItem("Description")
                 }),
 
                 Issues = issues

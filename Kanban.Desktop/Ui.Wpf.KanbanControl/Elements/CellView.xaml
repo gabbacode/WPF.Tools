@@ -17,8 +17,8 @@
             HorizontalScrollBarVisibility="Disabled"
             PreviewMouseWheel="ScrollViewerPreviewMouseWheel">
             <StackPanel
-            Name="ItemContainer"
-            Orientation="Vertical"/>
+                Name="ItemContainer"
+                Orientation="Vertical"/>
         </ScrollViewer>
     </Grid>
 </UserControl>

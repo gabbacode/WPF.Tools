@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using Data.Entities.Common.Redmine;
 using Data.Sources.Common.Redmine;
 
@@ -8,12 +9,15 @@ namespace Data.Sources.Redmine
 {
     public class DemoRedmineRepository : IRedmineRepository
     {
-        private User[] demoUsers = 
+        public DemoRedmineRepository()
         {
-            new User { Id = 1, Name = "user 1" },
-            new User { Id = 2, Name = "user 2" },
-            new User { Id = 3, Name = "user 3" },
-        };
+            demoUsers = Enumerable
+                .Range(0, 30)
+                .Select(x => new User { Id = x, Name = $"user {x}" })
+                .ToArray();
+        }
+
+        private readonly User[] demoUsers;
 
         private Status[] statuses =
         {
@@ -64,7 +68,7 @@ namespace Data.Sources.Redmine
                             AssignedTo = user,
                             Id = --issueId,
                             Status = statuses[rnd.Next(statuses.Length)],
-                            Description = $"description of task{issueId}",
+                            Description = $"long textual description of task{issueId} Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed eu egestas ligula, in dignissim eros. Etiam dolor dui, vulputate mollis massa vel, venenatis aliquam quam. Etiam eu massa eleifend, blandit ipsum eu, vestibulum orci. Ut auctor, risus ac semper commodo, libero dolor feugiat lorem, a cursus enim leo id nisi. In tempor condimentum blandit. ",
                             Priority = priorities[rnd.Next(priorities.Length)],
                             Project = projects[j],
                             Subject = $"subject of task{issueId}",

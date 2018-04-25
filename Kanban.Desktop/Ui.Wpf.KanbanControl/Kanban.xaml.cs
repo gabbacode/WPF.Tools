@@ -11,6 +11,7 @@ using Ui.Wpf.KanbanControl.Behaviours;
 using Ui.Wpf.KanbanControl.Common;
 using Ui.Wpf.KanbanControl.Dimensions;
 using Ui.Wpf.KanbanControl.Elements;
+using Ui.Wpf.KanbanControl.Elements.CardElement;
 using Ui.Wpf.KanbanControl.Expressions;
 
 namespace Ui.Wpf.KanbanControl
@@ -139,11 +140,11 @@ namespace Ui.Wpf.KanbanControl
 
         private void BuildCards()
         {
-            var getters = CardContent?.CardContentItemsPaths
-                .Select(path => new
+            var contentItems = CardContent?.CardContentItems
+                .Select(ci => new
                 {
-                    path,
-                    getter = propertyAccessors.TakeGetterForProperty(path)
+                    ci,
+                    getter = propertyAccessors.TakeGetterForProperty(ci.Path)
                 })
                 .Where(x => x.getter != null)
                 .ToArray();
@@ -153,12 +154,27 @@ namespace Ui.Wpf.KanbanControl
             {
                 var cardElement = new Card(cardData);
 
-                if (getters != null)
+                if (contentItems != null)
                 {
-                    cardElement.ContentItems = getters
+                    cardElement.ContentItems = contentItems
+                        .Where(x => x.ci.Area == CardContentArea.Main)
+                        .Select(g => new ContentItem(cardData, g.getter))
+                        .ToList();
+
+                    cardElement.ShortContentItems = contentItems
+                        .Where(x => x.ci.Area == CardContentArea.Short)
+                        .Select(g => new ContentItem(cardData, g.getter))
+                        .ToList();
+
+                    cardElement.AdditionalContentItems = contentItems
+                        .Where(x => x.ci.Area == CardContentArea.Additional)
                         .Select(g => new ContentItem(cardData, g.getter))
                         .ToList();
                 }
+
+                cardElement.ActionItems = cardElement.AdditionalContentItems
+                        .Select(g => new ActionItem(g))
+                        .ToList();
 
                 cardElement.View.ContentTemplate = CardTemplate;
 
@@ -274,7 +290,11 @@ namespace Ui.Wpf.KanbanControl
                 typeof(ICardContent), 
                 typeof(Kanban), 
                 new PropertyMetadata(
-                    new CardContent(new[] { "Subject", "Tracker" }),
+                    new CardContent(new CardContentItem[] 
+                    {
+                        new CardContentItem("Subject"),
+                        new CardContentItem("Tracker")
+                    }),
                     OnCardContentChanged));
 
         private static void OnCardContentChanged(

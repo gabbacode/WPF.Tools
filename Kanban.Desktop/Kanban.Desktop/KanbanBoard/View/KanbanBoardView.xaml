@@ -48,7 +48,8 @@
             Grid.Row="0"
             Orientation="Horizontal">
             <TextBlock 
-                Margin="15"
+                Margin="18"
+                FontWeight="Bold"
                 Text="Project: "/>
             <controls:SplitButton 
                 Margin="12"

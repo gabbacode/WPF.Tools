@@ -65,11 +65,11 @@
     <Compile Include="Dimensions\IDynamicDimension.cs" />
     <Compile Include="Dimensions\TagDimension.cs" />
     <Compile Include="Dimensions\TagsDimensionCategory.cs" />
-    <Compile Include="Elements\Card.cs" />
-    <Compile Include="Elements\CardContent.cs" />
-    <Compile Include="Elements\CardView.xaml.cs">
-      <DependentUpon>CardView.xaml</DependentUpon>
-    </Compile>
+    <Compile Include="Elements\CardElement\ActionItem.cs" />
+    <Compile Include="Elements\CardElement\Card.cs" />
+    <Compile Include="Elements\CardElement\CardContent.cs" />
+    <Compile Include="Elements\CardElement\CardContentArea.cs" />
+    <Compile Include="Elements\CardElement\CardContentItem.cs" />
     <Compile Include="Elements\Cell.cs" />
     <Compile Include="Elements\CellView.xaml.cs">
       <DependentUpon>CellView.xaml</DependentUpon>
@@ -79,7 +79,8 @@
     <Compile Include="Elements\HeaderView.xaml.cs">
       <DependentUpon>HeaderView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Elements\ICardContent.cs" />
+    <Compile Include="Elements\CardElement\ICardContent.cs" />
+    <Compile Include="Elements\CardElement\ICardContentItem.cs" />
     <Compile Include="Elements\IKanbanBoardView.cs" />
     <Compile Include="Behaviours\IShowKanbanStrategy.cs" />
     <Compile Include="Expressions\PropertyAccessorsExpressionCreator.cs" />
@@ -109,10 +110,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Elements\CardView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Elements\CellView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

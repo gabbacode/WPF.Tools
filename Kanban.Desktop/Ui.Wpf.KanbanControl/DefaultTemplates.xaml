@@ -49,9 +49,24 @@
         <GradientStop Color="#FFFFE0" Offset="0.4" />
     </LinearGradientBrush>
 
-
     <DataTemplate x:Key="ContentItemTemplate">
         <TextBlock Text="{Binding Value}"/>
+    </DataTemplate>
+
+    <DataTemplate x:Key="ActionItemTemplate">
+        <ToggleButton 
+            Background="Transparent"
+            BorderThickness="0"
+            Command="{Binding Action}"
+            Content="..."/>
+    </DataTemplate>
+    
+    <DataTemplate x:Key="AdditionalContentItemTemplate">
+        <TextBlock
+            Text="{Binding Value}"
+            TextWrapping="Wrap"
+            Visibility="{Binding Visibility, FallbackValue=Collapsed}"
+            />
     </DataTemplate>
     
     <DataTemplate x:Key="CardTemplate">
@@ -61,14 +76,29 @@
             BorderThickness="1,1,1,1" 
             CornerRadius="4"
             Margin="3">
-            <ItemsControl
-                Background="Transparent"
-                ItemsSource="{Binding ContentItems}"
-                ItemTemplate="{StaticResource ContentItemTemplate}"
-                HorizontalAlignment="Stretch"
-                Margin="3"
-                MaxHeight="100"/>
+            <StackPanel>
+                <ItemsControl
+                    ItemsSource="{Binding ContentItems}"
+                    ItemTemplate="{StaticResource ContentItemTemplate}"
+                    HorizontalAlignment="Stretch"
+                    Margin="3"
+                    MaxHeight="100"/>
+                <ItemsControl
+                    ItemsSource="{Binding ActionItems}"
+                    ItemTemplate="{StaticResource ActionItemTemplate}"
+                    Margin="3"                    
+                    MaxHeight="24">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+                <ItemsControl
+                    ItemsSource="{Binding AdditionalContentItems}"
+                    ItemTemplate="{StaticResource AdditionalContentItemTemplate}">
+                </ItemsControl>
+            </StackPanel>
         </Border>
     </DataTemplate>
-    
 </ResourceDictionary>

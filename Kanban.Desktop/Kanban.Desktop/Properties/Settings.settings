@@ -13,11 +13,22 @@
     &lt;DimensionName&gt;AssignedTo&lt;/DimensionName&gt;
   &lt;/VerticalDimension&gt;
   &lt;CardsItemsConfiguration&gt;
-    &lt;CardsItemsPaths&gt;
-      &lt;string&gt;Subject&lt;/string&gt;
-      &lt;string&gt;Tracker&lt;/string&gt;
-      &lt;string&gt;Description&lt;/string&gt;
-    &lt;/CardsItemsPaths&gt;
+    &lt;CardsItems&gt;
+        &lt;CardItem&gt;
+          &lt;Area&gt;Main&lt;/Area&gt;
+          &lt;Path&gt;Subject&lt;/Path&gt;
+        &lt;/CardItem&gt;
+        &lt;CardItem&gt;
+          &lt;Path&gt;Tracker&lt;/Path&gt;
+        &lt;/CardItem&gt;
+        &lt;CardItem&gt;
+          &lt;Path&gt;Priority&lt;/Path&gt;
+        &lt;/CardItem&gt;
+        &lt;CardItem&gt;
+          &lt;Area&gt;Additional&lt;/Area&gt;
+          &lt;Path&gt;Description&lt;/Path&gt;
+        &lt;/CardItem&gt;
+    &lt;/CardsItems&gt;
   &lt;/CardsItemsConfiguration&gt;
 &lt;/KanbanConfiguration&gt;</Value>
     </Setting>

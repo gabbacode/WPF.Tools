@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Media;
 using Ui.Wpf.KanbanControl.Dimensions;
+using Ui.Wpf.KanbanControl.Elements.CardElement;
 
 namespace Ui.Wpf.KanbanControl.Elements
 {

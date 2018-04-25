@@ -1,18 +1,25 @@
 ﻿using System.Collections.Generic;
+using System.Windows.Controls;
 
-namespace Ui.Wpf.KanbanControl.Elements
+namespace Ui.Wpf.KanbanControl.Elements.CardElement
 {
     public class Card
     {
         public Card(object item)
         {
             Item = item;
-            View = new CardView();
+            View = new ContentControl();
             View.Content = this;
             View.DataContext = this;
         }
 
-        public CardView View { get; private set; }
+        public ContentControl View { get; private set; }
+
+        public List<ActionItem> ActionItems { get; internal set; }
+
+        public List<ContentItem> AdditionalContentItems { get; set; }
+
+        public List<ContentItem> ShortContentItems { get; internal set; }
 
         public List<ContentItem> ContentItems { get; internal set; }
 

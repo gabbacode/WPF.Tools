@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Ui.Wpf.KanbanControl.Dimensions;
 using Ui.Wpf.KanbanControl.Elements;
+using Ui.Wpf.KanbanControl.Elements.CardElement;
 
 namespace Kanban.Desktop.KanbanBoard.ViewModel
 {
