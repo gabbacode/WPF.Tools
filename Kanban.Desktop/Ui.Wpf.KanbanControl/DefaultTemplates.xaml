@@ -55,11 +55,11 @@
 
     <DataTemplate x:Key="ShortContentItemTemplate">
         <Border
-            BorderBrush="#FED22F"
+            BorderBrush="#E1E1E1"
             BorderThickness="1"            
-            Margin="3, 0, 0, 0">
+            Margin="0, 0, 3, 0">
             <TextBlock 
-                Margin="1" 
+                Margin="3, 0, 3, 0" 
                 Text="{Binding Value}"/>
         </Border>
     </DataTemplate>
@@ -70,6 +70,7 @@
             Background="Transparent"
             BorderThickness="0"
             Command="{Binding Action}"
+            Template="{x:Null}"            
             Content="..."/>
     </DataTemplate>
     
@@ -93,13 +94,13 @@
                     ItemsSource="{Binding ContentItems}"
                     ItemTemplate="{StaticResource ContentItemTemplate}"
                     HorizontalAlignment="Stretch"
-                    Margin="3"
+                    Margin="3, 0, 0, 0"
                     MaxHeight="100"/>
                 <ItemsControl
                     ItemsSource="{Binding ShortContentItems}"
                     ItemTemplate="{StaticResource ShortContentItemTemplate}"
                     HorizontalAlignment="Stretch"
-                    Margin="3"
+                    Margin="3, 0, 0, 0"
                     MaxHeight="24">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -110,7 +111,7 @@
                 <ItemsControl
                     ItemsSource="{Binding ActionItems}"
                     ItemTemplate="{StaticResource ActionItemTemplate}"
-                    Margin="3"                    
+                    Margin="3, 0, 0, 0"
                     MaxHeight="24">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
