@@ -89,6 +89,7 @@
     <Compile Include="Elements\CardElement\ICardContentItem.cs" />
     <Compile Include="Elements\IKanbanBoardView.cs" />
     <Compile Include="Behaviours\IShowKanbanStrategy.cs" />
+    <Compile Include="Expressions\ExpressionPathMember.cs" />
     <Compile Include="Expressions\PropertyAccessorsExpressionCreator.cs" />
     <Compile Include="Kanban.xaml.cs">
       <DependentUpon>Kanban.xaml</DependentUpon>

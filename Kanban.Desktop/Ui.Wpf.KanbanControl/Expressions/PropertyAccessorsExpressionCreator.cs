@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Windows.Data;
 
 namespace Ui.Wpf.KanbanControl.Expressions
 {
@@ -29,21 +30,47 @@ namespace Ui.Wpf.KanbanControl.Expressions
 
             InitByType(type);
         }
-
+        
         private void InitByType(Type type)
         {
-            var propertyInfos = type.GetProperties(
-                BindingFlags.Instance
-                | BindingFlags.Public
-                | BindingFlags.SetProperty);
+            var processed = new HashSet<ExpressionPathMember>();
+            var toWalk = new Queue<ExpressionPathMember>();
 
-            foreach (var propertyInfo in propertyInfos)
+            toWalk.Enqueue(new ExpressionPathMember
             {
-                var getter = BuildGetter(propertyInfo);
-                var setter = BuildSetter(propertyInfo);
+                Path = null, Name = "", OwnerType = type
+            });
 
-                getters.Add(propertyInfo.Name, getter);
-                setters.Add(propertyInfo.Name, setter);
+            while (toWalk.Any())
+            {
+                var pathMember = toWalk.Dequeue();
+                if (!processed.Add(pathMember))
+                    continue;
+
+                var props = pathMember.OwnerType.GetProperties(
+                    BindingFlags.Instance
+                    | BindingFlags.Public
+                    | BindingFlags.SetProperty);
+
+                foreach (var propertyInfo in props)
+                {
+                    var getter = BuildGetter(propertyInfo);
+                    var setter = BuildSetter(propertyInfo);
+
+                    var path = pathMember.Path != null
+                        ? pathMember.Path + "." + propertyInfo.Name
+                        : propertyInfo.Name;
+
+                    getters.Add(path, getter);
+                    setters.Add(path, setter);
+
+                    toWalk.Enqueue(new ExpressionPathMember
+                    {
+                        Path = path,
+                        Name = propertyInfo.Name,
+                        OwnerType = propertyInfo.PropertyType,
+                    });
+                }
             }
         }
 
