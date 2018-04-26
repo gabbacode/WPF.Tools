@@ -42,7 +42,12 @@ namespace Kanban.Desktop
                         {
                             Title = "Kanban dynamic dimension",
                             ConfigurtaionName = "h_status_v_assigned_c_subject_treker_details"
-                        });                        
+                        });
+                        shell.ShowView<IKanbanBoardView>(new KanbanShowOptions
+                        {
+                            Title = "ods",
+                            ConfigurtaionName = "ods"
+                        });
                     },
                 autenticationFail:         () => Current.MainWindow.Close());
         }
