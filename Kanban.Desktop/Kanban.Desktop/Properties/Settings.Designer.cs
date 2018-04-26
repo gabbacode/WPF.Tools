@@ -63,5 +63,48 @@ namespace Kanban.Desktop.Properties {
                 this["h_status_v_assigned_c_subject_treker_details"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<KanbanConfiguration xmlns:xsi=\"http://w" +
+            "ww.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">" +
+            "\r\n  <ProjectId>18</ProjectId>\r\n  <HorizontalDimension>\r\n    <DimensionName>Statu" +
+            "s</DimensionName>\r\n    <ValuesFilter>\r\n      <string>Новая</string>\r\n      <stri" +
+            "ng>В процессе</string>\r\n      <string>Решена</string>\r\n    </ValuesFilter>\r\n  </" +
+            "HorizontalDimension>\r\n  <VerticalDimension>\r\n    <DimensionName>Tracker</Dimensi" +
+            "onName>\r\n    <ValuesFilter>\r\n      <string>Входящий вызов</string>\r\n      <strin" +
+            "g>Исходящий вызов</string>\r\n    </ValuesFilter>    \r\n  </VerticalDimension>\r\n  <" +
+            "CardItemsConfiguration>\r\n    <CardsItems>\r\n        <CardItem>\r\n          <Area>M" +
+            "ain</Area>\r\n          <Path>Subject</Path>\r\n        </CardItem>\r\n    </CardsItem" +
+            "s>\r\n    <ColorSettings>\r\n      <Path>Priority</Path>\r\n      <ColorMaps>\r\n       " +
+            " <ColorMap>\r\n          <Value>Низкий</Value>\r\n          <CardColors>\r\n          " +
+            "  <BorderColor>#7DBB00</BorderColor>\r\n            <BackgroundColor>#DCFFC2</Back" +
+            "groundColor>\r\n          </CardColors>\r\n        </ColorMap>\r\n        <ColorMap>\r\n" +
+            "          <Value>Нормальный</Value>\r\n          <CardColors>\r\n            <Border" +
+            "Color>#FFB13B</BorderColor>\r\n            <BackgroundColor>#FFE7B6</BackgroundCol" +
+            "or>\r\n          </CardColors>\r\n        </ColorMap>\r\n        <ColorMap>\r\n         " +
+            " <Value>Высокий</Value>\r\n          <CardColors>\r\n            <BorderColor>#FF809" +
+            "9</BorderColor>\r\n            <BackgroundColor>#FFCCD6</BackgroundColor>\r\n       " +
+            "   </CardColors>\r\n        </ColorMap>\r\n        <ColorMap>\r\n          <Value>Сроч" +
+            "ный</Value>\r\n          <CardColors>\r\n            <BorderColor>#C69CF3</BorderCol" +
+            "or>\r\n            <BackgroundColor>#E2D2F2</BackgroundColor>\r\n          </CardCol" +
+            "ors>\r\n        </ColorMap>\r\n        <ColorMap>\r\n          <Value>low</Value>\r\n   " +
+            "       <CardColors>\r\n            <BorderColor>#7DBB00</BorderColor>\r\n           " +
+            " <BackgroundColor>#DCFFC2</BackgroundColor>\r\n          </CardColors>\r\n        </" +
+            "ColorMap>\r\n        <ColorMap>\r\n          <Value>normal</Value>\r\n          <CardC" +
+            "olors>\r\n            <BorderColor>#FFB13B</BorderColor>\r\n            <BackgroundC" +
+            "olor>#FFE7B6</BackgroundColor>\r\n          </CardColors>\r\n        </ColorMap>\r\n  " +
+            "      <ColorMap>\r\n          <Value>high</Value>\r\n          <CardColors>\r\n       " +
+            "     <BorderColor>#FF8099</BorderColor>\r\n            <BackgroundColor>#FFCCD6</B" +
+            "ackgroundColor>\r\n          </CardColors>\r\n        </ColorMap>\r\n      </ColorMaps" +
+            ">\r\n    </ColorSettings>\r\n  </CardItemsConfiguration>\r\n</KanbanConfiguration>")]
+        public string ods {
+            get {
+                return ((string)(this["ods"]));
+            }
+            set {
+                this["ods"] = value;
+            }
+        }
     }
 }
