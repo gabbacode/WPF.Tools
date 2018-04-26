@@ -29,6 +29,16 @@ namespace Ui.Wpf.KanbanControl
             BuildCommands();
         }
 
+        protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
+        {
+            base.OnRenderSizeChanged(sizeInfo);
+
+            // let the GridSplitter move
+            if (sizeInfo.NewSize.Height != 0
+                && double.IsNaN(Height))
+                Height = sizeInfo.NewSize.Height + 6;
+        }
+
         private void AddActionsToShow(KanbanChangeObjectType changeObjectType)
         {
             // ugly destory and build
