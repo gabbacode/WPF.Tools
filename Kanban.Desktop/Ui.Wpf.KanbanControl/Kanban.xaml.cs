@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -222,6 +223,25 @@ namespace Ui.Wpf.KanbanControl
                 var result = printDialog.ShowDialog();
                 if (result.Value)
                 {
+                    var capabilities = printDialog.PrintQueue.GetPrintCapabilities(printDialog.PrintTicket);
+
+                    var scale = Math.Min(
+                        capabilities.PageImageableArea.ExtentWidth / ActualWidth, 
+                        capabilities.PageImageableArea.ExtentHeight / ActualHeight);
+
+                    LayoutTransform = new ScaleTransform(scale, scale);
+
+                    var pageSize = new Size(
+                        capabilities.PageImageableArea.ExtentWidth, 
+                        capabilities.PageImageableArea.ExtentHeight);
+
+                    Measure(pageSize);
+                    Arrange(new Rect(
+                        new Point(
+                            capabilities.PageImageableArea.OriginWidth, 
+                            capabilities.PageImageableArea.OriginHeight), 
+                        pageSize));
+
                     printDialog.PrintVisual(this, "");
                 }
             });
