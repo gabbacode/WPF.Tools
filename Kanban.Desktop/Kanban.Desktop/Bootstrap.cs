@@ -47,6 +47,10 @@ namespace Kanban.Desktop
         private static void ConfigureKanbanBoard(ContainerBuilder builder)
         {
             builder
+                .RegisterType<KanbanBoardModel>()
+                .As<IKanbanBoardModel>();
+            
+            builder
                 .RegisterType<KanbanBoardViewModel>()
                 .As<IKanbanBoardViewModel>();
 

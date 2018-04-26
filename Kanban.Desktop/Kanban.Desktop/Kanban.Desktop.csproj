@@ -117,6 +117,8 @@
     <Compile Include="KanbanBoard\Model\CardItemsConfiguration.cs" />
     <Compile Include="KanbanBoard\Model\ColorMap.cs" />
     <Compile Include="KanbanBoard\Model\DimensionConfiguration.cs" />
+    <Compile Include="KanbanBoard\Model\IKanbanBoardModel.cs" />
+    <Compile Include="KanbanBoard\Model\KanbanBoardModel.cs" />
     <Compile Include="KanbanBoard\Model\KanbanConfiguration.cs" />
     <Compile Include="KanbanBoard\ViewModel\IKanbanBoardViewModel.cs" />
     <Compile Include="KanbanBoard\View\IKanbanBoardView.cs" />

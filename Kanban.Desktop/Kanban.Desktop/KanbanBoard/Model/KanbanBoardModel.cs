@@ -1,26 +1,46 @@
-﻿using Data.Entities.Common.Redmine;
-using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
-using System.Collections.ObjectModel;
-using Ui.Wpf.KanbanControl.Dimensions;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Data.Entities.Common.Redmine;
+using Data.Sources.Common.Redmine;
 
 namespace Kanban.Desktop.KanbanBoard.Model
 {
-    public class KanbanBoardModel : ReactiveObject, IKanbanBoardModel
+    public class KanbanBoardModel : IKanbanBoardModel
     {
-        public KanbanBoardModel(IKanbanConfigurationRepository kanbanRepository)
+        public KanbanBoardModel(
+            IKanbanConfigurationRepository kanbanRepository,
+            IRedmineRepository redmineRepository)
         {
-            KanbanRepository = kanbanRepository;
+            this.kanbanRepository = kanbanRepository;
+            this.redmineRepository = redmineRepository;
         }
 
-        [Reactive] public ObservableCollection<Issue> Issues { get; private set; }
+        public KanbanConfiguration Configuration { get; set; }
+        
+        public void GetConfiguration(string configurationName)
+        {
+            Configuration = kanbanRepository.GetConfiguration(configurationName);
+        }
 
+        public KanbanData RefreshData()
+        {
+            var issues = redmineRepository
+                .GetIssues(Configuration?.ProjectId)
+                .ToArray();
 
+            var data = kanbanRepository.GetKanbanData(Configuration, issues);
 
-        [Reactive] public IDimension VerticalDimension { get; private set; }
+            return data;
+        }
 
-        [Reactive] public IDimension HorizontalDimension { get; private set; }
+        public IEnumerable<Project> LoadProjects()
+        {
+            var projects = redmineRepository.GetProjects();
 
-        private readonly IKanbanConfigurationRepository KanbanRepository;
+            return projects;
+        }
+
+        private readonly IKanbanConfigurationRepository kanbanRepository;
+        private readonly IRedmineRepository redmineRepository;
     }
 }

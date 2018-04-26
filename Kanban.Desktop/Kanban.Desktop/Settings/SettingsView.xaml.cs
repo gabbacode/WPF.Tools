@@ -13,7 +13,6 @@ namespace Kanban.Desktop.Settings
             InitializeComponent();
 
             ViewModel = viewModel;
-            viewModel.Initialize();
             DataContext = viewModel;
         }
 

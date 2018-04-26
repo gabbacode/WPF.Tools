@@ -1,11 +1,11 @@
 ﻿using Data.Entities.Common.Redmine;
-using Data.Sources.Common.Redmine;
 using Kanban.Desktop.KanbanBoard.Model;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
-using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Ui.Wpf.KanbanControl.Dimensions;
 using Ui.Wpf.KanbanControl.Elements.CardElement;
@@ -16,11 +16,10 @@ namespace Kanban.Desktop.KanbanBoard.ViewModel
     public class KanbanBoardViewModel : ReactiveObject, IKanbanBoardViewModel
     {
         public KanbanBoardViewModel(
-            IKanbanConfigurationRepository kanbanRepository,
-            IRedmineRepository redmineRepository)
+            IKanbanBoardModel model)
         {
-            KanbanRepository = kanbanRepository;
-            RedmineRepository = redmineRepository;
+            this.model = model;
+            
             Title = "Kanban";
 
             Projects = new ReactiveList<Project>();
@@ -29,9 +28,9 @@ namespace Kanban.Desktop.KanbanBoard.ViewModel
             this.ObservableForProperty(x => x.CurrentProject)
                 .Subscribe(x =>
                 {
-                    if (CurrentConfiguration != null)
+                    if (model.Configuration != null)
                     {
-                        CurrentConfiguration.ProjectId = x.Value.Id;
+                        model.Configuration.ProjectId = x.Value.Id;
                     }
 
                     Refresh();
@@ -40,28 +39,26 @@ namespace Kanban.Desktop.KanbanBoard.ViewModel
             this.ObservableForProperty(x => x.ConfigurtaionName)
                 .Subscribe(x => 
                 {
-                    CurrentConfiguration = KanbanRepository.GetConfiguration(x.Value);
+                    model.GetConfiguration(x.Value);
                 });
         }
 
         private async void Refresh()
         {
-            var issues = await Task.Run(() => RedmineRepository.GetIssues(CurrentConfiguration?.ProjectId));
-
-            var data = KanbanRepository.GetKanbanData(CurrentConfiguration, issues);
-
+            Debug.WriteLine(Thread.CurrentThread.ManagedThreadId);
+            var data = await Task.Run(() => model.RefreshData()).ConfigureAwait(true);
+            Debug.WriteLine(Thread.CurrentThread.ManagedThreadId);            
+            Issues.Clear();
             VerticalDimension = data.VerticalDimension;
             HorizontalDimension = data.HorizontalDimension;
             CardContent = data.CardElements;
             CardsColors = data.CardsColors;
-
-            Issues.Clear();
             Issues.AddRange(data.Issues);
         }
 
         public async void Initialize()
         {
-            var projects = await Task.Run(() => RedmineRepository.GetProjects());
+            var projects = await Task.Run(() => model.LoadProjects()).ConfigureAwait(true);
 
             Projects.Clear();
             foreach (var project in projects)
@@ -69,10 +66,10 @@ namespace Kanban.Desktop.KanbanBoard.ViewModel
                 Projects.Add(project);
             }
 
-            if (CurrentConfiguration != null
-                && CurrentConfiguration.ProjectId.HasValue)
+            if (model.Configuration != null
+                && model.Configuration.ProjectId.HasValue)
             {
-                CurrentProject = Projects.FirstOrDefault(x => x.Id == CurrentConfiguration.ProjectId);
+                CurrentProject = Projects.FirstOrDefault(x => x.Id == model.Configuration.ProjectId);
             }
 
             Refresh();
@@ -84,7 +81,7 @@ namespace Kanban.Desktop.KanbanBoard.ViewModel
 
         [Reactive] public Project CurrentProject { get; set; }
 
-        [Reactive] public ReactiveList<Project> Projects { get; set; }
+        [Reactive] public ReactiveList<Project> Projects { get; private set; }
 
         [Reactive] public ReactiveList<Issue> Issues { get; private set; }
 
@@ -96,10 +93,6 @@ namespace Kanban.Desktop.KanbanBoard.ViewModel
 
         [Reactive] public ICardsColors CardsColors { get; private set; }
 
-        public KanbanConfiguration CurrentConfiguration { get; private set; }
-
-        private readonly IKanbanConfigurationRepository KanbanRepository;
-
-        private readonly IRedmineRepository RedmineRepository;
+        private readonly IKanbanBoardModel model;
     }
 }
