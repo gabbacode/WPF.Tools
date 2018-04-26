@@ -32,20 +32,19 @@ namespace Ui.Wpf.KanbanControl.Behaviours
             ClearDefinitions();
 
             elementsDispenser.DispenceItems(
-                kanbanBoard.CardElements,
-                kanbanBoard.HorizontalDimension,
-                kanbanBoard.VerticalDimension,
-                propertyAccessors);
+                 kanbanBoard.CardElements,
+                 kanbanBoard.HorizontalDimension,
+                 kanbanBoard.VerticalDimension,
+                 propertyAccessors);
+
+            PlaceItems();
+            Autoscale();
 
             BuildGridDefenitions();
             BuildGridSpliters();
 
             PlaceHeaders();
             PlaceCells();
-            PlaceItems();
-
-            //TODO rewrite
-            kanbanBoard.KanbanGrid.Height = kanbanBoard.VerticalDimension.Categories.Count * 250;
         }
 
 
@@ -123,7 +122,11 @@ namespace Ui.Wpf.KanbanControl.Behaviours
             });
             foreach (var vCategory in kanbanBoard.VerticalDimension.Categories)
             {
-                kanbanBoard.KanbanGrid.RowDefinitions.Add(new RowDefinition());
+                kanbanBoard.KanbanGrid.RowDefinitions.Add(
+                    new RowDefinition
+                    {
+                        Height = new GridLength(vCategory.Weight, GridUnitType.Star)
+                    });
             }
         }
 
@@ -202,7 +205,8 @@ namespace Ui.Wpf.KanbanControl.Behaviours
                 if (card.HorizontalCategoryIndex < 0
                     || card.VerticalCategoryIndex < 0)
                     continue;
-                
+
+                kanbanBoard.Cells[card.HorizontalCategoryIndex, card.VerticalCategoryIndex].ItemsCount++;
                 kanbanBoard.Cells[card.HorizontalCategoryIndex, card.VerticalCategoryIndex].View.ItemContainer.Children.Add(card.View);
             }
         }
@@ -213,6 +217,7 @@ namespace Ui.Wpf.KanbanControl.Behaviours
             {
                 for (int j = 0; j < kanbanBoard.VerticalDimension.Categories.Count; j++)
                 {
+                    kanbanBoard.Cells[i, j].ItemsCount = 0;
                     kanbanBoard.Cells[i, j].View.ItemContainer.Children.Clear();
                 }
             }
@@ -227,6 +232,34 @@ namespace Ui.Wpf.KanbanControl.Behaviours
             foreach (var toRemove in toRemoveItems)
             {
                 kanbanBoard.KanbanGrid.Children.Remove(toRemove);
+            }
+        }
+
+        private void Autoscale()
+        {
+            var rowMaxItemCounts = new int[kanbanBoard.VerticalDimension.Categories.Count];
+            for (int j = 0; j < kanbanBoard.VerticalDimension.Categories.Count; j++)
+            {
+                rowMaxItemCounts[j] = 0;
+                for (int i = 0; i < kanbanBoard.HorizontalDimension.Categories.Count; i++)
+                {
+                    if (rowMaxItemCounts[j] < kanbanBoard.Cells[i, j].ItemsCount)
+                        rowMaxItemCounts[j] = kanbanBoard.Cells[i, j].ItemsCount;
+                }
+            }
+
+            var totalRowMaxItemCounts = rowMaxItemCounts.Sum();
+
+            for (int j = 0; j < kanbanBoard.VerticalDimension.Categories.Count; j++)
+            {
+                if (totalRowMaxItemCounts != 0)
+                {
+                    kanbanBoard.VerticalDimension.Categories[j].Weight = (double)rowMaxItemCounts[j] / totalRowMaxItemCounts;
+                }
+                else
+                {
+                    kanbanBoard.VerticalDimension.Categories[j].Weight = 0;
+                }
             }
         }
 

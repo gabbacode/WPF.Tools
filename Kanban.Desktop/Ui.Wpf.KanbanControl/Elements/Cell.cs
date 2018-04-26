@@ -8,5 +8,7 @@
         }
 
         public CellView View { get; private set; }
+
+        public int ItemsCount { get; internal set; }
     }
 }

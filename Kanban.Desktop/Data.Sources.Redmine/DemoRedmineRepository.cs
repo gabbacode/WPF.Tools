@@ -59,7 +59,7 @@ namespace Data.Sources.Redmine
             var issueId = 0;
             foreach (var user in demoUsers)
             {
-                for (int i = 0; i < 3; i++)
+                for (int i = 0; i < rnd.Next(3); i++)
                 {
                     for (int j = 0; j < 2; j++)
                     {
