@@ -45,9 +45,8 @@ namespace Kanban.Desktop.KanbanBoard.ViewModel
 
         private async void Refresh()
         {
-            Debug.WriteLine(Thread.CurrentThread.ManagedThreadId);
             var data = await Task.Run(() => model.RefreshData()).ConfigureAwait(true);
-            Debug.WriteLine(Thread.CurrentThread.ManagedThreadId);            
+
             Issues.Clear();
             VerticalDimension = data.VerticalDimension;
             HorizontalDimension = data.HorizontalDimension;

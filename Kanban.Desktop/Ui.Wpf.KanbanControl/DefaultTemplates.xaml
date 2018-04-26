@@ -53,7 +53,9 @@
     <SolidColorBrush x:Key="DefaultCardBackground" Color="#FFFFE0"/>
 
     <DataTemplate x:Key="ContentItemTemplate">
-        <TextBlock Text="{Binding Value}"/>
+        <TextBlock 
+            FontSize="14"
+            Text="{Binding Value}"/>
     </DataTemplate>
 
     <DataTemplate x:Key="ShortContentItemTemplate">
@@ -93,7 +95,7 @@
             Background="{Binding Background, FallbackValue={StaticResource DefaultCardBackground},TargetNullValue={StaticResource DefaultCardBackground}}"
             BorderThickness="1,1,1,1" 
             CornerRadius="4"
-            Margin="3">
+            Margin="1">
             <StackPanel>
                 <ItemsControl
                     ItemsSource="{Binding ContentItems}"
