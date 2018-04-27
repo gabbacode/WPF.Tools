@@ -2,7 +2,7 @@
 {
     public interface ICardContentItem
     {
-        string Path { get; }
+        string ExpressionPath { get; }
 
         CardContentArea Area { get; }
     }

@@ -4,11 +4,11 @@
     {
         public CardContentItem(string path, CardContentArea area = CardContentArea.Main)
         {
-            Path = path;
+            ExpressionPath = path;
             Area = area;
         }
 
-        public string Path { get; }
+        public string ExpressionPath { get; }
 
         public CardContentArea Area { get; }
     }

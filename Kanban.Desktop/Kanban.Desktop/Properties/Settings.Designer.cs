@@ -28,33 +28,34 @@ namespace Kanban.Desktop.Properties {
         [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<KanbanConfiguration xmlns:xsi=\"http://w" +
             "ww.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">" +
             "\r\n  <ProjectId>12</ProjectId>\r\n  <HorizontalDimension>\r\n    <DimensionName>Statu" +
-            "s</DimensionName>\r\n  </HorizontalDimension>\r\n  <VerticalDimension>\r\n    <Dimensi" +
-            "onName>AssignedTo</DimensionName>\r\n  </VerticalDimension>\r\n  <CardItemsConfigura" +
-            "tion>\r\n    <CardsItems>\r\n        <CardItem>\r\n          <Area>Main</Area>\r\n      " +
-            "    <Path>Subject</Path>\r\n        </CardItem>\r\n        <CardItem>\r\n          <Ar" +
-            "ea>Short</Area>\r\n          <Path>Tracker</Path>\r\n        </CardItem>\r\n        <C" +
-            "ardItem>\r\n          <Area>Short</Area>\r\n          <Path>Priority</Path>\r\n       " +
-            " </CardItem>\r\n        <CardItem>\r\n          <Area>Additional</Area>\r\n          <" +
-            "Path>Description</Path>\r\n        </CardItem>\r\n    </CardsItems>\r\n    <ColorSetti" +
-            "ngs>\r\n      <Path>Priority</Path>\r\n      <ColorMaps>\r\n        <ColorMap>\r\n      " +
-            "    <Value>Низкий</Value>\r\n          <CardColors>\r\n            <BorderColor>#7DB" +
-            "B00</BorderColor>\r\n            <BackgroundColor>#DCFFC2</BackgroundColor>\r\n     " +
-            "     </CardColors>\r\n        </ColorMap>\r\n        <ColorMap>\r\n          <Value>Но" +
-            "рмальный</Value>\r\n          <CardColors>\r\n            <BorderColor>#FFB13B</Bord" +
-            "erColor>\r\n            <BackgroundColor>#FFE7B6</BackgroundColor>\r\n          </Ca" +
-            "rdColors>\r\n        </ColorMap>\r\n        <ColorMap>\r\n          <Value>Высокий</Va" +
-            "lue>\r\n          <CardColors>\r\n            <BorderColor>#FF8099</BorderColor>\r\n  " +
-            "          <BackgroundColor>#FFCCD6</BackgroundColor>\r\n          </CardColors>\r\n " +
-            "       </ColorMap>\r\n        <ColorMap>\r\n          <Value>low</Value>\r\n          " +
-            "<CardColors>\r\n            <BorderColor>#7DBB00</BorderColor>\r\n            <Backg" +
-            "roundColor>#DCFFC2</BackgroundColor>\r\n          </CardColors>\r\n        </ColorMa" +
-            "p>\r\n        <ColorMap>\r\n          <Value>normal</Value>\r\n          <CardColors>\r" +
-            "\n            <BorderColor>#FFB13B</BorderColor>\r\n            <BackgroundColor>#F" +
-            "FE7B6</BackgroundColor>\r\n          </CardColors>\r\n        </ColorMap>\r\n        <" +
-            "ColorMap>\r\n          <Value>high</Value>\r\n          <CardColors>\r\n            <B" +
-            "orderColor>#FF8099</BorderColor>\r\n            <BackgroundColor>#FFCCD6</Backgrou" +
-            "ndColor>\r\n          </CardColors>\r\n        </ColorMap>\r\n      </ColorMaps>\r\n    " +
-            "</ColorSettings>\r\n  </CardItemsConfiguration>\r\n</KanbanConfiguration>")]
+            "s.Name</DimensionName>\r\n  </HorizontalDimension>\r\n  <VerticalDimension>\r\n    <Di" +
+            "mensionName>AssignedTo.Name</DimensionName>\r\n  </VerticalDimension>\r\n  <CardItem" +
+            "sConfiguration>\r\n    <CardsItems>\r\n        <CardItem>\r\n          <Area>Main</Are" +
+            "a>\r\n          <Path>Subject</Path>\r\n        </CardItem>\r\n        <CardItem>\r\n   " +
+            "       <Area>Short</Area>\r\n          <Path>Tracker</Path>\r\n        </CardItem>\r\n" +
+            "        <CardItem>\r\n          <Area>Short</Area>\r\n          <Path>Priority</Path" +
+            ">\r\n        </CardItem>\r\n        <CardItem>\r\n          <Area>Additional</Area>\r\n " +
+            "         <Path>Description</Path>\r\n        </CardItem>\r\n    </CardsItems>\r\n    <" +
+            "ColorSettings>\r\n      <Path>Priority.Name</Path>\r\n      <ColorMaps>\r\n        <Co" +
+            "lorMap>\r\n          <Value>Низкий</Value>\r\n          <CardColors>\r\n            <B" +
+            "orderColor>#7DBB00</BorderColor>\r\n            <BackgroundColor>#DCFFC2</Backgrou" +
+            "ndColor>\r\n          </CardColors>\r\n        </ColorMap>\r\n        <ColorMap>\r\n    " +
+            "      <Value>Нормальный</Value>\r\n          <CardColors>\r\n            <BorderColo" +
+            "r>#FFB13B</BorderColor>\r\n            <BackgroundColor>#FFE7B6</BackgroundColor>\r" +
+            "\n          </CardColors>\r\n        </ColorMap>\r\n        <ColorMap>\r\n          <Va" +
+            "lue>Высокий</Value>\r\n          <CardColors>\r\n            <BorderColor>#FF8099</B" +
+            "orderColor>\r\n            <BackgroundColor>#FFCCD6</BackgroundColor>\r\n          <" +
+            "/CardColors>\r\n        </ColorMap>\r\n        <ColorMap>\r\n          <Value>low</Val" +
+            "ue>\r\n          <CardColors>\r\n            <BorderColor>#7DBB00</BorderColor>\r\n   " +
+            "         <BackgroundColor>#DCFFC2</BackgroundColor>\r\n          </CardColors>\r\n  " +
+            "      </ColorMap>\r\n        <ColorMap>\r\n          <Value>normal</Value>\r\n        " +
+            "  <CardColors>\r\n            <BorderColor>#FFB13B</BorderColor>\r\n            <Bac" +
+            "kgroundColor>#FFE7B6</BackgroundColor>\r\n          </CardColors>\r\n        </Color" +
+            "Map>\r\n        <ColorMap>\r\n          <Value>high</Value>\r\n          <CardColors>\r" +
+            "\n            <BorderColor>#FF8099</BorderColor>\r\n            <BackgroundColor>#F" +
+            "FCCD6</BackgroundColor>\r\n          </CardColors>\r\n        </ColorMap>\r\n      </C" +
+            "olorMaps>\r\n    </ColorSettings>\r\n  </CardItemsConfiguration>\r\n</KanbanConfigurat" +
+            "ion>")]
         public string h_status_v_assigned_c_subject_treker_details {
             get {
                 return ((string)(this["h_status_v_assigned_c_subject_treker_details"]));
@@ -69,35 +70,36 @@ namespace Kanban.Desktop.Properties {
         [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<KanbanConfiguration xmlns:xsi=\"http://w" +
             "ww.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">" +
             "\r\n  <ProjectId>18</ProjectId>\r\n  <HorizontalDimension>\r\n    <DimensionName>Statu" +
-            "s</DimensionName>\r\n    <ValuesFilter>\r\n      <string>Новая</string>\r\n      <stri" +
-            "ng>В процессе</string>\r\n      <string>Решена</string>\r\n    </ValuesFilter>\r\n  </" +
-            "HorizontalDimension>\r\n  <VerticalDimension>\r\n    <DimensionName>Tracker</Dimensi" +
-            "onName>\r\n    <ValuesFilter>\r\n      <string>Входящий вызов</string>\r\n      <strin" +
-            "g>Исходящий вызов</string>\r\n    </ValuesFilter>    \r\n  </VerticalDimension>\r\n  <" +
-            "CardItemsConfiguration>\r\n    <CardsItems>\r\n        <CardItem>\r\n          <Area>M" +
-            "ain</Area>\r\n          <Path>Subject</Path>\r\n        </CardItem>\r\n    </CardsItem" +
-            "s>\r\n    <ColorSettings>\r\n      <Path>Priority</Path>\r\n      <ColorMaps>\r\n       " +
-            " <ColorMap>\r\n          <Value>Низкий</Value>\r\n          <CardColors>\r\n          " +
-            "  <BorderColor>#7DBB00</BorderColor>\r\n            <BackgroundColor>#DCFFC2</Back" +
-            "groundColor>\r\n          </CardColors>\r\n        </ColorMap>\r\n        <ColorMap>\r\n" +
-            "          <Value>Нормальный</Value>\r\n          <CardColors>\r\n            <Border" +
-            "Color>#FFB13B</BorderColor>\r\n            <BackgroundColor>#FFE7B6</BackgroundCol" +
-            "or>\r\n          </CardColors>\r\n        </ColorMap>\r\n        <ColorMap>\r\n         " +
-            " <Value>Высокий</Value>\r\n          <CardColors>\r\n            <BorderColor>#FF809" +
-            "9</BorderColor>\r\n            <BackgroundColor>#FFCCD6</BackgroundColor>\r\n       " +
-            "   </CardColors>\r\n        </ColorMap>\r\n        <ColorMap>\r\n          <Value>Сроч" +
-            "ный</Value>\r\n          <CardColors>\r\n            <BorderColor>#C69CF3</BorderCol" +
-            "or>\r\n            <BackgroundColor>#E2D2F2</BackgroundColor>\r\n          </CardCol" +
-            "ors>\r\n        </ColorMap>\r\n        <ColorMap>\r\n          <Value>low</Value>\r\n   " +
-            "       <CardColors>\r\n            <BorderColor>#7DBB00</BorderColor>\r\n           " +
-            " <BackgroundColor>#DCFFC2</BackgroundColor>\r\n          </CardColors>\r\n        </" +
-            "ColorMap>\r\n        <ColorMap>\r\n          <Value>normal</Value>\r\n          <CardC" +
-            "olors>\r\n            <BorderColor>#FFB13B</BorderColor>\r\n            <BackgroundC" +
-            "olor>#FFE7B6</BackgroundColor>\r\n          </CardColors>\r\n        </ColorMap>\r\n  " +
-            "      <ColorMap>\r\n          <Value>high</Value>\r\n          <CardColors>\r\n       " +
-            "     <BorderColor>#FF8099</BorderColor>\r\n            <BackgroundColor>#FFCCD6</B" +
-            "ackgroundColor>\r\n          </CardColors>\r\n        </ColorMap>\r\n      </ColorMaps" +
-            ">\r\n    </ColorSettings>\r\n  </CardItemsConfiguration>\r\n</KanbanConfiguration>")]
+            "s.Name</DimensionName>\r\n    <ValuesFilter>\r\n      <string>Новая</string>\r\n      " +
+            "<string>В процессе</string>\r\n      <string>Решена</string>\r\n    </ValuesFilter>\r" +
+            "\n  </HorizontalDimension>\r\n  <VerticalDimension>\r\n    <DimensionName>Tracker.Nam" +
+            "e</DimensionName>\r\n    <ValuesFilter>\r\n      <string>Входящий вызов</string>\r\n  " +
+            "    <string>Исходящий вызов</string>\r\n    </ValuesFilter>    \r\n  </VerticalDimen" +
+            "sion>\r\n  <CardItemsConfiguration>\r\n    <CardsItems>\r\n        <CardItem>\r\n       " +
+            "   <Area>Main</Area>\r\n          <Path>Subject</Path>\r\n        </CardItem>\r\n    <" +
+            "/CardsItems>\r\n    <ColorSettings>\r\n      <Path>Priority.Name</Path>\r\n      <Colo" +
+            "rMaps>\r\n        <ColorMap>\r\n          <Value>Низкий</Value>\r\n          <CardColo" +
+            "rs>\r\n            <BorderColor>#7DBB00</BorderColor>\r\n            <BackgroundColo" +
+            "r>#DCFFC2</BackgroundColor>\r\n          </CardColors>\r\n        </ColorMap>\r\n     " +
+            "   <ColorMap>\r\n          <Value>Нормальный</Value>\r\n          <CardColors>\r\n    " +
+            "        <BorderColor>#FFB13B</BorderColor>\r\n            <BackgroundColor>#FFE7B6" +
+            "</BackgroundColor>\r\n          </CardColors>\r\n        </ColorMap>\r\n        <Color" +
+            "Map>\r\n          <Value>Высокий</Value>\r\n          <CardColors>\r\n            <Bor" +
+            "derColor>#FF8099</BorderColor>\r\n            <BackgroundColor>#FFCCD6</Background" +
+            "Color>\r\n          </CardColors>\r\n        </ColorMap>\r\n        <ColorMap>\r\n      " +
+            "    <Value>Срочный</Value>\r\n          <CardColors>\r\n            <BorderColor>#C6" +
+            "9CF3</BorderColor>\r\n            <BackgroundColor>#E2D2F2</BackgroundColor>\r\n    " +
+            "      </CardColors>\r\n        </ColorMap>\r\n        <ColorMap>\r\n          <Value>l" +
+            "ow</Value>\r\n          <CardColors>\r\n            <BorderColor>#7DBB00</BorderColo" +
+            "r>\r\n            <BackgroundColor>#DCFFC2</BackgroundColor>\r\n          </CardColo" +
+            "rs>\r\n        </ColorMap>\r\n        <ColorMap>\r\n          <Value>normal</Value>\r\n " +
+            "         <CardColors>\r\n            <BorderColor>#FFB13B</BorderColor>\r\n         " +
+            "   <BackgroundColor>#FFE7B6</BackgroundColor>\r\n          </CardColors>\r\n        " +
+            "</ColorMap>\r\n        <ColorMap>\r\n          <Value>high</Value>\r\n          <CardC" +
+            "olors>\r\n            <BorderColor>#FF8099</BorderColor>\r\n            <BackgroundC" +
+            "olor>#FFCCD6</BackgroundColor>\r\n          </CardColors>\r\n        </ColorMap>\r\n  " +
+            "    </ColorMaps>\r\n    </ColorSettings>\r\n  </CardItemsConfiguration>\r\n</KanbanCon" +
+            "figuration>")]
         public string ods {
             get {
                 return ((string)(this["ods"]));

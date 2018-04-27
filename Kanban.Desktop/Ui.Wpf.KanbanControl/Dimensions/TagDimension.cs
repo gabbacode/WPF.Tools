@@ -4,14 +4,14 @@ namespace Ui.Wpf.KanbanControl.Dimensions
 {
     public class TagDimension : BaseDimension, IDynamicDimension
     {
-        public TagDimension(string fieldName)
+        public TagDimension(string expressionPath)
         {
-            FieldName = fieldName;
+            ExpressionPath = expressionPath;
         }
 
-        public TagDimension(string fieldName, string[] avalibleTags)
+        public TagDimension(string expressionPath, string[] avalibleTags)
         {
-            FieldName = fieldName;
+            ExpressionPath = expressionPath;
             Tags = avalibleTags;
         }
 

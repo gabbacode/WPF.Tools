@@ -7,10 +7,10 @@
 &lt;KanbanConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
   &lt;ProjectId&gt;12&lt;/ProjectId&gt;
   &lt;HorizontalDimension&gt;
-    &lt;DimensionName&gt;Status&lt;/DimensionName&gt;
+    &lt;DimensionName&gt;Status.Name&lt;/DimensionName&gt;
   &lt;/HorizontalDimension&gt;
   &lt;VerticalDimension&gt;
-    &lt;DimensionName&gt;AssignedTo&lt;/DimensionName&gt;
+    &lt;DimensionName&gt;AssignedTo.Name&lt;/DimensionName&gt;
   &lt;/VerticalDimension&gt;
   &lt;CardItemsConfiguration&gt;
     &lt;CardsItems&gt;
@@ -32,7 +32,7 @@
         &lt;/CardItem&gt;
     &lt;/CardsItems&gt;
     &lt;ColorSettings&gt;
-      &lt;Path&gt;Priority&lt;/Path&gt;
+      &lt;Path&gt;Priority.Name&lt;/Path&gt;
       &lt;ColorMaps&gt;
         &lt;ColorMap&gt;
           &lt;Value&gt;Низкий&lt;/Value&gt;
@@ -86,7 +86,7 @@
 &lt;KanbanConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
   &lt;ProjectId&gt;18&lt;/ProjectId&gt;
   &lt;HorizontalDimension&gt;
-    &lt;DimensionName&gt;Status&lt;/DimensionName&gt;
+    &lt;DimensionName&gt;Status.Name&lt;/DimensionName&gt;
     &lt;ValuesFilter&gt;
       &lt;string&gt;Новая&lt;/string&gt;
       &lt;string&gt;В процессе&lt;/string&gt;
@@ -94,7 +94,7 @@
     &lt;/ValuesFilter&gt;
   &lt;/HorizontalDimension&gt;
   &lt;VerticalDimension&gt;
-    &lt;DimensionName&gt;Tracker&lt;/DimensionName&gt;
+    &lt;DimensionName&gt;Tracker.Name&lt;/DimensionName&gt;
     &lt;ValuesFilter&gt;
       &lt;string&gt;Входящий вызов&lt;/string&gt;
       &lt;string&gt;Исходящий вызов&lt;/string&gt;
@@ -108,7 +108,7 @@
         &lt;/CardItem&gt;
     &lt;/CardsItems&gt;
     &lt;ColorSettings&gt;
-      &lt;Path&gt;Priority&lt;/Path&gt;
+      &lt;Path&gt;Priority.Name&lt;/Path&gt;
       &lt;ColorMaps&gt;
         &lt;ColorMap&gt;
           &lt;Value&gt;Низкий&lt;/Value&gt;

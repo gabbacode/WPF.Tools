@@ -6,7 +6,7 @@ namespace Ui.Wpf.KanbanControl.Dimensions
     {
         string Caption { get; set; }
 
-        string FieldName { get; set; }
+        string ExpressionPath { get; set; }
 
         IList<IDimensionCategory> Categories { get; set; }
     }

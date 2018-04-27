@@ -88,7 +88,7 @@ namespace Ui.Wpf.KanbanControl
         private IList<IDimensionCategory> GetDimensionCategories(
             IDynamicDimension dimension)
         {
-            var getElementCategory = propertyAccessors.TakeGetterForProperty(dimension.FieldName);
+            var getElementCategory = propertyAccessors.TakeGetterForProperty(dimension.ExpressionPath);
 
             HashSet<object> tagFilter = null;
             if (dimension.Tags != null)
@@ -101,7 +101,7 @@ namespace Ui.Wpf.KanbanControl
                 var categories = Cards.Cast<object>()
                     .Select(i => getElementCategory(i))
                     .Where(i => i != null)
-                    .Where(i=> tagFilter == null || tagFilter.Contains(i.ToString()))
+                    .Where(i=> tagFilter == null || tagFilter.Contains(i))
                     .OrderBy(i => i)
                     .Distinct()
                     .Select(i => (IDimensionCategory)new TagsDimensionCategory(i.ToString(), i))
@@ -151,7 +151,7 @@ namespace Ui.Wpf.KanbanControl
                 .Select(ci => new
                 {
                     ci,
-                    getter = propertyAccessors.TakeGetterForProperty(ci.Path)
+                    getter = propertyAccessors.TakeGetterForProperty(ci.ExpressionPath)
                 })
                 .Where(x => x.getter != null)
                 .ToArray();
@@ -186,7 +186,7 @@ namespace Ui.Wpf.KanbanControl
                 {
                     var colorKeyGetter = propertyAccessors.TakeGetterForProperty(CardsColors.Path);
 
-                    if (CardsColors.ColorMap.TryGetValue(colorKeyGetter(cardData).ToString(), out var colors))
+                    if (CardsColors.ColorMap.TryGetValue(colorKeyGetter(cardData), out var colors))
                     {
                         cardElement.Background = (SolidColorBrush)(brushConverter).ConvertFromString(colors.Background);
                         cardElement.BorderBrush = (SolidColorBrush)(brushConverter).ConvertFromString(colors.BorderBrush);

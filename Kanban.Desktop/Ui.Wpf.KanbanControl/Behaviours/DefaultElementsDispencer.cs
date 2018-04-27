@@ -51,7 +51,7 @@ namespace Ui.Wpf.KanbanControl.Behaviours
             object item,
             PropertyAccessorsExpressionCreator propertyAccessors)
         {
-            var getter = propertyAccessors.TakeGetterForProperty(dimension.FieldName);
+            var getter = propertyAccessors.TakeGetterForProperty(dimension.ExpressionPath);
             var itemTag = getter(item);
 
             var categoryIndex = 0;
