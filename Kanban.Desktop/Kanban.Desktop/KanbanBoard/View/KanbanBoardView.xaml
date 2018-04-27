@@ -7,7 +7,6 @@
     xmlns:kanbancontrol="clr-namespace:Ui.Wpf.KanbanControl;assembly=Ui.Wpf.KanbanControl"
     xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:wpf="clr-namespace:LoadingIndicators.WPF;assembly=LoadingIndicators.WPF"
-    xmlns:cccc="clr-namespace:Ui.Wpf.Common.Converters;assembly=Ui.Wpf.Common"
     mc:Ignorable="d" 
     d:DataContext="IKanbanBoardViewModel"
     d:DesignHeight="300" d:DesignWidth="300">
