@@ -10,9 +10,15 @@ namespace Ui.Wpf.KanbanControl.Dimensions
         }
 
         public TagDimension(string expressionPath, string[] avalibleTags)
+            :this(expressionPath)
         {
-            ExpressionPath = expressionPath;
             Tags = avalibleTags;
+        }
+
+        public TagDimension(string expressionPath, string sortingPath, string[] avalibleTags)
+            :this(expressionPath, avalibleTags)
+        {
+            SortingPath = sortingPath;
         }
 
         public TagDimension(

@@ -90,6 +90,9 @@ namespace Ui.Wpf.KanbanControl.Expressions
 
         public Func<object, object> TakeGetterForProperty(string name)
         {
+            if (string.IsNullOrWhiteSpace(name))
+                return null;
+
             getters.TryGetValue(name, out var func);
 
             return func;
@@ -97,6 +100,9 @@ namespace Ui.Wpf.KanbanControl.Expressions
 
         public Action<object, object> TakeSetterForProperty(string name)
         {
+            if (string.IsNullOrWhiteSpace(name))
+                return null;
+
             setters.TryGetValue(name, out var action);
 
             return action;

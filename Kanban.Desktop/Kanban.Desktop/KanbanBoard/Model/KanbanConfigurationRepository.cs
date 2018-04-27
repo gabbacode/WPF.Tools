@@ -31,8 +31,15 @@ namespace Kanban.Desktop.KanbanBoard.Model
         {
             return new KanbanData
             {
-                HorizontalDimension = new TagDimension(config.HorizontalDimension.DimensionName, config.HorizontalDimension.ValuesFilter),
-                VerticalDimension = new TagDimension(config.VerticalDimension.DimensionName, config.VerticalDimension.ValuesFilter),
+                HorizontalDimension = new TagDimension(
+                    config.HorizontalDimension.DimensionName, 
+                    config.HorizontalDimension.SortingPath,
+                    config.HorizontalDimension.ValuesFilter),
+
+                VerticalDimension = new TagDimension(
+                    config.VerticalDimension.DimensionName, 
+                    config.VerticalDimension.ValuesFilter),
+
                 CardElements = new CardContent(
                     config.CardItemsConfiguration.CardsItems
                         .Select(ci =>

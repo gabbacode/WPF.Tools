@@ -8,6 +8,8 @@ namespace Ui.Wpf.KanbanControl.Dimensions
 
         string ExpressionPath { get; set; }
 
+        string SortingPath { get; set; }
+
         IList<IDimensionCategory> Categories { get; set; }
     }
 }

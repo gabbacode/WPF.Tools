@@ -89,6 +89,7 @@ namespace Ui.Wpf.KanbanControl
             IDynamicDimension dimension)
         {
             var getElementCategory = propertyAccessors.TakeGetterForProperty(dimension.ExpressionPath);
+            var getSortingValue = propertyAccessors.TakeGetterForProperty(dimension.SortingPath);
 
             HashSet<object> tagFilter = null;
             if (dimension.Tags != null)
@@ -98,13 +99,37 @@ namespace Ui.Wpf.KanbanControl
 
             if (getElementCategory != null)
             {
-                var categories = Cards.Cast<object>()
-                    .Select(i => getElementCategory(i))
-                    .Where(i => i != null)
-                    .Where(i=> tagFilter == null || tagFilter.Contains(i))
-                    .OrderBy(i => i)
-                    .Distinct()
-                    .Select(i => (IDimensionCategory)new TagsDimensionCategory(i.ToString(), i))
+                var categoriesEnumerable = Cards.Cast<object>()
+                    .Select(card => new
+                    {
+                        category = getElementCategory(card),
+                        sortingElement = getSortingValue != null 
+                            ? getSortingValue(card)
+                            : null
+                    })
+                    .Where(card => card.category != null)
+                    .GroupBy(g => g.category)
+                    .Select(g => new
+                    {
+                        category = g.Key,
+                        sortingValue = g.First().sortingElement
+                    });
+                    
+
+                if (tagFilter != null)
+                {
+                    categoriesEnumerable = categoriesEnumerable
+                        .Where(c => tagFilter.Contains(c.category));
+                }
+
+                if (getSortingValue != null)
+                {
+                    categoriesEnumerable = categoriesEnumerable
+                        .OrderBy(c => c.sortingValue);
+                }
+
+                var categories = categoriesEnumerable
+                    .Select(c => (IDimensionCategory)new TagsDimensionCategory(c.category.ToString(), c.category))
                     .ToList();
 
                 return categories;
