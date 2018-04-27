@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 
 namespace Ui.Wpf.KanbanControl.Expressions
 {
@@ -10,6 +11,8 @@ namespace Ui.Wpf.KanbanControl.Expressions
         public string Name { get; set; }
 
         public string Path { get; set; }
+        
+        public Expression<Func<object, object>> CurrentExpression { get; set; }
 
         #region [ IEquatable ]
         public override bool Equals(object obj)

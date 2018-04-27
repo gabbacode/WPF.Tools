@@ -5,7 +5,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Windows.Data;
 
 namespace Ui.Wpf.KanbanControl.Expressions
 {
@@ -50,19 +49,20 @@ namespace Ui.Wpf.KanbanControl.Expressions
                 var props = pathMember.OwnerType.GetProperties(
                     BindingFlags.Instance
                     | BindingFlags.Public
-                    | BindingFlags.SetProperty);
+                    | BindingFlags.SetProperty
+                    | BindingFlags.GetProperty);
 
                 foreach (var propertyInfo in props)
                 {
-                    var getter = BuildGetter(propertyInfo);
-                    var setter = BuildSetter(propertyInfo);
+                    var getter = BuildGetExpression(pathMember.CurrentExpression, propertyInfo);
+//                    var setter = BuildSetter(propertyInfo);
 
                     var path = pathMember.Path != null
-                        ? pathMember.Path + "." + propertyInfo.Name
+                        ? $"{pathMember.Path}.{propertyInfo.Name}"
                         : propertyInfo.Name;
 
                     getters.Add(path, getter);
-                    setters.Add(path, setter);
+//                    setters.Add(path, setter);
 
                     toWalk.Enqueue(new ExpressionPathMember
                     {
@@ -77,18 +77,14 @@ namespace Ui.Wpf.KanbanControl.Expressions
 
         public Func<object, object> TakeGetterForProperty(string name)
         {
-            Func<object, object> func = null;
-
-            getters.TryGetValue(name, out func);
+            getters.TryGetValue(name, out var func);
 
             return func;
         }
 
         public Action<object, object> TakeSetterForProperty(string name)
         {
-            Action<object, object> action = null;
-
-            setters.TryGetValue(name, out action);
+            setters.TryGetValue(name, out var action);
 
             return action;
         }
@@ -135,6 +131,26 @@ namespace Ui.Wpf.KanbanControl.Expressions
 
             return lambda.Compile();
         }
+        
+        private static Func<object, object> BuildGetExpression(
+            Expression<Func<object, object>> currentObjectExpression, 
+            PropertyInfo propertyInfo)
+        {
+            var objType = propertyInfo.DeclaringType;
+            Debug.Assert(objType != null);
+
+            var getMethod = propertyInfo.GetGetMethod();
+
+            var objExpression = Expression.Parameter(typeof(object), "obj");
+            var castObjectExpression = Expression.Convert(objExpression, objType);
+            
+            var callGetExpression = Expression.Call(castObjectExpression, getMethod);
+            var castExpression = Expression.Convert(callGetExpression, typeof(object));
+
+            var lambda = Expression.Lambda<Func<object, object>>(castExpression, objExpression);
+
+            return lambda.Compile();
+        }        
 
         private static Type GetElementTypeOfEnumerable(object o)
         {
