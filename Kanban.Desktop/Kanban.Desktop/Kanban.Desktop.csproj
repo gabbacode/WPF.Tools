@@ -40,6 +40,9 @@
     <Reference Include="ControlzEx, Version=3.0.2.4, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\packages\ControlzEx.3.0.2.4\lib\net462\ControlzEx.dll</HintPath>
     </Reference>
+    <Reference Include="LoadingIndicators.WPF, Version=0.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\LoadingIndicators.WPF.0.0.1\lib\LoadingIndicators.WPF.dll</HintPath>
+    </Reference>
     <Reference Include="MahApps.Metro, Version=1.6.1.4, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\packages\MahApps.Metro.1.6.1\lib\net45\MahApps.Metro.dll</HintPath>
     </Reference>
@@ -120,6 +123,7 @@
     <Compile Include="KanbanBoard\Model\IKanbanBoardModel.cs" />
     <Compile Include="KanbanBoard\Model\KanbanBoardModel.cs" />
     <Compile Include="KanbanBoard\Model\KanbanConfiguration.cs" />
+    <Compile Include="KanbanBoard\ViewModel\BusyContext.cs" />
     <Compile Include="KanbanBoard\ViewModel\IKanbanBoardViewModel.cs" />
     <Compile Include="KanbanBoard\View\IKanbanBoardView.cs" />
     <Compile Include="KanbanBoard\Model\IKanbanConfigurationRepository.cs" />

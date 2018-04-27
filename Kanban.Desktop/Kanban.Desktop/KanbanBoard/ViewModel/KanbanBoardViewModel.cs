@@ -43,14 +43,22 @@ namespace Kanban.Desktop.KanbanBoard.ViewModel
 
         private async void Refresh()
         {
-            var data = await Task.Run(() => model.RefreshData()).ConfigureAwait(true);
+            using (var busyContext = GetBusyContext())
+            {
+                var data = await Task.Run(() => model.RefreshData()).ConfigureAwait(true);
 
-            Issues.Clear();
-            VerticalDimension = data.VerticalDimension;
-            HorizontalDimension = data.HorizontalDimension;
-            CardContent = data.CardElements;
-            CardsColors = data.CardsColors;
-            Issues.AddRange(data.Issues);
+                Issues.Clear();
+                VerticalDimension = data.VerticalDimension;
+                HorizontalDimension = data.HorizontalDimension;
+                CardContent = data.CardElements;
+                CardsColors = data.CardsColors;
+                Issues.AddRange(data.Issues);
+            }
+        }
+
+        private BusyContext GetBusyContext()
+        {
+            return new BusyContext(() => IsBusy = true, () => IsBusy = false);
         }
 
         public async void Initialize()
@@ -73,6 +81,8 @@ namespace Kanban.Desktop.KanbanBoard.ViewModel
         }
         
         [Reactive] public string Title { get; set; }
+
+        [Reactive] public bool IsBusy { get; private set; }
 
         [Reactive] public string ConfigurtaionName { get; set; }
 

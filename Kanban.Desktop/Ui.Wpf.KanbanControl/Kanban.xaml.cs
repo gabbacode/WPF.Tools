@@ -8,10 +8,10 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using Ui.Wpf.KanbanControl.ElementsManagement;
 using Ui.Wpf.KanbanControl.Common;
 using Ui.Wpf.KanbanControl.Dimensions;
 using Ui.Wpf.KanbanControl.Elements;
+using Ui.Wpf.KanbanControl.ElementsManagement;
 using Ui.Wpf.KanbanControl.Elements.CardElement;
 using Ui.Wpf.KanbanControl.Expressions;
 
