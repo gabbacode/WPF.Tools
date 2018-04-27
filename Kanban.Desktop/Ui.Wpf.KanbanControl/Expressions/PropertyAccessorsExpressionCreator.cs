@@ -34,6 +34,9 @@ namespace Ui.Wpf.KanbanControl.Expressions
         {
             var processed = new HashSet<ExpressionPathMember>();
             var toWalk = new Queue<ExpressionPathMember>();
+            var rootParameterExpression = Expression.Parameter(typeof(object), "root");
+            var valueExpression = Expression.Parameter(typeof(object), "value");
+
 
             toWalk.Enqueue(new ExpressionPathMember
             {
@@ -44,6 +47,7 @@ namespace Ui.Wpf.KanbanControl.Expressions
             {
                 var pathMember = toWalk.Dequeue();
                 if (!processed.Add(pathMember))
+                    // check if we walked element with same type and property type
                     continue;
 
                 var props = pathMember.OwnerType.GetProperties(
@@ -54,26 +58,32 @@ namespace Ui.Wpf.KanbanControl.Expressions
 
                 foreach (var propertyInfo in props)
                 {
-                    var getter = BuildGetExpression(pathMember.CurrentExpression, propertyInfo);
-//                    var setter = BuildSetter(propertyInfo);
+                    if (!propertyApplicable(propertyInfo))
+                        continue;
 
                     var path = pathMember.Path != null
                         ? $"{pathMember.Path}.{propertyInfo.Name}"
                         : propertyInfo.Name;
 
-                    getters.Add(path, getter);
-//                    setters.Add(path, setter);
+                    var callGetExpr = BuildGetExpression(
+                        rootParameterExpression,
+                        pathMember.GetMemberExpression,
+                        propertyInfo);
+
+                    AddGetter(rootParameterExpression, path, callGetExpr);
+
+                    AddSetter(rootParameterExpression, valueExpression, pathMember, propertyInfo, path);
 
                     toWalk.Enqueue(new ExpressionPathMember
                     {
                         Path = path,
                         Name = propertyInfo.Name,
                         OwnerType = propertyInfo.PropertyType,
+                        GetMemberExpression = callGetExpr
                     });
                 }
             }
         }
-
 
         public Func<object, object> TakeGetterForProperty(string name)
         {
@@ -92,65 +102,97 @@ namespace Ui.Wpf.KanbanControl.Expressions
         private readonly Dictionary<string, Func<object, object>> getters;
         private readonly Dictionary<string, Action<object, object>> setters;
 
-        private static Action<object, object> BuildSetter(PropertyInfo propertyInfo)
+
+        private void AddGetter(ParameterExpression rootParameterExpression, string path, MethodCallExpression callGetExpr)
         {
-            var objType = propertyInfo.DeclaringType;
-            Debug.Assert(objType != null);
-            
-            var setMethod = propertyInfo.GetSetMethod();
-            
-            var objExpression = Expression.Parameter(typeof(object), "obj");
-            var castObjectExpression = Expression.Convert(objExpression, objType);
+            var castExpression = Expression.Convert(callGetExpr, typeof(object));
+            var getter = Expression.Lambda<Func<object, object>>(castExpression, rootParameterExpression)
+                .Compile();
 
-            var valueExpression = Expression.Parameter(typeof(object), "value");
-            
-            var calSetExpression = Expression.Call(
-                castObjectExpression, 
-                setMethod,
-                Expression.Convert(valueExpression, propertyInfo.PropertyType));
-            
-            var lambda = Expression.Lambda<Action<object, object>>(calSetExpression, objExpression, valueExpression);
-
-            return lambda.Compile();
+            getters.Add(path, getter);
         }
 
-        private static Func<object, object> BuildGetter(PropertyInfo propertyInfo)
+        private void AddSetter(
+            ParameterExpression rootParameterExpression,
+            ParameterExpression valueExpression,
+            ExpressionPathMember pathMember,
+            PropertyInfo propertyInfo,
+            string path)
         {
-            var objType = propertyInfo.DeclaringType;
-            Debug.Assert(objType != null);
+            var setter = BuildSetter(
+                rootParameterExpression,
+                valueExpression,
+                pathMember.GetMemberExpression,
+                propertyInfo);
 
-            var getMethod = propertyInfo.GetGetMethod();
-
-            var objExpression = Expression.Parameter(typeof(object), "obj");
-            var castObjectExpression = Expression.Convert(objExpression, objType);
-            
-            var callGetExpression = Expression.Call(castObjectExpression, getMethod);
-            var castExpression = Expression.Convert(callGetExpression, typeof(object));
-
-            var lambda = Expression.Lambda<Func<object, object>>(castExpression, objExpression);
-
-            return lambda.Compile();
+            setters.Add(path, setter);
         }
-        
-        private static Func<object, object> BuildGetExpression(
-            Expression<Func<object, object>> currentObjectExpression, 
+
+        private static Action<object, object> BuildSetter(
+            ParameterExpression rootParameterExpression,
+            ParameterExpression valueParamererExpression,
+            MethodCallExpression getMemberExpression,
             PropertyInfo propertyInfo)
         {
             var objType = propertyInfo.DeclaringType;
             Debug.Assert(objType != null);
+            var setMethod = propertyInfo.GetSetMethod();
 
+            if (getMemberExpression == null)
+            {
+                var castObjectExpression = Expression.Convert(rootParameterExpression, objType);
+
+                var calSetExpression = Expression.Call(
+                    castObjectExpression,
+                    setMethod,
+                    Expression.Convert(valueParamererExpression, propertyInfo.PropertyType));
+
+                var setterLlambda = Expression.Lambda<Action<object, object>>(
+                    calSetExpression, 
+                    rootParameterExpression, 
+                    valueParamererExpression);
+
+                return setterLlambda.Compile();
+            }
+            else
+            {
+                var calSetExpression = Expression.Call(
+                    getMemberExpression,
+                    setMethod,
+                    Expression.Convert(valueParamererExpression, propertyInfo.PropertyType));
+
+                var setterLlambda = Expression.Lambda<Action<object, object>>(
+                    calSetExpression,
+                    rootParameterExpression,
+                    valueParamererExpression);
+
+                return setterLlambda.Compile();
+            }
+        }
+
+        private static MethodCallExpression BuildGetExpression(
+            ParameterExpression rootParameter,
+            MethodCallExpression currentObjectExpression, 
+            PropertyInfo propertyInfo)
+        {
+            var objType = propertyInfo.DeclaringType;
+            Debug.Assert(objType != null);
             var getMethod = propertyInfo.GetGetMethod();
 
-            var objExpression = Expression.Parameter(typeof(object), "obj");
-            var castObjectExpression = Expression.Convert(objExpression, objType);
-            
-            var callGetExpression = Expression.Call(castObjectExpression, getMethod);
-            var castExpression = Expression.Convert(callGetExpression, typeof(object));
+            if (currentObjectExpression == null)
+            {
+                //var objExpression = Expression.Parameter(typeof(object), propertyInfo.Name);
+                var castObjectExpression = Expression.Convert(rootParameter, objType);
 
-            var lambda = Expression.Lambda<Func<object, object>>(castExpression, objExpression);
-
-            return lambda.Compile();
-        }        
+                var callGetExpression = Expression.Call(castObjectExpression, getMethod);
+                return callGetExpression;
+            }
+            else
+            {
+                var callGetExpression = Expression.Call(currentObjectExpression, getMethod);
+                return callGetExpression;
+            }
+        }
 
         private static Type GetElementTypeOfEnumerable(object o)
         {
@@ -168,6 +210,20 @@ namespace Ui.Wpf.KanbanControl.Expressions
                 .FirstOrDefault();
 
             return elementType;
+        }
+
+        private static bool propertyApplicable(PropertyInfo propertyInfo)
+        {
+            if (propertyInfo.GetMethod == null)
+                return false;
+
+            if (propertyInfo.GetMethod.GetParameters().Length > 0)
+                return false;
+
+            if (propertyInfo.SetMethod == null)
+                return false;
+
+            return true;
         }
     }
 }

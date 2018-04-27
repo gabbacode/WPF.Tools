@@ -32,6 +32,42 @@ namespace Ui.Wpf.KanbanControl.Tests
         }
 
         [Test]
+        public void PropertyAccessorsExpressionCreator_Should_Correctly_Get_And_Set()
+        {
+            var pa = new PropertyAccessorsExpressionCreator(typeof(MockClass));
+
+            var initialA = 333;
+            var initialB = "444";
+            var initialSubA = 777;
+            var initialSubB = "888";
+
+            var obj = new MockClass { A = initialA, B = initialB };
+            var sub = new SubClass { A = initialSubA, B = initialSubB, Parent = obj, AnotherParent = null };
+            obj.SubClass = sub;
+
+            var aGetter = pa.TakeGetterForProperty("A");
+            var bGetter = pa.TakeGetterForProperty("B");
+            var subAGetter = pa.TakeGetterForProperty("SubClass.A");
+            var subBGetter = pa.TakeGetterForProperty("SubClass.B");
+
+            var subASetter = pa.TakeSetterForProperty("SubClass.A");
+            var subBSetter = pa.TakeSetterForProperty("SubClass.B");
+
+
+            Assert.NotNull(subAGetter);
+            Assert.NotNull(subBGetter);
+            Assert.NotNull(subASetter);
+            Assert.NotNull(subBSetter);
+
+
+            Assert.AreEqual(initialA, aGetter(obj));
+            Assert.AreEqual(initialB, bGetter(obj));
+            Assert.AreEqual(initialSubA, subAGetter(obj));
+            Assert.AreEqual(initialSubB, subBGetter(obj));
+
+        }
+
+        [Test]
         public void PropertyAccessorsExpressionCreator_Should_Not_Be_To_Slow()
         {
             var pa = new PropertyAccessorsExpressionCreator(typeof(MockClass));
@@ -94,7 +130,7 @@ namespace Ui.Wpf.KanbanControl.Tests
 
             Assert.LessOrEqual(
                 Math.Abs(genericPropertyElapsed.TotalMilliseconds - expressionPropertyElapsed.TotalMilliseconds),
-                genericPropertyElapsed.TotalMilliseconds * 3);
+                genericPropertyElapsed.TotalMilliseconds * 4);
         }
 
 
