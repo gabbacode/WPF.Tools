@@ -49,9 +49,11 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Behaviours\DefaultElementsDispencer.cs" />
-    <Compile Include="Behaviours\DefaultShowKanbanStrategey.cs" />
-    <Compile Include="Behaviours\KanbanChangeObjectType.cs" />
+    <Compile Include="ElementsManagement\CategoriesManager.cs" />
+    <Compile Include="ElementsManagement\ElementsDispencer.cs" />
+    <Compile Include="ElementsManagement\IKanbanManager.cs" />
+    <Compile Include="ElementsManagement\KanbanManager.cs" />
+    <Compile Include="ElementsManagement\KanbanChangeObjectType.cs" />
     <Compile Include="DefaultTemplates.cs">
       <DependentUpon>DefaultTemplates.xaml</DependentUpon>
     </Compile>
@@ -62,7 +64,7 @@
     <Compile Include="Dimensions\Generic\TagsDimensionCategory.cs" />
     <Compile Include="Dimensions\IDimension.cs" />
     <Compile Include="Dimensions\IDimensionCategory.cs" />
-    <Compile Include="Behaviours\IElementsDispenser.cs" />
+    <Compile Include="ElementsManagement\IElementsDispenser.cs" />
     <Compile Include="Dimensions\IDimensionIndexSource.cs" />
     <Compile Include="Dimensions\IDynamicDimension.cs" />
     <Compile Include="Dimensions\TagDimension.cs" />
@@ -88,7 +90,6 @@
     <Compile Include="Elements\CardElement\ICardContent.cs" />
     <Compile Include="Elements\CardElement\ICardContentItem.cs" />
     <Compile Include="Elements\IKanbanBoardView.cs" />
-    <Compile Include="Behaviours\IShowKanbanStrategy.cs" />
     <Compile Include="Expressions\ExpressionPathMember.cs" />
     <Compile Include="Expressions\PropertyAccessorsExpressionCreator.cs" />
     <Compile Include="Kanban.xaml.cs">

@@ -4,9 +4,9 @@ using Ui.Wpf.KanbanControl.Dimensions;
 using Ui.Wpf.KanbanControl.Elements.CardElement;
 using Ui.Wpf.KanbanControl.Expressions;
 
-namespace Ui.Wpf.KanbanControl.Behaviours
+namespace Ui.Wpf.KanbanControl.ElementsManagement
 {
-    internal class DefaultElementsDispenser : IElementsDispenser
+    internal class ElementsDispenser : IElementsDispenser
     {
         public void DispenceItems(
             ICollection<Card> cards, 

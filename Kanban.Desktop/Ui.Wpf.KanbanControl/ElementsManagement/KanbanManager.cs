@@ -4,14 +4,14 @@ using System.Windows.Controls;
 using Ui.Wpf.KanbanControl.Elements;
 using Ui.Wpf.KanbanControl.Expressions;
 
-namespace Ui.Wpf.KanbanControl.Behaviours
+namespace Ui.Wpf.KanbanControl.ElementsManagement
 {
-    internal class DefaultShowKanbanStrategey : IShowKanbanStrategy
+    internal class KanbanManager : IKanbanManager
     {
-        public DefaultShowKanbanStrategey(IKanbanBoard kanbanBoard)
+        public KanbanManager(IKanbanBoard kanbanBoard)
         {
             this.kanbanBoard = kanbanBoard;
-            elementsDispenser = new DefaultElementsDispenser();
+            elementsDispenser = new ElementsDispenser();
         }
 
         public void AddActionsToShow(
@@ -238,6 +238,6 @@ namespace Ui.Wpf.KanbanControl.Behaviours
 
         private readonly IKanbanBoard kanbanBoard;
 
-        private readonly DefaultElementsDispenser elementsDispenser;
+        private readonly ElementsDispenser elementsDispenser;
     }
 }

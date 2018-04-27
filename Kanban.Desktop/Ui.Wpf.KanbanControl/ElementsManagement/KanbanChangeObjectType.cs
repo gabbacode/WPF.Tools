@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Ui.Wpf.KanbanControl.Behaviours
+namespace Ui.Wpf.KanbanControl.ElementsManagement
 {
     [Flags]
     public enum KanbanChangeObjectType

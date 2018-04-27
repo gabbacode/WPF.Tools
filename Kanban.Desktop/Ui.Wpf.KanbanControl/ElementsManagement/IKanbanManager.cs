@@ -1,8 +1,8 @@
 ﻿using Ui.Wpf.KanbanControl.Expressions;
 
-namespace Ui.Wpf.KanbanControl.Behaviours
+namespace Ui.Wpf.KanbanControl.ElementsManagement
 {
-    public interface IShowKanbanStrategy
+    public interface IKanbanManager
     {
         void AddActionsToShow(KanbanChangeObjectType changeObjectType, PropertyAccessorsExpressionCreator propertyAccessors);
     }

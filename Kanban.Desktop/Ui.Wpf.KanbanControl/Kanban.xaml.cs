@@ -8,7 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using Ui.Wpf.KanbanControl.Behaviours;
+using Ui.Wpf.KanbanControl.ElementsManagement;
 using Ui.Wpf.KanbanControl.Common;
 using Ui.Wpf.KanbanControl.Dimensions;
 using Ui.Wpf.KanbanControl.Elements;
@@ -24,7 +24,9 @@ namespace Ui.Wpf.KanbanControl
     {
         public Kanban()
         {
-            showKanbanStrategy = new DefaultShowKanbanStrategey(this);
+            kanbanManager = new KanbanManager(this);
+            categoriesManager = new CategoriesManager();
+
             InitializeComponent();
             BuildCommands();
         }
@@ -36,7 +38,9 @@ namespace Ui.Wpf.KanbanControl
             // let the GridSplitter move
             if (sizeInfo.NewSize.Height != 0
                 && double.IsNaN(Height))
+            {
                 Height = sizeInfo.NewSize.Height;
+            }
         }
 
         private void AddActionsToShow(KanbanChangeObjectType changeObjectType)
@@ -52,7 +56,11 @@ namespace Ui.Wpf.KanbanControl
 
             // TODO create only when type changed
             propertyAccessors = new PropertyAccessorsExpressionCreator(Cards);
-            BuildAutoCategories(HorizontalDimension, VerticalDimension);
+
+            categoriesManager.BuildAutoCategories(
+                Cards, 
+                HorizontalDimension, VerticalDimension,
+                propertyAccessors);
 
             if (HorizontalDimension.Categories == null
                 || HorizontalDimension.Categories.Count == 0
@@ -65,77 +73,9 @@ namespace Ui.Wpf.KanbanControl
             BuildCells();
             BuildHeaders();            
 
-            showKanbanStrategy.AddActionsToShow(
+            kanbanManager.AddActionsToShow(
                 changeObjectType, 
                 propertyAccessors);
-        }
-
-        private void BuildAutoCategories(
-            IDimension horizontalDimension, 
-            IDimension verticalDimension)
-        {
-            if (horizontalDimension is IDynamicDimension dynamicHorizontalDimension)
-            {
-                horizontalDimension.Categories = GetDimensionCategories(dynamicHorizontalDimension);
-            }
-
-            if (verticalDimension is IDynamicDimension dynamicVerticalDimension)
-            {
-                verticalDimension.Categories = GetDimensionCategories(dynamicVerticalDimension);
-            }
-        }
-
-        private IList<IDimensionCategory> GetDimensionCategories(
-            IDynamicDimension dimension)
-        {
-            var getElementCategory = propertyAccessors.TakeGetterForProperty(dimension.ExpressionPath);
-            var getSortingValue = propertyAccessors.TakeGetterForProperty(dimension.SortingPath);
-
-            HashSet<object> tagFilter = null;
-            if (dimension.Tags != null)
-            {
-                tagFilter = new HashSet<object>(dimension.Tags);
-            }
-
-            if (getElementCategory != null)
-            {
-                var categoriesEnumerable = Cards.Cast<object>()
-                    .Select(card => new
-                    {
-                        category = getElementCategory(card),
-                        sortingElement = getSortingValue != null 
-                            ? getSortingValue(card)
-                            : null
-                    })
-                    .Where(card => card.category != null)
-                    .GroupBy(g => g.category)
-                    .Select(g => new
-                    {
-                        category = g.Key,
-                        sortingValue = g.First().sortingElement
-                    });
-                    
-
-                if (tagFilter != null)
-                {
-                    categoriesEnumerable = categoriesEnumerable
-                        .Where(c => tagFilter.Contains(c.category));
-                }
-
-                if (getSortingValue != null)
-                {
-                    categoriesEnumerable = categoriesEnumerable
-                        .OrderBy(c => c.sortingValue);
-                }
-
-                var categories = categoriesEnumerable
-                    .Select(c => (IDimensionCategory)new TagsDimensionCategory(c.category.ToString(), c.category))
-                    .ToList();
-
-                return categories;
-            }
-
-            return null;
         }
 
         private void BuildCells()
@@ -308,7 +248,9 @@ namespace Ui.Wpf.KanbanControl
 
         private PropertyAccessorsExpressionCreator propertyAccessors;
 
-        private readonly IShowKanbanStrategy showKanbanStrategy;
+        private readonly IKanbanManager kanbanManager;
+
+        private readonly CategoriesManager categoriesManager;
 
         #endregion
 
