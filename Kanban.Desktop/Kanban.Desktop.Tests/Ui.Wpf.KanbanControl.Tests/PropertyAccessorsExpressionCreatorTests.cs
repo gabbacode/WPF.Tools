@@ -65,6 +65,31 @@ namespace Ui.Wpf.KanbanControl.Tests
             Assert.AreEqual(initialSubA, subAGetter(obj));
             Assert.AreEqual(initialSubB, subBGetter(obj));
 
+            subASetter(obj, -333);
+
+            Assert.AreEqual(-333, obj.SubClass.A);
+
+        }
+
+        [Test]
+        public void PropertyAccessorsExpressionCreator_Must_Do_Null_Proposition()
+        {
+            var pa = new PropertyAccessorsExpressionCreator(typeof(MockClass));
+
+            var obj = new MockClass();
+
+            var aGetter = pa.TakeGetterForProperty("A");
+            var subAGetter = pa.TakeGetterForProperty("SubClass.A");
+
+            Assert.NotNull(subAGetter);
+
+            Assert.DoesNotThrow(() => aGetter(null));
+            Assert.DoesNotThrow(() => aGetter(obj));
+
+            Assert.DoesNotThrow(() => subAGetter(null));
+            Assert.DoesNotThrow(() => subAGetter(obj));
+
+            Assert.AreEqual(default(int), subAGetter(obj));
         }
 
         [Test]
@@ -88,17 +113,17 @@ namespace Ui.Wpf.KanbanControl.Tests
 
 
             var swGenericProperty = Stopwatch.StartNew();
-            for (int i = 0; i < 5000; i++)
+            for (int i = 0; i < 2000; i++)
             {
                 foreach (var obj in testObjects)
                 {
                     var a = obj.A;
                     var b = obj.B;
                     var c = obj.SubClass;
-                    var sa = obj.SubClass.A;
-                    var sb = obj.SubClass.B;
-                    var sp = obj.SubClass.Parent;
-                    var sap = obj.SubClass.AnotherParent;
+                    var sa = obj?.SubClass?.A;
+                    var sb = obj?.SubClass?.B;
+                    var sp = obj?.SubClass?.Parent;
+                    var sap = obj?.SubClass?.AnotherParent;
                 }
             }
             var genericPropertyElapsed = swGenericProperty.Elapsed;
@@ -113,7 +138,7 @@ namespace Ui.Wpf.KanbanControl.Tests
             var subAGetter = pa.TakeGetterForProperty("SubClass.A");
             var subBGetter = pa.TakeGetterForProperty("SubClass.B");
 
-            for (int j = 0; j < 5000; j++)
+            for (int j = 0; j < 2000; j++)
             {
                 foreach (var obj in testObjects)
                 {

@@ -10,16 +10,18 @@ namespace Ui.Wpf.KanbanControl.Expressions
 {
     public class PropertyAccessorsExpressionCreator
     {
-        public PropertyAccessorsExpressionCreator(Type type)
+        public PropertyAccessorsExpressionCreator(Type type, bool isNullPropositionEnabled = true)
         {
+            nullProposition = isNullPropositionEnabled;
             getters = new Dictionary<string, Func<object, object>>();
             setters = new Dictionary<string, Action<object, object>>();
 
             InitByType(type);
         }
 
-        public PropertyAccessorsExpressionCreator(IEnumerable items)
+        public PropertyAccessorsExpressionCreator(IEnumerable items, bool isNullPropositionEnabled = true)
         {
+            nullProposition = isNullPropositionEnabled;
             getters = new Dictionary<string, Func<object, object>>();
             setters = new Dictionary<string, Action<object, object>>();
 
@@ -68,7 +70,8 @@ namespace Ui.Wpf.KanbanControl.Expressions
                     var callGetExpr = BuildGetExpression(
                         rootParameterExpression,
                         pathMember.GetMemberExpression,
-                        propertyInfo);
+                        propertyInfo,
+                        nullProposition);
 
                     AddGetter(rootParameterExpression, path, callGetExpr);
 
@@ -98,12 +101,12 @@ namespace Ui.Wpf.KanbanControl.Expressions
 
             return action;
         }
-        
+
+        private readonly bool nullProposition;
         private readonly Dictionary<string, Func<object, object>> getters;
         private readonly Dictionary<string, Action<object, object>> setters;
 
-
-        private void AddGetter(ParameterExpression rootParameterExpression, string path, MethodCallExpression callGetExpr)
+        private void AddGetter(ParameterExpression rootParameterExpression, string path, Expression callGetExpr)
         {
             var castExpression = Expression.Convert(callGetExpr, typeof(object));
             var getter = Expression.Lambda<Func<object, object>>(castExpression, rootParameterExpression)
@@ -131,7 +134,7 @@ namespace Ui.Wpf.KanbanControl.Expressions
         private static Action<object, object> BuildSetter(
             ParameterExpression rootParameterExpression,
             ParameterExpression valueParamererExpression,
-            MethodCallExpression getMemberExpression,
+            Expression getMemberExpression,
             PropertyInfo propertyInfo)
         {
             var objType = propertyInfo.DeclaringType;
@@ -170,10 +173,11 @@ namespace Ui.Wpf.KanbanControl.Expressions
             }
         }
 
-        private static MethodCallExpression BuildGetExpression(
+        private static Expression BuildGetExpression(
             ParameterExpression rootParameter,
-            MethodCallExpression currentObjectExpression, 
-            PropertyInfo propertyInfo)
+            Expression currentObjectExpression, 
+            PropertyInfo propertyInfo,
+            bool nullProposition)
         {
             var objType = propertyInfo.DeclaringType;
             Debug.Assert(objType != null);
@@ -181,17 +185,43 @@ namespace Ui.Wpf.KanbanControl.Expressions
 
             if (currentObjectExpression == null)
             {
-                //var objExpression = Expression.Parameter(typeof(object), propertyInfo.Name);
                 var castObjectExpression = Expression.Convert(rootParameter, objType);
 
-                var callGetExpression = Expression.Call(castObjectExpression, getMethod);
-                return callGetExpression;
+                if (nullProposition && !rootParameter.Type.IsValueType)
+                {
+                    var callExpression = Expression.Call(castObjectExpression, getMethod);
+                    return AddNullCheckedExpression(rootParameter, callExpression);
+                }
+
+                return Expression.Call(castObjectExpression, getMethod);
             }
             else
             {
-                var callGetExpression = Expression.Call(currentObjectExpression, getMethod);
-                return callGetExpression;
+                if (nullProposition && !currentObjectExpression.Type.IsValueType)
+                {
+                    var callExpression = Expression.Call(currentObjectExpression, getMethod);
+                    return AddNullCheckedExpression(
+                        checkExpression: currentObjectExpression, 
+                        callExpression: callExpression);
+                }
+
+                return Expression.Call(currentObjectExpression, getMethod);
             }
+        }
+
+        private static ConditionalExpression AddNullCheckedExpression(
+            Expression checkExpression,
+            Expression callExpression)
+        {
+            var nullValueExpression = Expression.Constant(null);
+            var nullTestExpression = Expression.Equal(checkExpression, nullValueExpression);
+
+            var nullCheckedCallExpression = Expression.Condition(
+                nullTestExpression,
+                Expression.Default(callExpression.Type),
+                callExpression);
+
+            return nullCheckedCallExpression;
         }
 
         private static Type GetElementTypeOfEnumerable(object o)

@@ -12,7 +12,7 @@ namespace Ui.Wpf.KanbanControl.Expressions
 
         public string Path { get; set; }
         
-        public MethodCallExpression GetMemberExpression { get; set; }
+        public Expression GetMemberExpression { get; set; }
 
         #region [ IEquatable ]
         public override bool Equals(object obj)
