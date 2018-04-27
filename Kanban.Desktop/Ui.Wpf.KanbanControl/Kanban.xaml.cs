@@ -36,7 +36,7 @@ namespace Ui.Wpf.KanbanControl
             // let the GridSplitter move
             if (sizeInfo.NewSize.Height != 0
                 && double.IsNaN(Height))
-                Height = sizeInfo.NewSize.Height + 6;
+                Height = sizeInfo.NewSize.Height;
         }
 
         private void AddActionsToShow(KanbanChangeObjectType changeObjectType)

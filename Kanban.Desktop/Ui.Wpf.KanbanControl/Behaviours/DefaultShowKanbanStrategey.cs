@@ -38,7 +38,7 @@ namespace Ui.Wpf.KanbanControl.Behaviours
                  propertyAccessors);
 
             PlaceItems();
-            Autoscale();
+
 
             BuildGridDefenitions();
             BuildGridSpliters();
@@ -122,11 +122,10 @@ namespace Ui.Wpf.KanbanControl.Behaviours
             });
             foreach (var vCategory in kanbanBoard.VerticalDimension.Categories)
             {
-                kanbanBoard.KanbanGrid.RowDefinitions.Add(
-                    new RowDefinition
-                    {
-                        Height = new GridLength(vCategory.Weight, GridUnitType.Star)
-                    });
+                kanbanBoard.KanbanGrid.RowDefinitions.Add(new RowDefinition
+                {
+                    Height = GridLength.Auto
+                });
             }
         }
 
@@ -232,34 +231,6 @@ namespace Ui.Wpf.KanbanControl.Behaviours
             foreach (var toRemove in toRemoveItems)
             {
                 kanbanBoard.KanbanGrid.Children.Remove(toRemove);
-            }
-        }
-
-        private void Autoscale()
-        {
-            var rowMaxItemCounts = new int[kanbanBoard.VerticalDimension.Categories.Count];
-            for (int j = 0; j < kanbanBoard.VerticalDimension.Categories.Count; j++)
-            {
-                rowMaxItemCounts[j] = 0;
-                for (int i = 0; i < kanbanBoard.HorizontalDimension.Categories.Count; i++)
-                {
-                    if (rowMaxItemCounts[j] < kanbanBoard.Cells[i, j].ItemsCount)
-                        rowMaxItemCounts[j] = kanbanBoard.Cells[i, j].ItemsCount;
-                }
-            }
-
-            var totalRowMaxItemCounts = rowMaxItemCounts.Sum();
-
-            for (int j = 0; j < kanbanBoard.VerticalDimension.Categories.Count; j++)
-            {
-                if (totalRowMaxItemCounts != 0)
-                {
-                    kanbanBoard.VerticalDimension.Categories[j].Weight = (double)rowMaxItemCounts[j] / totalRowMaxItemCounts;
-                }
-                else
-                {
-                    kanbanBoard.VerticalDimension.Categories[j].Weight = 0;
-                }
             }
         }
 
