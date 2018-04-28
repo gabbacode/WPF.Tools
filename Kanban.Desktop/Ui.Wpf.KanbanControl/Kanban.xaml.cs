@@ -45,6 +45,7 @@ namespace Ui.Wpf.KanbanControl
 
         private void AddActionsToShow(KanbanChangeObjectType changeObjectType)
         {
+            Height = double.NaN;
             // ugly destory and build
             // TODO beautiful transition
             // TODO store changesets and animate last little part of it with some low frequency

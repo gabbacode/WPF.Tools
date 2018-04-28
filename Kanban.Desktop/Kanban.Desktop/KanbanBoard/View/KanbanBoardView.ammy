@@ -1,0 +1,111 @@
+using Ui.Wpf.KanbanControl;
+using MahApps.Metro.Controls;
+using LoadingIndicators.WPF;
+
+UserControl "Kanban.Desktop.KanbanBoard.View.KanbanBoardView" {
+	Grid {
+		RowDefinitions: [
+			RowDefinition { Height: "Auto" }
+			RowDefinition { }
+		]
+		LoadingIndicator {
+			Grid.Row: "0"
+			Grid.RowSpan: "2"
+			HorizontalAlignment: "Center"
+			IsActive: "{Binding IsBusy}"
+			SpeedRatio: "2"
+			Style: "{DynamicResource LoadingIndicatorPulseStyle}"
+		}
+		Grid {
+			ColumnDefinitions: 
+			[
+				ColumnDefinition { }
+				ColumnDefinition { }
+				ColumnDefinition { }
+			]
+			RowDefinitions: 
+			[
+				RowDefinition { Height: "Auto" }
+				RowDefinition { Height: "Auto" }
+				RowDefinition { Height: "Auto" }
+			]
+			StackPanel 
+			{
+				Grid.Row: "0"
+				Grid.Column: "0"
+				Orientation: "Horizontal"
+				TextBlock 
+				{
+					Margin: "18"
+					FontWeight: "Bold"
+					Text: "Project: "
+				}
+				SplitButton 
+				{
+					Margin: "12"
+					HorizontalContentAlignment: "Left"
+					VerticalContentAlignment: "Center"
+					Width: "220"
+					ItemsSource: "{Binding Projects}"
+					SelectedItem: "{Binding CurrentProject}"
+					DisplayMemberPath: "Name"
+					VerticalAlignment: "Center"
+				}
+			}
+			StackPanel 
+			{
+				Grid.Row: "0"
+				Grid.Column: "1"
+				Orientation: "Horizontal"
+				TextBlock { Margin: 18, FontWeight: "Bold", Text: "Dates from: " }
+				DateTimePicker {  Margin: 12, FirstDayOfWeek: "Monday" }
+				TextBlock { Margin: 18, FontWeight: "Bold",  Text: "to: " }
+				DateTimePicker {  Margin: 12, FirstDayOfWeek: "Monday" }
+			}
+			StackPanel 
+			{
+				Grid.Column: "0"
+				Grid.Row: "3"
+				HorizontalAlignment: "Left"
+				Margin: "12"
+				Button 
+				{
+					Grid.Column: "0"
+					Grid.Row: "3"
+					Content: "Refresh"
+					Command: "{Binding Refresh}"
+				}
+			}
+		}
+		StackPanel 
+		{
+			Grid.Row: "0"
+			HorizontalAlignment: "Right"
+			Margin: "12"
+			Button 
+			{
+				Name: "PrintButton"
+				Command: "{Binding ElementName=Kanban, Path=PrintCommand}"
+				Content: "Print"
+			}
+		}
+		ScrollViewer 
+		{
+			Grid.Row: "1"
+			Margin: "3"
+			VerticalAlignment: "Top"
+			VerticalScrollBarVisibility: "Auto"
+			HorizontalScrollBarVisibility: "Disabled"
+			Visibility: bind IsBusy convert (bool isBusy) => isBusy ? Visibility.Collapsed : Visibility.Visible
+			Kanban 
+			{
+				Name: "Kanban"
+				HorizontalDimension: "{Binding HorizontalDimension}"
+				VerticalDimension: "{Binding VerticalDimension}"
+				Cards: "{Binding Issues}"
+				CardContent: "{Binding CardContent}"
+				CardsColors: "{Binding CardsColors}"
+			}
+		}
+	}
+}

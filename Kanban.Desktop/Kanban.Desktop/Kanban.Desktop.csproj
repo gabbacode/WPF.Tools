@@ -13,6 +13,8 @@
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -20,7 +22,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -34,6 +36,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AmmySidekick, Version=1.0.0.0, Culture=neutral, PublicKeyToken=7c1296d24569a67d, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ammy.WPF.1.2.94\lib\net40\AmmySidekick.dll</HintPath>
+    </Reference>
     <Reference Include="Autofac, Version=4.7.1.0, Culture=neutral, PublicKeyToken=17863af14b0044da">
       <HintPath>..\packages\Autofac.4.7.1\lib\net45\Autofac.dll</HintPath>
     </Reference>
@@ -127,8 +132,8 @@
     <Compile Include="KanbanBoard\ViewModel\IKanbanBoardViewModel.cs" />
     <Compile Include="KanbanBoard\View\IKanbanBoardView.cs" />
     <Compile Include="KanbanBoard\Model\IKanbanConfigurationRepository.cs" />
-    <Compile Include="KanbanBoard\View\KanbanBoardView.xaml.cs">
-      <DependentUpon>KanbanBoardView.xaml</DependentUpon>
+    <Compile Include="KanbanBoard\View\KanbanBoardView.ammy.cs">
+      <DependentUpon>KanbanBoardView.ammy</DependentUpon>
     </Compile>
     <Compile Include="KanbanBoard\ViewModel\KanbanBoardViewModel.cs" />
     <Compile Include="KanbanBoard\Model\KanbanConfigurationRepository.cs" />
@@ -139,20 +144,23 @@
     <Compile Include="Settings.cs" />
     <Compile Include="Settings\ISettingsView.cs" />
     <Compile Include="Settings\ISettingsViewModel.cs" />
-    <Compile Include="Settings\SettingsView.xaml.cs">
-      <DependentUpon>SettingsView.xaml</DependentUpon>
+    <Compile Include="Settings\SettingsView.ammy.cs">
+      <DependentUpon>SettingsView.ammy</DependentUpon>
     </Compile>
     <Compile Include="Settings\SettingsViewModel.cs" />
-    <Page Include="KanbanBoard\View\KanbanBoardView.xaml">
-      <SubType>Designer</SubType>
+    <None Include="KanbanBoard\View\KanbanBoardView.ammy" />
+    <Page Include="KanbanBoard\View\KanbanBoardView.g.xaml">
+      <DependentUpon>KanbanBoardView.ammy</DependentUpon>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Settings\SettingsView.xaml">
-      <SubType>Designer</SubType>
+    <None Include="lib.ammy" />
+    <None Include="Settings\SettingsView.ammy" />
+    <Page Include="Settings\SettingsView.g.xaml">
+      <DependentUpon>SettingsView.ammy</DependentUpon>
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
@@ -175,7 +183,9 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="FodyWeavers.xml" />
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Properties\Settings.settings">
       <Generator>PublicSettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -211,4 +221,11 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Fody.2.0.7\build\netstandard1.4\Fody.targets" Condition="Exists('..\packages\Fody.2.0.7\build\netstandard1.4\Fody.targets')" />
+  <Import Project="..\packages\Ammy.1.2.94\build\Ammy.targets" Condition="Exists('..\packages\Ammy.1.2.94\build\Ammy.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>Данный проект ссылается на пакеты NuGet, отсутствующие на этом компьютере. Используйте восстановление пакетов NuGet, чтобы скачать их.  Дополнительную информацию см. по адресу: http://go.microsoft.com/fwlink/?LinkID=322105. Отсутствует следующий файл: {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Ammy.1.2.94\build\Ammy.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Ammy.1.2.94\build\Ammy.targets'))" />
+  </Target>
 </Project>

@@ -1,0 +1,43 @@
+<UserControl x:Class="Kanban.Desktop.KanbanBoard.View.KanbanBoardView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:ns0="clr-namespace:LoadingIndicators.WPF;assembly=LoadingIndicators.WPF" xmlns:ns1="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro" xmlns:ns2="clr-namespace:Ui.Wpf.KanbanControl;assembly=Ui.Wpf.KanbanControl" xmlns:ns3="clr-namespace:AmmySidekick;assembly=AmmySidekick" ns3:Ammy.Register="/Kanban.Desktop;component/KanbanBoard/View/KanbanBoardView.g.xaml">
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition/>
+    </Grid.RowDefinitions>
+    <ns0:LoadingIndicator Grid.Row="0" Grid.RowSpan="2" HorizontalAlignment="Center" IsActive="{Binding IsBusy}" SpeedRatio="2" Style="{DynamicResource LoadingIndicatorPulseStyle}"/>
+    <Grid>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition/>
+        <ColumnDefinition/>
+        <ColumnDefinition/>
+      </Grid.ColumnDefinitions>
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+      </Grid.RowDefinitions>
+      <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
+        <TextBlock Margin="18" FontWeight="Bold" Text="Project: "/>
+        <ns1:SplitButton Margin="12" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" Width="220" ItemsSource="{Binding Projects}" SelectedItem="{Binding CurrentProject}" DisplayMemberPath="Name" VerticalAlignment="Center"/>
+      </StackPanel>
+      <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
+        <TextBlock Margin="18" FontWeight="Bold" Text="Dates from: "/>
+        <ns1:DateTimePicker Margin="12" FirstDayOfWeek="Monday"/>
+        <TextBlock Margin="18" FontWeight="Bold" Text="to: "/>
+        <ns1:DateTimePicker Margin="12" FirstDayOfWeek="Monday"/>
+      </StackPanel>
+      <StackPanel Grid.Column="0" Grid.Row="3" HorizontalAlignment="Left" Margin="12">
+        <Button Grid.Column="0" Grid.Row="3" Content="Refresh" Command="{Binding Refresh}"/>
+      </StackPanel>
+    </Grid>
+    <StackPanel Grid.Row="0" HorizontalAlignment="Right" Margin="12">
+      <Button Name="PrintButton" Command="{Binding ElementName=Kanban, Path=PrintCommand}" Content="Print"/>
+    </StackPanel>
+    <ScrollViewer Grid.Row="1" Margin="3" VerticalAlignment="Top" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+      <ScrollViewer.Visibility>
+        <Binding Path="IsBusy" Converter="{x:Static ns3:ExpressionConverter.Instance}" ConverterParameter="&lt;expr id=&quot;0&quot;&gt;&lt;lambda isaction=&quot;False&quot;&gt;&lt;ternary&gt;&lt;parameter name=&quot;isBusy&quot; type=&quot;System.Boolean&quot; /&gt;&lt;prim val=&quot;System.Windows.Visibility.Collapsed&quot; isnull=&quot;False&quot;&gt;&lt;typeinfo typename=&quot;System.Windows.Visibility&quot; isarray=&quot;False&quot;&gt;&lt;/typeinfo&gt;&lt;/prim&gt;&lt;prim val=&quot;System.Windows.Visibility.Visible&quot; isnull=&quot;False&quot;&gt;&lt;typeinfo typename=&quot;System.Windows.Visibility&quot; isarray=&quot;False&quot;&gt;&lt;/typeinfo&gt;&lt;/prim&gt;&lt;/ternary&gt;&lt;parameter name=&quot;isBusy&quot; type=&quot;System.Boolean&quot; /&gt;&lt;/lambda&gt;&lt;/expr&gt;"/>
+      </ScrollViewer.Visibility>
+      <ns2:Kanban Name="Kanban" HorizontalDimension="{Binding HorizontalDimension}" VerticalDimension="{Binding VerticalDimension}" Cards="{Binding Issues}" CardContent="{Binding CardContent}" CardsColors="{Binding CardsColors}"/>
+    </ScrollViewer>
+  </Grid>
+</UserControl>

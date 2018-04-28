@@ -1,6 +1,5 @@
 ﻿using Kanban.Desktop.KanbanBoard.ViewModel;
 using System.Windows.Controls;
-using System.Windows.Input;
 using Ui.Wpf.Common;
 using Ui.Wpf.Common.ViewModels;
 
