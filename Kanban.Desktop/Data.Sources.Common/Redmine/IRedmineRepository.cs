@@ -1,5 +1,6 @@
 ﻿using Data.Entities.Common.Redmine;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 
 namespace Data.Sources.Common.Redmine
 {
@@ -9,9 +10,11 @@ namespace Data.Sources.Common.Redmine
 
         User GetCurrentUser();
 
-        IEnumerable<Issue> GetIssues(int? projectId = null);
+        IEnumerable<Issue> GetIssues(NameValueCollection filters);
 
         IEnumerable<Project> GetProjects();
+
+        IEnumerable<Priority> GetPriorities();
 
         IEnumerable<Status> GetStatuses();
 

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Collections.Specialized;
 using System.Linq;
 using Data.Entities.Common.Redmine;
 using Data.Sources.Common.Redmine;
@@ -52,7 +52,7 @@ namespace Data.Sources.Redmine
             return demoUsers[0];
         }
 
-        public IEnumerable<Issue> GetIssues(int? projectId = null)
+        public IEnumerable<Issue> GetIssues(NameValueCollection filters)
         {
             var rnd = new Random();
 
@@ -82,6 +82,11 @@ namespace Data.Sources.Redmine
         public IEnumerable<Project> GetProjects()
         {
             return projects;
+        }
+
+        public IEnumerable<Priority> GetPriorities()
+        {
+            return priorities;
         }
 
         public IEnumerable<Status> GetStatuses()

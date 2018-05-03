@@ -2,6 +2,41 @@ using Ui.Wpf.KanbanControl;
 using MahApps.Metro.Controls;
 using LoadingIndicators.WPF;
 
+
+alias LabelForFilter(caption)
+{
+		TextBlock 
+		{
+			Margin: "6,18,0,18"
+			FontWeight: "Bold"
+			TextAlignment: Right
+			Text: $caption
+			Width: 100
+		}
+}
+
+alias Filter(caption, items, selectedItem)
+{
+	StackPanel 
+	{
+		Grid.Row: "0"
+		Grid.Column: "0"
+		Orientation: "Horizontal"
+		@LabelForFilter($caption)
+		SplitButton 
+		{
+			Margin: "6, 12"
+			HorizontalContentAlignment: "Left"
+			VerticalContentAlignment: "Center"
+			Width: "220"
+			ItemsSource: bind $items
+			SelectedItem: bind $selectedItem
+			DisplayMemberPath: "Name"
+			VerticalAlignment: "Center"
+		}
+	}
+}
+
 UserControl "Kanban.Desktop.KanbanBoard.View.KanbanBoardView" {
 	Grid {
 		RowDefinitions: [
@@ -12,15 +47,16 @@ UserControl "Kanban.Desktop.KanbanBoard.View.KanbanBoardView" {
 			Grid.Row: "0"
 			Grid.RowSpan: "2"
 			HorizontalAlignment: "Center"
-			IsActive: "{Binding IsBusy}"
+			IsActive: bind IsBusy
 			SpeedRatio: "2"
 			Style: "{DynamicResource LoadingIndicatorPulseStyle}"
 		}
 		Grid {
 			ColumnDefinitions: 
 			[
-				ColumnDefinition { }
-				ColumnDefinition { }
+				ColumnDefinition { Width: "Auto" }
+				ColumnDefinition { Width: "Auto" }
+				ColumnDefinition { Width: "Auto" }
 				ColumnDefinition { }
 			]
 			RowDefinitions: 
@@ -29,38 +65,35 @@ UserControl "Kanban.Desktop.KanbanBoard.View.KanbanBoardView" {
 				RowDefinition { Height: "Auto" }
 				RowDefinition { Height: "Auto" }
 			]
-			StackPanel 
-			{
-				Grid.Row: "0"
-				Grid.Column: "0"
-				Orientation: "Horizontal"
-				TextBlock 
-				{
-					Margin: "18"
-					FontWeight: "Bold"
-					Text: "Project: "
-				}
-				SplitButton 
-				{
-					Margin: "12"
-					HorizontalContentAlignment: "Left"
-					VerticalContentAlignment: "Center"
-					Width: "220"
-					ItemsSource: "{Binding Projects}"
-					SelectedItem: "{Binding CurrentProject}"
-					DisplayMemberPath: "Name"
-					VerticalAlignment: "Center"
-				}
-			}
+
+			@Filter("Project: ", "Projects", "CurrentProject")
 			StackPanel 
 			{
 				Grid.Row: "0"
 				Grid.Column: "1"
 				Orientation: "Horizontal"
-				TextBlock { Margin: 18, FontWeight: "Bold", Text: "Dates from: " }
-				DateTimePicker {  Margin: 12, FirstDayOfWeek: "Monday" }
-				TextBlock { Margin: 18, FontWeight: "Bold",  Text: "to: " }
-				DateTimePicker {  Margin: 12, FirstDayOfWeek: "Monday" }
+				@LabelForFilter("Dates from: ")
+				DatePicker 
+				{
+					Margin: "3,12"
+					FirstDayOfWeek: "Monday"
+					SelectedDate: bind DateFrom
+				}
+				@LabelForFilter("to: ")
+				{
+					Width: "Auto"					
+				}
+				DatePicker 
+				{  
+					Margin: "3, 12", 
+					FirstDayOfWeek: "Monday" 
+					SelectedDate: bind DateTo
+				}
+			}
+			@Filter("Priority: ", "Priorities", "CurrentPriority")
+			{
+				Grid.Row: 1
+				Grid.Column: 0
 			}
 			StackPanel 
 			{
@@ -73,7 +106,7 @@ UserControl "Kanban.Desktop.KanbanBoard.View.KanbanBoardView" {
 					Grid.Column: "0"
 					Grid.Row: "3"
 					Content: "Refresh"
-					Command: "{Binding Refresh}"
+					Command: bind Refresh
 				}
 			}
 		}
@@ -96,15 +129,18 @@ UserControl "Kanban.Desktop.KanbanBoard.View.KanbanBoardView" {
 			VerticalAlignment: "Top"
 			VerticalScrollBarVisibility: "Auto"
 			HorizontalScrollBarVisibility: "Disabled"
-			Visibility: bind IsBusy convert (bool isBusy) => isBusy ? Visibility.Collapsed : Visibility.Visible
+			Visibility: bind IsBusy 
+				convert (bool isBusy) => isBusy 
+					? Visibility.Collapsed 
+					: Visibility.Visible
 			Kanban 
 			{
 				Name: "Kanban"
 				HorizontalDimension: "{Binding HorizontalDimension}"
 				VerticalDimension: "{Binding VerticalDimension}"
 				Cards: "{Binding Issues}"
-				CardContent: "{Binding CardContent}"
-				CardsColors: "{Binding CardsColors}"
+				CardContent: bind CardContent
+				CardsColors: bind CardsColors
 			}
 		}
 	}

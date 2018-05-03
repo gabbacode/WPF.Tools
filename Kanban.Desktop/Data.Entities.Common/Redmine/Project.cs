@@ -2,7 +2,7 @@
 
 namespace Data.Entities.Common.Redmine
 {
-    public class Project : IEquatable<Project>, IComparable, IComparable<Status>
+    public class Project : IEquatable<Project>, IComparable, IComparable<Project>
     {
         public int Id { get; set; }
 
@@ -13,7 +13,7 @@ namespace Data.Entities.Common.Redmine
             return CompareTo((Project)obj);
         }
 
-        public int CompareTo(Status other)
+        public int CompareTo(Project other)
         {
             return Id.CompareTo(other.Id);
         }

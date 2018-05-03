@@ -15,6 +15,12 @@ namespace Data.Sources.Redmine
         public RedmineRepository()
         {
             EntityMapper = BuildMapper();
+            ParametersMapping = new Dictionary<string, string>
+            {
+                { "ProjectId"   , RedmineKeys.PROJECT_ID },
+                { "PriorityId"  , RedmineKeys.PRIORITY_ID },
+            };
+
         }
 
         public void InitCredentials(string username, string password)
@@ -30,12 +36,21 @@ namespace Data.Sources.Redmine
             return EntityMapper.Map<CommonRemineEntities.User>(currentUser);
         }
 
-        public IEnumerable<CommonRemineEntities.Issue> GetIssues(int? projectId = null)
+        public IEnumerable<CommonRemineEntities.Issue> GetIssues(NameValueCollection filters)
         {
             var parameters = new NameValueCollection();
-            if (projectId.HasValue)
-                parameters.Add(RedmineKeys.PROJECT_ID, projectId.ToString());
+            foreach (var key in filters.AllKeys)
+            {
+                if (ParametersMapping.TryGetValue(key, out string convertedKey))
+                {
+                    foreach (var value in filters.GetValues(key))
+                    {
+                        parameters.Add(convertedKey, value);
+                    }
+                }
+            }
 
+            // TODO support multiple values
             var issues = RedmineManager.GetObjects<Issue>(parameters)
                 .Select(i => new CommonRemineEntities.Issue
                 {
@@ -46,7 +61,8 @@ namespace Data.Sources.Redmine
                     Project = EntityMapper.Map<CommonRemineEntities.Project>(i.Project),
                     Status = EntityMapper.Map<CommonRemineEntities.Status>(i.Status),
                     Subject = i.Subject,
-                    Tracker = EntityMapper.Map<CommonRemineEntities.Tracker>(i.Tracker)
+                    Tracker = EntityMapper.Map<CommonRemineEntities.Tracker>(i.Tracker),
+                    CreatedOn = i.CreatedOn
                 })
                 .ToArray();
 
@@ -57,6 +73,13 @@ namespace Data.Sources.Redmine
         {
             return RedmineManager.GetObjects<Project>()
                 .Select(p => EntityMapper.Map<CommonRemineEntities.Project>(p))
+                .ToArray();
+        }
+
+        public IEnumerable<CommonRemineEntities.Priority> GetPriorities()
+        {
+            return RedmineManager.GetObjects<IssuePriority>()
+                .Select(p => EntityMapper.Map<CommonRemineEntities.Priority>(p))
                 .ToArray();
         }
 
@@ -100,5 +123,7 @@ namespace Data.Sources.Redmine
         private RedmineManager RedmineManager;
 
         private IMapper EntityMapper;
+
+        public Dictionary<string, string> ParametersMapping { get; }
     }
 }

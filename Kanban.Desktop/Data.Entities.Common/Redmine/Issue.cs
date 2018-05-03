@@ -20,6 +20,8 @@ namespace Data.Entities.Common.Redmine
 
         public string Description { get; set; }
 
+        public DateTime? CreatedOn { get; set; }
+
         public int CompareTo(Issue other)
         {
             return Id.CompareTo(other.Id);

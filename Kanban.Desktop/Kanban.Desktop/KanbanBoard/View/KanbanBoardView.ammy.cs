@@ -13,7 +13,6 @@ namespace Kanban.Desktop.KanbanBoard.View
         public KanbanBoardView(IKanbanBoardViewModel kanbanBoardViewModel)
         {
             InitializeComponent();
-
             ViewModel = kanbanBoardViewModel;
             DataContext = ViewModel;
         }

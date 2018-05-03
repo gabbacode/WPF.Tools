@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using Data.Entities.Common.Redmine;
-
-namespace Kanban.Desktop.KanbanBoard.Model
+﻿namespace Kanban.Desktop.KanbanBoard.Model
 {
     public interface IKanbanBoardModel
     {
@@ -9,8 +6,8 @@ namespace Kanban.Desktop.KanbanBoard.Model
         
         void GetConfiguration(string configurationName);
         
-        KanbanData RefreshData();
-        
-        IEnumerable<Project> LoadProjects();
+        KanbanData LoadData(Filters filters);
+
+        FiltersData LoadFiltersData();
     }
 }

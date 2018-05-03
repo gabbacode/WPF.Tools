@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Specialized;
 using System.Linq;
-using Data.Entities.Common.Redmine;
 using Data.Sources.Common.Redmine;
 
 namespace Kanban.Desktop.KanbanBoard.Model
@@ -22,10 +21,29 @@ namespace Kanban.Desktop.KanbanBoard.Model
             Configuration = kanbanRepository.GetConfiguration(configurationName);
         }
 
-        public KanbanData RefreshData()
+        public KanbanData LoadData(Filters filters)
         {
+            var filterParameters = new NameValueCollection();
+            if (filters.Projects != null)
+            {
+                foreach (var project in filters.Projects)
+                {
+                    filterParameters.Add("ProjectId", project.Id.ToString());
+                }
+            }
+            if (filters.Priorities != null)
+            {
+                foreach (var priority in filters.Priorities)
+                {
+                    filterParameters.Add("PriorityId", priority.Id.ToString());
+                }
+            }
+
             var issues = redmineRepository
-                .GetIssues(Configuration?.ProjectId)
+                .GetIssues(filterParameters)
+                .Where(i => 
+                    (filters.DateFrom == null || filters.DateFrom <= i.CreatedOn)
+                    && (filters.DateTo == null || filters.DateTo >= i.CreatedOn))
                 .ToArray();
 
             var data = kanbanRepository.GetKanbanData(Configuration, issues);
@@ -33,11 +51,17 @@ namespace Kanban.Desktop.KanbanBoard.Model
             return data;
         }
 
-        public IEnumerable<Project> LoadProjects()
+        public FiltersData LoadFiltersData()
         {
-            var projects = redmineRepository.GetProjects();
+            var data = new FiltersData();
 
-            return projects;
+            data.Projects = redmineRepository.GetProjects()
+                .ToArray();
+
+            data.Priorities = redmineRepository.GetPriorities()
+                .ToArray();
+
+            return data;
         }
 
         private readonly IKanbanConfigurationRepository kanbanRepository;
