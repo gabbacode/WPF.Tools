@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Xml.Serialization;
 
-namespace Kanban.Desktop.KanbanBoard.Model
+namespace Kanban.Desktop.KanbanBoard.Model.Configuration
 {
     public class KanbanConfiguration
     {

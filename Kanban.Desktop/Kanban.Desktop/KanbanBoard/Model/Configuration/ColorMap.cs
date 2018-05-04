@@ -1,4 +1,4 @@
-﻿namespace Kanban.Desktop.KanbanBoard.Model
+﻿namespace Kanban.Desktop.KanbanBoard.Model.Configuration
 {
     public class ColorMap
     {

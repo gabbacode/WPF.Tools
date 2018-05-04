@@ -1,4 +1,6 @@
-﻿namespace Kanban.Desktop.KanbanBoard.Model
+﻿using Kanban.Desktop.KanbanBoard.Model.Configuration;
+
+namespace Kanban.Desktop.KanbanBoard.Model
 {
     public interface IKanbanBoardModel
     {

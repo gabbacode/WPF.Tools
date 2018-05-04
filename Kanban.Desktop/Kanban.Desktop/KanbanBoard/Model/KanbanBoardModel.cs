@@ -1,6 +1,7 @@
 ﻿using System.Collections.Specialized;
 using System.Linq;
 using Data.Sources.Common.Redmine;
+using Kanban.Desktop.KanbanBoard.Model.Configuration;
 
 namespace Kanban.Desktop.KanbanBoard.Model
 {
