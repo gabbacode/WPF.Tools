@@ -1,0 +1,52 @@
+<UserControl x:Class="Kanban.Desktop.Issues.View.IssueView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:ns0="clr-namespace:AmmySidekick;assembly=AmmySidekick" ns0:Ammy.Register="/Kanban.Desktop;component/Issues/View/IssueView.g.xaml">
+  <Grid Margin="12">
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="Auto"/>
+      <ColumnDefinition Width="0.8*"/>
+    </Grid.ColumnDefinitions>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
+    <TextBlock Grid.Column="0" Grid.Row="0" Margin="6, 6, 12, 6" TextAlignment="Right" Text="Subject:"/>
+    <TextBox Grid.Column="1" Grid.Row="0" TextWrapping="WrapWithOverflow">
+      <TextBox.Text>
+        <Binding Path="Subject"/>
+      </TextBox.Text>
+    </TextBox>
+    <TextBlock Grid.Column="0" Grid.Row="1" Margin="6, 6, 12, 6" TextAlignment="Right" Text="Project:"/>
+    <TextBlock Grid.Column="1" Grid.Row="1" Margin="6, 6, 12, 6" TextWrapping="WrapWithOverflow">
+      <TextBlock.Text>
+        <Binding Path="Project.Name"/>
+      </TextBlock.Text>
+    </TextBlock>
+    <TextBlock Grid.Column="0" Grid.Row="2" Margin="6, 6, 12, 6" TextAlignment="Right" Text="Tracker:"/>
+    <TextBlock Grid.Column="1" Grid.Row="2" Margin="6, 6, 12, 6" TextWrapping="WrapWithOverflow">
+      <TextBlock.Text>
+        <Binding Path="Tracker.Name"/>
+      </TextBlock.Text>
+    </TextBlock>
+    <TextBlock Grid.Column="0" Grid.Row="3" Margin="6, 6, 12, 6" TextAlignment="Right" Text="Priority:"/>
+    <TextBlock Grid.Column="1" Grid.Row="3" Margin="6, 6, 12, 6" TextWrapping="WrapWithOverflow">
+      <TextBlock.Text>
+        <Binding Path="Priority.Name"/>
+      </TextBlock.Text>
+    </TextBlock>
+    <TextBlock Grid.Column="0" Grid.Row="4" Margin="6, 6, 12, 6" TextAlignment="Right" Text="AssignedTo:"/>
+    <TextBlock Grid.Column="1" Grid.Row="4" Margin="6, 6, 12, 6" TextWrapping="WrapWithOverflow">
+      <TextBlock.Text>
+        <Binding Path="AssignedTo.Name"/>
+      </TextBlock.Text>
+    </TextBlock>
+    <TextBlock Grid.Column="0" Grid.Row="5" Margin="6, 6, 12, 6" TextAlignment="Right" Text="Description:"/>
+    <TextBox Grid.Column="1" Grid.Row="5" TextWrapping="WrapWithOverflow">
+      <TextBox.Text>
+        <Binding Path="Description"/>
+      </TextBox.Text>
+    </TextBox>
+  </Grid>
+</UserControl>

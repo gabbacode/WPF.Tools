@@ -15,14 +15,16 @@ namespace Ui.Wpf.Common
 
         [Reactive] public string Title { get; set; }
 
-        public void ShowView<TView>(UiShowOptions options = null)
+        public void ShowView<TView>(
+            ViewRequest viewRequest = null,
+            UiShowOptions options = null)
             where TView : class, IView 
         {
             var view = Container.Resolve<TView>();
             if (options != null)
                 view.Configure(options);
 
-            (view.ViewModel as IInitializableViewModel)?.Initialize();
+            (view.ViewModel as IInitializableViewModel)?.Initialize(viewRequest);
 
 
             var layoutDocument = new LayoutDocument();
@@ -34,6 +36,22 @@ namespace Ui.Wpf.Common
             
             DocumentPane.Children.Add(layoutDocument);
             layoutDocument.IsActive = true;
+        }
+
+        public void ShowTool<TToolView>(
+            ViewRequest viewRequest = null,
+            UiShowOptions options = null)
+            where TToolView : class, IToolView
+        {
+            var view = Container.Resolve<TToolView>();
+            if (options != null)
+                view.Configure(options);
+
+            (view.ViewModel as IInitializableViewModel)?.Initialize(viewRequest);
+
+            var layoutAnchorable = new LayoutAnchorable();
+            layoutAnchorable.Content = view;
+            ToolsPane.Children.Add(layoutAnchorable);
         }
 
         internal void ShowStartView<TStartWindow, TStartView>()
@@ -77,11 +95,17 @@ namespace Ui.Wpf.Common
             DockingManager.Layout = layoutRoot;
 
             DocumentPane = layoutRoot.RootPanel.Children[0] as LayoutDocumentPane;
+
+            ToolsPane = new LayoutAnchorablePane();
+            layoutRoot.RootPanel.Children.Insert(0, ToolsPane);
+            ToolsPane.DockWidth = new GridLength(410);
         }
-        
+
         //TODO replace to abstract manager
         private DockingManager DockingManager { get; set; }
 
         private LayoutDocumentPane DocumentPane { get; set; }
+
+        private LayoutAnchorablePane ToolsPane { get; set; }
     }
 }

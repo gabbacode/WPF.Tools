@@ -50,7 +50,7 @@ namespace Data.Entities.Common.Redmine
 
         public override string ToString()
         {
-            return Subject;
+            return $"Id: {Id} - {Subject}";
         }
     }
 }

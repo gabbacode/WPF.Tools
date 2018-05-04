@@ -17,8 +17,9 @@ namespace Data.Sources.Redmine
             EntityMapper = BuildMapper();
             ParametersMapping = new Dictionary<string, string>
             {
-                { "ProjectId"   , RedmineKeys.PROJECT_ID },
-                { "PriorityId"  , RedmineKeys.PRIORITY_ID },
+                { CommonRemineEntities.Keys.IssueId, RedmineKeys.ISSUE_ID },
+                { CommonRemineEntities.Keys.ProjectId,  RedmineKeys.PROJECT_ID },
+                { CommonRemineEntities.Keys.PriorityId, RedmineKeys.PRIORITY_ID },
             };
 
         }

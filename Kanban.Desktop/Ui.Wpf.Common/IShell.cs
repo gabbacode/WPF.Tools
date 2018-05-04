@@ -4,7 +4,14 @@
     {
         string Title { get; set; }
 
-        void ShowView<TView>(UiShowOptions options = null)
+        void ShowView<TView>(
+            ViewRequest viewRequest = null, 
+            UiShowOptions options = null)
             where TView : class, IView;
+
+        void ShowTool<TToolView>(
+            ViewRequest viewRequest = null,
+            UiShowOptions options = null)
+            where TToolView : class, IToolView;
     }
 }

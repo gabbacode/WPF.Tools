@@ -6,6 +6,8 @@ using System.Windows;
 using Kanban.Desktop.Settings;
 using Ui.Wpf.Common;
 using Kanban.Desktop.KanbanBoard.View;
+using Kanban.Desktop.Issues;
+using Kanban.Desktop.Issues.View;
 
 namespace Kanban.Desktop
 {
@@ -22,8 +24,8 @@ namespace Kanban.Desktop
             shell.Title = "Kanban.Desktop";
 
             AuthProcess.Start(
-                getAutenticationData:      LoginDialog.GetAutenticationDataTask(),
-                autentification:             (x) =>
+                getAutenticationData: LoginDialog.GetAutenticationDataTask(),
+                autentification: (x) =>
                     {
                         if (x == null)
                             return false;
@@ -31,25 +33,42 @@ namespace Kanban.Desktop
                         var authContext = shell.Container.Resolve<IAutentificationContext>();
                         return authContext.Login(x.Username, x.Password);
                     },
-                autenticationSuccess:      () =>
+                autenticationSuccess: () =>
                     {
-                        shell.ShowView<ISettingsView>(new UiShowOptions
-                        {
-                            Title = "Settings"                            
-                        });
+                        shell.ShowView<ISettingsView>(
+                            options: new UiShowOptions
+                            {
+                                Title = "Settings"                            
+                            });
                         shell.ShowView<IKanbanBoardView>();
-                        shell.ShowView<IKanbanBoardView>(new KanbanShowOptions
-                        {
-                            Title = "Kanban dynamic dimension",
-                            ConfigurtaionName = "h_status_v_assigned_c_subject_treker_details"
-                        });
-                        shell.ShowView<IKanbanBoardView>(new KanbanShowOptions
-                        {
-                            Title = "ods",
-                            ConfigurtaionName = "ods"
-                        });
+                        shell.ShowView<IKanbanBoardView>(
+                            new KanbanViewRequest
+                            {
+                                ConfigurtaionName = "h_status_v_assigned_c_subject_treker_details"
+                            },
+                            new KanbanShowOptions
+                            {
+                                Title = "Kanban dynamic dimension",
+                            });
+                        shell.ShowView<IKanbanBoardView>(
+                            new KanbanViewRequest
+                            {
+                                ConfigurtaionName = "ods"
+                            },
+                            new KanbanShowOptions
+                            {
+                                Title = "ods",                                
+                            });
+
+                        shell.ShowView<IIssueView>(
+                            new IssueViewRequest
+                            {
+                                IssueId = 4404
+                            });
+
+                        shell.ShowTool<IIssuesTool>();
                     },
-                autenticationFail:         () => Current.MainWindow.Close());
+                autenticationFail: () => Current.MainWindow.Close());
         }
     }
 }

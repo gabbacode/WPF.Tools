@@ -1,0 +1,137 @@
+﻿mixin FieldLabel() for TextBlock
+{
+	Margin: "6, 6, 12, 6"
+	TextAlignment: Right
+}
+
+mixin FieldValue() for TextBlock
+{
+	Margin: "6, 6, 12, 6"
+}
+
+
+UserControl "Kanban.Desktop.Issues.View.IssueView" 
+{
+	Grid 
+	{
+		ColumnDefinitions: 
+		[
+			ColumnDefinition { Width: "Auto" }
+			ColumnDefinition { Width: "0.8*" }
+		]
+		RowDefinitions: 
+		[
+			RowDefinition { Height: "Auto" }
+			RowDefinition { Height: "Auto" }
+			RowDefinition { Height: "Auto" }
+			RowDefinition { Height: "Auto" }
+			RowDefinition { Height: "Auto" }
+			RowDefinition { Height: "Auto" }
+		]
+
+		Margin: 12
+
+		// subject
+
+		TextBlock 
+		{ 		
+			Grid.Column: 0
+			Grid.Row: 0
+			#FieldLabel()
+			Text: "Subject:" 
+		}
+
+		TextBox 
+		{ 
+			Grid.Column: 1
+			Grid.Row: 0
+			TextWrapping: "WrapWithOverflow"
+			Text: bind Subject 
+		}
+
+		// Project
+		TextBlock 
+		{ 
+			Grid.Column: 0
+			Grid.Row: 1
+			#FieldLabel()
+			Text: "Project:" 
+		}
+		TextBlock 
+		{ 
+			Grid.Column: 1
+			Grid.Row: 1
+			#FieldValue()
+			TextWrapping: "WrapWithOverflow"
+			Text: bind Project.Name
+		}
+
+		// Tracker
+		TextBlock 
+		{ 
+			Grid.Column: 0
+			Grid.Row: 2
+			#FieldLabel()
+			Text: "Tracker:" 
+		}
+		TextBlock 
+		{ 
+			Grid.Column: 1
+			Grid.Row: 2
+			#FieldValue()
+			TextWrapping: "WrapWithOverflow"
+			Text: bind Tracker.Name
+		}
+
+		// Priority
+		TextBlock 
+		{ 
+			Grid.Column: 0
+			Grid.Row: 3
+			#FieldLabel()
+			Text: "Priority:" 
+		}
+		TextBlock 
+		{ 
+			Grid.Column: 1
+			Grid.Row: 3
+			#FieldValue()
+			TextWrapping: "WrapWithOverflow"
+			Text: bind Priority.Name
+		}
+
+		// AssignedTo
+		TextBlock 
+		{ 
+			Grid.Column: 0
+			Grid.Row: 4
+			#FieldLabel()
+			Text: "AssignedTo:" 
+		}
+		TextBlock 
+		{ 
+			Grid.Column: 1
+			Grid.Row: 4
+			#FieldValue()
+			TextWrapping: "WrapWithOverflow"
+			Text: bind AssignedTo.Name
+		}
+
+		// description
+		TextBlock 
+		{ 
+			Grid.Column: 0
+			Grid.Row: 5
+			#FieldLabel()
+			Text: "Description:" 
+		}
+		TextBox 
+		{ 
+			Grid.Column: 1
+			Grid.Row: 5
+			TextWrapping: "WrapWithOverflow"
+			Text: bind Description 
+		}
+
+	}
+}

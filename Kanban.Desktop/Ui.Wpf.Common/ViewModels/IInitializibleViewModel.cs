@@ -2,6 +2,6 @@
 {
     public interface IInitializableViewModel
     {
-        void Initialize();
+        void Initialize(ViewRequest viewRequest);
     }
 }

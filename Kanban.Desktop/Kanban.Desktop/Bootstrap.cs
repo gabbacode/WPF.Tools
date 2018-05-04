@@ -1,7 +1,12 @@
-﻿using Autofac;
+﻿using System;
+using Autofac;
 using Data.Sources.Common;
 using Data.Sources.Common.Redmine;
 using Data.Sources.Redmine;
+using Kanban.Desktop.Issues;
+using Kanban.Desktop.Issues.Model;
+using Kanban.Desktop.Issues.View;
+using Kanban.Desktop.Issues.ViewModel;
 using Kanban.Desktop.KanbanBoard.Model;
 using Kanban.Desktop.KanbanBoard.View;
 using Kanban.Desktop.KanbanBoard.ViewModel;
@@ -35,6 +40,9 @@ namespace Kanban.Desktop
 
             builder.RegisterType<MainWindow>().As<IDockWindow>();
 
+            //TODO Modules discovering
+            ConfigureIssues(builder);
+
             ConfigureKanbanBoard(builder);
 
             ConfigureSettings(builder);
@@ -42,6 +50,25 @@ namespace Kanban.Desktop
             ConfigureRedmine(builder);
 
             return builder.Build();
+        }
+
+        private static void ConfigureIssues(ContainerBuilder builder)
+        {
+            builder
+                .RegisterType<IssuesToolView>()
+                .As<IIssuesTool>();
+
+            builder
+                .RegisterType<IssueView>()
+                .As<IIssueView>();
+
+            builder
+                .RegisterType<IssueViewModel>()
+                .As<IIssueViewModel>();
+
+            builder
+                .RegisterType<IssueModel>()
+                .As<IIssueModel>();
         }
 
         private static void ConfigureKanbanBoard(ContainerBuilder builder)

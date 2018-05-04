@@ -6,6 +6,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Ui.Wpf.Common;
 using Ui.Wpf.KanbanControl.Dimensions;
 using Ui.Wpf.KanbanControl.Elements.CardElement;
 
@@ -22,12 +23,6 @@ namespace Kanban.Desktop.KanbanBoard.ViewModel
             Title = "Kanban";
 
             Refresh = ReactiveCommand.CreateFromTask(DoRefresh);
-
-            this.ObservableForProperty(x => x.ConfigurtaionName)
-                .Subscribe(x => 
-                {
-                    model.GetConfiguration(x.Value);
-                });
         }
 
         private async Task DoRefresh()
@@ -49,8 +44,10 @@ namespace Kanban.Desktop.KanbanBoard.ViewModel
             }
         }
 
-        public async void Initialize()
+        public async void Initialize(ViewRequest viewRequest)
         {
+            model.GetConfiguration((viewRequest as KanbanViewRequest)?.ConfigurtaionName);
+
             var filtersData = await Task
                 .Run(() => model.LoadFiltersData())
                 .ConfigureAwait(true);

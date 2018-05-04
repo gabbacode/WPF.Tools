@@ -42,6 +42,9 @@
     <Reference Include="Autofac, Version=4.7.1.0, Culture=neutral, PublicKeyToken=17863af14b0044da">
       <HintPath>..\packages\Autofac.4.7.1\lib\net45\Autofac.dll</HintPath>
     </Reference>
+    <Reference Include="AutoMapper, Version=6.2.2.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoMapper.6.2.2\lib\net45\AutoMapper.dll</HintPath>
+    </Reference>
     <Reference Include="ControlzEx, Version=3.0.2.4, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\packages\ControlzEx.3.0.2.4\lib\net462\ControlzEx.dll</HintPath>
     </Reference>
@@ -78,6 +81,7 @@
     <Reference Include="System.Reactive.Windows.Threading, Version=2.2.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
       <HintPath>..\packages\Rx-XAML.2.2.5\lib\net45\System.Reactive.Windows.Threading.dll</HintPath>
     </Reference>
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
       <HintPath>..\packages\ControlzEx.3.0.2.4\lib\net462\System.Windows.Interactivity.dll</HintPath>
@@ -119,6 +123,20 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Bootstrap.cs" />
+    <Compile Include="Issues\Model\IIssueModel.cs" />
+    <Compile Include="Issues\View\IIssuesTool.cs" />
+    <Compile Include="Issues\View\IIssueView.cs" />
+    <Compile Include="Issues\ViewModel\IIssueViewModel.cs" />
+    <Compile Include="Issues\Model\IssueModel.cs" />
+    <Compile Include="Issues\View\IssuesToolView.ammy.cs">
+      <DependentUpon>IssuesToolView.ammy</DependentUpon>
+    </Compile>
+    <Compile Include="Issues\View\IssueView.ammy.cs">
+      <DependentUpon>IssueView.ammy</DependentUpon>
+    </Compile>
+    <Compile Include="Issues\ViewModel\IssueViewModel.cs" />
+    <Compile Include="Issues\IssueViewRequest.cs" />
+    <Compile Include="KanbanBoard\KanbanViewRequest.cs" />
     <Compile Include="KanbanBoard\Model\Configuration\CardColors.cs" />
     <Compile Include="KanbanBoard\Model\Configuration\CardColorSettings.cs" />
     <Compile Include="KanbanBoard\Model\Configuration\CardItem.cs" />
@@ -150,7 +168,19 @@
       <DependentUpon>SettingsView.ammy</DependentUpon>
     </Compile>
     <Compile Include="Settings\SettingsViewModel.cs" />
+    <None Include="Issues\View\IssuesToolView.ammy" />
+    <None Include="Issues\View\IssueView.ammy" />
     <None Include="KanbanBoard\View\KanbanBoardView.ammy" />
+    <Page Include="Issues\View\IssuesToolView.g.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <DependentUpon>IssuesToolView.ammy</DependentUpon>
+    </Page>
+    <Page Include="Issues\View\IssueView.g.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <DependentUpon>IssueView.ammy</DependentUpon>
+    </Page>
     <Page Include="KanbanBoard\View\KanbanBoardView.g.xaml">
       <DependentUpon>KanbanBoardView.ammy</DependentUpon>
       <Generator>MSBuild:Compile</Generator>
