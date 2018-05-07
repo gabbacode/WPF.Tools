@@ -54,7 +54,7 @@ namespace Ui.Wpf.Common
             ToolsPane.Children.Add(layoutAnchorable);
         }
 
-        internal void ShowStartView<TStartWindow, TStartView>()
+        public void ShowStartView<TStartWindow, TStartView>()
             where TStartWindow : class
             where TStartView : class, IView
         {
@@ -72,7 +72,7 @@ namespace Ui.Wpf.Common
             window.Show();
         }
 
-        internal void ShowStartView<TStartWindow>()
+        public void ShowStartView<TStartWindow>()
             where TStartWindow : class 
         {
             var startObject = Container.Resolve<TStartWindow>();
@@ -87,7 +87,7 @@ namespace Ui.Wpf.Common
             window.Show();
         }
 
-        internal void AttachDockingManager(DockingManager dockingManager)
+        public void AttachDockingManager(DockingManager dockingManager)
         {
             DockingManager = dockingManager;
 

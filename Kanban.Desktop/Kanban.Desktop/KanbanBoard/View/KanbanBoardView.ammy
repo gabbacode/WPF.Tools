@@ -138,9 +138,10 @@ UserControl "Kanban.Desktop.KanbanBoard.View.KanbanBoardView" {
 				Name: "Kanban"
 				HorizontalDimension: "{Binding HorizontalDimension}"
 				VerticalDimension: "{Binding VerticalDimension}"
-				Cards: "{Binding Issues}"
+				Cards: bind Issues
 				CardContent: bind CardContent
 				CardsColors: bind CardsColors
+				CardMouseDoubleClickCommand: bind EditCardCommand
 			}
 		}
 	}

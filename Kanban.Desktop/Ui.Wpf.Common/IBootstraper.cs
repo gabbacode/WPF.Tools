@@ -2,6 +2,6 @@
 {
     public interface IBootstraper
     {
-        Shell Init();
+        IShell Init();
     }
 }

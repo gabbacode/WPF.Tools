@@ -1,4 +1,6 @@
 ﻿using Data.Entities.Common.Redmine;
+using Kanban.Desktop.Issues;
+using Kanban.Desktop.Issues.View;
 using Kanban.Desktop.KanbanBoard.Model;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -16,13 +18,25 @@ namespace Kanban.Desktop.KanbanBoard.ViewModel
     public class KanbanBoardViewModel : ReactiveObject, IKanbanBoardViewModel
     {
         public KanbanBoardViewModel(
-            IKanbanBoardModel model)
+            IKanbanBoardModel model,
+            IShell shell)
         {
             this.model = model;
             
             Title = "Kanban";
 
             Refresh = ReactiveCommand.CreateFromTask(DoRefresh);
+
+            EditCardCommand = ReactiveCommand.Create<object>(o =>
+            {
+                var issue = o as Issue;
+                shell.ShowView<IIssueView>(
+                    new IssueViewRequest
+                    {
+                        IssueId = issue.Id
+                    });
+            });
+
         }
 
         private async Task DoRefresh()
@@ -101,6 +115,8 @@ namespace Kanban.Desktop.KanbanBoard.ViewModel
         }
 
         [Reactive] public ICommand Refresh { get; private set; }
+
+        [Reactive] public ICommand EditCardCommand { get; private set; }
 
 
         [Reactive] public string Title { get; set; }

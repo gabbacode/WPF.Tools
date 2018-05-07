@@ -113,6 +113,13 @@ namespace Ui.Wpf.KanbanControl
 
         private void BuildCards()
         {
+            foreach (var card in cardElements)
+            {
+                card.View.MouseDoubleClick -= cardElementMouseDoubleClick;
+            }
+            cardElements.Clear();
+
+
             var contentItems = CardContent?.CardContentItems
                 .Select(ci => new
                 {
@@ -123,9 +130,7 @@ namespace Ui.Wpf.KanbanControl
                 .ToArray();
 
             var brushConverter = new BrushConverter();
-            
-            
-            cardElements.Clear();
+
             foreach (var cardData in Cards)
             {
                 var cardElement = new Card(cardData);
@@ -165,8 +170,23 @@ namespace Ui.Wpf.KanbanControl
                         .ToList();
 
                 cardElement.View.ContentTemplate = CardTemplate;
-
+                cardElement.View.MouseDoubleClick += cardElementMouseDoubleClick;
                 cardElements.Add(cardElement);
+            }
+        }
+
+        private void cardElementMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var source = e.OriginalSource as FrameworkElement;
+            var dc = source?.DataContext;
+
+            if (dc is ContentItem ci)
+            {
+                CardMouseDoubleClickCommand?.Execute(ci.DataItem);
+            }
+            else if (dc is Card c)
+            {
+                CardMouseDoubleClickCommand?.Execute(c.Item);
             }
         }
 
@@ -450,6 +470,18 @@ namespace Ui.Wpf.KanbanControl
                 typeof(ICommand), 
                 typeof(Kanban), 
                 new PropertyMetadata());
+
+        public ICommand CardMouseDoubleClickCommand
+        {
+            get { return (ICommand)GetValue(CardMouseDoubleClickCommandProperty); }
+            set { SetValue(CardMouseDoubleClickCommandProperty, value); }
+        }
+
+        public static readonly DependencyProperty CardMouseDoubleClickCommandProperty =
+            DependencyProperty.Register(
+                "CardMouseDoubleClickCommand", 
+                typeof(ICommand), typeof(Kanban), 
+                new PropertyMetadata(null));
 
         #endregion
     }

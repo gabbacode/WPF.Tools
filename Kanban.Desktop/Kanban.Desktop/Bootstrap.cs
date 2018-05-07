@@ -17,10 +17,10 @@ namespace Kanban.Desktop
 {
     public class Bootstrap : IBootstraper
     {
-        public Shell Init()
+        public IShell Init()
         {
             var container = ConfigureContainer();
-            var shell = container.Resolve<Shell>();
+            var shell = container.Resolve<IShell>();
 
             shell.Container = container;
 
@@ -31,7 +31,9 @@ namespace Kanban.Desktop
         {
             var builder = new ContainerBuilder();
 
-            builder.RegisterType<Shell>().SingleInstance();
+            builder.RegisterType<Shell>()
+                .As<IShell>()
+                .SingleInstance();
 
             builder
                 .RegisterType<RedmineAutentificationContext>()

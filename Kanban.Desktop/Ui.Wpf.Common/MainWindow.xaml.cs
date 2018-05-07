@@ -7,13 +7,13 @@ namespace Ui.Wpf.Common
     /// </summary>
     public partial class MainWindow : IDockWindow
     {
-        public MainWindow(Shell shell)
+        public MainWindow(IShell shell)
         {
             Shell = shell;
             InitializeComponent();
         }
 
-        private Shell Shell { get; }
+        private IShell Shell { get; }
 
         protected override void OnInitialized(EventArgs e)
         {

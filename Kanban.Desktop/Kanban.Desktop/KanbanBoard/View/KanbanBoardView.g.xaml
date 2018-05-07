@@ -72,13 +72,19 @@
       <ScrollViewer.Visibility>
         <Binding Path="IsBusy" Converter="{x:Static ns3:ExpressionConverter.Instance}" ConverterParameter="&lt;expr id=&quot;0&quot;&gt;&lt;lambda isaction=&quot;False&quot;&gt;&lt;ternary&gt;&lt;parameter name=&quot;isBusy&quot; type=&quot;System.Boolean&quot; /&gt;&lt;prim val=&quot;System.Windows.Visibility.Collapsed&quot; isnull=&quot;False&quot;&gt;&lt;typeinfo typename=&quot;System.Windows.Visibility&quot; isarray=&quot;False&quot;&gt;&lt;/typeinfo&gt;&lt;/prim&gt;&lt;prim val=&quot;System.Windows.Visibility.Visible&quot; isnull=&quot;False&quot;&gt;&lt;typeinfo typename=&quot;System.Windows.Visibility&quot; isarray=&quot;False&quot;&gt;&lt;/typeinfo&gt;&lt;/prim&gt;&lt;/ternary&gt;&lt;parameter name=&quot;isBusy&quot; type=&quot;System.Boolean&quot; /&gt;&lt;/lambda&gt;&lt;/expr&gt;"/>
       </ScrollViewer.Visibility>
-      <ns2:Kanban Name="Kanban" HorizontalDimension="{Binding HorizontalDimension}" VerticalDimension="{Binding VerticalDimension}" Cards="{Binding Issues}">
+      <ns2:Kanban Name="Kanban" HorizontalDimension="{Binding HorizontalDimension}" VerticalDimension="{Binding VerticalDimension}">
+        <ns2:Kanban.Cards>
+          <Binding Path="Issues"/>
+        </ns2:Kanban.Cards>
         <ns2:Kanban.CardContent>
           <Binding Path="CardContent"/>
         </ns2:Kanban.CardContent>
         <ns2:Kanban.CardsColors>
           <Binding Path="CardsColors"/>
         </ns2:Kanban.CardsColors>
+        <ns2:Kanban.CardMouseDoubleClickCommand>
+          <Binding Path="EditCardCommand"/>
+        </ns2:Kanban.CardMouseDoubleClickCommand>
       </ns2:Kanban>
     </ScrollViewer>
   </Grid>
