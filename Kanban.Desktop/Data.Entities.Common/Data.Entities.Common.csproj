@@ -42,6 +42,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Redmine\CustomField.cs" />
+    <Compile Include="Redmine\CustomFieldValue.cs" />
     <Compile Include="Redmine\Issue.cs" />
     <Compile Include="Redmine\Keys.cs" />
     <Compile Include="Redmine\Priority.cs" />

@@ -27,6 +27,7 @@ UserControl "Kanban.Desktop.Issues.View.IssueView"
 			RowDefinition { Height: "Auto" }
 			RowDefinition { Height: "Auto" }
 			RowDefinition { Height: "Auto" }
+			RowDefinition { Height: "Auto" }
 		]
 
 		Margin: 12
@@ -131,6 +132,39 @@ UserControl "Kanban.Desktop.Issues.View.IssueView"
 			Grid.Row: 5
 			TextWrapping: "WrapWithOverflow"
 			Text: bind Description 
+		}
+
+		DataGrid  
+		{
+			Grid.Column: 1
+			Grid.Row: 7
+			ItemsSource: bind CustomFields
+			AutoGenerateColumns: false
+			Columns: 
+			[
+				DataGridTextColumn 
+				{
+					Header: "Parameter"
+					Binding: bind Name	
+				}
+				DataGridTemplateColumn 
+				{
+					Header: "Values"
+					CellTemplate: 
+						DataTemplate {
+							StackPanel 
+							{
+								Orientation: Horizontal
+								ItemsControl 
+								{
+									ItemsSource: bind Values
+									ItemTemplate: 
+										DataTemplate { TextBlock { Text: bind Value } }
+								}
+							}
+						}
+				}
+			]
 		}
 
 	}

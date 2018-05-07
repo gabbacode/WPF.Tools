@@ -11,6 +11,7 @@
       <RowDefinition Height="Auto"/>
       <RowDefinition Height="Auto"/>
       <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
     </Grid.RowDefinitions>
     <TextBlock Grid.Column="0" Grid.Row="0" Margin="6, 6, 12, 6" TextAlignment="Right" Text="Subject:"/>
     <TextBox Grid.Column="1" Grid.Row="0" TextWrapping="WrapWithOverflow">
@@ -48,5 +49,39 @@
         <Binding Path="Description"/>
       </TextBox.Text>
     </TextBox>
+    <DataGrid Grid.Column="1" Grid.Row="7" AutoGenerateColumns="False">
+      <DataGrid.ItemsSource>
+        <Binding Path="CustomFields"/>
+      </DataGrid.ItemsSource>
+      <DataGrid.Columns>
+        <DataGridTextColumn Header="Parameter">
+          <DataGridTextColumn.Binding>
+            <Binding Path="Name"/>
+          </DataGridTextColumn.Binding>
+        </DataGridTextColumn>
+        <DataGridTemplateColumn Header="Values">
+          <DataGridTemplateColumn.CellTemplate>
+            <DataTemplate>
+              <StackPanel Orientation="Horizontal">
+                <ItemsControl>
+                  <ItemsControl.ItemsSource>
+                    <Binding Path="Values"/>
+                  </ItemsControl.ItemsSource>
+                  <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                      <TextBlock>
+                        <TextBlock.Text>
+                          <Binding Path="Value"/>
+                        </TextBlock.Text>
+                      </TextBlock>
+                    </DataTemplate>
+                  </ItemsControl.ItemTemplate>
+                </ItemsControl>
+              </StackPanel>
+            </DataTemplate>
+          </DataGridTemplateColumn.CellTemplate>
+        </DataGridTemplateColumn>
+      </DataGrid.Columns>
+    </DataGrid>
   </Grid>
 </UserControl>

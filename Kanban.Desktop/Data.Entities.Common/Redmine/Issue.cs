@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Data.Entities.Common.Redmine
 {
@@ -21,6 +22,8 @@ namespace Data.Entities.Common.Redmine
         public string Description { get; set; }
 
         public DateTime? CreatedOn { get; set; }
+
+        public IList<CustomField> CustomFields { get; set; }
 
         public int CompareTo(Issue other)
         {

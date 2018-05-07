@@ -63,7 +63,12 @@ namespace Data.Sources.Redmine
                     Status = EntityMapper.Map<CommonRemineEntities.Status>(i.Status),
                     Subject = i.Subject,
                     Tracker = EntityMapper.Map<CommonRemineEntities.Tracker>(i.Tracker),
-                    CreatedOn = i.CreatedOn
+                    CreatedOn = i.CreatedOn,
+                    CustomFields = i.CustomFields != null
+                        ? i.CustomFields
+                            .Select(cf => EntityMapper.Map<CommonRemineEntities.CustomField>(cf))
+                            .ToList()
+                        : null
                 })
                 .ToArray();
 
@@ -116,6 +121,11 @@ namespace Data.Sources.Redmine
                 cfg.CreateMap<Tracker, CommonRemineEntities.Tracker>();
                 cfg.CreateMap<User, CommonRemineEntities.User>();
                 cfg.CreateMap<IdentifiableName, CommonRemineEntities.User>();
+
+                cfg.CreateMap<CustomFieldValue, CommonRemineEntities.CustomFieldValue>()
+                    .ForMember(dest => dest.Value, opt => opt.MapFrom(src => src.Info));
+                cfg.CreateMap<IssueCustomField, CommonRemineEntities.CustomField>()
+                    .ConvertUsing<CustomFieldConverter>();
             });
 
             return mapConfig.CreateMapper();
@@ -126,5 +136,23 @@ namespace Data.Sources.Redmine
         private IMapper EntityMapper;
 
         public Dictionary<string, string> ParametersMapping { get; }
+    }
+
+    internal class CustomFieldConverter : ITypeConverter<IssueCustomField, CommonRemineEntities.CustomField>
+    {
+        public CommonRemineEntities.CustomField Convert(
+            IssueCustomField source, 
+            CommonRemineEntities.CustomField destination, 
+            ResolutionContext context)
+        {
+            destination = new CommonRemineEntities.CustomField();
+            destination.Id = source.Id;
+            destination.Name = source.Name;
+            destination.Values = source.Values
+                .Select(v => context.Mapper.Map<CommonRemineEntities.CustomFieldValue>(v))
+                .ToList();
+
+            return destination;
+        }
     }
 }

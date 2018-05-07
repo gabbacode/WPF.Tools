@@ -2,6 +2,7 @@
 using Data.Entities.Common.Redmine;
 using Kanban.Desktop.Issues.Model;
 using System;
+using System.Collections.Generic;
 using Ui.Wpf.Common;
 
 namespace Kanban.Desktop.Issues.ViewModel
@@ -50,6 +51,8 @@ namespace Kanban.Desktop.Issues.ViewModel
         public string Description { get; set; }
 
         public DateTime? CreatedOn { get; set; }
+
+        public IList<CustomField> CustomFields { get; set; }
 
         public IIssueModel Model { get; }
 
