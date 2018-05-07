@@ -24,7 +24,7 @@ namespace Kanban.Desktop
             shell.Title = "Kanban.Desktop";
 
             AuthProcess.Start(
-                getAutenticationData: LoginDialog.GetAutenticationDataTask(),
+                getAutenticationData: () => LoginDialog.GetAutenticationDataTask(),
                 autentification: (x) =>
                     {
                         if (x == null)
