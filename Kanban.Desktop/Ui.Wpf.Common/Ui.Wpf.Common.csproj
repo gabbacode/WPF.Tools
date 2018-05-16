@@ -106,6 +106,8 @@
     <Compile Include="IShell.cs" />
     <Compile Include="IToolView.cs" />
     <Compile Include="IView.cs" />
+    <Compile Include="Login\AuthProcess.cs" />
+    <Compile Include="Login\Login.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>

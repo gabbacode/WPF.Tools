@@ -2,7 +2,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace Kanban.Desktop.Login
+namespace Ui.Wpf.Common
 {
     public class AuthProcess
     {

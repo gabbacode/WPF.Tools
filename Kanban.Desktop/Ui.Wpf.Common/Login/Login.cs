@@ -3,7 +3,7 @@ using MahApps.Metro.Controls.Dialogs;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace Kanban.Desktop.Login
+namespace Ui.Wpf.Common
 {
     public class LoginDialog
     {

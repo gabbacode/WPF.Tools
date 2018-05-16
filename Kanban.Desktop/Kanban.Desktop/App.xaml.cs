@@ -1,7 +1,6 @@
 ﻿using Autofac;
 using Data.Sources.Common;
 using Kanban.Desktop.KanbanBoard;
-using Kanban.Desktop.Login;
 using System.Windows;
 using Kanban.Desktop.Settings;
 using Ui.Wpf.Common;

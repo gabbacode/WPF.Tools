@@ -159,8 +159,6 @@
     <Compile Include="KanbanBoard\Model\KanbanConfigurationRepository.cs" />
     <Compile Include="KanbanBoard\Model\KanbanData.cs" />
     <Compile Include="KanbanBoard\KanbanShowOptions.cs" />
-    <Compile Include="Login\AuthProcess.cs" />
-    <Compile Include="Login\Login.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Settings\ISettingsView.cs" />
     <Compile Include="Settings\ISettingsViewModel.cs" />
