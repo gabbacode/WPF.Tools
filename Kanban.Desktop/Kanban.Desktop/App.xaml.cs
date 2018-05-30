@@ -29,7 +29,7 @@ namespace Kanban.Desktop
                         if (x == null)
                             return false;
 
-                        var authContext = shell.Container.Resolve<IAutentificationContext>();
+                        var authContext = shell.Container.Resolve<IAuthenticationContext>();
                         return authContext.Login(x.Username, x.Password);
                     },
                 autenticationSuccess: () =>

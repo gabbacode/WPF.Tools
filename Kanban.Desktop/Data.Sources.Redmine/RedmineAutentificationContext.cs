@@ -3,9 +3,9 @@ using Data.Sources.Common.Redmine;
 
 namespace Data.Sources.Redmine
 {
-    public class RedmineAutentificationContext : IAutentificationContext
+    public class RedmineAuthenticationContext : IAuthenticationContext
     {
-        public RedmineAutentificationContext(IRedmineRepository redmineRepository)
+        public RedmineAuthenticationContext(IRedmineRepository redmineRepository)
         {
             RedmineRepository = redmineRepository;
         }

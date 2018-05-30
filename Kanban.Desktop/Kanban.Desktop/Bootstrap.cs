@@ -36,8 +36,8 @@ namespace Kanban.Desktop
                 .SingleInstance();
 
             builder
-                .RegisterType<RedmineAutentificationContext>()
-                .As<IAutentificationContext>()
+                .RegisterType<RedmineAuthenticationContext>()
+                .As<IAuthenticationContext>()
                 .SingleInstance();
 
             builder.RegisterType<MainWindow>().As<IDockWindow>();
