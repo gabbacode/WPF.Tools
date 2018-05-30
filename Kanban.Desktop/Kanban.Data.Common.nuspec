@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package >
+    <metadata>
+        <id>Kanban.Data.Common</id>
+        <version>1.0.2</version>
+        <authors>Sergej Kochekovsky</authors>
+        <licenseUrl>https://github.com/gabbacode/Kanban.Desktop/master/LICENSE</licenseUrl>
+        <projectUrl>https://github.com/gabbacode/Kanban.Desktop</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Kanban board based on redmine issues</description>
+        <releaseNotes>initial package</releaseNotes>
+        <copyright>Copyright 2018</copyright>
+        <tags>Kanban data commons</tags>
+    </metadata>
+    <files>
+        <file src="Data.Entities.Common\bin\Release\Data.Entities.Common.dll"   target="lib"/>
+        <file src="Data.Sources.Common\bin\Release\Data.Sources.Common.dll"     target="lib"/>
+    </files>
+</package>
