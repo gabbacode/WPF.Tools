@@ -23,16 +23,16 @@ namespace Kanban.Desktop
             shell.Title = "Kanban.Desktop";
 
             AuthProcess.Start(
-                getAutenticationData: () => LoginDialog.GetAutenticationDataTask(),
-                autentification: (x) =>
+                getAuthenticationData: () => LoginDialog.GetAutenticationDataTask(),
+                authentication: async (x) =>
                     {
                         if (x == null)
                             return false;
 
                         var authContext = shell.Container.Resolve<IAuthenticationContext>();
-                        return authContext.Login(x.Username, x.Password);
+                        return await authContext.LoginAsync(x.Username, x.Password);
                     },
-                autenticationSuccess: () =>
+                authenticationSuccess: () =>
                     {
                         shell.ShowView<ISettingsView>(
                             options: new UiShowOptions
@@ -67,7 +67,7 @@ namespace Kanban.Desktop
 
                         shell.ShowTool<IIssuesTool>();
                     },
-                autenticationFail: () => Current.MainWindow.Close());
+                authenticationFail: () => Current.MainWindow.Close());
         }
     }
 }

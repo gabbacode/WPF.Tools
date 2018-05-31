@@ -1,9 +1,7 @@
-﻿using System;
-using Autofac;
+﻿using Autofac;
 using Data.Sources.Common;
 using Data.Sources.Common.Redmine;
 using Data.Sources.Redmine;
-using Kanban.Desktop.Issues;
 using Kanban.Desktop.Issues.Model;
 using Kanban.Desktop.Issues.View;
 using Kanban.Desktop.Issues.ViewModel;

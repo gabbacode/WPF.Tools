@@ -9,26 +9,26 @@ namespace Ui.Wpf.Common
         private const int LoginTryCount = 3;
 
         public static async void Start(
-            Func<Task<LoginDialogData>> getAutenticationData,
-            Func<LoginDialogData, bool> autentification,
-            Action autenticationSuccess,
-            Action autenticationFail)
+            Func<Task<LoginDialogData>> getAuthenticationData,
+            Func<LoginDialogData, Task<bool>> authentication,
+            Action authenticationSuccess,
+            Action authenticationFail)
         {
             var trysLeft = LoginTryCount;
             while  (trysLeft-- > 0)
             {
-                var loginData = await getAutenticationData().ConfigureAwait(true);
+                var loginData = await getAuthenticationData().ConfigureAwait(true);
                 if (loginData == null)
                 {
-                    autenticationFail();
+                    authenticationFail();
                     return;
                 }
 
-                var autentificationResult = await Task.Run(() => autentification(loginData)).ConfigureAwait(true);
-                if (autentificationResult)
+                var authentcationResult = await authentication(loginData).ConfigureAwait(true);
+                if (authentcationResult)
                 {
                     // in ui thread
-                    autenticationSuccess();
+                    authenticationSuccess();
                     return;
                 }
                 else
@@ -38,7 +38,7 @@ namespace Ui.Wpf.Common
                 }
             }
 
-            autenticationFail();
+            authenticationFail();
         }
     }
 }

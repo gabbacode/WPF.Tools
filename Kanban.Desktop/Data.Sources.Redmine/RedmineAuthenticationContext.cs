@@ -1,4 +1,5 @@
-﻿using Data.Sources.Common;
+﻿using System.Threading.Tasks;
+using Data.Sources.Common;
 using Data.Sources.Common.Redmine;
 
 namespace Data.Sources.Redmine
@@ -24,6 +25,11 @@ namespace Data.Sources.Redmine
             {
                 return false;
             }
+        }
+
+        public Task<bool> LoginAsync(string username, string password)
+        {
+            return Task.Run(() => Login(username, password));
         }
 
         private IRedmineRepository RedmineRepository;

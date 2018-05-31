@@ -2,6 +2,7 @@
 using Data.Sources.Common.Redmine;
 using Redmine.Net.Api;
 using Redmine.Net.Api.Types;
+using Redmine.Net.Api.Async;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Configuration;
