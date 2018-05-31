@@ -32,6 +32,11 @@ namespace Data.Sources.Redmine
             return Task.Run(() => Login(username, password));
         }
 
+        public string GetToken()
+        {
+            throw new System.NotSupportedException();
+        }
+
         private IRedmineRepository RedmineRepository;
     }
 }
