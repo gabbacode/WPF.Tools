@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Threading.Tasks;
 using Data.Entities.Common.Redmine;
 using Data.Sources.Common.Redmine;
 
@@ -106,7 +107,29 @@ namespace Data.Sources.Redmine
 
         public void InitCredentials(string username, string password)
         {
-            
         }
+
+        public void InitCredentials(string apiKey)
+        {
+        }
+
+        public Task<IEnumerable<Issue>> GetIssuesAsync(NameValueCollection filters) => 
+            Task.Run(() => GetIssues(filters));
+
+        public Task<IEnumerable<Project>> GetProjectsAsync() =>
+            Task.Run(() => GetProjects());
+
+        public Task<IEnumerable<Priority>> GetPrioritiesAsync() =>
+            Task.Run(() => GetPriorities());
+
+        public Task<IEnumerable<Status>> GetStatusesAsync() =>
+            Task.Run(() => GetStatuses());
+
+
+        public Task<IEnumerable<Tracker>> GetTrackersAsync() =>
+            Task.Run(() => GetTrackers());
+
+        public Task<IEnumerable<User>> GetUsersAsync() =>
+            Task.Run(() => GetUsers());
     }
 }

@@ -8,6 +8,7 @@ using System.Collections.Specialized;
 using System.Configuration;
 using System.Linq;
 using CommonRemineEntities = Data.Entities.Common.Redmine;
+using System.Threading.Tasks;
 
 namespace Data.Sources.Redmine
 {
@@ -22,6 +23,14 @@ namespace Data.Sources.Redmine
                 { CommonRemineEntities.Keys.ProjectId,  RedmineKeys.PROJECT_ID },
                 { CommonRemineEntities.Keys.PriorityId, RedmineKeys.PRIORITY_ID },
             };
+
+        }
+
+        public void InitCredentials(string apiKey)
+        {
+            var redmineHost = ConfigurationManager.AppSettings["RedmineConnectionString"];
+
+            RedmineManager = new RedmineManager(redmineHost, apiKey: apiKey);
 
         }
 
@@ -40,6 +49,11 @@ namespace Data.Sources.Redmine
 
         public IEnumerable<CommonRemineEntities.Issue> GetIssues(NameValueCollection filters)
         {
+            return GetIssuesAsync(filters).Result;
+        }
+
+        public async Task<IEnumerable<CommonRemineEntities.Issue>> GetIssuesAsync(NameValueCollection filters)
+        {
             var parameters = new NameValueCollection();
             foreach (var key in filters.AllKeys)
             {
@@ -53,7 +67,9 @@ namespace Data.Sources.Redmine
             }
 
             // TODO support multiple values
-            var issues = RedmineManager.GetObjects<Issue>(parameters)
+            var redmineIssues = await RedmineManager.GetObjectsAsync<Issue>(parameters);
+
+            var issues = redmineIssues
                 .Select(i => new CommonRemineEntities.Issue
                 {
                     Id = i.Id,
@@ -83,9 +99,23 @@ namespace Data.Sources.Redmine
                 .ToArray();
         }
 
+        public async Task<IEnumerable<CommonRemineEntities.Project>> GetProjectsAsync()
+        {
+            return (await RedmineManager.GetObjectsAsync<Project>(new NameValueCollection()))
+                .Select(p => EntityMapper.Map<CommonRemineEntities.Project>(p))
+                .ToArray();
+        }
+
         public IEnumerable<CommonRemineEntities.Priority> GetPriorities()
         {
             return RedmineManager.GetObjects<IssuePriority>()
+                .Select(p => EntityMapper.Map<CommonRemineEntities.Priority>(p))
+                .ToArray();
+        }
+
+        public async Task<IEnumerable<CommonRemineEntities.Priority>> GetPrioritiesAsync()
+        {
+            return (await RedmineManager.GetObjectsAsync<IssuePriority>(new NameValueCollection()))
                 .Select(p => EntityMapper.Map<CommonRemineEntities.Priority>(p))
                 .ToArray();
         }
@@ -97,6 +127,13 @@ namespace Data.Sources.Redmine
                 .ToArray();
         }
 
+        public async Task<IEnumerable<CommonRemineEntities.Status>> GetStatusesAsync()
+        {
+            return (await RedmineManager.GetObjectsAsync<IssueStatus>(new NameValueCollection()))
+                .Select(s => EntityMapper.Map<CommonRemineEntities.Status>(s))
+                .ToArray();
+        }
+
         public IEnumerable<CommonRemineEntities.Tracker> GetTrackers()
         {
             return RedmineManager.GetObjects<Tracker>()
@@ -104,9 +141,23 @@ namespace Data.Sources.Redmine
                 .ToArray();
         }
 
+        public async Task<IEnumerable<CommonRemineEntities.Tracker>> GetTrackersAsync()
+        {
+            return (await RedmineManager.GetObjectsAsync<Tracker>(new NameValueCollection()))
+                .Select(t => EntityMapper.Map<CommonRemineEntities.Tracker>(t))
+                .ToArray();
+        }
+
         public IEnumerable<CommonRemineEntities.User> GetUsers()
         {
             return RedmineManager.GetObjects<User>()
+                .Select(u => EntityMapper.Map<CommonRemineEntities.User>(u))
+                .ToArray();
+        }
+
+        public async Task<IEnumerable<CommonRemineEntities.User>> GetUsersAsync()
+        {
+            return (await RedmineManager.GetObjectsAsync<User>(new NameValueCollection()))
                 .Select(u => EntityMapper.Map<CommonRemineEntities.User>(u))
                 .ToArray();
         }
