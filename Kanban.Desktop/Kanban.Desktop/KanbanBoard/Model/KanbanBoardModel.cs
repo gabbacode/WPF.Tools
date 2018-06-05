@@ -1,5 +1,6 @@
 ﻿using System.Collections.Specialized;
 using System.Linq;
+using Data.Entities.Common.Redmine;
 using Data.Sources.Common.Redmine;
 using Kanban.Desktop.KanbanBoard.Model.Configuration;
 
@@ -29,14 +30,14 @@ namespace Kanban.Desktop.KanbanBoard.Model
             {
                 foreach (var project in filters.Projects)
                 {
-                    filterParameters.Add("ProjectId", project.Id.ToString());
+                    filterParameters.Add(Keys.ProjectId, project.Id.ToString());
                 }
             }
             if (filters.Priorities != null)
             {
                 foreach (var priority in filters.Priorities)
                 {
-                    filterParameters.Add("PriorityId", priority.Id.ToString());
+                    filterParameters.Add(Keys.PriorityId, priority.Id.ToString());
                 }
             }
 

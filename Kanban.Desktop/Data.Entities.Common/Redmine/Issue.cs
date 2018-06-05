@@ -5,7 +5,7 @@ namespace Data.Entities.Common.Redmine
 {
     public class Issue : IEquatable<Issue>, IComparable, IComparable<Issue>
     {
-        public int Id { get; set; }
+        public int? Id { get; set; }
 
         public User AssignedTo { get; set; }
 
@@ -27,7 +27,17 @@ namespace Data.Entities.Common.Redmine
 
         public int CompareTo(Issue other)
         {
-            return Id.CompareTo(other.Id);
+            if (other == null) return 1;
+
+            if (Id == null)
+            {
+                if (other.Id == null)
+                    return 0;
+
+                return -1;
+            }
+
+            return Id.Value.CompareTo(other.Id.Value);
         }
 
         public int CompareTo(object obj)

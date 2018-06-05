@@ -69,6 +69,7 @@ namespace Data.Sources.Redmine
             // TODO support multiple values
             var redmineIssues = await RedmineManager.GetObjectsAsync<Issue>(parameters);
 
+            // TODO add custom map
             var issues = redmineIssues
                 .Select(i => new CommonRemineEntities.Issue
                 {
@@ -160,6 +161,38 @@ namespace Data.Sources.Redmine
             return (await RedmineManager.GetObjectsAsync<User>(new NameValueCollection()))
                 .Select(u => EntityMapper.Map<CommonRemineEntities.User>(u))
                 .ToArray();
+        }
+
+        public async Task<CommonRemineEntities.Issue> CreateOrUpdateIssue(CommonRemineEntities.Issue issue)
+        {
+            // TODO add custom map
+            var redmineIssue = new Issue
+            {
+                Id = issue.Id.GetValueOrDefault(0),
+                AssignedTo = EntityMapper.Map<IdentifiableName>(issue.AssignedTo),
+                Description = issue.Description,
+                Priority = EntityMapper.Map<IdentifiableName>(issue.Priority),
+                Project = EntityMapper.Map<IdentifiableName>(issue.Project),
+                Status = EntityMapper.Map<IdentifiableName>(issue.Status),
+                Subject = issue.Subject,
+                Tracker = EntityMapper.Map<IdentifiableName>(issue.Tracker),
+                CreatedOn = issue.CreatedOn,
+                CustomFields = issue.CustomFields != null
+                        ? issue.CustomFields
+                            .Select(cf => EntityMapper.Map<IssueCustomField>(cf))
+                            .ToList()
+                        : null
+            };
+
+            if (issue.Id.HasValue)
+            {
+                await RedmineManager.UpdateObjectAsync(redmineIssue.Id.ToString(), redmineIssue);
+                return issue;
+            }
+            else
+            {
+                return await RedmineManager.CreateObjectAsync(issue);
+            }
         }
 
         private IMapper BuildMapper()
