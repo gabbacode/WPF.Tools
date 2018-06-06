@@ -1,9 +1,10 @@
 ﻿using Data.Entities.Common.Redmine;
+using System.Threading.Tasks;
 
 namespace Kanban.Desktop.Issues.Model
 {
     public interface IIssueModel
     {
-        Issue LoadOrCreate(int? issueId);
+        Task<Issue> LoadOrCreateAsync(int? issueId);
     }
 }

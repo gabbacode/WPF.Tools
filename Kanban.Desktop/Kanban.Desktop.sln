@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ui.Wpf.KanbanControl.Tests"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Kanban.Desktop.Tests", "Kanban.Desktop.Tests", "{13774D47-C275-438B-8E00-0528DD34A278}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.Sources.Redmine.Tests", "Data.Sources.Redmine.Tests\Data.Sources.Redmine.Tests.csproj", "{6F2B3F9D-7C6B-4230-AE94-A3BEC5AA41DE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,14 +55,19 @@ Global
 		{7FF04819-5DE0-4A2C-86CB-850A930897E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7FF04819-5DE0-4A2C-86CB-850A930897E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7FF04819-5DE0-4A2C-86CB-850A930897E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F2B3F9D-7C6B-4230-AE94-A3BEC5AA41DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F2B3F9D-7C6B-4230-AE94-A3BEC5AA41DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F2B3F9D-7C6B-4230-AE94-A3BEC5AA41DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F2B3F9D-7C6B-4230-AE94-A3BEC5AA41DE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {AFFA0C05-4434-449D-AAF2-F7F777068909}
-	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{7FF04819-5DE0-4A2C-86CB-850A930897E5} = {13774D47-C275-438B-8E00-0528DD34A278}
+		{6F2B3F9D-7C6B-4230-AE94-A3BEC5AA41DE} = {13774D47-C275-438B-8E00-0528DD34A278}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {AFFA0C05-4434-449D-AAF2-F7F777068909}
 	EndGlobalSection
 EndGlobal

@@ -17,6 +17,8 @@ namespace Data.Sources.Common.Redmine
 
         Task<IEnumerable<Issue>> GetIssuesAsync(NameValueCollection filters);
 
+        Task<Issue> CreateOrUpdateIssueAsync(Issue issue);
+
         IEnumerable<Project> GetProjects();
 
         Task<IEnumerable<Project>> GetProjectsAsync();

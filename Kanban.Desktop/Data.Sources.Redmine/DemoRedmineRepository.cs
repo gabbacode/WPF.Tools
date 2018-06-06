@@ -131,5 +131,10 @@ namespace Data.Sources.Redmine
 
         public Task<IEnumerable<User>> GetUsersAsync() =>
             Task.Run(() => GetUsers());
+
+        public Task<Issue> CreateOrUpdateIssueAsync(Issue issue)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

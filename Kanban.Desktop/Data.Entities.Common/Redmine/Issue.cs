@@ -9,6 +9,8 @@ namespace Data.Entities.Common.Redmine
 
         public User AssignedTo { get; set; }
 
+        public User Author { get; set; }        
+
         public Project Project { get; set; }
 
         public Status Status { get; set; }

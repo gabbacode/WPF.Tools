@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DemoRedmineRepository.cs" />
+    <Compile Include="MappingBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RedmineAuthenticationContext.cs" />
     <Compile Include="RedmineRepository.cs" />

@@ -16,7 +16,8 @@ namespace Data.Sources.Redmine
     {
         public RedmineRepository()
         {
-            EntityMapper = BuildMapper();
+            EntityMapper = MappingBuilder.Build();
+
             ParametersMapping = new Dictionary<string, string>
             {
                 { CommonRemineEntities.Keys.IssueId, RedmineKeys.ISSUE_ID },
@@ -69,26 +70,7 @@ namespace Data.Sources.Redmine
             // TODO support multiple values
             var redmineIssues = await RedmineManager.GetObjectsAsync<Issue>(parameters);
 
-            // TODO add custom map
-            var issues = redmineIssues
-                .Select(i => new CommonRemineEntities.Issue
-                {
-                    Id = i.Id,
-                    AssignedTo = EntityMapper.Map<CommonRemineEntities.User>(i.AssignedTo),
-                    Description = i.Description,
-                    Priority = EntityMapper.Map<CommonRemineEntities.Priority>(i.Priority),
-                    Project = EntityMapper.Map<CommonRemineEntities.Project>(i.Project),
-                    Status = EntityMapper.Map<CommonRemineEntities.Status>(i.Status),
-                    Subject = i.Subject,
-                    Tracker = EntityMapper.Map<CommonRemineEntities.Tracker>(i.Tracker),
-                    CreatedOn = i.CreatedOn,
-                    CustomFields = i.CustomFields != null
-                        ? i.CustomFields
-                            .Select(cf => EntityMapper.Map<CommonRemineEntities.CustomField>(cf))
-                            .ToList()
-                        : null
-                })
-                .ToArray();
+            var issues = EntityMapper.Map<List<CommonRemineEntities.Issue>>(redmineIssues);
 
             return issues;
         }
@@ -163,26 +145,9 @@ namespace Data.Sources.Redmine
                 .ToArray();
         }
 
-        public async Task<CommonRemineEntities.Issue> CreateOrUpdateIssue(CommonRemineEntities.Issue issue)
+        public async Task<CommonRemineEntities.Issue> CreateOrUpdateIssueAsync(CommonRemineEntities.Issue issue)
         {
-            // TODO add custom map
-            var redmineIssue = new Issue
-            {
-                Id = issue.Id.GetValueOrDefault(0),
-                AssignedTo = EntityMapper.Map<IdentifiableName>(issue.AssignedTo),
-                Description = issue.Description,
-                Priority = EntityMapper.Map<IdentifiableName>(issue.Priority),
-                Project = EntityMapper.Map<IdentifiableName>(issue.Project),
-                Status = EntityMapper.Map<IdentifiableName>(issue.Status),
-                Subject = issue.Subject,
-                Tracker = EntityMapper.Map<IdentifiableName>(issue.Tracker),
-                CreatedOn = issue.CreatedOn,
-                CustomFields = issue.CustomFields != null
-                        ? issue.CustomFields
-                            .Select(cf => EntityMapper.Map<IssueCustomField>(cf))
-                            .ToList()
-                        : null
-            };
+            var redmineIssue = EntityMapper.Map<CommonRemineEntities.Issue>(issue);
 
             if (issue.Id.HasValue)
             {
@@ -195,49 +160,10 @@ namespace Data.Sources.Redmine
             }
         }
 
-        private IMapper BuildMapper()
-        {
-            var mapConfig = new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<Issue, CommonRemineEntities.Issue>();
-                cfg.CreateMap<IssuePriority, CommonRemineEntities.Priority>();
-                cfg.CreateMap<Project, CommonRemineEntities.Project>();
-                cfg.CreateMap<IssueStatus, CommonRemineEntities.Status>();
-                cfg.CreateMap<Tracker, CommonRemineEntities.Tracker>();
-                cfg.CreateMap<User, CommonRemineEntities.User>();
-                cfg.CreateMap<IdentifiableName, CommonRemineEntities.User>();
-
-                cfg.CreateMap<CustomFieldValue, CommonRemineEntities.CustomFieldValue>()
-                    .ForMember(dest => dest.Value, opt => opt.MapFrom(src => src.Info));
-                cfg.CreateMap<IssueCustomField, CommonRemineEntities.CustomField>()
-                    .ConvertUsing<CustomFieldConverter>();
-            });
-
-            return mapConfig.CreateMapper();
-        }
-
         private RedmineManager RedmineManager;
 
         private IMapper EntityMapper;
 
         public Dictionary<string, string> ParametersMapping { get; }
-    }
-
-    internal class CustomFieldConverter : ITypeConverter<IssueCustomField, CommonRemineEntities.CustomField>
-    {
-        public CommonRemineEntities.CustomField Convert(
-            IssueCustomField source, 
-            CommonRemineEntities.CustomField destination, 
-            ResolutionContext context)
-        {
-            destination = new CommonRemineEntities.CustomField();
-            destination.Id = source.Id;
-            destination.Name = source.Name;
-            destination.Values = source.Values
-                .Select(v => context.Mapper.Map<CommonRemineEntities.CustomFieldValue>(v))
-                .ToList();
-
-            return destination;
-        }
     }
 }

@@ -2,6 +2,7 @@
 using Data.Sources.Common.Redmine;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Kanban.Desktop.Issues.Model
 {
@@ -12,7 +13,7 @@ namespace Kanban.Desktop.Issues.Model
             RedmineRepository = redmineRepository;
         }
 
-        public Issue LoadOrCreate(int? issueId)
+        public async Task<Issue> LoadOrCreateAsync(int? issueId)
         {
             if (issueId.HasValue)
             {
@@ -20,8 +21,8 @@ namespace Kanban.Desktop.Issues.Model
                 var getIssueParameters = new NameValueCollection();
                 getIssueParameters.Add(Keys.IssueId, issueId.ToString());
 
-                return RedmineRepository
-                    .GetIssues(getIssueParameters)
+                return (await RedmineRepository
+                    .GetIssuesAsync(getIssueParameters))
                     .First();
             }
             else
