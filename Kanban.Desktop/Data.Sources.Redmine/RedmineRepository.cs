@@ -147,7 +147,7 @@ namespace Data.Sources.Redmine
 
         public async Task<CommonRemineEntities.Issue> CreateOrUpdateIssueAsync(CommonRemineEntities.Issue issue)
         {
-            var redmineIssue = EntityMapper.Map<CommonRemineEntities.Issue>(issue);
+            var redmineIssue = EntityMapper.Map<Issue>(issue);
 
             if (issue.Id.HasValue)
             {
@@ -156,7 +156,8 @@ namespace Data.Sources.Redmine
             }
             else
             {
-                return await RedmineManager.CreateObjectAsync(issue);
+                var newRedmineIssue = await RedmineManager.CreateObjectAsync(redmineIssue);
+                return EntityMapper.Map<CommonRemineEntities.Issue>(newRedmineIssue);
             }
         }
 

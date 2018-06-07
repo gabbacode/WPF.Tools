@@ -2,7 +2,7 @@
 <package >
     <metadata>
         <id>Kanban.Desktop</id>
-        <version>1.0.9</version>
+        <version>1.0.10</version>
         <authors>Sergej Kochekovsky</authors>
         <licenseUrl>https://github.com/gabbacode/Kanban.Desktop/master/LICENSE</licenseUrl>
         <projectUrl>https://github.com/gabbacode/Kanban.Desktop</projectUrl>

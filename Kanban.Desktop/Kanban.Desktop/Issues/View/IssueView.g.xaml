@@ -12,6 +12,8 @@
       <RowDefinition Height="Auto"/>
       <RowDefinition Height="Auto"/>
       <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
     </Grid.RowDefinitions>
     <TextBlock Grid.Column="0" Grid.Row="0" Margin="6, 6, 12, 6" TextAlignment="Right" Text="Subject:"/>
     <TextBox Grid.Column="1" Grid.Row="0" TextWrapping="WrapWithOverflow">
@@ -83,5 +85,12 @@
         </DataGridTemplateColumn>
       </DataGrid.Columns>
     </DataGrid>
+    <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="8">
+      <Button Content="Save">
+        <Button.Command>
+          <Binding Path="SaveCommand"/>
+        </Button.Command>
+      </Button>
+    </StackPanel>
   </Grid>
 </UserControl>

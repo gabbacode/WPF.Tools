@@ -4,15 +4,21 @@ using Kanban.Desktop.Issues.Model;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Reactive.Linq;
 using Ui.Wpf.Common;
+using Data.Sources.Common.Redmine;
+using System.Windows.Input;
+using System.Diagnostics;
 
 namespace Kanban.Desktop.Issues.ViewModel
 {
     public class IssueViewModel : ReactiveObject, IIssueViewModel
     {
-        public IssueViewModel(IIssueModel model)
+        public IssueViewModel(
+            IIssueModel model,
+            IRedmineRepository redmine)
         {
             Model = model;
 
@@ -22,6 +28,46 @@ namespace Kanban.Desktop.Issues.ViewModel
             });
 
             Mapper = mapConfig.CreateMapper();
+
+            SaveCommand = ReactiveCommand.CreateFromTask(async (x) =>
+            {
+                try
+                {
+                    var newIssue = new Issue
+                    {
+                        Subject = Subject,
+                        Description = Description,
+                        AssignedTo = AssignedTo,
+                        Project = Project,
+                        Status = Status,
+                        Tracker = Tracker,
+                        Priority = Priority,
+                        CustomFields = CustomFields
+                    };
+
+                    var saved = await redmine.CreateOrUpdateIssueAsync(newIssue);
+                }
+                catch (Exception ex)
+                {
+                    Trace.WriteLine(ex);
+                }
+            });
+        }
+
+        private string GetCustomValue(int customValueId, IList<CustomField> customFields)
+        {
+            return CustomFields
+                .FirstOrDefault(c => c.Id == customValueId)?.Values
+                .FirstOrDefault()?.Value;
+        }
+
+        private CustomField MakeCustomValue(int fieldTypeId, string value)
+        {
+            return new CustomField
+            {
+                Id = fieldTypeId,
+                Values = new[] { new CustomFieldValue { Value = value } }
+            };
         }
 
         public void Initialize(ViewRequest viewRequest)
@@ -71,8 +117,12 @@ namespace Kanban.Desktop.Issues.ViewModel
         [Reactive]
         public IList<CustomField> CustomFields { get; set; }
 
+        [Reactive]
+        public ICommand SaveCommand { get; set; }
+
         public IIssueModel Model { get; }
 
         public IMapper Mapper { get; }
+
     }
 }
