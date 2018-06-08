@@ -40,6 +40,8 @@ namespace Data.Sources.Redmine
                 cfg.CreateMap<Project, CommonRemineEntities.Project>();
                 cfg.CreateMap<IssueStatus, CommonRemineEntities.Status>();
                 cfg.CreateMap<Tracker, CommonRemineEntities.Tracker>();
+                cfg.CreateMap<ProjectTracker, CommonRemineEntities.Tracker>();
+
                 cfg.CreateMap<User, CommonRemineEntities.User>();
                 cfg.CreateMap<IdentifiableName, CommonRemineEntities.User>();
 
@@ -48,17 +50,17 @@ namespace Data.Sources.Redmine
                     .ReverseMap();
 
                 cfg.CreateMap<IssueCustomField, CommonRemineEntities.CustomField>()
-                    .ConvertUsing<CustomFieldConverterFromReadmine>();
+                    .ConvertUsing<CustomFieldConverterFromRedmine>();
 
                 cfg.CreateMap<CommonRemineEntities.CustomField, IssueCustomField>()
-                    .ConvertUsing<CustomFieldConverterToReadmine>();
+                    .ConvertUsing<CustomFieldConverterToRedmine>();
 
             });
 
             return mapConfig.CreateMapper();
         }
 
-        internal class CustomFieldConverterFromReadmine : ITypeConverter<IssueCustomField, CommonRemineEntities.CustomField>
+        internal class CustomFieldConverterFromRedmine : ITypeConverter<IssueCustomField, CommonRemineEntities.CustomField>
         {
             public CommonRemineEntities.CustomField Convert(
                 IssueCustomField source,
@@ -78,7 +80,7 @@ namespace Data.Sources.Redmine
             }
         }
 
-        internal class CustomFieldConverterToReadmine : ITypeConverter<CommonRemineEntities.CustomField, IssueCustomField>
+        internal class CustomFieldConverterToRedmine : ITypeConverter<CommonRemineEntities.CustomField, IssueCustomField>
         {
             public IssueCustomField Convert(
                 CommonRemineEntities.CustomField source,

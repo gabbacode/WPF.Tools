@@ -15,8 +15,8 @@ namespace Data.Sources.Redmine.Tests
             var mapper = MappingBuilder.Build();
 
             var testIssue = MakeTestIssue();
-            var readmineIssue = mapper.Map<Issue>(testIssue);
-            var commonIssue = mapper.Map<CommonRemineEntities.Issue>(readmineIssue);
+            var redmineIssue = mapper.Map<Issue>(testIssue);
+            var commonIssue = mapper.Map<CommonRemineEntities.Issue>(redmineIssue);
         }
 
         private  CommonRemineEntities.Issue MakeTestIssue()

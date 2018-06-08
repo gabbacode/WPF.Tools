@@ -95,12 +95,12 @@ namespace Data.Sources.Redmine
             return statuses;
         }
 
-        public IEnumerable<Tracker> GetTrackers()
+        public IEnumerable<Tracker> GetTrackers(int projectId)
         {
             return trackers;
         }
 
-        public IEnumerable<User> GetUsers()
+        public IEnumerable<User> GetUsers(int projectId)
         {
             return demoUsers;
         }
@@ -126,11 +126,11 @@ namespace Data.Sources.Redmine
             Task.Run(() => GetStatuses());
 
 
-        public Task<IEnumerable<Tracker>> GetTrackersAsync() =>
-            Task.Run(() => GetTrackers());
+        public Task<IEnumerable<Tracker>> GetTrackersAsync(int projectId) =>
+            Task.Run(() => GetTrackers(projectId));
 
-        public Task<IEnumerable<User>> GetUsersAsync() =>
-            Task.Run(() => GetUsers());
+        public Task<IEnumerable<User>> GetUsersAsync(int projectId) =>
+            Task.Run(() => GetUsers(projectId));
 
         public Task<Issue> CreateOrUpdateIssueAsync(Issue issue)
         {

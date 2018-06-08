@@ -117,32 +117,55 @@ namespace Data.Sources.Redmine
                 .ToArray();
         }
 
-        public IEnumerable<CommonRemineEntities.Tracker> GetTrackers()
+        public IEnumerable<CommonRemineEntities.Tracker> GetTrackers(int projectId)
         {
-            return RedmineManager.GetObjects<Tracker>()
+            var filter = new NameValueCollection
+            {
+                { RedmineKeys.INCLUDE, RedmineKeys.TRACKERS }
+            };
+
+            return RedmineManager.GetObject<Project>(projectId.ToString(), filter).Trackers
                 .Select(t => EntityMapper.Map<CommonRemineEntities.Tracker>(t))
                 .ToArray();
         }
 
-        public async Task<IEnumerable<CommonRemineEntities.Tracker>> GetTrackersAsync()
+        public async Task<IEnumerable<CommonRemineEntities.Tracker>> GetTrackersAsync(int projectId)
         {
-            return (await RedmineManager.GetObjectsAsync<Tracker>(new NameValueCollection()))
+            var filter = new NameValueCollection
+            {
+                { RedmineKeys.INCLUDE, RedmineKeys.TRACKERS }
+            };
+
+            return (await RedmineManager.GetObjectAsync<Project>(projectId.ToString(), filter)).Trackers
                 .Select(t => EntityMapper.Map<CommonRemineEntities.Tracker>(t))
                 .ToArray();
         }
 
-        public IEnumerable<CommonRemineEntities.User> GetUsers()
+        public IEnumerable<CommonRemineEntities.User> GetUsers(int projectId)
         {
-            return RedmineManager.GetObjects<User>()
+            var filter = new NameValueCollection
+            {
+                    {RedmineKeys.PROJECT_ID, projectId.ToString() }
+            };
+
+            return RedmineManager.GetObjects<ProjectMembership>(filter)
+                .Select(pm => pm.User)
                 .Select(u => EntityMapper.Map<CommonRemineEntities.User>(u))
                 .ToArray();
         }
 
-        public async Task<IEnumerable<CommonRemineEntities.User>> GetUsersAsync()
+        public async Task<IEnumerable<CommonRemineEntities.User>> GetUsersAsync(int projectId)
         {
-            return (await RedmineManager.GetObjectsAsync<User>(new NameValueCollection()))
+            var filter = new NameValueCollection
+            {
+                    {RedmineKeys.PROJECT_ID, projectId.ToString() }
+            };
+
+            return (await RedmineManager.GetObjectsAsync<ProjectMembership>(filter))
+                .Select(pm => pm.User)
                 .Select(u => EntityMapper.Map<CommonRemineEntities.User>(u))
                 .ToArray();
+
         }
 
         public async Task<CommonRemineEntities.Issue> CreateOrUpdateIssueAsync(CommonRemineEntities.Issue issue)

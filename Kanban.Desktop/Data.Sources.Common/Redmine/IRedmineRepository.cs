@@ -31,12 +31,12 @@ namespace Data.Sources.Common.Redmine
 
         Task<IEnumerable<Status>> GetStatusesAsync();
 
-        IEnumerable<Tracker> GetTrackers();
+        IEnumerable<Tracker> GetTrackers(int projectId);
 
-        Task<IEnumerable<Tracker>> GetTrackersAsync();
+        Task<IEnumerable<Tracker>> GetTrackersAsync(int projectId);
 
-        IEnumerable<User> GetUsers();
+        IEnumerable<User> GetUsers(int projectId);
 
-        Task<IEnumerable<User>> GetUsersAsync();
+        Task<IEnumerable<User>> GetUsersAsync(int projectId);
     }
 }
