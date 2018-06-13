@@ -54,10 +54,14 @@ namespace Ui.Wpf.Common
             ToolsPane.Children.Add(layoutAnchorable);
         }
 
-        public void ShowStartView<TStartWindow, TStartView>()
+        public void ShowStartView<TStartWindow, TStartView>(
+            UiShowStartWindowOptions options = null)
             where TStartWindow : class
             where TStartView : class, IView
         {
+            if (options != null)
+                ToolPaneWidth = options.ToolPaneWidth;
+
             var startObject = Container.Resolve<TStartWindow>();
 
             if (startObject == null)
@@ -72,9 +76,13 @@ namespace Ui.Wpf.Common
             window.Show();
         }
 
-        public void ShowStartView<TStartWindow>()
+        public void ShowStartView<TStartWindow>(
+            UiShowStartWindowOptions options = null)
             where TStartWindow : class 
         {
+            if (options != null)
+                ToolPaneWidth = options.ToolPaneWidth;
+
             var startObject = Container.Resolve<TStartWindow>();
 
             if (startObject == null)
@@ -83,6 +91,7 @@ namespace Ui.Wpf.Common
             var window = startObject as Window;
             if (window == null)
                 throw new InvalidCastException($"{startObject.GetType()} is not a window");
+
 
             window.Show();
         }
@@ -98,7 +107,7 @@ namespace Ui.Wpf.Common
 
             ToolsPane = new LayoutAnchorablePane();
             layoutRoot.RootPanel.Children.Insert(0, ToolsPane);
-            ToolsPane.DockWidth = new GridLength(410);
+            ToolsPane.DockWidth = new GridLength(ToolPaneWidth.GetValueOrDefault(410));
         }
 
         //TODO replace to abstract manager
@@ -107,5 +116,7 @@ namespace Ui.Wpf.Common
         private LayoutDocumentPane DocumentPane { get; set; }
 
         private LayoutAnchorablePane ToolsPane { get; set; }
+
+        private int? ToolPaneWidth { get; set; }
     }
 }

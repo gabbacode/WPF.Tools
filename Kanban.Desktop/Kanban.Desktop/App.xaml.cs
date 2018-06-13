@@ -19,8 +19,13 @@ namespace Kanban.Desktop
         {
             base.OnStartup(e);
 
-            var shell = UiStarter.Start<IDockWindow>(new Bootstrap());
-            shell.Title = "Kanban.Desktop";
+            var shell = UiStarter.Start<IDockWindow>(
+                new Bootstrap(), 
+                new UiShowStartWindowOptions()
+                {
+                    Title = "Kanban.Desktop",
+                    ToolPaneWidth = 100
+                });
 
             AuthProcess.Start(
                 getAuthenticationData: () => LoginDialog.GetAutenticationDataTask(),

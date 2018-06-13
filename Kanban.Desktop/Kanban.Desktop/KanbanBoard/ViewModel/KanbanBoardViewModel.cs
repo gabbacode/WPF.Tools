@@ -9,13 +9,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Ui.Wpf.Common;
+using Ui.Wpf.Common.ViewModels;
 using Ui.Wpf.KanbanControl.Dimensions;
 using Ui.Wpf.KanbanControl.Elements.CardElement;
 
 namespace Kanban.Desktop.KanbanBoard.ViewModel
 {
 
-    public class KanbanBoardViewModel : ReactiveObject, IKanbanBoardViewModel
+    public class KanbanBoardViewModel : ViewModelBase, IKanbanBoardViewModel
     {
         public KanbanBoardViewModel(
             IKanbanBoardModel model,

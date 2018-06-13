@@ -19,10 +19,10 @@ namespace Ui.Wpf.Common
             UiShowOptions options = null)
             where TToolView : class, IToolView;
 
-        void ShowStartView<TStartWindow>()
+        void ShowStartView<TStartWindow>(UiShowStartWindowOptions options = null)
             where TStartWindow : class;
 
-        void ShowStartView<TStartWindow, TStartView>()
+        void ShowStartView<TStartWindow, TStartView>(UiShowStartWindowOptions options = null)
             where TStartWindow : class
             where TStartView : class, IView;
 
