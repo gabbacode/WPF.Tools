@@ -1,5 +1,5 @@
 ﻿using Data.Entities.Common.Redmine;
-using Kanban.Desktop.KanbanBoard.Model.Configuration;
+using Data.Entities.Common.IssuesBoard;
 using System;
 using System.Collections.Generic;
 using System.Linq;

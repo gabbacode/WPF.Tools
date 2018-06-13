@@ -1,4 +1,4 @@
-﻿using Kanban.Desktop.KanbanBoard.Model.Configuration;
+﻿using Data.Entities.Common.IssuesBoard;
 
 namespace Kanban.Desktop.KanbanBoard.Model
 {

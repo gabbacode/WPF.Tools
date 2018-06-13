@@ -2,7 +2,7 @@
 using System.Linq;
 using Data.Entities.Common.Redmine;
 using Data.Sources.Common.Redmine;
-using Kanban.Desktop.KanbanBoard.Model.Configuration;
+using Data.Entities.Common.IssuesBoard;
 
 namespace Kanban.Desktop.KanbanBoard.Model
 {
