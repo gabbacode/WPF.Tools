@@ -1,4 +1,6 @@
-﻿namespace Ui.Wpf.Common
+﻿using Ui.Wpf.Common.ShowOptions;
+
+namespace Ui.Wpf.Common
 {
     public static class UiStarter
     {

@@ -1,4 +1,4 @@
-﻿using Ui.Wpf.Common;
+﻿using Ui.Wpf.Common.ShowOptions;
 using Ui.Wpf.Common.ViewModels;
 
 namespace Kanban.Desktop.Settings

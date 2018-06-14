@@ -85,10 +85,15 @@
         </DataGridTemplateColumn>
       </DataGrid.Columns>
     </DataGrid>
-    <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="8">
+    <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="8" Orientation="Horizontal">
       <Button Content="Save">
         <Button.Command>
           <Binding Path="SaveCommand"/>
+        </Button.Command>
+      </Button>
+      <Button Content="Cancel">
+        <Button.Command>
+          <Binding Path="CancelCommand"/>
         </Button.Command>
       </Button>
     </StackPanel>

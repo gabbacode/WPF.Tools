@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Ui.Wpf.Common.ShowOptions;
 using Xceed.Wpf.AvalonDock;
 
 namespace Ui.Wpf.Common

@@ -1,4 +1,4 @@
-﻿using Ui.Wpf.Common;
+﻿using Ui.Wpf.Common.ShowOptions;
 
 namespace Kanban.Desktop.KanbanBoard
 {

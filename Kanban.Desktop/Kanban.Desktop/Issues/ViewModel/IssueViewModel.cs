@@ -11,10 +11,11 @@ using Ui.Wpf.Common;
 using Data.Sources.Common.Redmine;
 using System.Windows.Input;
 using System.Diagnostics;
+using Ui.Wpf.Common.ViewModels;
 
 namespace Kanban.Desktop.Issues.ViewModel
 {
-    public class IssueViewModel : ReactiveObject, IIssueViewModel
+    public class IssueViewModel : ViewModelBase, IIssueViewModel
     {
         public IssueViewModel(
             IIssueModel model,
@@ -52,6 +53,8 @@ namespace Kanban.Desktop.Issues.ViewModel
                     Trace.WriteLine(ex);
                 }
             });
+
+            CancelCommand = ReactiveCommand.Create(() => Close());
         }
 
         private string GetCustomValue(int customValueId, IList<CustomField> customFields)
@@ -119,6 +122,9 @@ namespace Kanban.Desktop.Issues.ViewModel
 
         [Reactive]
         public ICommand SaveCommand { get; set; }
+
+        [Reactive]
+        public ICommand CancelCommand { get; set; }
 
         public IIssueModel Model { get; }
 

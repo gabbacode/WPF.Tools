@@ -1,4 +1,4 @@
-﻿namespace Ui.Wpf.Common
+﻿namespace Ui.Wpf.Common.ShowOptions
 {
     public class UiShowStartWindowOptions : UiShowOptions
     {
