@@ -23,6 +23,9 @@ namespace Data.Sources.Redmine
                 { CommonRemineEntities.Keys.IssueId, RedmineKeys.ISSUE_ID },
                 { CommonRemineEntities.Keys.ProjectId,  RedmineKeys.PROJECT_ID },
                 { CommonRemineEntities.Keys.PriorityId, RedmineKeys.PRIORITY_ID },
+                { CommonRemineEntities.Keys.StatusId, RedmineKeys.STATUS_ID },
+                { CommonRemineEntities.Keys.TrackerId, RedmineKeys.TRACKER_ID },
+                { CommonRemineEntities.Keys.AssignedToUserId, RedmineKeys.ASSIGNED_TO_ID },
             };
 
         }

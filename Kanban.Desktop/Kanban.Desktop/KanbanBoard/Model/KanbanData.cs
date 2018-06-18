@@ -7,8 +7,6 @@ namespace Kanban.Desktop.KanbanBoard.Model
 {
     public class KanbanData
     {
-        public int ProjectId { get; set; }
-
         public IDimension VerticalDimension { get; internal set; }
 
         public IDimension HorizontalDimension { get; internal set; }

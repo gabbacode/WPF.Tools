@@ -1,7 +1,6 @@
 ﻿using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
-using System.Collections.Generic;
 using System.Reactive.Disposables;
 
 namespace Ui.Wpf.Common.ViewModels
@@ -12,7 +11,7 @@ namespace Ui.Wpf.Common.ViewModels
         public string Title { get; set; }
 
         [Reactive]
-        public bool IsBusy { get; private set; }
+        public bool IsBusy { get; set; }
 
         #region CloseQuery
 
