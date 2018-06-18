@@ -1,4 +1,4 @@
-﻿namespace Kanban.Desktop.KanbanBoard.Model.Configuration
+﻿namespace Data.Entities.Common.IssuesBoard
 {
     public class CardColors
     {

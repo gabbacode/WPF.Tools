@@ -137,17 +137,10 @@
     <Compile Include="Issues\ViewModel\IssueViewModel.cs" />
     <Compile Include="Issues\IssueViewRequest.cs" />
     <Compile Include="KanbanBoard\KanbanViewRequest.cs" />
-    <Compile Include="KanbanBoard\Model\Configuration\CardColors.cs" />
-    <Compile Include="KanbanBoard\Model\Configuration\CardColorSettings.cs" />
-    <Compile Include="KanbanBoard\Model\Configuration\CardItem.cs" />
-    <Compile Include="KanbanBoard\Model\Configuration\CardItemsConfiguration.cs" />
-    <Compile Include="KanbanBoard\Model\Configuration\ColorMap.cs" />
-    <Compile Include="KanbanBoard\Model\Configuration\DimensionConfiguration.cs" />
     <Compile Include="KanbanBoard\Model\Filters\Filters.cs" />
     <Compile Include="KanbanBoard\Model\Filters\FiltersData.cs" />
     <Compile Include="KanbanBoard\Model\IKanbanBoardModel.cs" />
     <Compile Include="KanbanBoard\Model\KanbanBoardModel.cs" />
-    <Compile Include="KanbanBoard\Model\Configuration\KanbanConfiguration.cs" />
     <Compile Include="KanbanBoard\ViewModel\BusyContext.cs" />
     <Compile Include="KanbanBoard\ViewModel\IKanbanBoardViewModel.cs" />
     <Compile Include="KanbanBoard\View\IKanbanBoardView.cs" />
@@ -248,7 +241,9 @@
       <Name>Ui.Wpf.KanbanControl</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="KanbanBoard\Model\Configuration\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Fody.2.0.7\build\netstandard1.4\Fody.targets" Condition="Exists('..\packages\Fody.2.0.7\build\netstandard1.4\Fody.targets')" />
   <Import Project="..\packages\Ammy.1.2.94\build\Ammy.targets" Condition="Exists('..\packages\Ammy.1.2.94\build\Ammy.targets')" />

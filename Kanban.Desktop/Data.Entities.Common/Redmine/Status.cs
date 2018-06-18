@@ -4,13 +4,23 @@ namespace Data.Entities.Common.Redmine
 {
     public class Status : IEquatable<Status>, IComparable, IComparable<Status>
     {
-        public int Id { get; set; }
+        public int? Id { get; set; }
 
         public string Name { get; set; }
 
         public int CompareTo(Status other)
         {
-            return Id.CompareTo(other.Id);
+            if (other == null) return 1;
+
+            if (Id == null)
+            {
+                if (other.Id == null)
+                    return 0;
+
+                return -1;
+            }
+
+            return Id.Value.CompareTo(other.Id.Value);
         }
 
         public int CompareTo(object obj)

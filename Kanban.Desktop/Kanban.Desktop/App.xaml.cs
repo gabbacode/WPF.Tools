@@ -7,6 +7,7 @@ using Ui.Wpf.Common;
 using Kanban.Desktop.KanbanBoard.View;
 using Kanban.Desktop.Issues;
 using Kanban.Desktop.Issues.View;
+using Ui.Wpf.Common.ShowOptions;
 
 namespace Kanban.Desktop
 {
@@ -19,8 +20,13 @@ namespace Kanban.Desktop
         {
             base.OnStartup(e);
 
-            var shell = UiStarter.Start<IDockWindow>(new Bootstrap());
-            shell.Title = "Kanban.Desktop";
+            var shell = UiStarter.Start<IDockWindow>(
+                new Bootstrap(), 
+                new UiShowStartWindowOptions
+                {
+                    Title = "Kanban.Desktop",
+                    ToolPaneWidth = 100
+                });
 
             AuthProcess.Start(
                 getAuthenticationData: () => LoginDialog.GetAutenticationDataTask(),

@@ -28,6 +28,8 @@ UserControl "Kanban.Desktop.Issues.View.IssueView"
 			RowDefinition { Height: "Auto" }
 			RowDefinition { Height: "Auto" }
 			RowDefinition { Height: "Auto" }
+			RowDefinition { Height: "Auto" }
+			RowDefinition { Height: "Auto" }
 		]
 
 		Margin: 12
@@ -165,6 +167,24 @@ UserControl "Kanban.Desktop.Issues.View.IssueView"
 						}
 				}
 			]
+		}
+
+		StackPanel 
+		{
+			Grid.Column: 0
+			Grid.ColumnSpan: 2
+			Grid.Row: 8
+			Orientation: Horizontal
+			Button 
+			{
+				Content: "Save"
+				Command: bind SaveCommand			
+			}			
+			Button 
+			{
+				Content: "Cancel"
+				Command: bind CancelCommand			
+			}			
 		}
 
 	}

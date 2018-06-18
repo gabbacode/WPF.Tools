@@ -7,7 +7,7 @@ namespace Ui.Wpf.Common
 {
     public class LoginDialog
     {
-        public static Task<LoginDialogData> GetAutenticationDataTask()
+        public static Task<LoginDialogData> GetAutenticationDataTask(string initialUserName = "")
         {
             var mainview = Application.Current.MainWindow as MetroWindow;
             var loginTask = mainview.ShowLoginAsync(
@@ -17,6 +17,7 @@ namespace Ui.Wpf.Common
                 {
                     AnimateShow = true,
                     AnimateHide = true,
+                    InitialUsername = initialUserName,
                     AffirmativeButtonText = "Войти",
                     NegativeButtonText = "Закрыть",
                     NegativeButtonVisibility = Visibility.Visible,

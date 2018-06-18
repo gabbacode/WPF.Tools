@@ -125,10 +125,13 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="Shell.cs" />
+    <Compile Include="ShowOptions\UiShowStartWindowOptions.cs" />
     <Compile Include="UiStarter.cs" />
-    <Compile Include="UiShowOptions.cs" />
+    <Compile Include="ShowOptions\UiShowOptions.cs" />
     <Compile Include="ViewModels\IInitializibleViewModel.cs" />
     <Compile Include="ViewModels\IViewModel.cs" />
+    <Compile Include="ViewModels\ViewModelBase.cs" />
+    <Compile Include="ViewModels\ViewModelCloseQueryArgs.cs" />
     <Compile Include="ViewRequest.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

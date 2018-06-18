@@ -1,4 +1,5 @@
-﻿using Ui.Wpf.Common.ViewModels;
+﻿using Ui.Wpf.Common.ShowOptions;
+using Ui.Wpf.Common.ViewModels;
 
 namespace Ui.Wpf.Common
 {

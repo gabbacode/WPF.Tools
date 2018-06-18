@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Threading.Tasks;
 using Data.Entities.Common.Redmine;
 using Data.Sources.Common.Redmine;
 
@@ -94,19 +95,46 @@ namespace Data.Sources.Redmine
             return statuses;
         }
 
-        public IEnumerable<Tracker> GetTrackers()
+        public IEnumerable<Tracker> GetTrackers(int projectId)
         {
             return trackers;
         }
 
-        public IEnumerable<User> GetUsers()
+        public IEnumerable<User> GetUsers(int projectId)
         {
             return demoUsers;
         }
 
         public void InitCredentials(string username, string password)
         {
-            
+        }
+
+        public void InitCredentials(string apiKey)
+        {
+        }
+
+        public Task<IEnumerable<Issue>> GetIssuesAsync(NameValueCollection filters) => 
+            Task.Run(() => GetIssues(filters));
+
+        public Task<IEnumerable<Project>> GetProjectsAsync() =>
+            Task.Run(() => GetProjects());
+
+        public Task<IEnumerable<Priority>> GetPrioritiesAsync() =>
+            Task.Run(() => GetPriorities());
+
+        public Task<IEnumerable<Status>> GetStatusesAsync() =>
+            Task.Run(() => GetStatuses());
+
+
+        public Task<IEnumerable<Tracker>> GetTrackersAsync(int projectId) =>
+            Task.Run(() => GetTrackers(projectId));
+
+        public Task<IEnumerable<User>> GetUsersAsync(int projectId) =>
+            Task.Run(() => GetUsers(projectId));
+
+        public Task<Issue> CreateOrUpdateIssueAsync(Issue issue)
+        {
+            throw new NotImplementedException();
         }
     }
 }

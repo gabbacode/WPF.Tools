@@ -1,5 +1,5 @@
 ﻿using Kanban.Desktop.KanbanBoard.ViewModel;
-using Ui.Wpf.Common;
+using Ui.Wpf.Common.ShowOptions;
 using Ui.Wpf.Common.ViewModels;
 
 namespace Kanban.Desktop.KanbanBoard.View
