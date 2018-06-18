@@ -8,9 +8,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Data.Sources.LocalStorage.Sqlite.Context
 {
-    public class DeadContext : DbContext
+    public class SqliteContext : DbContext
     {
-        public DeadContext() // : base(new ("Data Source=testdb2.db; Version=3;"), true)
+        public SqliteContext() // : base(new ("Data Source=testdb2.db; Version=3;"), true)
         {
            // Database.EnsureDeleted();
             Database.EnsureCreated();

@@ -166,7 +166,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Context\DeadContext.cs" />
+    <Compile Include="Context\SqliteContext.cs" />
     <Compile Include="Context\SqliteIssue.cs" />
     <Compile Include="Context\LocalRepositoryContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
