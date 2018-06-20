@@ -68,7 +68,7 @@ namespace Kanban.Desktop
                         shell.ShowView<IIssueView>(
                             new IssueViewRequest
                             {
-                                IssueId = 4404
+                                IssueId = 4689
                             });
 
                         shell.ShowTool<IIssuesTool>();

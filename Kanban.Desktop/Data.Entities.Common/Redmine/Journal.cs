@@ -3,35 +3,22 @@ using System.Collections.Generic;
 
 namespace Data.Entities.Common.Redmine
 {
-    public class Issue : IEquatable<Issue>, IComparable, IComparable<Issue>
+    public class Journal : IEquatable<Journal>, IComparable, IComparable<Journal>
     {
         public int? Id { get; set; }
 
-        public User AssignedTo { get; set; }
-
-        public User Author { get; set; }        
-
-        public Project Project { get; set; }
-
-        public Status Status { get; set; }
-
-        public Priority Priority { get; set; }
-
-        public Tracker Tracker { get; set; }
-
-        public string Subject { get; set; }
-
-        public string Description { get; set; }
-
-        public DateTime? CreatedOn { get; set; }
-
-        public IList<CustomField> CustomFields { get; set; }
-
-        public IList<Journal> Journals { get; set; }
+        public User User { get; set; }
 
         public string Notes { get; set; }
 
-        public int CompareTo(Issue other)
+        public DateTime? CreatedOn { get; set; }
+
+        public bool PrivateNotes { get; set; }
+
+        public IList<Detail> Details { get; set; }
+
+
+        public int CompareTo(Journal other)
         {
             if (other == null) return 1;
 
@@ -48,15 +35,15 @@ namespace Data.Entities.Common.Redmine
 
         public int CompareTo(object obj)
         {
-            return CompareTo((Issue)obj);
+            return CompareTo((Journal)obj);
         }
 
         public override bool Equals(object obj)
         {
-            return Equals(obj as Issue);
+            return Equals(obj as Journal);
         }
 
-        public bool Equals(Issue other)
+        public bool Equals(Journal other)
         {
             return other != null &&
                    Id == other.Id;
@@ -69,7 +56,7 @@ namespace Data.Entities.Common.Redmine
 
         public override string ToString()
         {
-            return $"Id: {Id} - {Subject}";
+            return $"Id: {Id} - { User?.Name } - { Notes }";
         }
     }
 }

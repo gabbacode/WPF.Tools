@@ -136,5 +136,15 @@ namespace Data.Sources.Redmine
         {
             throw new NotImplementedException();
         }
+
+        public Issue GetIssue(int id)
+        {
+            return GetIssues(null).First();
+        }
+
+        public Task<Issue> GetIssueAsync(int id)
+        {
+            return Task.Run(() => GetIssue(id));
+        }
     }
 }

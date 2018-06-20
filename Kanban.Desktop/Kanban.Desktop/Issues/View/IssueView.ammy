@@ -30,6 +30,7 @@ UserControl "Kanban.Desktop.Issues.View.IssueView"
 			RowDefinition { Height: "Auto" }
 			RowDefinition { Height: "Auto" }
 			RowDefinition { Height: "Auto" }
+			RowDefinition { Height: "Auto" }
 		]
 
 		Margin: 12
@@ -169,11 +170,66 @@ UserControl "Kanban.Desktop.Issues.View.IssueView"
 			]
 		}
 
+		DataGrid  
+		{
+			Grid.Column: 1
+			Grid.Row: 8
+			ItemsSource: bind Journals
+			AutoGenerateColumns: false
+			Columns: 
+			[
+				DataGridTextColumn  { Header: "Author", Binding: bind User }
+				DataGridTextColumn  { Header: "Date", Binding: bind CreatedOn }
+				DataGridTemplateColumn  
+				{ 
+					Header: "Notes", 
+					Width: 500, 
+					CellTemplate: DataTemplate
+					{
+						TextBlock 
+						{
+							Text: bind Notes
+							TextWrapping: WrapWithOverflow
+						}
+					}
+				}
+				DataGridTemplateColumn 
+				{
+					Header: "Changes"
+					CellTemplate: 
+						DataTemplate {							
+							StackPanel
+							{
+								ItemsControl 
+								{
+									ItemsSource: bind Details
+									ItemTemplate: 
+										DataTemplate 
+										{
+											StackPanel 
+											{
+												Orientation: Horizontal
+												TextBlock { Text: " parameter: " }
+												TextBlock {  Text: bind Name, FontWeight: Bold } 
+												TextBlock { Text: " changed from: " }
+												TextBlock { Text: bind OldValue, FontWeight: Bold } 
+												TextBlock { Text: " to: " }
+												TextBlock { Text: bind NewValue, FontWeight: Bold } 
+											}
+											
+										}
+								}
+							}
+						}
+				}
+			]
+		}
+
 		StackPanel 
 		{
 			Grid.Column: 0
 			Grid.ColumnSpan: 2
-			Grid.Row: 8
+			Grid.Row: 9
 			Orientation: Horizontal
 			Button 
 			{

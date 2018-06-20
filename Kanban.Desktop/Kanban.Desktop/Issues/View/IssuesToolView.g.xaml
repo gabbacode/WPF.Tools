@@ -1,4 +1,4 @@
-<UserControl x:Class="Kanban.Desktop.Issues.View.IssuesToolView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+<UserControl x:Class="Kanban.Desktop.Issues.View.IssuesToolView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:ns0="clr-namespace:AmmySidekick;assembly=AmmySidekick" ns0:Ammy.Register="/Kanban.Desktop;component/Issues/View/IssuesToolView.g.xaml">
   <StackPanel>
     <Button Content="Action 1"/>
     <Button Content="Action 2"/>

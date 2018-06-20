@@ -119,11 +119,6 @@ namespace Kanban.Desktop.KanbanBoard.ViewModel
 
         [Reactive] public ICommand EditCardCommand { get; private set; }
 
-
-        [Reactive] public string Title { get; set; }
-
-        [Reactive] public bool IsBusy { get; private set; }
-
         [Reactive] public string ConfigurtaionName { get; set; }
 
         [Reactive] public Project CurrentProject { get; set; }
