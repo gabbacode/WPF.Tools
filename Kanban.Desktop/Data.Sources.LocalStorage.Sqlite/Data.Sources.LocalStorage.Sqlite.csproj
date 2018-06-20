@@ -169,7 +169,6 @@
   <ItemGroup>
     <Compile Include="Context\SqliteContext.cs" />
     <Compile Include="Context\SqliteIssue.cs" />
-    <Compile Include="Context\LocalRepositoryContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqliteLocalRepository.cs" />
   </ItemGroup>
