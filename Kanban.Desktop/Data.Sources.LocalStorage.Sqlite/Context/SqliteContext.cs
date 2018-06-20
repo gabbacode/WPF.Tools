@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,7 +27,7 @@ namespace Data.Sources.LocalStorage.Sqlite.Context
         protected override void OnConfiguring(DbContextOptionsBuilder builder)
         {
             builder.EnableSensitiveDataLogging();
-            builder.UseSqlite("Data Source=testdb2.db");
+            builder.UseSqlite(ConfigurationManager.AppSettings["LocaBaseConnectionString"]);
         }
 
         //protected override void OnModelCreating(ModelBuilder builder)

@@ -98,10 +98,10 @@ namespace Data.Sources.LocalStorage.Sqlite.Tests
             var iss2 = new Issue()
             {
                 CreatedOn   = new DateTime(2, 2, 3),
-                AssignedTo  = new User() { Id = 18, Name = "newttestuser" },
+              //  AssignedTo  = new User() { Id = 18, Name = "newttestuser" },
                 Description = "iss32ue 1 for unit test",
                 Id          = 18,
-                Priority    = new Priority() { Id = 62, Name  = "i123sntPriority" },
+                Priority    = new Priority() { Id = 162, Name  = "i123sntPriority" },
                 Project     = new Project() { Id  = 117, Name   = "t32estsProj" },
                 Status      = new Status() { Id   = 2124, Name = "2waitingforworking" },
                 Subject     = "very weak212 method",
@@ -121,12 +121,12 @@ namespace Data.Sources.LocalStorage.Sqlite.Tests
                 }
             };
             //_repos.SaveIssue(iss2);
-            //_repos.SaveIssuesList(new List<Issue>() { iss2, iss1, iss3, iss4 });
+            _repos.SaveIssuesList(new List<Issue>() { iss2 });
             //await _repos.CreateOrUpdateIssueAsync(iss2);
-            var getIssueParameters = new NameValueCollection();
-            getIssueParameters.Add(Keys.IssueId, 7.ToString());
-            var tt = _repos.GetUsers(177).ToList();
-            var t= await _repos.GetUsersAsync(177);
+            //var getIssueParameters = new NameValueCollection();
+            //getIssueParameters.Add(Keys.IssueId, 7.ToString());
+            //var tt = _repos.GetUsers(177).ToList();
+            //var t= await _repos.GetUsersAsync(177);
 
         }
 

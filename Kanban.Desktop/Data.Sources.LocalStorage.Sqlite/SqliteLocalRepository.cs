@@ -20,6 +20,7 @@ namespace Data.Sources.LocalStorage.Sqlite
         private string connString;
         private SqliteContext _context;
         private IMapper _mapper;
+        private User _currentUser;
 
         public SqliteLocalRepository()
         {
@@ -67,9 +68,9 @@ namespace Data.Sources.LocalStorage.Sqlite
         //            }
         //            catch (Exception e)
         //            {
-                       
+
         //            }
-                    
+
         //            var t = _context.Issue.ToList().First(i=>i.Id==isss.Id);
         //            foreach (var refer in _context.Entry(t).References)
         //            {
@@ -95,7 +96,7 @@ namespace Data.Sources.LocalStorage.Sqlite
         //            //_context.Add(isss);
         //            _context.Update(existed);
         //            _context.SaveChanges();
-                    
+
         //            var t = _context.Issue.ToList().First(i=>i.Id==isss.Id);
         //            foreach (var refer in _context.Entry(t).References)
         //            {
@@ -125,84 +126,92 @@ namespace Data.Sources.LocalStorage.Sqlite
         //    throw new NotImplementedException();
         //}
 
-        //public void SaveIssuesList(List<Issue> issues)
-        //{
-        //    using (_context = new SqliteContext())
-        //    {
-        //        var newUsers = issues.Select(i => i.AssignedTo).ToList()
-        //            .Except(_context.User.AsNoTracking().ToList()).Where(i => i != null);
-        //        _context.User.AddRange(newUsers);
-
-        //        //var allUsers = issues.Select(iss => iss.AssignedTo)
-        //        //    .GroupBy(u=>u.Id)
-        //        //    .ToDictionary(g => g.Key, g => g.First());
-
-        //        //foreach (var iss in issues)
-        //        //{
-        //        //    iss.AssignedTo = allUsers.First(au => au.Value.Id == iss.AssignedTo.Id).Value;
-        //        //}
-
-        //        var newProjects = issues.Select(i => i.Project).ToList()
-        //            .Except(_context.Project.AsNoTracking()).Where(i => i != null);
-        //        _context.Project.AddRange(newProjects);
-
-        //        var newPriors = issues.Select(i => i.Priority).ToList()
-        //            .Except(_context.Priority.AsNoTracking().ToList()).Where(i => i != null);
-        //        _context.Priority.AddRange(newPriors);
-
-        //        var newStatuses = issues.Select(i => i.Status).ToList()
-        //            .Except(_context.Status.AsNoTracking().ToList()).Where(i => i != null);
-        //        _context.Status.AddRange(newStatuses);
-
-        //        var newTrackers = issues.Select(i => i.Tracker).ToList()
-        //            .Except(_context.Tracker.AsNoTracking().ToList()).Where(i => i != null);
-        //        _context.Tracker.AddRange(newTrackers);
-
-        //        _context.SaveChanges();
-                
-        //        var sqlIssues = issues.Select(iss => _mapper.Map<SqliteIssue>(iss)).ToList();
-        //        var dbIssues = _context.Issue
-        //            .AsNoTracking()
-        //            .Select(i => i.Id).ToList();
-                
-        //        var tt = sqlIssues.Where(i => dbIssues.Contains(i.Id)).ToList();
-        //        if (tt.Count > 0)
-        //            _context.UpdateRange(tt);
-        //        _context.SaveChanges();
-
-
-        //        var t = sqlIssues.Except(tt).ToList();
-        //        if (t.Count > 0)
-        //        {
-        //            _context.AddRange(t);
-        //            _context.AttachRange(t.Select(iss=>iss.User));
-        //            _context.AttachRange(t.Select(iss => iss.Project));
-        //            _context.AttachRange(t.Select(iss => iss.Priority));
-        //            _context.AttachRange(t.Select(iss => iss.Status));
-        //            _context.AttachRange(t.Select(iss => iss.Tracker));
-        //        }
-        //        _context.SaveChanges();
-        //    }
-        //}
-
         //public void GetAllInstances<T>()
         //{
         //    throw new NotImplementedException();
         //}
 
+        public void SaveIssuesList(List<Issue> issues)
+        {
+            using (_context = new SqliteContext())
+            {
+                var newUsers = issues.Select(i => i.AssignedTo).ToList()
+                    .Except(_context.User.AsNoTracking().ToList()).Where(i => i != null);
+                _context.User.AddRange(newUsers);
+
+                //var allUsers = issues.Select(iss => iss.AssignedTo)
+                //    .GroupBy(u=>u.Id)
+                //    .ToDictionary(g => g.Key, g => g.First());
+
+                //foreach (var iss in issues)
+                //{
+                //    iss.AssignedTo = allUsers.First(au => au.Value.Id == iss.AssignedTo.Id).Value;
+                //}
+
+                var newProjects = issues.Select(i => i.Project).ToList()
+                    .Except(_context.Project.AsNoTracking()).Where(i => i != null);
+                _context.Project.AddRange(newProjects);
+
+                var newPriors = issues.Select(i => i.Priority).ToList()
+                    .Except(_context.Priority.AsNoTracking().ToList()).Where(i => i != null);
+                _context.Priority.AddRange(newPriors);
+
+                var newStatuses = issues.Select(i => i.Status).ToList()
+                    .Except(_context.Status.AsNoTracking().ToList()).Where(i => i != null);
+                _context.Status.AddRange(newStatuses);
+
+                var newTrackers = issues.Select(i => i.Tracker).ToList()
+                    .Except(_context.Tracker.AsNoTracking().ToList()).Where(i => i != null);
+                _context.Tracker.AddRange(newTrackers);
+
+                _context.SaveChanges();
+
+                var sqlIssues = issues.Select(iss => _mapper.Map<SqliteIssue>(iss)).ToList();
+                var dbIssues = _context.Issue
+                    .AsNoTracking()
+                    .Select(i => i.Id).ToList();
+
+                var tt = sqlIssues.Where(i => dbIssues.Contains(i.Id)).ToList();
+                if (tt.Count > 0)
+                    _context.UpdateRange(tt);
+                _context.SaveChanges();
+
+
+                var t = sqlIssues.Except(tt).ToList();
+                if (t.Count > 0)
+                {
+                    _context.AddRange(t);
+                    _context.AttachRange(t.Select(iss => iss.User));
+                    _context.AttachRange(t.Select(iss => iss.Project));
+                    _context.AttachRange(t.Select(iss => iss.Priority));
+                    _context.AttachRange(t.Select(iss => iss.Status));
+                    _context.AttachRange(t.Select(iss => iss.Tracker));
+                }
+                _context.SaveChanges();
+            }
+        }
+
         public void InitCredentials(string username, string password)
         {
-            throw new NotImplementedException();
+            using (_context = new SqliteContext())
+            {
+                _currentUser = _context.User
+                    .Where(u => u.Name == username).First();
+            }
         }
 
         public void InitCredentials(string apiKey)
         {
-            throw new NotImplementedException();
+            using (_context = new SqliteContext())
+            {
+                _currentUser = _context.User
+                    .First();
+            }
         }
 
         public User GetCurrentUser()
         {
-            throw new NotImplementedException();
+            return _currentUser;
         }
 
         public IEnumerable<Issue> GetIssues(NameValueCollection filters)
