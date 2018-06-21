@@ -120,6 +120,8 @@ namespace Data.Sources.LocalStorage.Sqlite.Tests
                     }
                 }
             };
+            _repos.InitCredentials("dasf", "422");
+            var t = _repos.GetCurrentUser();
             //_repos.SaveIssue(iss2);
             _repos.SaveIssuesList(new List<Issue>() { iss2 });
             //await _repos.CreateOrUpdateIssueAsync(iss2);

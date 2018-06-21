@@ -195,8 +195,11 @@ namespace Data.Sources.LocalStorage.Sqlite
         {
             using (_context = new SqliteContext())
             {
-                _currentUser = _context.User
-                    .Where(u => u.Name == username).First();
+               var _currentUsers = _context.User
+                    .Where(u => u.Name == username);
+                if (_currentUsers.Count() > 0)
+                    _currentUser = _currentUsers.First();
+                //else throw (new UnauthorizedAccessException());
             }
         }
 
@@ -204,8 +207,9 @@ namespace Data.Sources.LocalStorage.Sqlite
         {
             using (_context = new SqliteContext())
             {
-                _currentUser = _context.User
-                    .First();
+                var _currentUsers = _context.User;
+                if (_currentUsers.Count() > 0)
+                    _currentUser = _currentUsers.First();
             }
         }
 

@@ -6,9 +6,11 @@ using Redmine.Net.Api.Async;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Configuration;
+using System.Data.SqlClient;
 using System.Linq;
 using CommonRemineEntities = Data.Entities.Common.Redmine;
 using System.Threading.Tasks;
+using Data.Sources.LocalStorage.Sqlite;
 
 namespace Data.Sources.Redmine
 {
@@ -54,6 +56,7 @@ namespace Data.Sources.Redmine
         public IEnumerable<CommonRemineEntities.Issue> GetIssues(NameValueCollection filters)
         {
             return GetIssuesAsync(filters).Result;
+
         }
 
         public async Task<IEnumerable<CommonRemineEntities.Issue>> GetIssuesAsync(NameValueCollection filters)
@@ -74,7 +77,6 @@ namespace Data.Sources.Redmine
             var redmineIssues = await RedmineManager.GetObjectsAsync<Issue>(parameters);
 
             var issues = EntityMapper.Map<List<CommonRemineEntities.Issue>>(redmineIssues);
-
             return issues;
         }
 
