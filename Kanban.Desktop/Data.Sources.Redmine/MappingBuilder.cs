@@ -28,7 +28,6 @@ namespace Data.Sources.Redmine
                     .ForMember(x => x.IsPrivate, opt => opt.Ignore())
                     .ForMember(x => x.TotalSpentHours, opt => opt.Ignore())
                     .ForMember(x => x.TotalEstimatedHours, opt => opt.Ignore())
-                    .ForMember(x => x.Journals, opt => opt.Ignore())
                     .ForMember(x => x.Changesets, opt => opt.Ignore())
                     .ForMember(x => x.Attachments, opt => opt.Ignore())
                     .ForMember(x => x.Relations, opt => opt.Ignore())
@@ -54,6 +53,9 @@ namespace Data.Sources.Redmine
 
                 cfg.CreateMap<CommonRemineEntities.CustomField, IssueCustomField>()
                     .ConvertUsing<CustomFieldConverterToRedmine>();
+
+                cfg.CreateMap<Detail, CommonRemineEntities.Detail>();
+                cfg.CreateMap<Journal, CommonRemineEntities.Journal>();
 
             });
 

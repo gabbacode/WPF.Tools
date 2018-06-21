@@ -18,12 +18,7 @@ namespace Kanban.Desktop.Issues.Model
             if (issueId.HasValue)
             {
                 // Load
-                var getIssueParameters = new NameValueCollection();
-                getIssueParameters.Add(Keys.IssueId, issueId.ToString());
-
-                return (await RedmineRepository
-                    .GetIssuesAsync(getIssueParameters))
-                    .First();
+                return await RedmineRepository.GetIssueAsync(issueId.Value);
             }
             else
             {

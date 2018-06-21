@@ -53,13 +53,31 @@ namespace Data.Sources.Redmine
             return EntityMapper.Map<CommonRemineEntities.User>(currentUser);
         }
 
+        public CommonRemineEntities.Issue GetIssue(int id)
+        {
+            return GetIssueAsync(id).Result;
+        }
+
+        public async Task<CommonRemineEntities.Issue> GetIssueAsync(int id) 
+        {
+            var parameters = new NameValueCollection();
+            parameters.Add(RedmineKeys.INCLUDE, RedmineKeys.JOURNALS);
+
+            // TODO support multiple values
+            var redmineIssue = await RedmineManager.GetObjectAsync<Issue>(id.ToString(), parameters);
+            var issue = EntityMapper.Map<CommonRemineEntities.Issue>(redmineIssue);
+
+            return issue;
+        }
+
         public IEnumerable<CommonRemineEntities.Issue> GetIssues(NameValueCollection filters)
         {
             return GetIssuesAsync(filters).Result;
 
         }
 
-        public async Task<IEnumerable<CommonRemineEntities.Issue>> GetIssuesAsync(NameValueCollection filters)
+        public async Task<IEnumerable<CommonRemineEntities.Issue>> GetIssuesAsync(
+            NameValueCollection filters)
         {
             var parameters = new NameValueCollection();
             foreach (var key in filters.AllKeys)

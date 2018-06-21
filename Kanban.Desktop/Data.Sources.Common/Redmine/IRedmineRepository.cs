@@ -13,6 +13,10 @@ namespace Data.Sources.Common.Redmine
 
         User GetCurrentUser();
 
+        Issue GetIssue(int id);
+
+        Task<Issue> GetIssueAsync(int id);
+
         IEnumerable<Issue> GetIssues(NameValueCollection filters);
 
         Task<IEnumerable<Issue>> GetIssuesAsync(NameValueCollection filters);

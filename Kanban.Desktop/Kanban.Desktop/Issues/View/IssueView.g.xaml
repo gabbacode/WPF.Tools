@@ -14,6 +14,7 @@
       <RowDefinition Height="Auto"/>
       <RowDefinition Height="Auto"/>
       <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
     </Grid.RowDefinitions>
     <TextBlock Grid.Column="0" Grid.Row="0" Margin="6, 6, 12, 6" TextAlignment="Right" Text="Subject:"/>
     <TextBox Grid.Column="1" Grid.Row="0" TextWrapping="WrapWithOverflow">
@@ -85,7 +86,72 @@
         </DataGridTemplateColumn>
       </DataGrid.Columns>
     </DataGrid>
-    <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="8" Orientation="Horizontal">
+    <DataGrid Grid.Column="1" Grid.Row="8" AutoGenerateColumns="False">
+      <DataGrid.ItemsSource>
+        <Binding Path="Journals"/>
+      </DataGrid.ItemsSource>
+      <DataGrid.Columns>
+        <DataGridTextColumn Header="Author">
+          <DataGridTextColumn.Binding>
+            <Binding Path="User"/>
+          </DataGridTextColumn.Binding>
+        </DataGridTextColumn>
+        <DataGridTextColumn Header="Date">
+          <DataGridTextColumn.Binding>
+            <Binding Path="CreatedOn"/>
+          </DataGridTextColumn.Binding>
+        </DataGridTextColumn>
+        <DataGridTemplateColumn Header="Notes" Width="500">
+          <DataGridTemplateColumn.CellTemplate>
+            <DataTemplate>
+              <TextBlock TextWrapping="WrapWithOverflow">
+                <TextBlock.Text>
+                  <Binding Path="Notes"/>
+                </TextBlock.Text>
+              </TextBlock>
+            </DataTemplate>
+          </DataGridTemplateColumn.CellTemplate>
+        </DataGridTemplateColumn>
+        <DataGridTemplateColumn Header="Changes">
+          <DataGridTemplateColumn.CellTemplate>
+            <DataTemplate>
+              <StackPanel>
+                <ItemsControl>
+                  <ItemsControl.ItemsSource>
+                    <Binding Path="Details"/>
+                  </ItemsControl.ItemsSource>
+                  <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                      <StackPanel Orientation="Horizontal">
+                        <TextBlock Text=" parameter: "/>
+                        <TextBlock FontWeight="Bold">
+                          <TextBlock.Text>
+                            <Binding Path="Name"/>
+                          </TextBlock.Text>
+                        </TextBlock>
+                        <TextBlock Text=" changed from: "/>
+                        <TextBlock FontWeight="Bold">
+                          <TextBlock.Text>
+                            <Binding Path="OldValue"/>
+                          </TextBlock.Text>
+                        </TextBlock>
+                        <TextBlock Text=" to: "/>
+                        <TextBlock FontWeight="Bold">
+                          <TextBlock.Text>
+                            <Binding Path="NewValue"/>
+                          </TextBlock.Text>
+                        </TextBlock>
+                      </StackPanel>
+                    </DataTemplate>
+                  </ItemsControl.ItemTemplate>
+                </ItemsControl>
+              </StackPanel>
+            </DataTemplate>
+          </DataGridTemplateColumn.CellTemplate>
+        </DataGridTemplateColumn>
+      </DataGrid.Columns>
+    </DataGrid>
+    <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="9" Orientation="Horizontal">
       <Button Content="Save">
         <Button.Command>
           <Binding Path="SaveCommand"/>

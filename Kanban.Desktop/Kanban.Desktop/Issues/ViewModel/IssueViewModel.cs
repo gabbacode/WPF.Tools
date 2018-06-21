@@ -88,9 +88,6 @@ namespace Kanban.Desktop.Issues.ViewModel
         }
 
         [Reactive]
-        public string Title { get; set; }
-
-        [Reactive]
         public int? Id { get; set; }
 
         [Reactive]
@@ -119,6 +116,9 @@ namespace Kanban.Desktop.Issues.ViewModel
 
         [Reactive]
         public IList<CustomField> CustomFields { get; set; }
+
+        [Reactive]
+        public IList<Journal> Journals { get; set; }
 
         [Reactive]
         public ICommand SaveCommand { get; set; }

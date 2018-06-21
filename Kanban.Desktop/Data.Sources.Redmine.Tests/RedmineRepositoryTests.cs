@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using NUnit.Framework;
 using Redmine.Net.Api.Types;
+using System;
 using CommonRemineEntities = Data.Entities.Common.Redmine;
 
 namespace Data.Sources.Redmine.Tests
@@ -42,6 +43,27 @@ namespace Data.Sources.Redmine.Tests
                     MakeCustomValue(27, ""),
                     MakeCustomValue(28, "да"),
                     MakeCustomValue(29, "PackageId"),
+                },
+                Journals = new []
+                {
+                    new CommonRemineEntities.Journal
+                    {
+                        CreatedOn = DateTime.Now,
+                        Id = 1,
+                        Notes = "asdfa",
+                        PrivateNotes = false,
+                        User = new CommonRemineEntities.User() { Id = 153 },
+                        Details = new []
+                        {
+                            new CommonRemineEntities.Detail
+                            {
+                                Name = "foo",
+                                OldValue = "1",
+                                NewValue = "2",
+                                Property = "asdfasd"
+                            }
+                        }
+                    }
                 }
             };
 
