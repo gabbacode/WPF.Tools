@@ -10,7 +10,7 @@ namespace Kanban.Desktop.KanbanBoard.Model
     {
         public KanbanBoardModel(
             IKanbanConfigurationRepository kanbanRepository,
-            IRedmineRepository redmineRepository)
+            IRepository redmineRepository)
         {
             this.kanbanRepository = kanbanRepository;
             this.redmineRepository = redmineRepository;
@@ -67,6 +67,6 @@ namespace Kanban.Desktop.KanbanBoard.Model
         }
 
         private readonly IKanbanConfigurationRepository kanbanRepository;
-        private readonly IRedmineRepository redmineRepository;
+        private readonly IRepository redmineRepository;
     }
 }

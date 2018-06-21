@@ -56,7 +56,7 @@
     <Compile Include="CQRS\Messages\IMessageHandler.cs" />
     <Compile Include="CQRS\Router\IRouter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Redmine\IRedmineRepository.cs" />
+    <Compile Include="Repository\IRepository.cs" />
     <Compile Include="Security\IAuthenticationContext.cs" />
   </ItemGroup>
   <ItemGroup>

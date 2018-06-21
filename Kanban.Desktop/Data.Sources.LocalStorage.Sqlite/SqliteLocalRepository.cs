@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 
 namespace Data.Sources.LocalStorage.Sqlite
 {
-    public class SqliteLocalRepository : IRedmineRepository
+    public class SqliteLocalRepository : IRepository
     {
         private string connString;
         private SqliteContext _context;
@@ -205,12 +205,7 @@ namespace Data.Sources.LocalStorage.Sqlite
 
         public void InitCredentials(string apiKey)
         {
-            using (_context = new SqliteContext())
-            {
-                var _currentUsers = _context.User;
-                if (_currentUsers.Count() > 0)
-                    _currentUser = _currentUsers.First();
-            }
+            throw new System.NotSupportedException();
         }
 
         public User GetCurrentUser()
@@ -481,6 +476,16 @@ namespace Data.Sources.LocalStorage.Sqlite
            var mapperConfig=new MapperConfiguration(cfg=>
                cfg.AddProfile(typeof(MapperProfileSqliteRepos)));
             return mapperConfig.CreateMapper();
+        }
+
+        public Issue GetIssue(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Issue> GetIssueAsync(int id)
+        {
+            throw new NotImplementedException();
         }
 
         public class MapperProfileSqliteRepos : Profile

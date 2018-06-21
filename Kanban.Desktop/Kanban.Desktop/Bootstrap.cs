@@ -106,7 +106,7 @@ namespace Kanban.Desktop
         {
             builder
                 .RegisterType<RedmineRepository>()
-                .As<IRedmineRepository>()
+                .As<IRepository>()
                 .SingleInstance();
         }
     }

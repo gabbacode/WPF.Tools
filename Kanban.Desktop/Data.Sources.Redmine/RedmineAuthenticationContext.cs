@@ -6,7 +6,7 @@ namespace Data.Sources.Redmine
 {
     public class RedmineAuthenticationContext : IAuthenticationContext
     {
-        public RedmineAuthenticationContext(IRedmineRepository redmineRepository)
+        public RedmineAuthenticationContext(IRepository redmineRepository)
         {
             RedmineRepository = redmineRepository;
         }
@@ -37,6 +37,6 @@ namespace Data.Sources.Redmine
             throw new System.NotSupportedException();
         }
 
-        private IRedmineRepository RedmineRepository;
+        private IRepository RedmineRepository;
     }
 }
