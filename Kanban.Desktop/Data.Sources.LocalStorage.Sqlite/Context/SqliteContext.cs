@@ -13,11 +13,10 @@ namespace Data.Sources.LocalStorage.Sqlite.Context
     {
         public SqliteContext() // : base(new ("Data Source=testdb2.db; Version=3;"), true)
         {
-           // Database.EnsureDeleted();
+            //Database.EnsureDeleted();
             Database.EnsureCreated();
         }
 
-        public DbSet<User>        User     { get; set; }
         public DbSet<Tracker>     Tracker  { get; set; }
         public DbSet<Status>      Status   { get; set; }
         public DbSet<Project>     Project  { get; set; }
@@ -29,11 +28,5 @@ namespace Data.Sources.LocalStorage.Sqlite.Context
             builder.EnableSensitiveDataLogging();
             builder.UseSqlite(ConfigurationManager.AppSettings["LocaBaseConnectionString"]);
         }
-
-        //protected override void OnModelCreating(ModelBuilder builder)
-        //{
-        //    builder.Entity<SqliteIssue>().HasOne<User>(i=>i.User)
-        //        .WithMany()
-        //}
     }
 }

@@ -20,11 +20,9 @@ namespace Data.Sources.LocalStorage.Sqlite
         private string connString;
         private SqliteContext _context;
         private IMapper _mapper;
-        private User _currentUser;
 
         public SqliteLocalRepository()
         {
-            //_context = context;
             _mapper = CreateMapper();
         }
 
@@ -135,19 +133,6 @@ namespace Data.Sources.LocalStorage.Sqlite
         {
             using (_context = new SqliteContext())
             {
-                var newUsers = issues.Select(i => i.AssignedTo).ToList()
-                    .Except(_context.User.AsNoTracking().ToList()).Where(i => i != null);
-                _context.User.AddRange(newUsers);
-
-                //var allUsers = issues.Select(iss => iss.AssignedTo)
-                //    .GroupBy(u=>u.Id)
-                //    .ToDictionary(g => g.Key, g => g.First());
-
-                //foreach (var iss in issues)
-                //{
-                //    iss.AssignedTo = allUsers.First(au => au.Value.Id == iss.AssignedTo.Id).Value;
-                //}
-
                 var newProjects = issues.Select(i => i.Project).ToList()
                     .Except(_context.Project.AsNoTracking()).Where(i => i != null);
                 _context.Project.AddRange(newProjects);
@@ -181,7 +166,6 @@ namespace Data.Sources.LocalStorage.Sqlite
                 if (t.Count > 0)
                 {
                     _context.AddRange(t);
-                    _context.AttachRange(t.Select(iss => iss.User));
                     _context.AttachRange(t.Select(iss => iss.Project));
                     _context.AttachRange(t.Select(iss => iss.Priority));
                     _context.AttachRange(t.Select(iss => iss.Status));
@@ -193,14 +177,7 @@ namespace Data.Sources.LocalStorage.Sqlite
 
         public void InitCredentials(string username, string password)
         {
-            using (_context = new SqliteContext())
-            {
-               var _currentUsers = _context.User
-                    .Where(u => u.Name == username);
-                if (_currentUsers.Count() > 0)
-                    _currentUser = _currentUsers.First();
-                //else throw (new UnauthorizedAccessException());
-            }
+            throw new System.NotSupportedException();
         }
 
         public void InitCredentials(string apiKey)
@@ -210,7 +187,7 @@ namespace Data.Sources.LocalStorage.Sqlite
 
         public User GetCurrentUser()
         {
-            return _currentUser;
+            throw new System.NotSupportedException();
         }
 
         public IEnumerable<Issue> GetIssues(NameValueCollection filters)
@@ -218,7 +195,6 @@ namespace Data.Sources.LocalStorage.Sqlite
            using (_context = new SqliteContext())
             {
                 var dbIssues = _context.Issue
-                    .Include(i => i.User)
                     .Include(i => i.Project)
                     .Include(i => i.Priority)
                     .Include(i => i.Tracker)
@@ -254,11 +230,6 @@ namespace Data.Sources.LocalStorage.Sqlite
                         .Where(iss => filters.GetValues("TrackerId")
                                 .Contains(iss.Tracker.Id.ToString()));
 
-                if (keys.Contains("AssignedToUserId"))
-                    dbIssues = dbIssues
-                        .Where(iss => filters.GetValues("AssignedToUserId")
-                                .Contains(iss.AssignedTo.Id.ToString()));
-
                 #endregion
 
                 return dbIssues;
@@ -270,7 +241,6 @@ namespace Data.Sources.LocalStorage.Sqlite
             using (_context = new SqliteContext())
             {
                 var dbIssues = await _context.Issue
-                    .Include(i => i.User)
                     .Include(i => i.Project)
                     .Include(i => i.Priority)
                     .Include(i => i.Tracker)
@@ -330,9 +300,6 @@ namespace Data.Sources.LocalStorage.Sqlite
                 {
                     var newiss = _mapper.Map<SqliteIssue>(issue);
 
-                    if (newiss.User != null &&  _context.User.Find(newiss.User.Id) == null)
-                        await _context.User.AddAsync(newiss.User);
-
                     if (newiss.Project != null && _context.Project.Find(newiss.Project?.Id) == null)
                         await _context.Project.AddAsync(newiss.Project);
 
@@ -351,10 +318,6 @@ namespace Data.Sources.LocalStorage.Sqlite
                 }
                 else
                 {
-                    if (existed.User != null && _context.User.AsNoTracking()
-                            .Where(i => i.Id == existed.User.Id).FirstOrDefault() == null)
-                       await _context.User.AddAsync(existed.User);
-
                     if (existed.Project != null && _context.Project.AsNoTracking()
                             .Where(i => i.Id == existed.Project.Id).FirstOrDefault() == null)
                         await _context.Project.AddAsync(existed.Project);
@@ -452,23 +415,12 @@ namespace Data.Sources.LocalStorage.Sqlite
 
         public IEnumerable<User> GetUsers(int projectId)
         {
-            using (_context = new SqliteContext())
-            {
-                var issues = _context.Issue.Include(i => i.User)
-                    .Where(i => i.ProjectId == projectId).ToList();
-
-                return issues.Select(i => i.User).Distinct();
-            }
+            throw new System.NotSupportedException();
         }
 
         public async Task<IEnumerable<User>> GetUsersAsync(int projectId)
         {
-            using (_context = new SqliteContext())
-            {
-                var issues = await _context.Issue.Include(i => i.User)
-                    .Where(i => i.ProjectId == projectId).ToListAsync();
-                return issues.Select(i => i.User).Distinct();
-            }
+            throw new System.NotSupportedException();
         }
 
         private IMapper CreateMapper()
@@ -494,17 +446,14 @@ namespace Data.Sources.LocalStorage.Sqlite
             {
                 CreateMap<Issue, SqliteIssue>()
                     .ForMember("Id", opt => opt.MapFrom(s => s.Id))
-                    .ForMember("UserId", opt => opt.MapFrom(s => s.AssignedTo.Id))
                     .ForMember("ProjectId", opt => opt.MapFrom(s => s.Project.Id))
                     .ForMember("StatusId", opt => opt.MapFrom(s => s.Status.Id))
                     .ForMember("PriorityId", opt => opt.MapFrom(s => s.Priority.Id))
                     .ForMember("TrackerId", opt => opt.MapFrom(s => s.Tracker.Id))
-                    .ForMember("User", opt => opt.MapFrom(s => s.AssignedTo))
                     .ForMember("CustomFields",
                         opt=>opt.MapFrom(s=>JsonConvert.SerializeObject(s.CustomFields)));
 
                 CreateMap<SqliteIssue, Issue>()
-                    .ForMember("AssignedTo", opt => opt.MapFrom(s => s.User))
                     .ForMember("CustomFields",
                         opt=>opt.MapFrom(s=> JsonConvert.DeserializeObject<IList<CustomField>>(s.CustomFields)));
             }
