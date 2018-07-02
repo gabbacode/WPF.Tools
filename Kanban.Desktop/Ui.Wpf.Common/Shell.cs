@@ -26,7 +26,6 @@ namespace Ui.Wpf.Common
             if (options != null)
                 view.Configure(options);
 
-            (view.ViewModel as IInitializableViewModel)?.Initialize(viewRequest);
 
 
             var layoutDocument = new LayoutDocument();
@@ -36,6 +35,9 @@ namespace Ui.Wpf.Common
             addClosingByRequest(view, layoutDocument);
 
             DocumentPane.Children.Add(layoutDocument);
+
+            (view.ViewModel as IInitializableViewModel)?.Initialize(viewRequest);
+
             layoutDocument.IsActive = true;
 
         }
