@@ -159,7 +159,7 @@ namespace Data.Sources.LocalStorage.Sqlite.Tests
             var f = Directory.GetCurrentDirectory();
             var t = Directory.GetFiles(Directory.GetCurrentDirectory(), "*.db", SearchOption.TopDirectoryOnly);
             _repos = new SqliteLocalRepository();
-           var ty= _repos.GetColumns();
+           var ty=await _repos.GetColumnsAsync();
         }
     }
 }

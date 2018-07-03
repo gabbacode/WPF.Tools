@@ -2,6 +2,7 @@
 using Data.Sources.Common.Redmine;
 using Data.Sources.LocalStorage.Sqlite;
 using Kanban.Desktop.LocalBase.BaseSelector;
+using Kanban.Desktop.LocalBase.BaseSelector.Model;
 using Kanban.Desktop.LocalBase.BaseSelector.View;
 using Kanban.Desktop.LocalBase.BaseSelector.ViewModel;
 using System;
@@ -32,6 +33,9 @@ namespace Kanban.Desktop.LocalBase
                 .SingleInstance();
 
             builder.RegisterType<MainWindow>().As<IDockWindow>();
+
+            builder.RegisterType<BaseSelectorModel>()
+                .As<IBaseSelectorModel>();
 
             builder.RegisterType<BaseSelectorViewModel>()
                 .As<IBaseSelectorViewModel>();

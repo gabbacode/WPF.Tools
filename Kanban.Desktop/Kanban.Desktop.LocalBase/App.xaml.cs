@@ -26,14 +26,8 @@ namespace Kanban.Desktop.LocalBase
              var database = shell.Container.Resolve<SqliteLocalRepository>();
 
             // shell.ShowView<BaseSelectorView>();
-
-            var tt = new OpenFileDialog() { Filter = "SQLite DataBase | *.db" };
-            var pp = "";
-            if ((bool)tt.ShowDialog())
-                pp = tt.FileName;
-
-            database.BaseConnstr = $"Data Source = {pp}";
-            var cols = database.GetColumns();
+            //database.BaseConnstr = $"Data Source = {pp}";
+          //  var cols = database.GetColumns();
 
             //var t = new VistaFolderBrowserDialog();
             //var p = "";
