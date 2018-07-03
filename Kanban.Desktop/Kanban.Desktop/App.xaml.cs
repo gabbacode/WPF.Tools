@@ -8,6 +8,8 @@ using Kanban.Desktop.KanbanBoard.View;
 using Kanban.Desktop.Issues;
 using Kanban.Desktop.Issues.View;
 using Ui.Wpf.Common.ShowOptions;
+using Data.Sources.LocalStorage.Sqlite;
+using System.Threading.Tasks;
 
 namespace Kanban.Desktop
 {
@@ -43,7 +45,7 @@ namespace Kanban.Desktop
                         shell.ShowView<ISettingsView>(
                             options: new UiShowOptions
                             {
-                                Title = "Settings"                            
+                                Title = "Settings"
                             });
                         shell.ShowView<IKanbanBoardView>();
                         shell.ShowView<IKanbanBoardView>(
@@ -62,7 +64,7 @@ namespace Kanban.Desktop
                             },
                             new KanbanShowOptions
                             {
-                                Title = "ods",                                
+                                Title = "ods",
                             });
 
                         shell.ShowView<IIssueView>(

@@ -4,458 +4,282 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using Data.Entities.Common.Redmine;
-using Data.Sources.Common.Redmine;
+using Data.Entities.Common.LocalBase;
 using Data.Sources.LocalStorage.Sqlite.Context;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Extensions.Internal;
-using Microsoft.EntityFrameworkCore.Storage;
-using Newtonsoft.Json;
-// ReSharper disable All
 
 namespace Data.Sources.LocalStorage.Sqlite
 {
-    public class SqliteLocalRepository : IRepository
+    public class SqliteLocalRepository
     {
-        private string connString;
         private SqliteContext _context;
         private IMapper _mapper;
+        public string BaseConnstr { get; set; }
 
         public SqliteLocalRepository()
         {
+           // BaseConnstr = $"Data Source = {baseName}";
             _mapper = CreateMapper();
         }
 
-        //public T GetEntityById<T>(object entityKey) where T : class
-        //{
-        //    if (typeof(T) == typeof(Issue))
-        //    {
-        //        var firstiss = _context.Issue.Find(entityKey);
-        //        return _mapper.Map<T>(firstiss);
-        //    }
-
-        //    T entity = _context.Find<T>(entityKey);
-        //    foreach (var refer in _context.Entry(entity).References)
-        //    {
-        //        refer.Load();
-        //    }
-
-        //    return entity;
-        //}
-
-        //public void SaveEntity<T>(T entity) where T : class
-        //{
-        //    if (typeof(T) == typeof(Issue))
-        //    {
-        //        //foreach (var ent in _context.Issue.Where(i=>i.Id>4405))
-        //        //{
-        //        //    _context.Issue.Remove(ent);
-        //        //    _context.SaveChanges();
-        //        //}
-        //        //_context.User.Load();
-        //        var isss = _mapper.Map<SqliteIssue>(entity);
-        //        var existed = _context.Issue.Find(isss.Id);
-        //        _mapper.Map<T, SqliteIssue>(entity, existed);
-        //        if (existed == null)
-        //        {
-        //            try
-        //            {
-        //            _context.Entry(isss).State=EntityState.Added;
-        //                _context.Add(isss);
-        //                _context.SaveChanges();
-        //            }
-        //            catch (Exception e)
-        //            {
-
-        //            }
-
-        //            var t = _context.Issue.ToList().First(i=>i.Id==isss.Id);
-        //            foreach (var refer in _context.Entry(t).References)
-        //            {
-        //                refer.Load();
-        //            }
-        //        }
-        //        else
-        //        {
-        //            //var itt = _context.Issue.Find(isss.Id);
-
-        //            //foreach (var refer in _context.Entry(itt).References)
-        //            //{
-        //            //    refer.Load();
-        //            //}
-        //            //_context.Entry(existed).State = EntityState.Modified;
-        //            //_context.Entry(itt).State = EntityState.Deleted;
-        //            _context.Entry(existed.User).State = EntityState.Unchanged;
-        //            _context.Entry(existed.Project).State = EntityState.Unchanged;
-        //            _context.Entry(existed.Priority).State = EntityState.Unchanged;
-        //            _context.Entry(existed.Status).State = EntityState.Unchanged;
-        //            _context.Entry(existed.Tracker).State = EntityState.Unchanged;
-        //            //_context.Entry(isss).State = EntityState.Added;
-        //            //_context.Add(isss);
-        //            _context.Update(existed);
-        //            _context.SaveChanges();
-
-        //            var t = _context.Issue.ToList().First(i=>i.Id==isss.Id);
-        //            foreach (var refer in _context.Entry(t).References)
-        //            {
-        //                refer.Load();
-        //            }
-        //            //var tt = t.First(iss => iss.Id == isss.Id);
-        //        }
-        //        return;
-        //    }
-
-        //    if (_context.Find<T>(entity) == null)
-        //    {
-        //        {
-        //            _context.Add(entity);
-        //            _context.SaveChanges();
-        //        }
-        //    }
-        //    else
-        //    {
-        //        _context.Update(entity);
-        //        _context.SaveChanges();
-        //    }
-        //}
-
-        //public void DeleteEntityById<T>(int entityId)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public void GetAllInstances<T>()
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        public void SaveIssuesList(List<Issue> issues)
+        #region creating&updating entities
+        public async Task<RowInfo> CreateOrUpdateRowAsync(RowInfo row)
         {
-            using (_context = new SqliteContext())
+            using (_context = new SqliteContext(BaseConnstr))
             {
-                var newProjects = issues.Select(i => i.Project).ToList()
-                    .Except(_context.Project.AsNoTracking()).Where(i => i != null);
-                _context.Project.AddRange(newProjects);
+                if (row.Id == 0 || _context.Row.Find(row.Id) == null)
+                    await _context.AddAsync(row);
 
-                var newPriors = issues.Select(i => i.Priority).ToList()
-                    .Except(_context.Priority.AsNoTracking().ToList()).Where(i => i != null);
-                _context.Priority.AddRange(newPriors);
+                else _context.Update(row);
+                await _context.SaveChangesAsync();
+                return row;
+            }
+        }
 
-                var newStatuses = issues.Select(i => i.Status).ToList()
-                    .Except(_context.Status.AsNoTracking().ToList()).Where(i => i != null);
-                _context.Status.AddRange(newStatuses);
+        public async Task<ColumnInfo> CreateOrUpdateColumnAsync(ColumnInfo column)
+        {
+            using (_context = new SqliteContext(BaseConnstr))
+            {
+                if (column.Id == 0 || _context.Column.Find(column.Id) == null)
+                    await _context.AddAsync(column);
 
-                var newTrackers = issues.Select(i => i.Tracker).ToList()
-                    .Except(_context.Tracker.AsNoTracking().ToList()).Where(i => i != null);
-                _context.Tracker.AddRange(newTrackers);
+                else _context.Update(column);
+                await _context.SaveChangesAsync();
+                return column;
+            }
+        }
 
-                _context.SaveChanges();
-
-                var sqlIssues = issues.Select(iss => _mapper.Map<SqliteIssue>(iss)).ToList();
-                var dbIssues = _context.Issue
+        public async Task<LocalIssue> CreateOrUpdateIssueAsync(LocalIssue issue)
+        {
+            using (_context = new SqliteContext(BaseConnstr))
+            {
+                var existed = _context.Issue
                     .AsNoTracking()
-                    .Select(i => i.Id).ToList();
-
-                var tt = sqlIssues.Where(i => dbIssues.Contains(i.Id)).ToList();
-                if (tt.Count > 0)
-                    _context.UpdateRange(tt);
-                _context.SaveChanges();
-
-
-                var t = sqlIssues.Except(tt).ToList();
-                if (t.Count > 0)
-                {
-                    _context.AddRange(t);
-                    _context.AttachRange(t.Select(iss => iss.Project));
-                    _context.AttachRange(t.Select(iss => iss.Priority));
-                    _context.AttachRange(t.Select(iss => iss.Status));
-                    _context.AttachRange(t.Select(iss => iss.Tracker));
-                }
-                _context.SaveChanges();
-            }
-        }
-
-        public void InitCredentials(string username, string password)
-        {
-            throw new System.NotSupportedException();
-        }
-
-        public void InitCredentials(string apiKey)
-        {
-            throw new System.NotSupportedException();
-        }
-
-        public User GetCurrentUser()
-        {
-            throw new System.NotSupportedException();
-        }
-
-        public IEnumerable<Issue> GetIssues(NameValueCollection filters)
-        {
-           using (_context = new SqliteContext())
-            {
-                var dbIssues = _context.Issue
-                    .Include(i => i.Project)
-                    .Include(i => i.Priority)
-                    .Include(i => i.Tracker)
-                    .Include(i => i.Status)
-                    .Select(i=>_mapper.Map<Issue>(i));
-
-                #region Keys
-
-                var keys = filters.AllKeys;
-
-                if (keys.Contains("IssueId"))
-                    dbIssues = dbIssues
-                        .Where(iss =>  filters.GetValues("IssueId")
-                            .Contains(iss.Id.ToString()));
-
-                if (keys.Contains("PriorityId"))
-                    dbIssues = dbIssues
-                        .Where(iss => filters.GetValues("PriorityId")
-                            .Contains(iss.Priority.Id.ToString()));
-
-                if (keys.Contains("ProjectId"))
-                    dbIssues = dbIssues
-                        .Where(iss => filters.GetValues("ProjectId")
-                                .Contains(iss.Project.Id.ToString()));
-
-                if (keys.Contains("StatusId"))
-                    dbIssues = dbIssues
-                        .Where(iss => filters.GetValues("StatusId")
-                                .Contains(iss.Status.Id.ToString()));
-
-                if (keys.Contains("TrackerId"))
-                    dbIssues = dbIssues
-                        .Where(iss => filters.GetValues("TrackerId")
-                                .Contains(iss.Tracker.Id.ToString()));
-
-                #endregion
-
-                return dbIssues;
-            }
-        }
-
-        public async Task<IEnumerable<Issue>> GetIssuesAsync(NameValueCollection filters)
-        {
-            using (_context = new SqliteContext())
-            {
-                var dbIssues = await _context.Issue
-                    .Include(i => i.Project)
-                    .Include(i => i.Priority)
-                    .Include(i => i.Tracker)
-                    .Include(i => i.Status)
-                    .Select(i => _mapper.Map<Issue>(i)).ToListAsync();
-
-                #region Keys
-
-                var keys = filters.AllKeys;
-
-                IEnumerable<Issue> enumDbIssues=null;
-
-                if (keys.Contains("IssueId"))
-                    enumDbIssues = dbIssues
-                        .Where(iss => filters.GetValues("IssueId")
-                            .Contains(iss.Id.ToString()));
-
-                if (keys.Contains("PriorityId"))
-                    enumDbIssues = dbIssues
-                        .Where(iss => filters.GetValues("PriorityId")
-                            .Contains(iss.Priority.Id.ToString()));
-
-                if (keys.Contains("ProjectId"))
-                    enumDbIssues = dbIssues
-                        .Where(iss => filters.GetValues("ProjectId")
-                            .Contains(iss.Project.Id.ToString()));
-
-                if (keys.Contains("StatusId"))
-                    enumDbIssues = dbIssues
-                        .Where(iss => filters.GetValues("StatusId")
-                            .Contains(iss.Status.Id.ToString()));
-
-                if (keys.Contains("TrackerId"))
-                    enumDbIssues = dbIssues
-                        .Where(iss => filters.GetValues("TrackerId")
-                            .Contains(iss.Tracker.Id.ToString()));
-
-                if (keys.Contains("AssignedToUserId"))
-                    enumDbIssues = dbIssues
-                        .Where(iss => filters.GetValues("AssignedToUserId")
-                            .Contains(iss.AssignedTo.Id.ToString()));
-                #endregion
-
-                return enumDbIssues;
-            }
-
-        }
-
-        public async Task<Issue> CreateOrUpdateIssueAsync(Issue issue)
-        {
-            using (_context = new SqliteContext())
-            {
-                var existed = _context.Issue.AsNoTracking().Where(iss => iss.Id == issue.Id).FirstOrDefault();
+                    .Include(i => i.Row)
+                    .Include(i => i.Column)
+                    .Where(iss => iss.Id == issue.Id)
+                    .FirstOrDefault();
                 _mapper.Map(issue, existed);
 
                 if (existed == null)
                 {
                     var newiss = _mapper.Map<SqliteIssue>(issue);
-
-                    if (newiss.Project != null && _context.Project.Find(newiss.Project?.Id) == null)
-                        await _context.Project.AddAsync(newiss.Project);
-
-                    if (newiss.Priority != null && _context.Priority.Find(newiss.Priority?.Id) == null)
-                        await _context.Priority.AddAsync(newiss.Priority);
-
-                    if (newiss.Status != null && _context.Status.Find(newiss.Status?.Id) == null)
-                        await _context.Status.AddAsync(newiss.Status);
-
-                    if (newiss.Tracker != null && _context.Tracker.Find(newiss.Tracker?.Id) == null)
-                        await _context.Tracker.AddAsync(newiss.Tracker);
+                    _context.Attach(newiss.Row);
+                    _context.Attach(newiss.Column);
 
                     await _context.AddAsync(newiss);
                     await _context.SaveChangesAsync();
-                    return issue;
+                    _context.Update(newiss.Column);
+                    _context.Update(newiss.Row);
+                    await _context.SaveChangesAsync();
+                    return _mapper.Map<LocalIssue>(newiss);
                 }
                 else
                 {
-                    if (existed.Project != null && _context.Project.AsNoTracking()
-                            .Where(i => i.Id == existed.Project.Id).FirstOrDefault() == null)
-                        await _context.Project.AddAsync(existed.Project);
-
-                    if (existed.Priority != null && _context.Priority.AsNoTracking()
-                            .Where(i => i.Id == existed.Priority.Id).FirstOrDefault() == null)
-                        await _context.Priority.AddAsync(existed.Priority);
-
-                    if (existed.Status != null && _context.Status.AsNoTracking()
-                            .Where(i => i.Id == existed.Status.Id).FirstOrDefault() == null)
-                        await _context.Status.AddAsync(existed.Status);
-
-                    if (existed.Tracker != null && _context.Tracker.AsNoTracking()
-                            .Where(i => i.Id == existed.Tracker.Id).FirstOrDefault() == null)
-                        await _context.Tracker.AddAsync(existed.Tracker);
-
                     _context.Update(existed);
                     await _context.SaveChangesAsync();
                     return issue;
                 }
             }
         }
-    
-        public IEnumerable<Project> GetProjects()
+        #endregion
+
+        #region getting entities
+        public List<LocalIssue> GetIssues(NameValueCollection filters)
         {
-            using (_context = new SqliteContext())
+            using (_context = new SqliteContext(BaseConnstr))
             {
-                return _context.Project.ToList().AsEnumerable();
+                var dbIssues = _context.Issue
+                    .Include(i => i.Row)
+                    .Include(i => i.Column)
+                    .Select(i => _mapper.Map<LocalIssue>(i));
+
+                var keys = filters.AllKeys;
+
+                if (keys.Contains("IssueId"))
+                    dbIssues = dbIssues
+                        .Where(iss => filters.GetValues("IssueId")
+                            .Contains(iss.Id.ToString()));
+
+                if (keys.Contains("RowId"))
+                    dbIssues = dbIssues
+                        .Where(iss => filters.GetValues("RowId")
+                            .Contains(iss.Row.Id.ToString()));
+
+                if (keys.Contains("ColumnId"))
+                    dbIssues = dbIssues
+                        .Where(iss => filters.GetValues("ColumnId")
+                            .Contains(iss.Column.Id.ToString()));
+
+                return dbIssues.ToList();
             }
         }
 
-        public async Task<IEnumerable<Project>> GetProjectsAsync()
+        public async Task<List<LocalIssue>> GetIssuesAsync(NameValueCollection filters)
         {
-            using (_context = new SqliteContext())
+            using (_context = new SqliteContext(BaseConnstr))
             {
-                var projects= await _context.Project.ToListAsync();
-                return projects.AsEnumerable();
+                var dbIssues = await _context.Issue
+                    .Include(i => i.Row)
+                    .Include(i => i.Column)
+                    .Select(i => _mapper.Map<LocalIssue>(i)).ToListAsync();
+
+                var keys = filters.AllKeys;
+
+                if (keys.Contains("IssueId"))
+                    dbIssues = dbIssues
+                        .Where(iss => filters.GetValues("IssueId")
+                            .Contains(iss.Id.ToString())).ToList();
+
+                if (keys.Contains("RowId"))
+                    dbIssues = dbIssues
+                        .Where(iss => filters.GetValues("RowId")
+                            .Contains(iss.Row.Id.ToString())).ToList();
+
+                if (keys.Contains("ColumnId"))
+                    dbIssues = dbIssues
+                        .Where(iss => filters.GetValues("ColumnId")
+                            .Contains(iss.Column.Id.ToString())).ToList();
+
+                return dbIssues;
+            }
+
+        }
+
+        public List<RowInfo> GetRows()
+        {
+            using (_context = new SqliteContext(BaseConnstr))
+            {
+                return _context.Row.ToList();
             }
         }
 
-        public IEnumerable<Priority> GetPriorities()
+        public async Task<List<RowInfo>> GetRowsAsync()
         {
-            using (_context = new SqliteContext())
+            using (_context = new SqliteContext(BaseConnstr))
             {
-                return _context.Priority.ToList().AsEnumerable();
+                return await _context.Row.ToListAsync();
             }
         }
 
-        public async Task<IEnumerable<Priority>> GetPrioritiesAsync()
+        public List<ColumnInfo> GetColumns()
         {
-            using (_context = new SqliteContext())
+            using (_context = new SqliteContext(BaseConnstr))
             {
-                var projects = await _context.Priority.ToListAsync();
-                return projects.AsEnumerable();
+                return _context.Column.ToList();
             }
         }
 
-        public IEnumerable<Status> GetStatuses()
+        public async Task<List<ColumnInfo>> GetColumnsAsync()
         {
-            using (_context = new SqliteContext())
+            using (_context = new SqliteContext(BaseConnstr))
             {
-                return _context.Status.ToList().AsEnumerable();
+                return await _context.Column.ToListAsync();
+            }
+        }
+        #endregion
+
+        public async Task DeleteRowAsync(int? rowId)
+        {
+            using (_context = new SqliteContext(BaseConnstr))
+            {
+                if (_context.Row.First().Id == rowId)
+                {
+                    var bindedIssues = _context.Issue
+                        .Where(iss => iss.RowId == rowId);
+
+                    var newxtRow = _context.Row.Skip(1).First();
+                    foreach (var issue in bindedIssues)
+                        issue.RowId = newxtRow.Id;
+
+                    _context.UpdateRange(bindedIssues);
+                    await _context.SaveChangesAsync();
+                    _context.Row.Remove(_context.Row.Find(rowId));
+                    await _context.SaveChangesAsync();
+                    var t = _context.Issue.ToList();
+                }
+
+                else
+                {
+                    var bindedIssues = _context.Issue
+                        .Where(iss => iss.RowId == rowId);
+                    var previousRow = _context.Row.LastOrDefault(r => r.Id < rowId);
+                    foreach (var issue in bindedIssues)
+                        issue.RowId = previousRow.Id;
+
+                    _context.UpdateRange(bindedIssues);
+                    _context.Row.Remove(_context.Row.Find(rowId));
+                    await _context.SaveChangesAsync();
+                    var t = _context.Issue.ToList();
+                }
+
             }
         }
 
-        public async Task<IEnumerable<Status>> GetStatusesAsync()
+        public async Task DeleteColumnAsync(int? columnId)
         {
-            using (_context = new SqliteContext())
+            using (_context = new SqliteContext(BaseConnstr))
             {
-                var projects = await _context.Status.ToListAsync();
-                return projects.AsEnumerable();
+                if (_context.Column.First().Id == columnId)
+                {
+                    var bindedIssues = _context.Issue
+                        .Where(iss => iss.ColumnId == columnId);
+
+                    var newxtCol = _context.Column.Skip(1).First();
+                    foreach (var issue in bindedIssues)
+                        issue.ColumnId = newxtCol.Id;
+
+                    _context.UpdateRange(bindedIssues);
+                    await _context.SaveChangesAsync();
+                    _context.Column.Remove(_context.Column.Find(columnId));
+                    await _context.SaveChangesAsync();
+                    var t = _context.Issue.ToList();
+                }
+
+                else
+                {
+                    var bindedIssues = _context.Issue
+                        .Where(iss => iss.ColumnId == columnId);
+                    var previousCol = _context.Column.LastOrDefault(r => r.Id < columnId);
+                    foreach (var issue in bindedIssues)
+                        issue.ColumnId = previousCol.Id;
+
+                    _context.UpdateRange(bindedIssues);
+                    _context.Column.Remove(_context.Column.Find(columnId));
+                    await _context.SaveChangesAsync();
+                    var t = _context.Issue.ToList();
+                }
+
             }
         }
 
-        public IEnumerable<Tracker> GetTrackers(int projectId)
+        public async Task DeleteIssueAsync(int? issueId)
         {
-            using (_context = new SqliteContext())
+            using (_context = new SqliteContext(BaseConnstr))
             {
-                var issues = _context.Issue.Include(i=>i.Tracker)
-                    .Where(i => i.ProjectId == projectId).ToList();
-
-                return issues.Select(i=>i.Tracker).Distinct();
+                _context.Issue
+                    .Remove(_context.Issue.Find(issueId));
+                await _context.SaveChangesAsync();
             }
-        }
 
-        public async Task<IEnumerable<Tracker>> GetTrackersAsync(int projectId)
-        {
-            using (_context = new SqliteContext())
-            {
-                var issues = await _context.Issue.Include(i => i.Tracker)
-                    .Where(i => i.ProjectId == projectId).ToListAsync();
-                return issues.Select(i=>i.Tracker).Distinct();
-            }
-        }
-
-        public IEnumerable<User> GetUsers(int projectId)
-        {
-            throw new System.NotSupportedException();
-        }
-
-        public async Task<IEnumerable<User>> GetUsersAsync(int projectId)
-        {
-            throw new System.NotSupportedException();
         }
 
         private IMapper CreateMapper()
         {
-           var mapperConfig=new MapperConfiguration(cfg=>
-               cfg.AddProfile(typeof(MapperProfileSqliteRepos)));
+            var mapperConfig = new MapperConfiguration(cfg =>
+                  cfg.AddProfile(typeof(MapperProfileSqliteRepos)));
             return mapperConfig.CreateMapper();
-        }
-
-        public Issue GetIssue(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<Issue> GetIssueAsync(int id)
-        {
-            throw new NotImplementedException();
         }
 
         public class MapperProfileSqliteRepos : Profile
         {
             public MapperProfileSqliteRepos()
             {
-                CreateMap<Issue, SqliteIssue>()
-                    .ForMember("Id", opt => opt.MapFrom(s => s.Id))
-                    .ForMember("ProjectId", opt => opt.MapFrom(s => s.Project.Id))
-                    .ForMember("StatusId", opt => opt.MapFrom(s => s.Status.Id))
-                    .ForMember("PriorityId", opt => opt.MapFrom(s => s.Priority.Id))
-                    .ForMember("TrackerId", opt => opt.MapFrom(s => s.Tracker.Id))
-                    .ForMember("CustomFields",
-                        opt=>opt.MapFrom(s=>JsonConvert.SerializeObject(s.CustomFields)));
+                CreateMap<LocalIssue, SqliteIssue>()
+                    .ForMember("RowId", opt => opt.MapFrom(s => s.Row.Id))
+                    .ForMember("ColumnId", opt => opt.MapFrom(s => s.Column.Id));
 
-                CreateMap<SqliteIssue, Issue>()
-                    .ForMember("CustomFields",
-                        opt=>opt.MapFrom(s=> JsonConvert.DeserializeObject<IList<CustomField>>(s.CustomFields)));
+                CreateMap<SqliteIssue, LocalIssue>();
             }
         }
     }

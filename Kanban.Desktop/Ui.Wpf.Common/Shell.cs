@@ -28,7 +28,6 @@ namespace Ui.Wpf.Common
 
             (view.ViewModel as IInitializableViewModel)?.Initialize(viewRequest);
 
-
             var layoutDocument = new LayoutDocument();
             layoutDocument.Content = view;
 

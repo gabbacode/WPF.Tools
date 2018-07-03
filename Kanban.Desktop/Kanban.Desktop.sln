@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.Sources.LocalStorage.S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.Sources.LocalStorage.Sqlite", "Data.Sources.LocalStorage.Sqlite\Data.Sources.LocalStorage.Sqlite.csproj", "{947A8888-74FE-4789-B4A6-83CFFE394984}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kanban.Desktop.LocalBase", "Kanban.Desktop.LocalBase\Kanban.Desktop.LocalBase.csproj", "{8BA427B7-F1BE-4AFD-8FE2-48256F518B66}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -71,6 +73,10 @@ Global
 		{947A8888-74FE-4789-B4A6-83CFFE394984}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{947A8888-74FE-4789-B4A6-83CFFE394984}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{947A8888-74FE-4789-B4A6-83CFFE394984}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8BA427B7-F1BE-4AFD-8FE2-48256F518B66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8BA427B7-F1BE-4AFD-8FE2-48256F518B66}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8BA427B7-F1BE-4AFD-8FE2-48256F518B66}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8BA427B7-F1BE-4AFD-8FE2-48256F518B66}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
