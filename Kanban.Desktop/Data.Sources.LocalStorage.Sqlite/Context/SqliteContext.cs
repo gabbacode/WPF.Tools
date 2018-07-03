@@ -12,6 +12,7 @@ namespace Data.Sources.LocalStorage.Sqlite.Context
             _baseConnstr = baseConnstr;
             //Database.EnsureDeleted();
             Database.EnsureCreated();
+
         }
 
         public DbSet<RowInfo> Row { get; set; }
@@ -22,7 +23,7 @@ namespace Data.Sources.LocalStorage.Sqlite.Context
         {
             builder.EnableSensitiveDataLogging();
             builder.UseSqlite(_baseConnstr);
-           SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_e_sqlite3());
+            SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_e_sqlite3());
         }
 
     }

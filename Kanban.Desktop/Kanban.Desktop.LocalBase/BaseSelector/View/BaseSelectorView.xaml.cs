@@ -24,10 +24,10 @@ namespace Kanban.Desktop.LocalBase.BaseSelector.View
     /// </summary>
     public partial class BaseSelectorView :  IBaseSelectorView
     {
-        public BaseSelectorView(IBaseSelectorViewModel model)
+        public BaseSelectorView(IBaseSelectorViewModel viewModel)
         {
             InitializeComponent();
-            ViewModel = model;
+            ViewModel = viewModel;
             DataContext = ViewModel;
         }
 
@@ -35,7 +35,7 @@ namespace Kanban.Desktop.LocalBase.BaseSelector.View
 
         public void Configure(UiShowOptions options)
         {
-            throw new NotImplementedException();
+            
         }
     }
 }

@@ -33,15 +33,15 @@ namespace Kanban.Desktop.LocalBase
 
             builder.RegisterType<MainWindow>().As<IDockWindow>();
 
+            builder.RegisterType<BaseSelectorViewModel>()
+                .As<IBaseSelectorViewModel>();
+
             builder.RegisterType<BaseSelectorView>()
                 .As<IBaseSelectorView>();
 
             builder
                .RegisterType<SqliteLocalRepository>()
                .SingleInstance();
-
-            builder.RegisterType<BaseSelectorViewModel>()
-                .As<IBaseSelectorViewModel>();
 
             //TODO Modules discovering
             ConfigureIssues(builder);

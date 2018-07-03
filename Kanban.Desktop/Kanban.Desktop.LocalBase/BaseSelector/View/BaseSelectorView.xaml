@@ -4,7 +4,7 @@
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Kanban.Desktop.LocalBase.BaseSelector"
+        xmlns:local="clr-namespace:Kanban.Desktop.LocalBase.BaseSelector.View"
        
         mc:Ignorable="d"
       Title="Выбор базы данных" Height="100" Width="550" ShowMinButton="False" ResizeMode="NoResize">

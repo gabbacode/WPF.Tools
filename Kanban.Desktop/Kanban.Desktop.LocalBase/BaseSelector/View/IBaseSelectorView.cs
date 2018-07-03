@@ -9,8 +9,8 @@ using Ui.Wpf.Common.ViewModels;
 
 namespace Kanban.Desktop.LocalBase.BaseSelector.View
 {
-    public interface IBaseSelectorView :IView
+    public interface IBaseSelectorView 
     {
-        
+        string Title { get; set; }
     }
 }

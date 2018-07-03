@@ -9,7 +9,6 @@ using Autofac;
 using Data.Sources.LocalStorage.Sqlite;
 using Kanban.Desktop.LocalBase.BaseSelector.View;
 using Microsoft.Win32;
-using Ookii.Dialogs.Wpf;
 using Ui.Wpf.Common;
 using Ui.Wpf.Common.ShowOptions;
 
@@ -22,28 +21,19 @@ namespace Kanban.Desktop.LocalBase
             base.OnStartup(e);
 
             var shell = UiStarter.Start<IBaseSelectorView>(
-             new Bootstrapper(),
-             new UiShowStartWindowOptions
-             {
-                 Title = "Kanban.Desktop",
-                 ToolPaneWidth = 100
-             });
+             new Bootstrapper());
 
-           // var database = shell.Container.Resolve<SqliteLocalRepository>();
+             var database = shell.Container.Resolve<SqliteLocalRepository>();
 
-           // shell.ShowView<BaseSelectorView>();
+            // shell.ShowView<BaseSelectorView>();
 
-            //var tt = new OpenFileDialog() { Filter = "SQLite DataBase | *.db" };
-            //var pp = "";
-            //if ((bool)tt.ShowDialog())
-            //    pp = tt.FileName;
-           
+            var tt = new OpenFileDialog() { Filter = "SQLite DataBase | *.db" };
+            var pp = "";
+            if ((bool)tt.ShowDialog())
+                pp = tt.FileName;
 
-            //var ttt = new SaveFileDialog() { Filter = "SQLite DataBase | *.db" };
-            //var ppp = "";
-            //if ((bool)ttt.ShowDialog())
-            //    ppp = ttt.FileName;
-            //var cols = database.GetColumns();
+            database.BaseConnstr = $"Data Source = {pp}";
+            var cols = database.GetColumns();
 
             //var t = new VistaFolderBrowserDialog();
             //var p = "";
