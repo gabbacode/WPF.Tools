@@ -4,6 +4,6 @@ namespace Kanban.Desktop.LocalBase.BaseSelector.ViewModel
 {
     public interface IBaseSelectorViewModel : IViewModel
     {
-        string BaseName { get; }
+        string BasePath { get; }
     }
 }

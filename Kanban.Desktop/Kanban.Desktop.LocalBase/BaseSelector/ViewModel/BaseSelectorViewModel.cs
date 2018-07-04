@@ -1,11 +1,6 @@
-﻿using Microsoft.Win32;
-using ReactiveUI;
+﻿using ReactiveUI;
 using System.Reactive;
-using System.Reactive.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
 using MahApps.Metro.Controls.Dialogs;
-using ReactiveUI.Fody.Helpers;
 using Kanban.Desktop.LocalBase.BaseSelector.Model;
 
 namespace Kanban.Desktop.LocalBase.BaseSelector.ViewModel
@@ -13,44 +8,38 @@ namespace Kanban.Desktop.LocalBase.BaseSelector.ViewModel
     public class BaseSelectorViewModel : IBaseSelectorViewModel
     {
 
-        public string BaseName { get; set; } = "dsa";
-        public string Title { get; set; } = "sad";
-        public ReactiveCommand<Unit, string> NewDbCommand { get; set; }
-        public ReactiveCommand<Unit, string> OpenDbCommand { get; set; }
+        public string BasePath { get; set; } = null;
+        public ReactiveList<string> BaseList { get; set; }
+        public string Title { get; set; } = "BaseSelector";
+        public ReactiveCommand NewDbCommand { get; set; }
+        public ReactiveCommand OpenDbCommand { get; set; }
+        public ReactiveCommand<string, Unit> OpenRecentDbCommand { get; set; }
+
         private readonly IBaseSelectorModel _model;
 
         public BaseSelectorViewModel(IBaseSelectorModel model)
         {
             _model = model;
-            NewDbCommand = ReactiveCommand.Create(CreateDataBase);
-            OpenDbCommand = ReactiveCommand.Create(OpenDataBase);
-        }
 
-        public string CreateDataBase()
-        {
-                  var saveDialog = new SaveFileDialog()
+            BaseList = new ReactiveList<string>();
+            var list = _model.GetBaseList();
+            foreach (var addr in list) BaseList.Add(addr);
+
+            OpenRecentDbCommand = ReactiveCommand.Create<string>(basePath =>
+              {
+                  var t = _model.CheckRecentBase(basePath);
+                  if (t) BasePath = BasePath;
+                  else
                   {
-                      Filter = "SQLite DataBase | *.db",
-                      Title = "Создание базы"
-                  };
-                  if ((bool)saveDialog.ShowDialog())
-                      return saveDialog.FileName;
+                      BaseList.Remove(basePath);
+                      DialogCoordinator.Instance
+                          .ShowMessageAsync(this, "Ошибка", "База была удалена или перемещена из данной папки");
+                  }
+              });
 
-                  else return null;
-            // var cols = database.GetColumns();
-        }
+            NewDbCommand = ReactiveCommand.Create(() => BasePath = _model.CreateDatabase());
 
-        public string OpenDataBase()
-        {
-            var openDialog = new OpenFileDialog()
-            {
-                Filter = "SQLite DataBase | *.db"
-            };
-
-            if ((bool)openDialog.ShowDialog())
-                return openDialog.FileName;
-
-            else return null;
+            OpenDbCommand = ReactiveCommand.Create(() => BasePath = _model.OpenDatabase());
         }
     }
 }
