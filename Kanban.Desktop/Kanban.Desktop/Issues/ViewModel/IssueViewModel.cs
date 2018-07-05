@@ -19,7 +19,7 @@ namespace Kanban.Desktop.Issues.ViewModel
     {
         public IssueViewModel(
             IIssueModel model,
-            IRepository redmine)
+            IRedmineRepository redmine)
         {
             Model = model;
 

@@ -14,7 +14,7 @@ using Data.Sources.LocalStorage.Sqlite;
 
 namespace Data.Sources.Redmine
 {
-    public class RedmineRepository : IRepository
+    public class RedmineRepository : IRedmineRepository
     {
         public RedmineRepository()
         {

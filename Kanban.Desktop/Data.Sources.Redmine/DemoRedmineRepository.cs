@@ -8,7 +8,7 @@ using Data.Sources.Common.Redmine;
 
 namespace Data.Sources.Redmine
 {
-    public class DemoRedmineRepository : IRepository
+    public class DemoRedmineRepository : IRedmineRepository
     {
         public DemoRedmineRepository()
         {

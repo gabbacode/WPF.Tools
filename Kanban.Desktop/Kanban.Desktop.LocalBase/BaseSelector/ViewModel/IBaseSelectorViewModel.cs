@@ -1,9 +1,9 @@
-﻿using Ui.Wpf.Common.ViewModels;
+﻿using System;
 
 namespace Kanban.Desktop.LocalBase.BaseSelector.ViewModel
 {
-    public interface IBaseSelectorViewModel : IViewModel
+    public interface IBaseSelectorViewModel
     {
-        string BasePath { get; }
+        Action CloseWindow { get; set; }
     }
 }

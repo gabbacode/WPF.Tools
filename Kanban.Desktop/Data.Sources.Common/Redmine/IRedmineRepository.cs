@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Data.Sources.Common.Redmine
 {
-    public interface IRepository
+    public interface IRedmineRepository
     {
         void InitCredentials(string username, string password);
 

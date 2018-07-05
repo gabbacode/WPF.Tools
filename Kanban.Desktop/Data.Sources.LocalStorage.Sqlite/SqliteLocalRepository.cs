@@ -16,9 +16,9 @@ namespace Data.Sources.LocalStorage.Sqlite
         private IMapper _mapper;
         public string BaseConnstr { get; set; }
 
-        public SqliteLocalRepository()
+        public SqliteLocalRepository(string baseName)
         {
-           // BaseConnstr = $"Data Source = {baseName}";
+            BaseConnstr = $"Data Source = {baseName}";
             _mapper = CreateMapper();
         }
 

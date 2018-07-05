@@ -6,7 +6,7 @@ namespace Kanban.Desktop.LocalBase.Issues.Model
 {
     public class IssueModel : IIssueModel
     {
-        public IssueModel(IRepository repository)
+        public IssueModel(IRedmineRepository repository)
         {
             SqliteRepository = repository;
         }
@@ -26,6 +26,6 @@ namespace Kanban.Desktop.LocalBase.Issues.Model
             }
         }
 
-        public IRepository SqliteRepository { get; }
+        public IRedmineRepository SqliteRepository { get; }
     }
 }

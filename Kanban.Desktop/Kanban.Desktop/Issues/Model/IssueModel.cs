@@ -8,7 +8,7 @@ namespace Kanban.Desktop.Issues.Model
 {
     public class IssueModel : IIssueModel
     {
-        public IssueModel(IRepository redmineRepository)
+        public IssueModel(IRedmineRepository redmineRepository)
         {
             RedmineRepository = redmineRepository;
         }
@@ -30,7 +30,7 @@ namespace Kanban.Desktop.Issues.Model
             }
         }
 
-        public IRepository RedmineRepository { get; }
+        public IRedmineRepository RedmineRepository { get; }
 
     }
 }

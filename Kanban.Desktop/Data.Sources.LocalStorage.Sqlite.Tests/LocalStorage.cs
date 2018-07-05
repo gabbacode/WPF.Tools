@@ -20,7 +20,7 @@ namespace Data.Sources.LocalStorage.Sqlite.Tests
 
         public void old()
         {
-            _repos = new SqliteLocalRepository();
+            _repos = new SqliteLocalRepository("dsa");
             var iss1 = new Issue()
             {
                 CreatedOn = new DateTime(2, 2, 3),
@@ -129,7 +129,7 @@ namespace Data.Sources.LocalStorage.Sqlite.Tests
         public async void RepShouldUpdateIssues()
         {
 
-            _repos = new SqliteLocalRepository();
+            _repos = new SqliteLocalRepository("vsqwe");
             LocalIssue newiss = new LocalIssue()
             {
                 //Id=3,
@@ -158,7 +158,7 @@ namespace Data.Sources.LocalStorage.Sqlite.Tests
             //var mainview = Application.Current.MainWindow as MetroWindow;
             var f = Directory.GetCurrentDirectory();
             var t = Directory.GetFiles(Directory.GetCurrentDirectory(), "*.db", SearchOption.TopDirectoryOnly);
-            _repos = new SqliteLocalRepository();
+            _repos = new SqliteLocalRepository("23423");
            var ty=await _repos.GetColumnsAsync();
         }
     }

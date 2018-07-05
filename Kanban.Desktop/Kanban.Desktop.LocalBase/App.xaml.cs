@@ -21,13 +21,11 @@ namespace Kanban.Desktop.LocalBase
             base.OnStartup(e);
 
             var shell = UiStarter.Start<IBaseSelectorView>(
-             new Bootstrapper());
-
-             var database = shell.Container.Resolve<SqliteLocalRepository>();
+                new Bootstrapper());
 
             // shell.ShowView<BaseSelectorView>();
             //database.BaseConnstr = $"Data Source = {pp}";
-          //  var cols = database.GetColumns();
+            //  var cols = database.GetColumns();
 
             //var t = new VistaFolderBrowserDialog();
             //var p = "";

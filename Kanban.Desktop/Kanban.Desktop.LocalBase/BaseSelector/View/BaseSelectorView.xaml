@@ -6,8 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:dialogs="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
         dialogs:DialogParticipation.Register="{Binding}"
-        xmlns:local="clr-namespace:Kanban.Desktop.LocalBase.BaseSelector.View"
-       
+                       
         mc:Ignorable="d"
       Title="Выбор базы данных" SizeToContent="WidthAndHeight"  ShowMinButton="False" ResizeMode="NoResize">
 
