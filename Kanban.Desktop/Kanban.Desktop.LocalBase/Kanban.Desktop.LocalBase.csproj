@@ -48,6 +48,9 @@
     <Reference Include="ControlzEx, Version=3.0.2.4, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ControlzEx.3.0.2.4\lib\net462\ControlzEx.dll</HintPath>
     </Reference>
+    <Reference Include="GongSolutions.Wpf.DragDrop, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\gong-wpf-dragdrop.1.1.0\lib\net46\GongSolutions.Wpf.DragDrop.dll</HintPath>
+    </Reference>
     <Reference Include="MahApps.Metro, Version=1.6.5.1, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MahApps.Metro.1.6.5\lib\net46\MahApps.Metro.dll</HintPath>
     </Reference>
@@ -169,6 +172,10 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="Xceed.Wpf.AvalonDock, Version=3.3.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.3.0\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -196,8 +203,19 @@
     <Compile Include="Issues\Model\IssueModel.cs" />
     <Compile Include="Issues\View\IIssuesTool.cs" />
     <Compile Include="Issues\View\IIssueView.cs" />
+    <Page Include="LocalBoard\View\LocalBoardView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="LocalBoard\Model\ILocalBoardModel.cs" />
+    <Compile Include="LocalBoard\ViewModel\ILocalBoardViewModel.cs" />
+    <Compile Include="LocalBoard\ViewModel\LocalBoardViewModel.cs" />
+    <Compile Include="LocalBoard\View\ILocalBoardView.cs" />
+    <Compile Include="LocalBoard\View\LocalBoardView.xaml.cs">
+      <DependentUpon>LocalBoardView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -237,6 +255,10 @@
       <Project>{947A8888-74FE-4789-B4A6-83CFFE394984}</Project>
       <Name>Data.Sources.LocalStorage.Sqlite</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Kanban.Desktop\Kanban.Desktop.csproj">
+      <Project>{8DA7A6F2-737C-4EB7-82BB-0B1F06C0B27B}</Project>
+      <Name>Kanban.Desktop</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Ui.Wpf.Common\Ui.Wpf.Common.csproj">
       <Project>{FDB62508-AFFA-4281-8472-8D00FC1403BA}</Project>
       <Name>Ui.Wpf.Common</Name>
@@ -245,6 +267,7 @@
   <ItemGroup>
     <None Include="FodyWeavers.xml" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Fody.2.0.7\build\netstandard1.4\Fody.targets" Condition="Exists('..\packages\Fody.2.0.7\build\netstandard1.4\Fody.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

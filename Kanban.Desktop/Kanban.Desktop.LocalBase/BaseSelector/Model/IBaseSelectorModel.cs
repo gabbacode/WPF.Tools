@@ -6,8 +6,8 @@ namespace Kanban.Desktop.LocalBase.BaseSelector.Model
     {
         string CreateDatabase();
         string OpenDatabase();
-        void ShiftOrCreateBaseList(string newBaseAddr);
         List<string> GetBaseList();
         bool CheckRecentBase(string basePath);
+        void ShowSelectedBaseTab(string path);
     }
 }

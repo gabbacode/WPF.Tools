@@ -1,37 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
-using Autofac;
-using Data.Sources.LocalStorage.Sqlite;
+﻿using System.Windows;
 using Kanban.Desktop.LocalBase.BaseSelector.View;
-using Microsoft.Win32;
 using Ui.Wpf.Common;
 using Ui.Wpf.Common.ShowOptions;
 
 namespace Kanban.Desktop.LocalBase
 {
-    public partial class App : Application
+    public partial class App
     {
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
 
-            var shell = UiStarter.Start<IBaseSelectorView>(
-                new Bootstrapper());
+            var shell = UiStarter.Start<IDockWindow>(
+                new Bootstrapper(),
+                new UiShowStartWindowOptions
+                {
+                    Title         = "Kanban.Desktop.LocalBase",
+                    ToolPaneWidth = 100
+                });
 
-            // shell.ShowView<BaseSelectorView>();
-            //database.BaseConnstr = $"Data Source = {pp}";
-            //  var cols = database.GetColumns();
-
-            //var t = new VistaFolderBrowserDialog();
-            //var p = "";
-            //if ((bool)t.ShowDialog())
-            //    p = t.SelectedPath;
-
+            shell.ShowView<IBaseSelectorView>(options: new UiShowOptions() {Title = "BaseChoooose"});
         }
     }
 }

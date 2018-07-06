@@ -10,6 +10,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Kanban.Desktop.KanbanBoard.Model;
+using Kanban.Desktop.KanbanBoard.View;
+using Kanban.Desktop.KanbanBoard.ViewModel;
+using Kanban.Desktop.Settings;
 using Ui.Wpf.Common;
 
 namespace Kanban.Desktop.LocalBase
@@ -98,13 +102,13 @@ namespace Kanban.Desktop.LocalBase
 
         private static void ConfigureSettings(ContainerBuilder builder)
         {
-            //builder
-            //    .RegisterType<SettingsViewModel>()
-            //    .As<ISettingsViewModel>();
+            builder
+                .RegisterType<SettingsViewModel>()
+                .As<ISettingsViewModel>();
 
-            //builder
-            //    .RegisterType<SettingsView>()
-            //    .As<ISettingsView>();
+            builder
+                .RegisterType<SettingsView>()
+                .As<ISettingsView>();
         }
     }
 }

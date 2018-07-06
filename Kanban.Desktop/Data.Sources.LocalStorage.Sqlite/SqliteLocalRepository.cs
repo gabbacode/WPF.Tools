@@ -57,8 +57,7 @@ namespace Data.Sources.LocalStorage.Sqlite
                     .AsNoTracking()
                     .Include(i => i.Row)
                     .Include(i => i.Column)
-                    .Where(iss => iss.Id == issue.Id)
-                    .FirstOrDefault();
+                    .FirstOrDefault(iss => iss.Id == issue.Id);
                 _mapper.Map(issue, existed);
 
                 if (existed == null)

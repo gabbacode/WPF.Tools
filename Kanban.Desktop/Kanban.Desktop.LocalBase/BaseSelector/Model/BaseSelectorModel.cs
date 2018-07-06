@@ -2,11 +2,23 @@
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using Autofac;
+using Data.Sources.LocalStorage.Sqlite;
+using Kanban.Desktop.Settings;
+using Ui.Wpf.Common;
+using Ui.Wpf.Common.ShowOptions;
 
 namespace Kanban.Desktop.LocalBase.BaseSelector.Model
 {
     public class BaseSelectorModel : IBaseSelectorModel
     {
+        private readonly IShell _shell;
+
+        public  BaseSelectorModel(IShell shell)
+        {
+            _shell = shell;
+        }
+
         public string CreateDatabase()
         {
             var saveDialog = new SaveFileDialog()
@@ -23,7 +35,7 @@ namespace Kanban.Desktop.LocalBase.BaseSelector.Model
                 return name;
             }
 
-            else return null;
+            return null;
         }
 
         public string OpenDatabase()
@@ -42,7 +54,7 @@ namespace Kanban.Desktop.LocalBase.BaseSelector.Model
                 return name;
             }
 
-            else return null;
+            return null;
         }
 
         public List<string> GetBaseList()
@@ -52,11 +64,8 @@ namespace Kanban.Desktop.LocalBase.BaseSelector.Model
             if (File.Exists(path))
                 return File.ReadAllLines(path).ToList();
 
-            else
-            {
-                File.Create(path).Close();
-                return new List<string>();
-            }
+            File.Create(path).Close();
+            return new List<string>();
         }
 
         public bool CheckRecentBase(string basePath)
@@ -71,6 +80,19 @@ namespace Kanban.Desktop.LocalBase.BaseSelector.Model
             }
 
             return exists;
+        }
+
+        public void ShowSelectedBaseTab(string path)
+        {
+            _shell.Container.Resolve<SqliteLocalRepository>(
+                new NamedParameter("baseName", path));
+
+            _shell.ShowView<ISettingsView>(options: new UiShowOptions
+            {
+                Title = "Работа с базой " + path
+                            .Substring(path.LastIndexOf('\\') + 1)
+                            .TrimEnd(".db".ToCharArray())
+            });
         }
 
         public void ShiftOrCreateBaseList(string newBasePath)

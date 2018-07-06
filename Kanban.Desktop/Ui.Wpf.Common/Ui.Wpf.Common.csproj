@@ -124,6 +124,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="ReactiveExtensions.cs" />
     <Compile Include="Shell.cs" />
     <Compile Include="ShowOptions\UiShowStartWindowOptions.cs" />
     <Compile Include="UiStarter.cs" />

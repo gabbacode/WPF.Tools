@@ -1,23 +1,22 @@
-﻿using Kanban.Desktop.LocalBase.BaseSelector.ViewModel;
+﻿using Kanban.Desktop.LocalBase.LocalBoard.ViewModel;
 using Ui.Wpf.Common.ShowOptions;
 using Ui.Wpf.Common.ViewModels;
 
-namespace Kanban.Desktop.LocalBase.BaseSelector.View
+namespace Kanban.Desktop.LocalBase.LocalBoard.View
 {
     /// <summary>
-    /// Interaction logic for BaseSelectorView.xaml
+    /// Interaction logic for LocalBoardView.xaml
     /// </summary>
-    public partial class BaseSelectorView : IBaseSelectorView
+    public partial class LocalBoardView : ILocalBoardView
     {
-        public BaseSelectorView(IBaseSelectorViewModel viewModel)
+        public LocalBoardView(ILocalBoardViewModel localBoardViewModel)
         {
             InitializeComponent();
-            ViewModel   = viewModel;
+            ViewModel = localBoardViewModel;
             DataContext = ViewModel;
         }
 
         public IViewModel ViewModel { get; set; }
-       
 
         public void Configure(UiShowOptions options)
         {
