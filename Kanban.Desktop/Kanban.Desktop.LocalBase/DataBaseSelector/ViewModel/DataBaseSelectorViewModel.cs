@@ -1,10 +1,10 @@
-﻿using ReactiveUI;
-using System.Reactive;
+﻿using System.Reactive;
+using Kanban.Desktop.LocalBase.DataBaseSelector.Model;
 using MahApps.Metro.Controls.Dialogs;
-using Kanban.Desktop.LocalBase.BaseSelector.Model;
+using ReactiveUI;
 using Ui.Wpf.Common.ViewModels;
 
-namespace Kanban.Desktop.LocalBase.BaseSelector.ViewModel
+namespace Kanban.Desktop.LocalBase.DataBaseSelector.ViewModel
 {
     public class BaseSelectorViewModel : ViewModelBase, IBaseSelectorViewModel
     {
@@ -13,9 +13,9 @@ namespace Kanban.Desktop.LocalBase.BaseSelector.ViewModel
         public ReactiveCommand               OpenDbCommand       { get; set; }
         public ReactiveCommand<string, Unit> OpenRecentDbCommand { get; set; }
 
-        private readonly IBaseSelectorModel _model;
+        private readonly IDataBaseSelectorModel _model;
 
-        public BaseSelectorViewModel(IBaseSelectorModel model)
+        public BaseSelectorViewModel(IDataBaseSelectorModel model)
         {
             _model = model;
 
@@ -25,7 +25,7 @@ namespace Kanban.Desktop.LocalBase.BaseSelector.ViewModel
 
             OpenRecentDbCommand = ReactiveCommand.Create<string>(basePath =>
             {
-                var exists = _model.CheckRecentBase(basePath);
+                var exists = _model.CheckDataBaseExists(basePath);
 
                 if (exists)
                 {

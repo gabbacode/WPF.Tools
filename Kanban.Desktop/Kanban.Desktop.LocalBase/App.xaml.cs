@@ -1,5 +1,5 @@
 ﻿using System.Windows;
-using Kanban.Desktop.LocalBase.BaseSelector.View;
+using Kanban.Desktop.LocalBase.DataBaseSelector.View;
 using Ui.Wpf.Common;
 using Ui.Wpf.Common.ShowOptions;
 

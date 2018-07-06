@@ -1,18 +1,8 @@
 ﻿using Autofac;
-using Data.Sources.Common.Redmine;
 using Data.Sources.LocalStorage.Sqlite;
-using Kanban.Desktop.LocalBase.BaseSelector;
-using Kanban.Desktop.LocalBase.BaseSelector.Model;
-using Kanban.Desktop.LocalBase.BaseSelector.View;
-using Kanban.Desktop.LocalBase.BaseSelector.ViewModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Kanban.Desktop.KanbanBoard.Model;
-using Kanban.Desktop.KanbanBoard.View;
-using Kanban.Desktop.KanbanBoard.ViewModel;
+using Kanban.Desktop.LocalBase.DataBaseSelector.Model;
+using Kanban.Desktop.LocalBase.DataBaseSelector.View;
+using Kanban.Desktop.LocalBase.DataBaseSelector.ViewModel;
 using Kanban.Desktop.Settings;
 using Ui.Wpf.Common;
 
@@ -38,13 +28,13 @@ namespace Kanban.Desktop.LocalBase
 
             builder.RegisterType<MainWindow>().As<IDockWindow>();
 
-            builder.RegisterType<BaseSelectorModel>()
-                .As<IBaseSelectorModel>();
+            builder.RegisterType<DataBaseSelectorModel>()
+                .As<IDataBaseSelectorModel>();
 
             builder.RegisterType<BaseSelectorViewModel>()
                 .As<IBaseSelectorViewModel>();
 
-            builder.RegisterType<BaseSelectorView>()
+            builder.RegisterType<DataBaseSelectorView>()
                 .As<IBaseSelectorView>();
 
             builder

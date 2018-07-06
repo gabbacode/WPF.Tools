@@ -182,7 +182,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="BaseSelector\View\BaseSelectorView.xaml">
+    <Page Include="DataBaseSelector\View\DataBaseSelectorView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -190,14 +190,14 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="BaseSelector\ViewModel\BaseSelectorViewModel.cs" />
-    <Compile Include="BaseSelector\ViewModel\IBaseSelectorViewModel.cs" />
-    <Compile Include="BaseSelector\View\BaseSelectorView.xaml.cs">
-      <DependentUpon>BaseSelectorView.xaml</DependentUpon>
+    <Compile Include="DataBaseSelector\ViewModel\DataBaseSelectorViewModel.cs" />
+    <Compile Include="DataBaseSelector\ViewModel\IDataBaseSelectorViewModel.cs" />
+    <Compile Include="DataBaseSelector\View\DataBaseSelectorView.xaml.cs">
+      <DependentUpon>DataBaseSelectorView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="BaseSelector\Model\BaseSelectorModel.cs" />
-    <Compile Include="BaseSelector\Model\IBaseSelectorModel.cs" />
-    <Compile Include="BaseSelector\View\IBaseSelectorView.cs" />
+    <Compile Include="DataBaseSelector\Model\DataBaseSelectorModel.cs" />
+    <Compile Include="DataBaseSelector\Model\IDataBaseSelectorModel.cs" />
+    <Compile Include="DataBaseSelector\View\IDataBaseSelectorView.cs" />
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="Issues\Model\IIssueModel.cs" />
     <Compile Include="Issues\Model\IssueModel.cs" />
@@ -210,6 +210,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="LocalBoard\Model\ILocalBoardModel.cs" />
+    <Compile Include="LocalBoard\Model\LocalBoardModel.cs" />
     <Compile Include="LocalBoard\ViewModel\ILocalBoardViewModel.cs" />
     <Compile Include="LocalBoard\ViewModel\LocalBoardViewModel.cs" />
     <Compile Include="LocalBoard\View\ILocalBoardView.cs" />

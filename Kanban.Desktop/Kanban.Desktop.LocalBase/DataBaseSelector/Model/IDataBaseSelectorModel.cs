@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 
-namespace Kanban.Desktop.LocalBase.BaseSelector.Model
+namespace Kanban.Desktop.LocalBase.DataBaseSelector.Model
 {
-    public interface IBaseSelectorModel
+    public interface IDataBaseSelectorModel
     {
         string CreateDatabase();
         string OpenDatabase();
         List<string> GetBaseList();
-        bool CheckRecentBase(string basePath);
+        bool CheckDataBaseExists(string basePath);
         void ShowSelectedBaseTab(string path);
     }
 }

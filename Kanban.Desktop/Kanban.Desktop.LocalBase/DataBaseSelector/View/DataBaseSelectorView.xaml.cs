@@ -1,15 +1,15 @@
-﻿using Kanban.Desktop.LocalBase.BaseSelector.ViewModel;
+﻿using Kanban.Desktop.LocalBase.DataBaseSelector.ViewModel;
 using Ui.Wpf.Common.ShowOptions;
 using Ui.Wpf.Common.ViewModels;
 
-namespace Kanban.Desktop.LocalBase.BaseSelector.View
+namespace Kanban.Desktop.LocalBase.DataBaseSelector.View
 {
     /// <summary>
-    /// Interaction logic for BaseSelectorView.xaml
+    /// Interaction logic for DataBaseSelectorView.xaml
     /// </summary>
-    public partial class BaseSelectorView : IBaseSelectorView
+    public partial class DataBaseSelectorView : IBaseSelectorView
     {
-        public BaseSelectorView(IBaseSelectorViewModel viewModel)
+        public DataBaseSelectorView(IBaseSelectorViewModel viewModel)
         {
             InitializeComponent();
             ViewModel   = viewModel;

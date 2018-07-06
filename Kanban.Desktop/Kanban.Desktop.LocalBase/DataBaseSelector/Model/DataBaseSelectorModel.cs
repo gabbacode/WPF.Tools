@@ -8,13 +8,13 @@ using Kanban.Desktop.Settings;
 using Ui.Wpf.Common;
 using Ui.Wpf.Common.ShowOptions;
 
-namespace Kanban.Desktop.LocalBase.BaseSelector.Model
+namespace Kanban.Desktop.LocalBase.DataBaseSelector.Model
 {
-    public class BaseSelectorModel : IBaseSelectorModel
+    public class DataBaseSelectorModel : IDataBaseSelectorModel
     {
         private readonly IShell _shell;
 
-        public  BaseSelectorModel(IShell shell)
+        public  DataBaseSelectorModel(IShell shell)
         {
             _shell = shell;
         }
@@ -68,7 +68,7 @@ namespace Kanban.Desktop.LocalBase.BaseSelector.Model
             return new List<string>();
         }
 
-        public bool CheckRecentBase(string basePath)
+        public bool CheckDataBaseExists(string basePath)
         {
             var exists = File.Exists(basePath);
             if (!exists)
