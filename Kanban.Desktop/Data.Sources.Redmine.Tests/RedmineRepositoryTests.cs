@@ -31,6 +31,7 @@ namespace Data.Sources.Redmine.Tests
                 Status = new CommonRemineEntities.Status() { Id = 1 },
                 Tracker = new CommonRemineEntities.Tracker() { Id = 5 },
                 Priority = new CommonRemineEntities.Priority() { Id = 2 },
+                Notes = "asdf",
                 CustomFields = new[]
                 {
                     MakeCustomValue(1, "PhoneNumber"),

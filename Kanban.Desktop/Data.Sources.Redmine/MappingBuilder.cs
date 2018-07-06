@@ -22,7 +22,6 @@ namespace Data.Sources.Redmine
                     .ForMember(x => x.SpentHours, opt => opt.Ignore())
                     .ForMember(x => x.UpdatedOn, opt => opt.Ignore())
                     .ForMember(x => x.ClosedOn, opt => opt.Ignore())
-                    .ForMember(x => x.Notes, opt => opt.Ignore())
                     .ForMember(x => x.ParentIssue, opt => opt.Ignore())
                     .ForMember(x => x.FixedVersion, opt => opt.Ignore())
                     .ForMember(x => x.IsPrivate, opt => opt.Ignore())
