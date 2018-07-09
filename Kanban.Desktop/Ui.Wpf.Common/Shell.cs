@@ -27,9 +27,7 @@ namespace Ui.Wpf.Common
                 view.Configure(options);
 
 
-
-            var layoutDocument = new LayoutDocument();
-            layoutDocument.Content = view;
+            var layoutDocument = new LayoutDocument {Content = view};
 
             addTitleRefreshing(view, layoutDocument);
             addClosingByRequest(view, layoutDocument);
@@ -102,7 +100,6 @@ namespace Ui.Wpf.Common
             var window = startObject as Window;
             if (window == null)
                 throw new InvalidCastException($"{startObject.GetType()} is not a window");
-
 
             window.Show();
         }

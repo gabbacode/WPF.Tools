@@ -1,7 +1,13 @@
-﻿using MahApps.Metro.Controls;
+﻿using Data.Sources.LocalStorage.Sqlite;
+using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
+using System;
+using System.Collections.Specialized;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Threading;
 
 namespace Ui.Wpf.Common
 {
@@ -28,5 +34,6 @@ namespace Ui.Wpf.Common
 
             return loginTask;
         }
+
     }
 }
