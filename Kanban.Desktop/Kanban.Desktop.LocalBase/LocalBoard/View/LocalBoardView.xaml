@@ -7,8 +7,12 @@
              dialogs:DialogParticipation.Register="{Binding}"
              xmlns:local="clr-namespace:Kanban.Desktop.LocalBase.LocalBoard.View"
              xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
+             xmlns:kanbanControl="clr-namespace:Ui.Wpf.KanbanControl;assembly=Ui.Wpf.KanbanControl"
              mc:Ignorable="d">
     <Grid>
-        
+        <kanbanControl:Kanban HorizontalDimension="{Binding HorizontalDimension}" 
+                              VerticalDimension="{Binding VerticalDimension}"
+                              Cards="{Binding Issues}"
+                              CardContent="{Binding CardContent}"/>
     </Grid>
 </UserControl>

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Windows.Forms;
 using Autofac;
 using Data.Sources.LocalStorage.Sqlite;
-using Kanban.Desktop.Settings;
+using Kanban.Desktop.LocalBase.LocalBoard.View;
 using Ui.Wpf.Common;
 using Ui.Wpf.Common.ShowOptions;
 
@@ -87,7 +87,7 @@ namespace Kanban.Desktop.LocalBase.DataBaseSelector.Model
             _shell.Container.Resolve<SqliteLocalRepository>(
                 new NamedParameter("baseName", path));
 
-            _shell.ShowView<ISettingsView>(options: new UiShowOptions
+            _shell.ShowView<ILocalBoardView>(options: new UiShowOptions
             {
                 Title = "Работа с базой " + path
                             .Substring(path.LastIndexOf('\\') + 1)

@@ -264,6 +264,10 @@
       <Project>{FDB62508-AFFA-4281-8472-8D00FC1403BA}</Project>
       <Name>Ui.Wpf.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Ui.Wpf.KanbanControl\Ui.Wpf.KanbanControl.csproj">
+      <Project>{7f46f76e-ee01-4e40-9c31-bb61fff33e47}</Project>
+      <Name>Ui.Wpf.KanbanControl</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="FodyWeavers.xml" />

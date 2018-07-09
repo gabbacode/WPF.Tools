@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 using Data.Entities.Common.LocalBase;
 using Kanban.Desktop.LocalBase.LocalBoard.Model;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 using Ui.Wpf.Common.ViewModels;
+using Ui.Wpf.KanbanControl.Dimensions;
 
 namespace Kanban.Desktop.LocalBase.LocalBoard.ViewModel
 {
@@ -14,13 +16,20 @@ namespace Kanban.Desktop.LocalBase.LocalBoard.ViewModel
     {
 
         private readonly ILocalBoardModel _model;
-        public ReactiveList<LocalIssue> Issues { get; set; }
-        public ReactiveList<ColumnInfo> Columns { get; set; }
-        public ReactiveList<RowInfo> Rows { get; set; }
+
+        [Reactive] public IDimension VerticalDimension { get; internal set; }
+
+        [Reactive] public IDimension HorizontalDimension { get; internal set; }
+
+        public ReactiveList<LocalIssue> Issues { get; internal set; }
 
         public LocalBoardViewModel(ILocalBoardModel model)
         {
             _model = model;
+            VerticalDimension = _model.GetRows();
+            HorizontalDimension = _model.GetColumns();
+            Issues=new ReactiveList<LocalIssue>();
+            Issues.AddRange(_model.GetIssues());
         }
 
     }
