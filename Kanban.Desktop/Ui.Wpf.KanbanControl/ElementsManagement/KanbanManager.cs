@@ -18,15 +18,16 @@ namespace Ui.Wpf.KanbanControl.ElementsManagement
             KanbanChangeObjectType changeObjectType, 
             PropertyAccessorsExpressionCreator propertyAccessors)
         {
+            RemoveItems();
+            RemoveCells();
+            RemoveHeaders();
+
             if (kanbanBoard.HorizontalDimension == null
                 || kanbanBoard.HorizontalDimension.Categories.Count == 0
                 || kanbanBoard.VerticalDimension == null
                 || kanbanBoard.VerticalDimension.Categories.Count == 0)
                 return;
 
-            RemoveItems();
-            RemoveCells();
-            RemoveHeaders();
 
             ClearSplitters();
             ClearDefinitions();
@@ -212,9 +213,11 @@ namespace Ui.Wpf.KanbanControl.ElementsManagement
 
         private void RemoveItems()
         {
-            for (int i = 0; i < kanbanBoard.HorizontalDimension.Categories.Count; i++)
+            var maxI = kanbanBoard.Cells.GetLength(0);
+            var maxJ = kanbanBoard.Cells.GetLength(1);
+            for (int i = 0; i < maxI; i++)
             {
-                for (int j = 0; j < kanbanBoard.VerticalDimension.Categories.Count; j++)
+                for (int j = 0; j < maxJ; j++)
                 {
                     kanbanBoard.Cells[i, j].ItemsCount = 0;
                     kanbanBoard.Cells[i, j].View.ItemContainer.Children.Clear();
