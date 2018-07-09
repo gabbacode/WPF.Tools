@@ -50,10 +50,18 @@ namespace Ui.Wpf.KanbanControl
             // TODO beautiful transition
             // TODO store changesets and animate last little part of it with some low frequency
 
+
             if (HorizontalDimension == null
-                || VerticalDimension == null
-                || Cards == null)
-                return;
+                || VerticalDimension == null)
+            {
+                ClearHeaders();
+            }
+
+            if (Cards == null
+                || !Cards.Cast<object>().Any())
+            {
+                ClearCards();
+            }
 
             // TODO create only when type changed
             propertyAccessors = new PropertyAccessorsExpressionCreator(Cards);
@@ -62,13 +70,6 @@ namespace Ui.Wpf.KanbanControl
                 Cards, 
                 HorizontalDimension, VerticalDimension,
                 propertyAccessors);
-
-            if (HorizontalDimension.Categories == null
-                || HorizontalDimension.Categories.Count == 0
-                || VerticalDimension.Categories == null
-                || VerticalDimension.Categories.Count == 0)
-                return;
-
 
             BuildCards();
             BuildCells();
@@ -81,6 +82,15 @@ namespace Ui.Wpf.KanbanControl
 
         private void BuildCells()
         {
+            if (HorizontalDimension?.Categories == null
+                || HorizontalDimension?.Categories.Count == 0
+                || VerticalDimension?.Categories == null
+                || VerticalDimension?.Categories.Count == 0)
+            {
+                cells = new Cell[0, 0];
+                return;
+            }
+
             cells = new Cell[HorizontalDimension.Categories.Count, VerticalDimension.Categories.Count];
             for (int i = 0; i < HorizontalDimension.Categories.Count; i++)
             {
@@ -113,13 +123,6 @@ namespace Ui.Wpf.KanbanControl
 
         private void BuildCards()
         {
-            foreach (var card in cardElements)
-            {
-                card.View.MouseDoubleClick -= cardElementMouseDoubleClick;
-            }
-            cardElements.Clear();
-
-
             var contentItems = CardContent?.CardContentItems
                 .Select(ci => new
                 {
@@ -175,6 +178,15 @@ namespace Ui.Wpf.KanbanControl
             }
         }
 
+        private void ClearCards()
+        {
+            foreach (var card in cardElements)
+            {
+                card.View.MouseDoubleClick -= cardElementMouseDoubleClick;
+            }
+            cardElements.Clear();
+        }
+
         private void cardElementMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             var source = e.OriginalSource as FrameworkElement;
@@ -190,10 +202,15 @@ namespace Ui.Wpf.KanbanControl
             }
         }
 
-        private void BuildHeaders()
+        private void ClearHeaders()
         {
             horizontalHeaders.Clear();
-            for (int i = 0; i < HorizontalDimension.Categories.Count; i++)
+            verticalHeaders.Clear();
+        }
+
+        private void BuildHeaders()
+        {
+            for (int i = 0; i < HorizontalDimension?.Categories?.Count; i++)
             {
                 var head = new HeaderView();
                 head.ContentTemplate = HorizontalHeaderTemplate;
@@ -201,8 +218,7 @@ namespace Ui.Wpf.KanbanControl
                 horizontalHeaders.Add(new Header(head));
             }
 
-            verticalHeaders.Clear();
-            for (int j = 0; j < VerticalDimension.Categories.Count; j++)
+            for (int j = 0; j < VerticalDimension?.Categories?.Count; j++)
             {
                 var head = new HeaderView();
                 head.ContentTemplate = VerticalHeaderTemplate;

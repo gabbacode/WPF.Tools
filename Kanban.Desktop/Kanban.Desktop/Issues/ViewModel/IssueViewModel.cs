@@ -57,22 +57,6 @@ namespace Kanban.Desktop.Issues.ViewModel
             CancelCommand = ReactiveCommand.Create(() => Close());
         }
 
-        private string GetCustomValue(int customValueId, IList<CustomField> customFields)
-        {
-            return CustomFields
-                .FirstOrDefault(c => c.Id == customValueId)?.Values
-                .FirstOrDefault()?.Value;
-        }
-
-        private CustomField MakeCustomValue(int fieldTypeId, string value)
-        {
-            return new CustomField
-            {
-                Id = fieldTypeId,
-                Values = new[] { new CustomFieldValue { Value = value } }
-            };
-        }
-
         public void Initialize(ViewRequest viewRequest)
         {
             var issueId = (viewRequest as IssueViewRequest)?.IssueId;

@@ -8,8 +8,6 @@ using Kanban.Desktop.KanbanBoard.View;
 using Kanban.Desktop.Issues;
 using Kanban.Desktop.Issues.View;
 using Ui.Wpf.Common.ShowOptions;
-using Data.Sources.LocalStorage.Sqlite;
-using System.Threading.Tasks;
 
 namespace Kanban.Desktop
 {

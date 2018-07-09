@@ -1,7 +1,5 @@
 ﻿using Data.Entities.Common.Redmine;
 using Data.Sources.Common.Redmine;
-using System.Collections.Specialized;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Kanban.Desktop.Issues.Model
@@ -23,10 +21,7 @@ namespace Kanban.Desktop.Issues.Model
             else
             {
                 // create new 
-                return new Issue
-                {
-
-                };
+                return new Issue();
             }
         }
 

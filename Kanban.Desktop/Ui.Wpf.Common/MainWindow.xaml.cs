@@ -25,6 +25,12 @@ namespace Ui.Wpf.Common
             DataContext = Shell;
         }
 
+        protected override void OnClosed(EventArgs e)
+        {
+            base.OnClosed(e);
+            Shell?.Container.Dispose();
+        }
+
         private void ActiveContentChanged(object sender, EventArgs e)
         {
 
