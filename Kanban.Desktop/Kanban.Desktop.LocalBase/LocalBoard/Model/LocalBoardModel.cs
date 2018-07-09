@@ -44,12 +44,12 @@ namespace Kanban.Desktop.LocalBase.LocalBoard.Model
             );
         }
 
-        public CardContent CardContent()
+        public CardContent GetCardContent()
         {
             return new CardContent(new ICardContentItem[]
             {
                 new CardContentItem("Head"),
-                new CardContentItem("Body"),
+                new CardContentItem("Body",CardContentArea.Additional),
             });
         }
 

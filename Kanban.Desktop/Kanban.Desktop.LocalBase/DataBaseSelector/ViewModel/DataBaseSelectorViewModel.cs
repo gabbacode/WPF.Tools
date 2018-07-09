@@ -30,7 +30,6 @@ namespace Kanban.Desktop.LocalBase.DataBaseSelector.ViewModel
                 if (exists)
                 {
                     _model.ShowSelectedBaseTab(basePath);
-                    Close();
                 }
 
                 else
@@ -47,8 +46,6 @@ namespace Kanban.Desktop.LocalBase.DataBaseSelector.ViewModel
                 if (string.IsNullOrEmpty(basePath)) return;
 
                 _model.ShowSelectedBaseTab(basePath);
-
-                Close();
             });
 
             OpenDbCommand = ReactiveCommand.Create(() =>
@@ -57,8 +54,6 @@ namespace Kanban.Desktop.LocalBase.DataBaseSelector.ViewModel
                 if (string.IsNullOrEmpty(basePath)) return;
 
                 _model.ShowSelectedBaseTab(basePath);
-
-                Close();
             });
         }
     }

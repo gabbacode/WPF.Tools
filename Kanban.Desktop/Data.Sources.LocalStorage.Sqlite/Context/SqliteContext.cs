@@ -23,7 +23,6 @@ namespace Data.Sources.LocalStorage.Sqlite.Context
         {
             builder.EnableSensitiveDataLogging();
             builder.UseSqlite(_baseConnstr);
-            SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_e_sqlite3());
         }
 
     }
