@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Threading.Tasks;
 using Data.Entities.Common.LocalBase;
 using Data.Sources.LocalStorage.Sqlite;
 using Ui.Wpf.KanbanControl.Dimensions;
@@ -14,34 +15,54 @@ namespace Kanban.Desktop.LocalBase.LocalBoard.Model
     {
         private readonly SqliteLocalRepository _repository;
 
+        private List<RowInfo> _rows = new List<RowInfo>();
+
+        private List<ColumnInfo> _columns = new List<ColumnInfo>();
+
         public LocalBoardModel(SqliteLocalRepository repository)
         {
             _repository = repository;
         }
 
-        public IDimension GetColumns()
+        public IDimension GetColumnHeaders()
         {
-            var columns = _repository.GetColumns().Select(c => c.Name).ToArray();
+            _columns.Clear();
+            _columns = _repository.GetColumns();
+
+            var columnHeaders = _columns.Select(c => c.Name).ToArray();
             return new TagDimension<string, LocalIssue>(
-                tags: columns,
+                tags: columnHeaders,
                 getItemTags: i => new[] {i.Column.Name},
-                categories: columns
+                categories: columnHeaders
                     .Select(c => new TagsDimensionCategory<string>(c, c))
                     .Select(tdc => (IDimensionCategory) tdc)
                     .ToArray());
         }
 
-        public IDimension GetRows()
+        public IDimension GetRowHeaders()
         {
-            var rows = _repository.GetRows().Select(r => r.Name).ToArray();
+            _rows.Clear();
+            _rows = _repository.GetRows();
+
+            var rowHeaders = _rows.Select(r => r.Name).ToArray();
             return new TagDimension<string, LocalIssue>(
-                tags: rows,
+                tags: rowHeaders,
                 getItemTags: i => new[] {i.Row.Name},
-                categories: rows
+                categories: rowHeaders
                     .Select(r => new TagsDimensionCategory<string>(r, r))
                     .Select(tdc => (IDimensionCategory) tdc)
                     .ToArray()
             );
+        }
+
+        public RowInfo GetSelectedRow(string rowName)
+        {
+            return _rows.FirstOrDefault(r=>r.Name==rowName);
+        }
+
+        public ColumnInfo GetSelectedColumn(string colName)
+        {
+            return _columns.FirstOrDefault(c => c.Name == colName);
         }
 
         public CardContent GetCardContent()
@@ -49,8 +70,23 @@ namespace Kanban.Desktop.LocalBase.LocalBoard.Model
             return new CardContent(new ICardContentItem[]
             {
                 new CardContentItem("Head"),
-                new CardContentItem("Body",CardContentArea.Additional),
+                new CardContentItem("Body"),
             });
+        }
+
+        public async Task DeleteIssue(int issueId)
+        {
+            await _repository.DeleteIssueAsync(issueId);
+        }
+
+        public async Task DeleteRow(int rowId)
+        {
+            await _repository.DeleteRowAsync(rowId);
+        }
+
+        public async Task DeleteColumn(int columnId)
+        {
+            await _repository.DeleteColumnAsync(columnId);
         }
 
         public IEnumerable<LocalIssue> GetIssues()
@@ -58,9 +94,10 @@ namespace Kanban.Desktop.LocalBase.LocalBoard.Model
             return _repository.GetIssues(new NameValueCollection());
         }
 
-        public bool SaveIssueState(LocalIssue issue)
+        public async Task<IEnumerable<LocalIssue>> GetIssuesAsync()
         {
-            throw new NotImplementedException();
+            var t = await _repository.GetIssuesAsync(new NameValueCollection());
+            return t;
         }
 
         public bool SaveOrUpdateColumn(ColumnInfo column)

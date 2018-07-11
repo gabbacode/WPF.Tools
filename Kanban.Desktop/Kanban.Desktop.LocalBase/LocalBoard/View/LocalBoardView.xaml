@@ -9,6 +9,7 @@
              xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
              xmlns:kanbanControl="clr-namespace:Ui.Wpf.KanbanControl;assembly=Ui.Wpf.KanbanControl"
              xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d">
     <Grid>
         <Grid.RowDefinitions>
@@ -20,7 +21,8 @@
                     dd:DragDrop.IsDropTarget="True">
             <mah:DropDownButton Content="Создать" Height="auto" ItemsSource="{Binding Issues}"
               DisplayMemberPath="Head"      Margin="5"></mah:DropDownButton>
-            <Button Content="Удалить" Margin="5"/>
+            <Button Content="Удалить" Command="{Binding DeleteCommand}" Margin="5"/>
+            <Button Content="refresh" Margin="5" Command="{Binding RefreshCommand}"/>
         </StackPanel>
 
         <kanbanControl:Kanban 
@@ -31,6 +33,9 @@
             Grid.Row="1" HorizontalDimension="{Binding HorizontalDimension}" 
                               VerticalDimension="{Binding VerticalDimension}"
                               Cards="{Binding Issues}"
-                              CardContent="{Binding CardContent}"/>
+                              CardContent="{Binding CardContent}"
+            CardMouseClickCommand="{Binding IssueSelectCommand}"
+            HorizontalHeaderMouseClickCommand="{Binding ColumnSelectCommand}"
+            VerticalHeaderMouseClickCommand="{Binding RowSelectCommand}"/>
     </Grid>
 </UserControl>
