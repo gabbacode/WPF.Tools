@@ -5,6 +5,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Data.Entities.Common.LocalBase;
 using Data.Sources.LocalStorage.Sqlite;
+using Kanban.Desktop.LocalBase.Issues.View;
+using Kanban.Desktop.LocalBase.Issues.ViewModel;
+using Ui.Wpf.Common;
 using Ui.Wpf.KanbanControl.Dimensions;
 using Ui.Wpf.KanbanControl.Dimensions.Generic;
 using Ui.Wpf.KanbanControl.Elements.CardElement;
@@ -13,23 +16,26 @@ namespace Kanban.Desktop.LocalBase.LocalBoard.Model
 {
     public class LocalBoardModel : ILocalBoardModel
     {
-        private readonly SqliteLocalRepository _repository;
+        private readonly SqliteLocalRepository repository;
+        private readonly IShell shell;
 
-        private List<RowInfo> _rows = new List<RowInfo>();
+        private List<RowInfo> rows = new List<RowInfo>();
+        private List<ColumnInfo> columns = new List<ColumnInfo>();
 
-        private List<ColumnInfo> _columns = new List<ColumnInfo>();
-
-        public LocalBoardModel(SqliteLocalRepository repository)
+        public LocalBoardModel(SqliteLocalRepository repository, IShell shell)
         {
-            _repository = repository;
+            this.repository = repository;
+            this.shell      = shell;
         }
 
-        public IDimension GetColumnHeaders()
-        {
-            _columns.Clear();
-            _columns = _repository.GetColumns();
+        #region GettingInfo
 
-            var columnHeaders = _columns.Select(c => c.Name).ToArray();
+        public async Task<IDimension> GetColumnHeadersAsync()
+        {
+            columns.Clear();
+            columns = await repository.GetColumnsAsync();
+
+            var columnHeaders = columns.Select(c => c.Name).ToArray();
             return new TagDimension<string, LocalIssue>(
                 tags: columnHeaders,
                 getItemTags: i => new[] {i.Column.Name},
@@ -39,12 +45,12 @@ namespace Kanban.Desktop.LocalBase.LocalBoard.Model
                     .ToArray());
         }
 
-        public IDimension GetRowHeaders()
+        public async Task<IDimension> GetRowHeadersAsync()
         {
-            _rows.Clear();
-            _rows = _repository.GetRows();
+            rows.Clear();
+            rows = await repository.GetRowsAsync();
 
-            var rowHeaders = _rows.Select(r => r.Name).ToArray();
+            var rowHeaders = rows.Select(r => r.Name).ToArray();
             return new TagDimension<string, LocalIssue>(
                 tags: rowHeaders,
                 getItemTags: i => new[] {i.Row.Name},
@@ -55,14 +61,9 @@ namespace Kanban.Desktop.LocalBase.LocalBoard.Model
             );
         }
 
-        public RowInfo GetSelectedRow(string rowName)
+        public async Task<IEnumerable<LocalIssue>> GetIssuesAsync()
         {
-            return _rows.FirstOrDefault(r=>r.Name==rowName);
-        }
-
-        public ColumnInfo GetSelectedColumn(string colName)
-        {
-            return _columns.FirstOrDefault(c => c.Name == colName);
+            return await repository.GetIssuesAsync(new NameValueCollection());
         }
 
         public CardContent GetCardContent()
@@ -74,40 +75,52 @@ namespace Kanban.Desktop.LocalBase.LocalBoard.Model
             });
         }
 
-        public async Task DeleteIssue(int issueId)
+        public RowInfo GetSelectedRow(string rowName)
         {
-            await _repository.DeleteIssueAsync(issueId);
+            return rows.FirstOrDefault(r => r.Name == rowName);
         }
 
-        public async Task DeleteRow(int rowId)
+        public ColumnInfo GetSelectedColumn(string colName)
         {
-            await _repository.DeleteRowAsync(rowId);
+            return columns.FirstOrDefault(c => c.Name == colName);
         }
 
-        public async Task DeleteColumn(int columnId)
+        #endregion
+
+        #region DeletingInfo
+
+        public async Task DeleteIssueAsync(int issueId)
         {
-            await _repository.DeleteColumnAsync(columnId);
+            await repository.DeleteIssueAsync(issueId);
         }
 
-        public IEnumerable<LocalIssue> GetIssues()
+        public async Task DeleteRowAsync(int rowId)
         {
-            return _repository.GetIssues(new NameValueCollection());
+            await repository.DeleteRowAsync(rowId);
         }
 
-        public async Task<IEnumerable<LocalIssue>> GetIssuesAsync()
+        public async Task DeleteColumnAsync(int columnId)
         {
-            var t = await _repository.GetIssuesAsync(new NameValueCollection());
-            return t;
+            await repository.DeleteColumnAsync(columnId);
         }
 
-        public bool SaveOrUpdateColumn(ColumnInfo column)
+        #endregion
+
+
+        public void UpdateColumn(ColumnInfo column)
         {
             throw new NotImplementedException();
         }
 
-        public bool SaveOrUpdateRow(RowInfo row)
+        public void UpdateRow(RowInfo row)
         {
             throw new NotImplementedException();
+        }
+
+        public void ShowIssueView(LocalIssue issue)
+        {
+            shell.ShowView<IIssueView>(
+                viewRequest:new IssueViewRequest(){IssueId = issue.Id});
         }
     }
 }

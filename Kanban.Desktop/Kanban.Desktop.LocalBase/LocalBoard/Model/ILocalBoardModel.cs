@@ -8,20 +8,16 @@ namespace Kanban.Desktop.LocalBase.LocalBoard.Model
 {
     public interface ILocalBoardModel
     {
-        bool SaveOrUpdateColumn(ColumnInfo column);
-        bool SaveOrUpdateRow(RowInfo row);
-
-
-        IDimension              GetColumnHeaders();
-        IDimension              GetRowHeaders();
-        IEnumerable<LocalIssue> GetIssues();
-        CardContent             GetCardContent();
-
+        Task<IDimension>              GetColumnHeadersAsync();
+        Task<IDimension>              GetRowHeadersAsync();
+        Task<IEnumerable<LocalIssue>> GetIssuesAsync();
+        CardContent                   GetCardContent();
         RowInfo                       GetSelectedRow(string rowName);
         ColumnInfo                    GetSelectedColumn(string colName);
-        Task                          DeleteIssue(int issueId);
-        Task                          DeleteRow(int rowId);
-        Task                          DeleteColumn(int columnId);
-        Task<IEnumerable<LocalIssue>> GetIssuesAsync();
+
+        Task DeleteIssueAsync(int issueId);
+        Task DeleteRowAsync(int rowId);
+        Task DeleteColumnAsync(int columnId);
+        void ShowIssueView(LocalIssue issue);
     }
 }

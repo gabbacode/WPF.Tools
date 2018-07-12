@@ -240,14 +240,23 @@
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="Issues\Model\IIssueModel.cs" />
     <Compile Include="Issues\Model\IssueModel.cs" />
-    <Compile Include="Issues\View\IIssuesTool.cs" />
+    <Compile Include="Issues\ViewModel\IIssueViewModel.cs" />
+    <Compile Include="Issues\ViewModel\IssueViewModel.cs" />
+    <Compile Include="Issues\ViewModel\IssueViewRequest.cs" />
     <Compile Include="Issues\View\IIssueView.cs" />
+    <Page Include="Issues\View\IssueView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="LocalBoard\View\LocalBoardView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Issues\View\IssueView.xaml.cs">
+      <DependentUpon>IssueView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="LocalBoard\Model\ILocalBoardModel.cs" />
     <Compile Include="LocalBoard\Model\LocalBoardModel.cs" />
     <Compile Include="LocalBoard\ViewModel\ILocalBoardViewModel.cs" />

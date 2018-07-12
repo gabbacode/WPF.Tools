@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
@@ -176,6 +175,19 @@ namespace Data.Sources.LocalStorage.Sqlite
                 return await _context.Column.ToListAsync();
             }
         }
+
+        public async Task<LocalIssue> GetIssueAsync(int issueId)
+        {
+            using (_context = new SqliteContext(BaseConnstr))
+            {
+                return await _context.Issue
+                    .Include(i => i.Row)
+                    .Include(i => i.Column)
+                    .Select(i => _mapper.Map<LocalIssue>(i))
+                    .FirstAsync(i=>i.Id==issueId);
+            }
+        }
+
         #endregion
 
         public async Task DeleteRowAsync(int? rowId)

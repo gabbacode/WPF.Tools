@@ -1,31 +1,43 @@
-﻿using System.Threading.Tasks;
-using Data.Entities.Common.Redmine;
-using Data.Sources.Common.Redmine;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Data.Entities.Common.LocalBase;
+using Data.Sources.LocalStorage.Sqlite;
 
 namespace Kanban.Desktop.LocalBase.Issues.Model
 {
     public class IssueModel : IIssueModel
     {
-        public IssueModel(IRedmineRepository repository)
+        public IssueModel(SqliteLocalRepository repository)
         {
-            SqliteRepository = repository;
+            sqliteRepository = repository;
         }
 
-        public async Task<Issue> LoadOrCreateAsync(int? issueId)
+        public async Task<LocalIssue> LoadOrCreateAsync(int? issueId)
         {
+            var t = new LocalIssue();
             if (issueId.HasValue)
-            {
-                return await SqliteRepository.GetIssueAsync(issueId.Value);
-            }
-            else
-            {
-                return new Issue
-                {
+                t = await sqliteRepository.GetIssueAsync(issueId.Value);
 
-                };
-            }
+            return t;
         }
 
-        public IRedmineRepository SqliteRepository { get; }
+        public async Task SaveIssueAsync(LocalIssue issue)
+        {
+            issue.Modified = DateTime.Now;
+            await sqliteRepository.CreateOrUpdateIssueAsync(issue);
+        }
+
+        public async Task<List<RowInfo>> GetRows()
+        {
+            return await sqliteRepository.GetRowsAsync();
+        }
+
+        public async Task<List<ColumnInfo>> GetColumns()
+        {
+            return await sqliteRepository.GetColumnsAsync();
+        }
+
+        private readonly SqliteLocalRepository sqliteRepository;
     }
 }

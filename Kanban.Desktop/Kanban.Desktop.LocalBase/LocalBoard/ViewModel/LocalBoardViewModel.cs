@@ -1,7 +1,13 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Windows.Input;
 using Data.Entities.Common.LocalBase;
 using Kanban.Desktop.LocalBase.LocalBoard.Model;
 using MahApps.Metro.Controls.Dialogs;
+using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Ui.Wpf.Common;
@@ -11,22 +17,22 @@ using Ui.Wpf.KanbanControl.Elements.CardElement;
 
 namespace Kanban.Desktop.LocalBase.LocalBoard.ViewModel
 {
-    public class LocalBoardViewModel : ViewModelBase, ILocalBoardViewModel
+    public class LocalBoardViewModel : ViewModelBase, ILocalBoardViewModel//,IInitializableViewModel
     {
 
-        private readonly ILocalBoardModel _model;
+        private readonly ILocalBoardModel model;
 
-        private readonly IDialogCoordinator _dialogCoordinator = DialogCoordinator.Instance;
+        private readonly IDialogCoordinator dialogCoordinator = DialogCoordinator.Instance;
 
-        private LocalIssue _selectedIssue;
-        private RowInfo _selectedRow;
-        private ColumnInfo _selectedColumn;
+        [Reactive] private LocalIssue SelectedIssue  { get; set; }
+        [Reactive] private RowInfo    SelectedRow    { get; set; }
+        [Reactive] private ColumnInfo SelectedColumn { get; set; }
 
         [Reactive] public IDimension VerticalDimension { get; internal set; }
 
         [Reactive] public IDimension HorizontalDimension { get; internal set; }
 
-        public ReactiveList<LocalIssue> Issues  { get; internal set; }
+        [Reactive] public ReactiveList<LocalIssue> Issues { get; internal set; }
 
         [Reactive] public ICardContent CardContent { get; private set; }
 
@@ -34,89 +40,127 @@ namespace Kanban.Desktop.LocalBase.LocalBoard.ViewModel
 
         public ReactiveCommand DeleteCommand { get; set; }
 
+        public ReactiveCommand UpdateCommand { get; set; }
+
         public ReactiveCommand IssueSelectCommand { get; set; }
 
-        public ReactiveCommand RowSelectCommand { get; set; }
+        public ReactiveCommand RowHeaderSelectCommand { get; set; }
 
-        public ReactiveCommand ColumnSelectCommand { get; set; }
+        public ReactiveCommand ColumnHeaderSelectCommand { get; set; }
+
 
         public LocalBoardViewModel(ILocalBoardModel model)
         {
-            _model = model;
-
-            
+            this.model = model;
 
             Issues = new ReactiveList<LocalIssue>();
+            
+            RefreshCommand = ReactiveCommand.CreateFromTask(RefreshContent); //TODO: disable canrefresh when ui didn't complete
 
-            RefreshCommand = ReactiveCommand.Create(RefreshContent);
+            var isSelectedEditable = this.WhenAnyValue(t => t.SelectedIssue, t => t.SelectedColumn, t => t.SelectedRow,
+                (si, sc, sr) => si != null || sc != null || sr != null);
 
-            DeleteCommand = ReactiveCommand.CreateFromTask(Delete);
+            DeleteCommand = ReactiveCommand.CreateFromTask(DeleteElement, isSelectedEditable);
+
+            UpdateCommand = ReactiveCommand.Create(UpdateElement,isSelectedEditable);
 
             IssueSelectCommand = ReactiveCommand.Create<object>(o =>
             {
-                _selectedIssue = o as LocalIssue;
+                SelectedIssue = o as LocalIssue;
 
-                if (_selectedIssue == null) return;
+                if (SelectedIssue == null) return;
 
-                _selectedColumn = null;
-                _selectedRow    = null;
+                SelectedColumn = null;
+                SelectedRow    = null;
             });
 
-            RowSelectCommand = ReactiveCommand.Create<object>(o =>
+            RowHeaderSelectCommand = ReactiveCommand.Create<object>(o =>
             {
-                _selectedRow = _model.GetSelectedRow(o.ToString());
+                SelectedRow = this.model.GetSelectedRow(o.ToString());
 
-                if (_selectedRow == null) return;
+                if (SelectedRow == null) return;
 
-                _selectedColumn = null;
-                _selectedIssue  = null;
+                SelectedColumn = null;
+                SelectedIssue  = null;
             });
 
-            ColumnSelectCommand = ReactiveCommand.Create<object>(o =>
+            ColumnHeaderSelectCommand = ReactiveCommand.Create<object>(o =>
             {
-                _selectedColumn = _model.GetSelectedColumn(o.ToString());
+                SelectedColumn = this.model.GetSelectedColumn(o.ToString());
 
-                if (_selectedColumn == null) return;
+                if (SelectedColumn == null) return;
 
-                _selectedRow   = null;
-                _selectedIssue = null;
+                SelectedRow   = null;
+                SelectedIssue = null;
             });
 
-            //Task.Factory.StartNew(() => RefreshContent());
         }
 
-        private void RefreshContent()
+        private async Task RefreshContent()
         {
-            Issues.Clear();
+                Issues.Clear();
 
-            VerticalDimension = _model.GetRowHeaders();
+                VerticalDimension = await model.GetRowHeadersAsync();
 
-            HorizontalDimension = _model.GetColumnHeaders();
+                HorizontalDimension = await model.GetColumnHeadersAsync();
 
-            CardContent = _model.GetCardContent();
+                CardContent = model.GetCardContent();
 
-            Issues.PublishCollection(_model.GetIssues());
+                Issues.PublishCollection(await model.GetIssuesAsync());
         }
 
-        private async Task Delete()
+        private async Task DeleteElement()
         {
-            var ts = await _dialogCoordinator.ShowMessageAsync(this, "Warning",
-                "Вы действительно хотите удалить данную запись?"
+            var element = SelectedIssue != null ? "задачу" : SelectedColumn != null ? "весь столбец" : "всю строку";
+
+            var ts = await dialogCoordinator.ShowMessageAsync(this, "Warning",
+                $"Вы действительно хотите удалить {element}?"
                 , MessageDialogStyle.AffirmativeAndNegative);
 
             if (ts == MessageDialogResult.Negative)
                 return;
 
-                if (_selectedIssue != null)
-                    await _model.DeleteIssue(_selectedIssue.Id);
+            if (SelectedIssue != null)
+                await model.DeleteIssueAsync(SelectedIssue.Id);
 
-                else if (_selectedRow != null)
-                    await _model.DeleteRow(_selectedRow.Id);
+            else if (SelectedRow != null)
+                await model.DeleteRowAsync(SelectedRow.Id);
 
-                else if (_selectedColumn != null)
-                    await _model.DeleteColumn(_selectedColumn.Id);
+            else if (SelectedColumn != null)
+                await model.DeleteColumnAsync(SelectedColumn.Id);
 
-                RefreshContent();
+            await RefreshContent();
+        }
+
+        private void UpdateElement()
+        {
+            if(SelectedIssue != null)
+             model.ShowIssueView(SelectedIssue);
+
+            else if (SelectedRow != null)
+                 model.DeleteRowAsync(SelectedRow.Id);
+
+            else if (SelectedColumn != null)
+                 model.DeleteColumnAsync(SelectedColumn.Id);
+        }
+
+        public void Initialize(ViewRequest viewRequest)
+        {
+            Issues.Clear();
+
+            Observable.FromAsync(() => model.GetRowHeadersAsync())
+                .ObserveOnDispatcher()
+                .Subscribe(vert =>VerticalDimension= vert);
+
+            Observable.FromAsync(() => model.GetColumnHeadersAsync())
+                .ObserveOnDispatcher()
+                .Subscribe(horiz => HorizontalDimension = horiz);
+
+            CardContent = model.GetCardContent();
+
+            Observable.FromAsync(() => model.GetIssuesAsync())
+                .ObserveOnDispatcher()
+                .Subscribe(issues => Issues.AddRange(issues)); //can't work.
         }
     }
 }

@@ -3,10 +3,12 @@ using Data.Sources.LocalStorage.Sqlite;
 using Kanban.Desktop.LocalBase.DataBaseSelector.Model;
 using Kanban.Desktop.LocalBase.DataBaseSelector.View;
 using Kanban.Desktop.LocalBase.DataBaseSelector.ViewModel;
+using Kanban.Desktop.LocalBase.Issues.Model;
+using Kanban.Desktop.LocalBase.Issues.View;
+using Kanban.Desktop.LocalBase.Issues.ViewModel;
 using Kanban.Desktop.LocalBase.LocalBoard.Model;
 using Kanban.Desktop.LocalBase.LocalBoard.View;
 using Kanban.Desktop.LocalBase.LocalBoard.ViewModel;
-using Kanban.Desktop.Settings;
 using Ui.Wpf.Common;
 
 namespace Kanban.Desktop.LocalBase
@@ -40,7 +42,7 @@ namespace Kanban.Desktop.LocalBase
 
             ConfigureLocalBoardView(builder);
 
-            ConfigureSettings(builder);
+            ConfigureIssueRedactor(builder);
 
             return builder.Build();
         }
@@ -69,15 +71,19 @@ namespace Kanban.Desktop.LocalBase
                 .As<ILocalBoardView>();
         }
 
-        private static void ConfigureSettings(ContainerBuilder builder)
+        private static void ConfigureIssueRedactor(ContainerBuilder builder)
         {
             builder
-                .RegisterType<SettingsViewModel>()
-                .As<ISettingsViewModel>();
+                .RegisterType<IssueModel>()
+                .As<IIssueModel>();
 
             builder
-                .RegisterType<SettingsView>()
-                .As<ISettingsView>();
+                .RegisterType<IssueViewModel>()
+                .As<IIssueViewModel>();
+
+            builder
+                .RegisterType<IssueView>()
+                .As<IIssueView>();
         }
     }
 }

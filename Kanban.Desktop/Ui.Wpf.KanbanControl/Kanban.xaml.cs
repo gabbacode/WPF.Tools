@@ -101,6 +101,7 @@ namespace Ui.Wpf.KanbanControl
                     cells[i, j] = new Cell(new CellView());
                 }
             }
+            
         }
 
         private void SetCards(object oldValue, object newValue)
@@ -175,7 +176,7 @@ namespace Ui.Wpf.KanbanControl
                         .ToList();
 
                 cardElement.View.ContentTemplate = CardTemplate;
-                cardElement.View.MouseDoubleClick += cardElementMouseDoubleClick;
+                cardElement.View.MouseDoubleClick += CardElementMouseDoubleClick;
                 cardElement.View.MouseLeftButtonDown += CardMouseClick;
                 cardElements.Add(cardElement);
             }
@@ -185,13 +186,13 @@ namespace Ui.Wpf.KanbanControl
         {
             foreach (var card in cardElements)
             {
-                card.View.MouseDoubleClick -= cardElementMouseDoubleClick;
+                card.View.MouseDoubleClick -= CardElementMouseDoubleClick;
                 card.View.MouseLeftButtonDown -= CardMouseClick;
             }
             cardElements.Clear();
         }
 
-        private void cardElementMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private void CardElementMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             var source = e.OriginalSource as FrameworkElement;
             var dc = source?.DataContext;
@@ -229,6 +230,10 @@ namespace Ui.Wpf.KanbanControl
             {
                 HorizontalHeaderMouseClickCommand?.Execute(h.Caption);
             }
+            else
+            {
+                CardMouseClickCommand?.Execute(null);
+            }
         }
 
         private void VerticalHeaderMouseClick(object sender, MouseButtonEventArgs e)
@@ -238,6 +243,10 @@ namespace Ui.Wpf.KanbanControl
             if (dc is IDimensionCategory h)
             {
                 VerticalHeaderMouseClickCommand?.Execute(h.Caption);
+            }
+            else
+            {
+                CardMouseClickCommand?.Execute(null);
             }
         }
 
@@ -585,7 +594,6 @@ namespace Ui.Wpf.KanbanControl
                 "VerticalHeaderMouseClickCommand",
                 typeof(ICommand), typeof(Kanban),
                 new PropertyMetadata(null));
-
         #endregion
     }
 }
