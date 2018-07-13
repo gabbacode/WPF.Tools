@@ -153,13 +153,26 @@ namespace Data.Sources.LocalStorage.Sqlite.Tests
         }
 
         [Test]
-        public async void CreateOrSaveDB()
+        public async  void CreateOrSaveDB()
         {
             //var mainview = Application.Current.MainWindow as MetroWindow;
-            var f = Directory.GetCurrentDirectory();
-            var t = Directory.GetFiles(Directory.GetCurrentDirectory(), "*.db", SearchOption.TopDirectoryOnly);
-            _repos = new SqliteLocalRepository("23423");
-           var ty=await _repos.GetColumnsAsync();
+            var c= new LocalIssue()
+            {
+                //Id=3,
+                Head     = "very fake issue",
+                Body     = "fat body for fat issue",
+                Color    = "reed",
+                Created  = DateTime.Now,
+                Modified = DateTime.Now,
+                Row      = new RowInfo { Name    = "changingbysaving", Order = 2, Id = 4 },
+                Column   = new ColumnInfo { Name = "firstco2134lss", Order       = 1, Id = 3 },
+            };
+            var t = new ColumnInfo {Name = "firstcolsscs", Order = 1, Id = 3};
+
+            _repos = new SqliteLocalRepository(@"C:\ArsMak\Kanban.Desktop\Kanban.Desktop\Data.Sources.LocalStorage.Sqlite.Tests\bin\Debug\lololo.db");
+
+            var cc = await _repos.CreateOrUpdateIssueAsync(c);
+            var tt = await _repos.CreateOrUpdateColumnAsync(t);
         }
     }
 }

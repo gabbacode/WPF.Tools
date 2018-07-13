@@ -18,8 +18,17 @@
 
         <StackPanel Orientation="Horizontal" dd:DragDrop.IsDragSource="True"
                     dd:DragDrop.IsDropTarget="True">
-            <mah:DropDownButton Content="Создать" Height="auto" ItemsSource="{Binding Issues}"
-              DisplayMemberPath="Head"      Margin="5"></mah:DropDownButton>
+            <mah:DropDownButton Content="Создать" Height="auto" 
+                                ItemsSource="{Binding Entities}"
+                 Margin="5">
+                <mah:DropDownButton.ItemContainerStyle>
+                    <Style TargetType="MenuItem">
+                        <Setter Property="Command" 
+                                Value="{Binding RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}, Path=DataContext.AddNewElementCommand}"/>
+                        <Setter Property="CommandParameter" Value="{Binding}"/>
+                    </Style>
+                </mah:DropDownButton.ItemContainerStyle>
+            </mah:DropDownButton>
 
             <Button Content="Изменить" Command="{Binding UpdateCommand}" Margin="5"/>
             <Button Content="Удалить" Command="{Binding DeleteCommand}" Margin="5"/>

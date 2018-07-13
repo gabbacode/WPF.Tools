@@ -13,23 +13,23 @@ namespace Kanban.Desktop.LocalBase.DataBaseSelector.ViewModel
         public ReactiveCommand               OpenDbCommand       { get; set; }
         public ReactiveCommand<string, Unit> OpenRecentDbCommand { get; set; }
 
-        private readonly IDataBaseSelectorModel _model;
+        private readonly IDataBaseSelectorModel model;
 
         public BaseSelectorViewModel(IDataBaseSelectorModel model)
         {
-            _model = model;
+            this.model = model;
 
             BaseList = new ReactiveList<string>();
-            var list = _model.GetBaseList();
+            var list = this.model.GetBaseList();
             foreach (var addr in list) BaseList.Add(addr);
 
             OpenRecentDbCommand = ReactiveCommand.Create<string>(basePath =>
             {
-                var exists = _model.CheckDataBaseExists(basePath);
+                var exists = this.model.CheckDataBaseExists(basePath);
 
                 if (exists)
                 {
-                    _model.ShowSelectedBaseTab(basePath);
+                    this.model.ShowSelectedBaseTab(basePath);
                 }
 
                 else
@@ -42,18 +42,18 @@ namespace Kanban.Desktop.LocalBase.DataBaseSelector.ViewModel
 
             NewDbCommand = ReactiveCommand.Create(() =>
             {
-                var basePath = _model.CreateDatabase();
+                var basePath = this.model.CreateDatabase();
                 if (string.IsNullOrEmpty(basePath)) return;
 
-                _model.ShowSelectedBaseTab(basePath);
+                this.model.ShowSelectedBaseTab(basePath);
             });
 
             OpenDbCommand = ReactiveCommand.Create(() =>
             {
-                var basePath = _model.OpenDatabase();
+                var basePath = this.model.OpenDatabase();
                 if (string.IsNullOrEmpty(basePath)) return;
 
-                _model.ShowSelectedBaseTab(basePath);
+                this.model.ShowSelectedBaseTab(basePath);
             });
         }
     }

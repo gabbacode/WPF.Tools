@@ -40,6 +40,8 @@ namespace Kanban.Desktop.LocalBase.Issues.ViewModel
                 mapper.Map(this, editedIssue);
 
                 await model.SaveIssueAsync(editedIssue);
+                
+                Close();
             });
 
             CancelCommand=ReactiveCommand.Create(Close);
@@ -49,7 +51,9 @@ namespace Kanban.Desktop.LocalBase.Issues.ViewModel
         public void Initialize(ViewRequest viewRequest)
         {
             var issueId = (viewRequest as IssueViewRequest)?.IssueId;
-             
+            if (issueId == 0)
+                issueId = null;
+
             Observable.FromAsync(() => model.LoadOrCreateAsync(issueId))
                 .ObserveOnDispatcher()
                 .Subscribe(issue =>
@@ -58,7 +62,10 @@ namespace Kanban.Desktop.LocalBase.Issues.ViewModel
             Observable.FromAsync(() => model.GetRows())
                 .ObserveOnDispatcher()
                 .Subscribe(rows =>
-                    AwailableRows.PublishCollection(rows));
+                {
+                    AwailableRows.Clear();
+                    AwailableRows.AddRange(rows);
+                });
 
             Observable.FromAsync(() => model.GetColumns())
                 .ObserveOnDispatcher()

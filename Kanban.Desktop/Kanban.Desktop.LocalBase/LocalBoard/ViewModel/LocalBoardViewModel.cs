@@ -1,13 +1,10 @@
 ﻿using System;
+using System.Reactive;
 using System.Reactive.Linq;
-using System.Reactive.Subjects;
 using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Windows.Input;
 using Data.Entities.Common.LocalBase;
 using Kanban.Desktop.LocalBase.LocalBoard.Model;
 using MahApps.Metro.Controls.Dialogs;
-using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Ui.Wpf.Common;
@@ -17,7 +14,7 @@ using Ui.Wpf.KanbanControl.Elements.CardElement;
 
 namespace Kanban.Desktop.LocalBase.LocalBoard.ViewModel
 {
-    public class LocalBoardViewModel : ViewModelBase, ILocalBoardViewModel//,IInitializableViewModel
+    public class LocalBoardViewModel : ViewModelBase, ILocalBoardViewModel //,IInitializableViewModel
     {
 
         private readonly ILocalBoardModel model;
@@ -32,7 +29,9 @@ namespace Kanban.Desktop.LocalBase.LocalBoard.ViewModel
 
         [Reactive] public IDimension HorizontalDimension { get; internal set; }
 
-        [Reactive] public ReactiveList<LocalIssue> Issues { get; internal set; }
+
+        public ReactiveList<string> Entities { get; } = new ReactiveList<string>() { "issue", "column", "row" };
+        public ReactiveList<LocalIssue> Issues { get; internal set; }
 
         [Reactive] public ICardContent CardContent { get; private set; }
 
@@ -41,6 +40,8 @@ namespace Kanban.Desktop.LocalBase.LocalBoard.ViewModel
         public ReactiveCommand DeleteCommand { get; set; }
 
         public ReactiveCommand UpdateCommand { get; set; }
+
+        public ReactiveCommand<string,Unit> AddNewElementCommand { get; set; }
 
         public ReactiveCommand IssueSelectCommand { get; set; }
 
@@ -54,15 +55,18 @@ namespace Kanban.Desktop.LocalBase.LocalBoard.ViewModel
             this.model = model;
 
             Issues = new ReactiveList<LocalIssue>();
-            
-            RefreshCommand = ReactiveCommand.CreateFromTask(RefreshContent); //TODO: disable canrefresh when ui didn't complete
+
+            RefreshCommand =
+                ReactiveCommand.CreateFromTask(RefreshContent); 
 
             var isSelectedEditable = this.WhenAnyValue(t => t.SelectedIssue, t => t.SelectedColumn, t => t.SelectedRow,
-                (si, sc, sr) => si != null || sc != null || sr != null);
+                (si, sc, sr) => si != null || sc != null || sr != null); //TODO :add selectcommand when click uneditable with nulling all "selected" fields
 
             DeleteCommand = ReactiveCommand.CreateFromTask(DeleteElement, isSelectedEditable);
 
-            UpdateCommand = ReactiveCommand.Create(UpdateElement,isSelectedEditable);
+            UpdateCommand = ReactiveCommand.Create(UpdateElement, isSelectedEditable);
+
+            AddNewElementCommand = ReactiveCommand.CreateFromTask<string>(async name=>await AddNewElement(name));
 
             IssueSelectCommand = ReactiveCommand.Create<object>(o =>
             {
@@ -98,15 +102,17 @@ namespace Kanban.Desktop.LocalBase.LocalBoard.ViewModel
 
         private async Task RefreshContent()
         {
-                Issues.Clear();
+            Issues.Clear();
 
-                VerticalDimension = await model.GetRowHeadersAsync();
+            VerticalDimension = null;
+            VerticalDimension = await model.GetRowHeadersAsync();
 
-                HorizontalDimension = await model.GetColumnHeadersAsync();
+            HorizontalDimension = null;
+            HorizontalDimension = await model.GetColumnHeadersAsync();
 
-                CardContent = model.GetCardContent();
+            CardContent = model.GetCardContent();
 
-                Issues.PublishCollection(await model.GetIssuesAsync());
+            Issues.PublishCollection(await model.GetIssuesAsync());
         }
 
         private async Task DeleteElement()
@@ -132,17 +138,94 @@ namespace Kanban.Desktop.LocalBase.LocalBoard.ViewModel
             await RefreshContent();
         }
 
-        private void UpdateElement()
+        private async Task UpdateElement()
         {
-            if(SelectedIssue != null)
-             model.ShowIssueView(SelectedIssue);
+            if (SelectedIssue != null)
+                model.ShowIssueView(SelectedIssue);
+
 
             else if (SelectedRow != null)
-                 model.DeleteRowAsync(SelectedRow.Id);
+            {
+                var newName = await ShowRowNameInput();
+
+                if (!string.IsNullOrEmpty(newName))
+                {
+                    SelectedRow.Name = newName;
+                    await model.CreateOrUpdateRow(SelectedRow);
+                }
+            }
+
 
             else if (SelectedColumn != null)
-                 model.DeleteColumnAsync(SelectedColumn.Id);
+            {
+                var newName = await ShowColumnNameInput();
+
+                if (!string.IsNullOrEmpty(newName))
+
+                {
+                    SelectedColumn.Name = newName;
+                    await model.CreateOrUpdateColumn(SelectedColumn);
+                }
+            }
+
+            await RefreshContent();
         }
+
+        private async Task AddNewElement(string elementName) //TODO: add enum(?) as command parameter instead of string
+        {
+            if (elementName=="issue")
+                    model.ShowIssueView(new LocalIssue());
+
+            else if (elementName == "row")
+            {
+                var newName = await ShowRowNameInput();
+
+                if (!string.IsNullOrEmpty(newName))
+                {
+                    var newRow = new RowInfo {Name = newName};
+                    await model.CreateOrUpdateRow(newRow);
+                }
+            }
+
+            else if (elementName == "column")
+            {
+                var newName = await ShowColumnNameInput();
+
+                if (!string.IsNullOrEmpty(newName))
+                {
+                    var newColumn = new ColumnInfo { Name = newName };
+                    await model.CreateOrUpdateColumn(newColumn);
+                }
+            }
+
+            await RefreshContent();
+        }
+
+        private async Task<string> ShowColumnNameInput()
+        {
+            return await dialogCoordinator
+                .ShowInputAsync(this, "RowRed", "Введите название столбца",
+                    new MetroDialogSettings()
+                    {
+                        AffirmativeButtonText = "подтвердить",
+                        NegativeButtonText    = "отмена",
+                        DefaultText           = SelectedColumn?.Name
+                    });
+        }
+
+        private async Task<string> ShowRowNameInput()
+        {
+            return await dialogCoordinator
+                .ShowInputAsync(this, "RowRed", "Введите название строки",
+                    new MetroDialogSettings()
+                    {
+                        AffirmativeButtonText = "подтвердить",
+                        NegativeButtonText    = "отмена",
+                        DefaultText           = SelectedRow?.Name,
+                        DialogResultOnCancel = MessageDialogResult.Negative
+
+                    });
+        } //TODO: add some logic preventing empty name
 
         public void Initialize(ViewRequest viewRequest)
         {
@@ -150,7 +233,7 @@ namespace Kanban.Desktop.LocalBase.LocalBoard.ViewModel
 
             Observable.FromAsync(() => model.GetRowHeadersAsync())
                 .ObserveOnDispatcher()
-                .Subscribe(vert =>VerticalDimension= vert);
+                .Subscribe(vert => VerticalDimension = vert);
 
             Observable.FromAsync(() => model.GetColumnHeadersAsync())
                 .ObserveOnDispatcher()
@@ -160,7 +243,7 @@ namespace Kanban.Desktop.LocalBase.LocalBoard.ViewModel
 
             Observable.FromAsync(() => model.GetIssuesAsync())
                 .ObserveOnDispatcher()
-                .Subscribe(issues => Issues.AddRange(issues)); //can't work.
+                .Subscribe(issues => Issues.AddRange(issues)); // TODO: make initialize works
         }
     }
 }

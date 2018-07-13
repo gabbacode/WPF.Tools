@@ -8,10 +8,10 @@
              d:DesignHeight="450" d:DesignWidth="800"
              FontSize="15"
              FontFamily="Italic">
-    <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" MinHeight="50"/>
-                <RowDefinition Height="250"/>
+    <Grid >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" MinHeight="50" />
+            <RowDefinition Height="250"/>
             <RowDefinition Height="Auto" MinHeight="50"/>
             <RowDefinition Height="Auto" MinHeight="50"/>
             <RowDefinition Height="Auto"/>
@@ -54,11 +54,11 @@
                   SelectedValue="{Binding Column}"
                   DisplayMemberPath="Name"/>
 
-        <StackPanel Grid.Row="4"
+        <StackPanel Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2"
                     Orientation="Horizontal">
-            <Button Content="Сохранить" 
+            <Button Content="Сохранить" Margin="10" Padding="5"
                     Command="{Binding SaveCommand}"/>
-            <Button Content="Отмена" 
+            <Button Content="Отмена" Margin="10" Padding="5"
                     Command="{Binding CancelCommand}"/>
         </StackPanel>
     </Grid>

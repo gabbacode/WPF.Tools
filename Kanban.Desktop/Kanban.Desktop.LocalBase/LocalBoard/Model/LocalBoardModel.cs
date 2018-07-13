@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
@@ -106,21 +105,20 @@ namespace Kanban.Desktop.LocalBase.LocalBoard.Model
 
         #endregion
 
-
-        public void UpdateColumn(ColumnInfo column)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void UpdateRow(RowInfo row)
-        {
-            throw new NotImplementedException();
-        }
-
         public void ShowIssueView(LocalIssue issue)
         {
             shell.ShowView<IIssueView>(
                 viewRequest:new IssueViewRequest(){IssueId = issue.Id});
+        }
+
+        public async Task CreateOrUpdateColumn(ColumnInfo column)
+        {
+           await repository.CreateOrUpdateColumnAsync(column);
+        }
+
+        public async Task CreateOrUpdateRow(RowInfo row)
+        {
+            await repository.CreateOrUpdateRowAsync(row);
         }
     }
 }

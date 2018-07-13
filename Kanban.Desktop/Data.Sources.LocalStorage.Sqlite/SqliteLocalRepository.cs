@@ -39,8 +39,10 @@ namespace Data.Sources.LocalStorage.Sqlite
         {
             using (_context = new SqliteContext(BaseConnstr))
             {
-                if (column.Id == 0 || _context.Column.Find(column.Id) == null)
+                if (column.Id == 0 || _context.Column.AsNoTracking()
+                        .FirstOrDefault(c => c.Id == column.Id) == null)
                     await _context.AddAsync(column);
+
 
                 else _context.Update(column);
                 await _context.SaveChangesAsync();
@@ -72,12 +74,10 @@ namespace Data.Sources.LocalStorage.Sqlite
                     await _context.SaveChangesAsync();
                     return _mapper.Map<LocalIssue>(newiss);
                 }
-                else
-                {
-                    _context.Update(existed);
-                    await _context.SaveChangesAsync();
-                    return issue;
-                }
+
+                _context.Update(existed);
+                await _context.SaveChangesAsync();
+                return issue;
             }
         }
         #endregion

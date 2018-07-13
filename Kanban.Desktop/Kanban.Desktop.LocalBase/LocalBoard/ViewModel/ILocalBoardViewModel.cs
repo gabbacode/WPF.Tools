@@ -4,5 +4,6 @@ namespace Kanban.Desktop.LocalBase.LocalBoard.ViewModel
 {
     public interface ILocalBoardViewModel: IViewModel
     {
+        
     }
 }

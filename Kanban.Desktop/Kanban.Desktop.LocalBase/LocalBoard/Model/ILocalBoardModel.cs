@@ -19,5 +19,7 @@ namespace Kanban.Desktop.LocalBase.LocalBoard.Model
         Task DeleteRowAsync(int rowId);
         Task DeleteColumnAsync(int columnId);
         void ShowIssueView(LocalIssue issue);
+        Task CreateOrUpdateColumn(ColumnInfo column);
+        Task CreateOrUpdateRow(RowInfo row);
     }
 }

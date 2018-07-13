@@ -238,12 +238,25 @@
     <Compile Include="DataBaseSelector\Model\IDataBaseSelectorModel.cs" />
     <Compile Include="DataBaseSelector\View\IDataBaseSelectorView.cs" />
     <Compile Include="Bootstrapper.cs" />
+    <Compile Include="DimensionEdit-unused\Model\DimensionEditModel.cs" />
+    <Compile Include="DimensionEdit-unused\Model\DimensionViewRequest.cs" />
+    <Compile Include="DimensionEdit-unused\Model\IDimensionEditModel.cs" />
+    <Compile Include="DimensionEdit-unused\ViewModel\DimensionEditViewModel.cs" />
+    <Compile Include="DimensionEdit-unused\ViewModel\IDimensionEditViewModel.cs" />
+    <Compile Include="DimensionEdit-unused\View\DimensionEditView.xaml.cs">
+      <DependentUpon>DimensionEditView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DimensionEdit-unused\View\IDimensionEditView.cs" />
     <Compile Include="Issues\Model\IIssueModel.cs" />
     <Compile Include="Issues\Model\IssueModel.cs" />
     <Compile Include="Issues\ViewModel\IIssueViewModel.cs" />
     <Compile Include="Issues\ViewModel\IssueViewModel.cs" />
     <Compile Include="Issues\ViewModel\IssueViewRequest.cs" />
     <Compile Include="Issues\View\IIssueView.cs" />
+    <Page Include="DimensionEdit-unused\View\DimensionEditView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Issues\View\IssueView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -332,6 +345,7 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Fody.2.0.7\build\netstandard1.4\Fody.targets" Condition="Exists('..\packages\Fody.2.0.7\build\netstandard1.4\Fody.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
