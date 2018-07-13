@@ -20,7 +20,7 @@ namespace Data.Sources.LocalStorage.Sqlite.Tests
 
         public void old()
         {
-            _repos = new SqliteLocalRepository("dsa");
+           // _repos = new SqliteLocalRepository("dsa");
             var iss1 = new Issue()
             {
                 CreatedOn = new DateTime(2, 2, 3),
@@ -129,7 +129,7 @@ namespace Data.Sources.LocalStorage.Sqlite.Tests
         public async void RepShouldUpdateIssues()
         {
 
-            _repos = new SqliteLocalRepository("vsqwe");
+           // _repos = new SqliteLocalRepository("vsqwe");
             LocalIssue newiss = new LocalIssue()
             {
                 //Id=3,
@@ -169,7 +169,7 @@ namespace Data.Sources.LocalStorage.Sqlite.Tests
             };
             var t = new ColumnInfo {Name = "firstcolsscs", Order = 1, Id = 3};
 
-            _repos = new SqliteLocalRepository(@"C:\ArsMak\Kanban.Desktop\Kanban.Desktop\Data.Sources.LocalStorage.Sqlite.Tests\bin\Debug\lololo.db");
+           // _repos = new SqliteLocalRepository(@"C:\ArsMak\Kanban.Desktop\Kanban.Desktop\Data.Sources.LocalStorage.Sqlite.Tests\bin\Debug\lololo.db");
 
             var cc = await _repos.CreateOrUpdateIssueAsync(c);
             var tt = await _repos.CreateOrUpdateColumnAsync(t);

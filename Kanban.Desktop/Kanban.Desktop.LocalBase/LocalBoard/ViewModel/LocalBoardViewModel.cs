@@ -3,6 +3,7 @@ using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Data.Entities.Common.LocalBase;
+using GongSolutions.Wpf.DragDrop;
 using Kanban.Desktop.LocalBase.LocalBoard.Model;
 using MahApps.Metro.Controls.Dialogs;
 using ReactiveUI;
@@ -24,13 +25,16 @@ namespace Kanban.Desktop.LocalBase.LocalBoard.ViewModel
         [Reactive] private LocalIssue SelectedIssue  { get; set; }
         [Reactive] private RowInfo    SelectedRow    { get; set; }
         [Reactive] private ColumnInfo SelectedColumn { get; set; }
+        public IDropTarget LocalBoardHandler { get; set; } = new LocalBoardDropHandler();
 
         [Reactive] public IDimension VerticalDimension { get; internal set; }
 
         [Reactive] public IDimension HorizontalDimension { get; internal set; }
 
 
-        public ReactiveList<string> Entities { get; } = new ReactiveList<string>() { "issue", "column", "row" };
+        public ReactiveList<string> Entities { get; } 
+            = new ReactiveList<string>() { "Задачу", "Столбец", "Строку" };
+
         public ReactiveList<LocalIssue> Issues { get; internal set; }
 
         [Reactive] public ICardContent CardContent { get; private set; }
@@ -173,10 +177,10 @@ namespace Kanban.Desktop.LocalBase.LocalBoard.ViewModel
 
         private async Task AddNewElement(string elementName) //TODO: add enum(?) as command parameter instead of string
         {
-            if (elementName=="issue")
+            if (elementName == "Задачу")
                     model.ShowIssueView(new LocalIssue());
 
-            else if (elementName == "row")
+            else if (elementName == "Строку")
             {
                 var newName = await ShowRowNameInput();
 
@@ -187,7 +191,7 @@ namespace Kanban.Desktop.LocalBase.LocalBoard.ViewModel
                 }
             }
 
-            else if (elementName == "column")
+            else if (elementName == "Столбец")
             {
                 var newName = await ShowColumnNameInput();
 
@@ -204,7 +208,7 @@ namespace Kanban.Desktop.LocalBase.LocalBoard.ViewModel
         private async Task<string> ShowColumnNameInput()
         {
             return await dialogCoordinator
-                .ShowInputAsync(this, "RowRed", "Введите название столбца",
+                .ShowInputAsync(this, "ColumnRed", "Введите название столбца",
                     new MetroDialogSettings()
                     {
                         AffirmativeButtonText = "подтвердить",
@@ -245,5 +249,7 @@ namespace Kanban.Desktop.LocalBase.LocalBoard.ViewModel
                 .ObserveOnDispatcher()
                 .Subscribe(issues => Issues.AddRange(issues)); // TODO: make initialize works
         }
+
+
     }
 }

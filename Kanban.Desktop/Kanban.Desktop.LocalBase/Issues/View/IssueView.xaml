@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:dd="urn:gong-wpf-dragdrop"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              FontSize="15"
@@ -40,15 +41,24 @@
 
         <Label Grid.Row="2" Content="Строка" 
                HorizontalContentAlignment="Center"
-               VerticalContentAlignment="Center" />
+               VerticalContentAlignment="Center"
+               dd:DragDrop.IsDragSource="True"
+               dd:DragDrop.IsDropTarget="True"
+               dd:DragDrop.UseDefaultEffectDataTemplate="True"
+               dd:DragDrop.DropHandler="{Binding LocalBoardHandler}"/>
         <ComboBox Grid.Column="1" Grid.Row="2" 
                   ItemsSource="{Binding AwailableRows}"
                   SelectedValue="{Binding Row}"
-                  DisplayMemberPath="Name"/>
+                  DisplayMemberPath="Name"
+                  />
 
         <Label Grid.Row="3" Content="Столбец" 
                HorizontalContentAlignment="Center"
-               VerticalContentAlignment="Center" />
+               VerticalContentAlignment="Center" 
+               dd:DragDrop.IsDragSource="True"
+               dd:DragDrop.IsDropTarget="True"
+               dd:DragDrop.UseDefaultEffectDataTemplate="True"
+               dd:DragDrop.DropHandler="{Binding LocalBoardHandler}"/>
         <ComboBox Grid.Column="1" Grid.Row="3" 
                   ItemsSource="{Binding AwailableColumns }"
                   SelectedValue="{Binding Column}"

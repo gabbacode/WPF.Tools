@@ -13,7 +13,7 @@ using Ui.Wpf.Common;
 
 namespace Kanban.Desktop.LocalBase
 {
-    class Bootstrapper : IBootstraper
+    public class Bootstrapper : IBootstraper
     {
         public IShell Init()
         {
@@ -34,8 +34,11 @@ namespace Kanban.Desktop.LocalBase
             builder.RegisterType<MainWindow>().As<IDockWindow>();
 
             builder
-               .RegisterType<SqliteLocalRepository>()
-               .SingleInstance();
+                .RegisterType<SqliteLocalRepository>();
+
+            builder.RegisterType<SqliteSettings>()
+                .As<IDataBaseSettings>()
+                .SingleInstance();
 
             //TODO Modules discovering
             ConfigureDataBaseSelector(builder);

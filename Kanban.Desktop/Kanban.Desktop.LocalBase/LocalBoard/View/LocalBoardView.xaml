@@ -32,14 +32,10 @@
 
             <Button Content="Изменить" Command="{Binding UpdateCommand}" Margin="5"/>
             <Button Content="Удалить" Command="{Binding DeleteCommand}" Margin="5"/>
-            <Button Content="refresh" Margin="5" Command="{Binding RefreshCommand}"/>
+            <Button Content="Обновить данные" Margin="5" Command="{Binding RefreshCommand}"/>
         </StackPanel>
 
         <kanbanControl:Kanban 
-            dd:DragDrop.IsDragSource="True"
-            dd:DragDrop.IsDropTarget="True"
-            dd:DragDrop.UseDefaultDragAdorner="True"
-            dd:DragDrop.UseDefaultEffectDataTemplate="True"
             Grid.Row="1" HorizontalDimension="{Binding HorizontalDimension}" 
                               VerticalDimension="{Binding VerticalDimension}"
                               Cards="{Binding Issues}"

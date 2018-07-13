@@ -273,6 +273,7 @@
     <Compile Include="LocalBoard\Model\ILocalBoardModel.cs" />
     <Compile Include="LocalBoard\Model\LocalBoardModel.cs" />
     <Compile Include="LocalBoard\ViewModel\ILocalBoardViewModel.cs" />
+    <Compile Include="LocalBoard\ViewModel\LocalBoardDropHandler.cs" />
     <Compile Include="LocalBoard\ViewModel\LocalBoardViewModel.cs" />
     <Compile Include="LocalBoard\View\ILocalBoardView.cs" />
     <Compile Include="LocalBoard\View\LocalBoardView.xaml.cs">
