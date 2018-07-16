@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,73 +11,73 @@ namespace Data.Sources.LocalStorage.Sqlite
 {
     public class SqliteLocalRepository
     {
-        private SqliteContext _context;
-        private IMapper _mapper;
+        private SqliteContext context;
+        private readonly IMapper mapper;
         public string BaseConnstr { get; set; }
 
-        public SqliteLocalRepository(string baseName)
+        public SqliteLocalRepository(IDataBaseSettings settings)
         {
-            BaseConnstr = $"Data Source = {baseName}";
-            _mapper = CreateMapper();
+            BaseConnstr = settings.GetConnectionString();
+            mapper = CreateMapper();
         }
 
         #region creating&updating entities
         public async Task<RowInfo> CreateOrUpdateRowAsync(RowInfo row)
         {
-            using (_context = new SqliteContext(BaseConnstr))
+            using (context = new SqliteContext(BaseConnstr))
             {
-                if (row.Id == 0 || _context.Row.Find(row.Id) == null)
-                    await _context.AddAsync(row);
+                if (row.Id == 0 || context.Row.Find(row.Id) == null)
+                    await context.AddAsync(row);
 
-                else _context.Update(row);
-                await _context.SaveChangesAsync();
+                else context.Update(row);
+                await context.SaveChangesAsync();
                 return row;
             }
         }
 
         public async Task<ColumnInfo> CreateOrUpdateColumnAsync(ColumnInfo column)
         {
-            using (_context = new SqliteContext(BaseConnstr))
+            using (context = new SqliteContext(BaseConnstr))
             {
-                if (column.Id == 0 || _context.Column.Find(column.Id) == null)
-                    await _context.AddAsync(column);
+                if (column.Id == 0 || context.Column.AsNoTracking()
+                        .FirstOrDefault(c => c.Id == column.Id) == null)
+                    await context.AddAsync(column);
 
-                else _context.Update(column);
-                await _context.SaveChangesAsync();
+
+                else context.Update(column);
+                await context.SaveChangesAsync();
                 return column;
             }
         }
 
         public async Task<LocalIssue> CreateOrUpdateIssueAsync(LocalIssue issue)
         {
-            using (_context = new SqliteContext(BaseConnstr))
+            using (context = new SqliteContext(BaseConnstr))
             {
-                var existed = _context.Issue
+                var existed = context.Issue
                     .AsNoTracking()
                     .Include(i => i.Row)
                     .Include(i => i.Column)
                     .FirstOrDefault(iss => iss.Id == issue.Id);
-                _mapper.Map(issue, existed);
+                mapper.Map(issue, existed);
 
                 if (existed == null)
                 {
-                    var newiss = _mapper.Map<SqliteIssue>(issue);
-                    _context.Attach(newiss.Row);
-                    _context.Attach(newiss.Column);
+                    var newiss = mapper.Map<SqliteIssue>(issue);
+                    context.Attach(newiss.Row);
+                    context.Attach(newiss.Column);
 
-                    await _context.AddAsync(newiss);
-                    await _context.SaveChangesAsync();
-                    _context.Update(newiss.Column);
-                    _context.Update(newiss.Row);
-                    await _context.SaveChangesAsync();
-                    return _mapper.Map<LocalIssue>(newiss);
+                    await context.AddAsync(newiss);
+                    await context.SaveChangesAsync();
+                    context.Update(newiss.Column);
+                    context.Update(newiss.Row);
+                    await context.SaveChangesAsync();
+                    return mapper.Map<LocalIssue>(newiss);
                 }
-                else
-                {
-                    _context.Update(existed);
-                    await _context.SaveChangesAsync();
-                    return issue;
-                }
+
+                context.Update(existed);
+                await context.SaveChangesAsync();
+                return issue;
             }
         }
         #endregion
@@ -86,12 +85,12 @@ namespace Data.Sources.LocalStorage.Sqlite
         #region getting entities
         public List<LocalIssue> GetIssues(NameValueCollection filters)
         {
-            using (_context = new SqliteContext(BaseConnstr))
+            using (context = new SqliteContext(BaseConnstr))
             {
-                var dbIssues = _context.Issue
+                var dbIssues = context.Issue
                     .Include(i => i.Row)
                     .Include(i => i.Column)
-                    .Select(i => _mapper.Map<LocalIssue>(i));
+                    .Select(i => mapper.Map<LocalIssue>(i));
 
                 var keys = filters.AllKeys;
 
@@ -116,12 +115,12 @@ namespace Data.Sources.LocalStorage.Sqlite
 
         public async Task<List<LocalIssue>> GetIssuesAsync(NameValueCollection filters)
         {
-            using (_context = new SqliteContext(BaseConnstr))
+            using (context = new SqliteContext(BaseConnstr))
             {
-                var dbIssues = await _context.Issue
+                var dbIssues = await context.Issue
                     .Include(i => i.Row)
                     .Include(i => i.Column)
-                    .Select(i => _mapper.Map<LocalIssue>(i)).ToListAsync();
+                    .Select(i => mapper.Map<LocalIssue>(i)).ToListAsync();
 
                 var keys = filters.AllKeys;
 
@@ -147,69 +146,82 @@ namespace Data.Sources.LocalStorage.Sqlite
 
         public List<RowInfo> GetRows()
         {
-            using (_context = new SqliteContext(BaseConnstr))
+            using (context = new SqliteContext(BaseConnstr))
             {
-                return _context.Row.ToList();
+                return context.Row.ToList();
             }
         }
 
         public async Task<List<RowInfo>> GetRowsAsync()
         {
-            using (_context = new SqliteContext(BaseConnstr))
+            using (context = new SqliteContext(BaseConnstr))
             {
-                return await _context.Row.ToListAsync();
+                return await context.Row.ToListAsync();
             }
         }
 
         public List<ColumnInfo> GetColumns()
         {
-            using (_context = new SqliteContext(BaseConnstr))
+            using (context = new SqliteContext(BaseConnstr))
             {
-                return _context.Column.ToList();
+                return context.Column.ToList();
             }
         }
 
         public async Task<List<ColumnInfo>> GetColumnsAsync()
         {
-            using (_context = new SqliteContext(BaseConnstr))
+            using (context = new SqliteContext(BaseConnstr))
             {
-                return await _context.Column.ToListAsync();
+                return await context.Column.ToListAsync();
             }
         }
+
+        public async Task<LocalIssue> GetIssueAsync(int issueId)
+        {
+            using (context = new SqliteContext(BaseConnstr))
+            {
+                return await context.Issue
+                    .Include(i => i.Row)
+                    .Include(i => i.Column)
+                    .Select(i => mapper.Map<LocalIssue>(i))
+                    .FirstAsync(i=>i.Id==issueId);
+            }
+        }
+
         #endregion
 
         public async Task DeleteRowAsync(int? rowId)
         {
-            using (_context = new SqliteContext(BaseConnstr))
+            using (context = new SqliteContext(BaseConnstr))
             {
-                if (_context.Row.First().Id == rowId)
+                if (context.Row.First().Id == rowId)
                 {
-                    var bindedIssues = _context.Issue
+                    var bindedIssues = context.Issue
                         .Where(iss => iss.RowId == rowId);
 
-                    var newxtRow = _context.Row.Skip(1).First();
+                    var newxtRow = context.Row.Skip(1).First();
                     foreach (var issue in bindedIssues)
                         issue.RowId = newxtRow.Id;
 
-                    _context.UpdateRange(bindedIssues);
-                    await _context.SaveChangesAsync();
-                    _context.Row.Remove(_context.Row.Find(rowId));
-                    await _context.SaveChangesAsync();
-                    var t = _context.Issue.ToList();
+                    context.UpdateRange(bindedIssues);
+                    await context.SaveChangesAsync();
+                    context.Row.Remove(context.Row.Find(rowId));
+                    await context.SaveChangesAsync();
+                    var t = context.Issue.ToList();
                 }
 
                 else
                 {
-                    var bindedIssues = _context.Issue
+                    var bindedIssues = context.Issue
                         .Where(iss => iss.RowId == rowId);
-                    var previousRow = _context.Row.LastOrDefault(r => r.Id < rowId);
+                    var previousRow = context.Row.LastOrDefault(r => r.Id < rowId);
                     foreach (var issue in bindedIssues)
                         issue.RowId = previousRow.Id;
 
-                    _context.UpdateRange(bindedIssues);
-                    _context.Row.Remove(_context.Row.Find(rowId));
-                    await _context.SaveChangesAsync();
-                    var t = _context.Issue.ToList();
+                    context.UpdateRange(bindedIssues);
+                    context.Row.Remove(context.Row.Find(rowId));
+                    await context.SaveChangesAsync();
+                    var t = context.Issue.ToList();
                 }
 
             }
@@ -217,36 +229,36 @@ namespace Data.Sources.LocalStorage.Sqlite
 
         public async Task DeleteColumnAsync(int? columnId)
         {
-            using (_context = new SqliteContext(BaseConnstr))
+            using (context = new SqliteContext(BaseConnstr))
             {
-                if (_context.Column.First().Id == columnId)
+                if (context.Column.First().Id == columnId)
                 {
-                    var bindedIssues = _context.Issue
+                    var bindedIssues = context.Issue
                         .Where(iss => iss.ColumnId == columnId);
 
-                    var newxtCol = _context.Column.Skip(1).First();
+                    var newxtCol = context.Column.Skip(1).First();
                     foreach (var issue in bindedIssues)
                         issue.ColumnId = newxtCol.Id;
 
-                    _context.UpdateRange(bindedIssues);
-                    await _context.SaveChangesAsync();
-                    _context.Column.Remove(_context.Column.Find(columnId));
-                    await _context.SaveChangesAsync();
-                    var t = _context.Issue.ToList();
+                    context.UpdateRange(bindedIssues);
+                    await context.SaveChangesAsync();
+                    context.Column.Remove(context.Column.Find(columnId));
+                    await context.SaveChangesAsync();
+                    var t = context.Issue.ToList();
                 }
 
                 else
                 {
-                    var bindedIssues = _context.Issue
+                    var bindedIssues = context.Issue
                         .Where(iss => iss.ColumnId == columnId);
-                    var previousCol = _context.Column.LastOrDefault(r => r.Id < columnId);
+                    var previousCol = context.Column.LastOrDefault(r => r.Id < columnId);
                     foreach (var issue in bindedIssues)
                         issue.ColumnId = previousCol.Id;
 
-                    _context.UpdateRange(bindedIssues);
-                    _context.Column.Remove(_context.Column.Find(columnId));
-                    await _context.SaveChangesAsync();
-                    var t = _context.Issue.ToList();
+                    context.UpdateRange(bindedIssues);
+                    context.Column.Remove(context.Column.Find(columnId));
+                    await context.SaveChangesAsync();
+                    var t = context.Issue.ToList();
                 }
 
             }
@@ -254,11 +266,11 @@ namespace Data.Sources.LocalStorage.Sqlite
 
         public async Task DeleteIssueAsync(int? issueId)
         {
-            using (_context = new SqliteContext(BaseConnstr))
+            using (context = new SqliteContext(BaseConnstr))
             {
-                _context.Issue
-                    .Remove(_context.Issue.Find(issueId));
-                await _context.SaveChangesAsync();
+                context.Issue
+                    .Remove(context.Issue.Find(issueId));
+                await context.SaveChangesAsync();
             }
 
         }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Windows.Forms;
 using Autofac;
 using Data.Sources.LocalStorage.Sqlite;
-using Kanban.Desktop.Settings;
+using Kanban.Desktop.LocalBase.LocalBoard.View;
 using Ui.Wpf.Common;
 using Ui.Wpf.Common.ShowOptions;
 
@@ -12,11 +12,13 @@ namespace Kanban.Desktop.LocalBase.DataBaseSelector.Model
 {
     public class DataBaseSelectorModel : IDataBaseSelectorModel
     {
-        private readonly IShell _shell;
+        private readonly IShell shell;
+        private IDataBaseSettings dataBaseSettings;
 
-        public  DataBaseSelectorModel(IShell shell)
+        public DataBaseSelectorModel(IShell shell)
         {
-            _shell = shell;
+            this.shell       = shell;
+            dataBaseSettings = shell.Container.Resolve<IDataBaseSettings>();
         }
 
         public string CreateDatabase()
@@ -24,7 +26,7 @@ namespace Kanban.Desktop.LocalBase.DataBaseSelector.Model
             var saveDialog = new SaveFileDialog()
             {
                 Filter = "SQLite DataBase | *.db",
-                Title = "Создание базы"
+                Title  = "Создание базы"
             };
             saveDialog.ShowDialog();
 
@@ -43,7 +45,7 @@ namespace Kanban.Desktop.LocalBase.DataBaseSelector.Model
             var openDialog = new OpenFileDialog()
             {
                 Filter = "SQLite DataBase | *.db",
-                Title = "Открытие базы"
+                Title  = "Открытие базы"
             };
             openDialog.ShowDialog();
 
@@ -73,7 +75,7 @@ namespace Kanban.Desktop.LocalBase.DataBaseSelector.Model
             var exists = File.Exists(basePath);
             if (!exists)
             {
-                var path = Directory.GetCurrentDirectory() + "\\BaseList.txt";
+                var path     = Directory.GetCurrentDirectory() + "\\BaseList.txt";
                 var baseList = File.ReadAllLines(path).ToList();
                 baseList.Remove(basePath);
                 File.WriteAllLines(path, baseList);
@@ -84,16 +86,15 @@ namespace Kanban.Desktop.LocalBase.DataBaseSelector.Model
 
         public void ShowSelectedBaseTab(string path)
         {
-            _shell.Container.Resolve<SqliteLocalRepository>(
-                new NamedParameter("baseName", path));
+            dataBaseSettings.BasePath = path;
 
-            _shell.ShowView<ISettingsView>(options: new UiShowOptions
+            shell.ShowView<ILocalBoardView>(options: new UiShowOptions
             {
                 Title = "Работа с базой " + path
                             .Substring(path.LastIndexOf('\\') + 1)
                             .TrimEnd(".db".ToCharArray())
             });
-        }
+        } //TODO: add re-login within one session (-singletone,+some auto-taking basename when resolving)
 
         public void ShiftOrCreateBaseList(string newBasePath)
         {

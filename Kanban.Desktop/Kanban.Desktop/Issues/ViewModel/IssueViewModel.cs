@@ -69,6 +69,7 @@ namespace Kanban.Desktop.Issues.ViewModel
 
                     Title = issue.ToString();
                 });
+
         }
 
         [Reactive]
