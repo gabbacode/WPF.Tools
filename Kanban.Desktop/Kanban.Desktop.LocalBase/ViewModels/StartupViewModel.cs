@@ -1,7 +1,9 @@
 ﻿using System.Reactive;
 using Kanban.Desktop.LocalBase.Models;
+using Kanban.Desktop.LocalBase.Views;
 using MahApps.Metro.Controls.Dialogs;
 using ReactiveUI;
+using Ui.Wpf.Common;
 using Ui.Wpf.Common.ViewModels;
 
 namespace Kanban.Desktop.LocalBase.ViewModels
@@ -14,10 +16,12 @@ namespace Kanban.Desktop.LocalBase.ViewModels
         public ReactiveCommand<string, Unit> OpenRecentDbCommand { get; set; }
 
         private readonly StartupModel model;
+        private readonly IShell shell_;
 
-        public StartupViewModel(StartupModel model)
+        public StartupViewModel(StartupModel model, IShell shell)
         {
             this.model = model;
+            shell_ = shell;
 
             BaseList = new ReactiveList<string>();
             var list = this.model.GetBaseList();
@@ -41,10 +45,12 @@ namespace Kanban.Desktop.LocalBase.ViewModels
 
             NewDbCommand = ReactiveCommand.Create(() =>
             {
-                var basePath = this.model.CreateDatabase();
+                shell.ShowView<WizardView>();
+
+                /*var basePath = this.model.CreateDatabase();
                 if (string.IsNullOrEmpty(basePath)) return;
 
-                this.model.ShowSelectedBaseTab(basePath);
+                this.model.ShowSelectedBaseTab(basePath);*/
             });
 
             OpenDbCommand = ReactiveCommand.Create(() =>
