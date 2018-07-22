@@ -4,7 +4,7 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Data.Entities.Common.LocalBase;
 using GongSolutions.Wpf.DragDrop;
-using Kanban.Desktop.LocalBase.LocalBoard.Model;
+using Kanban.Desktop.LocalBase.Models;
 using MahApps.Metro.Controls.Dialogs;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -13,7 +13,7 @@ using Ui.Wpf.Common.ViewModels;
 using Ui.Wpf.KanbanControl.Dimensions;
 using Ui.Wpf.KanbanControl.Elements.CardElement;
 
-namespace Kanban.Desktop.LocalBase.LocalBoard.ViewModel
+namespace Kanban.Desktop.LocalBase.ViewModels
 {
     public class BoardViewModel : ViewModelBase, IViewModel //,IInitializableViewModel
     {

@@ -3,7 +3,7 @@ using System.Linq;
 using GongSolutions.Wpf.DragDrop;
 using Ui.Wpf.KanbanControl.Elements.CardElement;
 
-namespace Kanban.Desktop.LocalBase.LocalBoard.ViewModel
+namespace Kanban.Desktop.LocalBase.ViewModels
 {
     public class LocalBoardDropHandler : IDropTarget
     {

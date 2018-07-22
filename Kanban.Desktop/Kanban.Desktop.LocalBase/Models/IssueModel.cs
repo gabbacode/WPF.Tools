@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Data.Entities.Common.LocalBase;
 using Data.Sources.LocalStorage.Sqlite;
 
-namespace Kanban.Desktop.LocalBase.Issues.Model
+namespace Kanban.Desktop.LocalBase.Models
 {
     public class IssueModel
     {

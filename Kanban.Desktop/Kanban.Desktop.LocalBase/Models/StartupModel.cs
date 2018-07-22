@@ -4,11 +4,11 @@ using System.Linq;
 using System.Windows.Forms;
 using Autofac;
 using Data.Sources.LocalStorage.Sqlite;
-using Kanban.Desktop.LocalBase.LocalBoard.View;
+using Kanban.Desktop.LocalBase.Views;
 using Ui.Wpf.Common;
 using Ui.Wpf.Common.ShowOptions;
 
-namespace Kanban.Desktop.LocalBase.DataBaseSelector.Model
+namespace Kanban.Desktop.LocalBase.Models
 {
     public class StartupModel
     {

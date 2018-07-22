@@ -1,14 +1,8 @@
 ﻿using Autofac;
 using Data.Sources.LocalStorage.Sqlite;
-using Kanban.Desktop.LocalBase.DataBaseSelector.Model;
-using Kanban.Desktop.LocalBase.DataBaseSelector.View;
-using Kanban.Desktop.LocalBase.DataBaseSelector.ViewModel;
-using Kanban.Desktop.LocalBase.Issues.Model;
-using Kanban.Desktop.LocalBase.Issues.View;
-using Kanban.Desktop.LocalBase.Issues.ViewModel;
-using Kanban.Desktop.LocalBase.LocalBoard.Model;
-using Kanban.Desktop.LocalBase.LocalBoard.View;
-using Kanban.Desktop.LocalBase.LocalBoard.ViewModel;
+using Kanban.Desktop.LocalBase.Models;
+using Kanban.Desktop.LocalBase.Views;
+using Kanban.Desktop.LocalBase.ViewModels;
 using Ui.Wpf.Common;
 
 namespace Kanban.Desktop.LocalBase

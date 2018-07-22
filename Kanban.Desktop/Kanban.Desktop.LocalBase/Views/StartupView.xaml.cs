@@ -1,13 +1,10 @@
-﻿using Kanban.Desktop.LocalBase.DataBaseSelector.ViewModel;
+﻿using Kanban.Desktop.LocalBase.ViewModels;
 using Ui.Wpf.Common;
 using Ui.Wpf.Common.ShowOptions;
 using Ui.Wpf.Common.ViewModels;
 
-namespace Kanban.Desktop.LocalBase.DataBaseSelector.View
+namespace Kanban.Desktop.LocalBase.Views
 {
-    /// <summary>
-    /// Interaction logic for DataBaseSelectorView.xaml
-    /// </summary>
     public partial class StartupView : IView
     {
         public StartupView(StartupViewModel viewModel)

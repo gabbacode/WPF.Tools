@@ -4,14 +4,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using Data.Entities.Common.LocalBase;
 using Data.Sources.LocalStorage.Sqlite;
-using Kanban.Desktop.LocalBase.Issues.View;
-using Kanban.Desktop.LocalBase.Issues.ViewModel;
+using Kanban.Desktop.LocalBase.Views;
+//using Kanban.Desktop.LocalBase.ViewModels;
 using Ui.Wpf.Common;
 using Ui.Wpf.KanbanControl.Dimensions;
 using Ui.Wpf.KanbanControl.Dimensions.Generic;
 using Ui.Wpf.KanbanControl.Elements.CardElement;
 
-namespace Kanban.Desktop.LocalBase.LocalBoard.Model
+namespace Kanban.Desktop.LocalBase.Models
 {
     public class BoardModel
     {

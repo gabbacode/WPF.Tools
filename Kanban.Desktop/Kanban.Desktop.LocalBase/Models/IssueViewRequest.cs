@@ -1,6 +1,6 @@
 ﻿using Ui.Wpf.Common;
 
-namespace Kanban.Desktop.LocalBase.Issues.ViewModel
+namespace Kanban.Desktop.LocalBase.Models
 {
     public class IssueViewRequest : ViewRequest
     {

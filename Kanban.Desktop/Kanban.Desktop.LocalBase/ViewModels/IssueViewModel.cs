@@ -2,13 +2,13 @@
 using System.Reactive.Linq;
 using AutoMapper;
 using Data.Entities.Common.LocalBase;
-using Kanban.Desktop.LocalBase.Issues.Model;
+using Kanban.Desktop.LocalBase.Models;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Ui.Wpf.Common;
 using Ui.Wpf.Common.ViewModels;
 
-namespace Kanban.Desktop.LocalBase.Issues.ViewModel
+namespace Kanban.Desktop.LocalBase.ViewModels
 {
     public class IssueViewModel : ViewModelBase, IViewModel, IInitializableViewModel
     {

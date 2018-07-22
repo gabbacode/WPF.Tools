@@ -221,6 +221,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="Views\WizardView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\StartupView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -229,7 +233,11 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ViewModels\WizardViewModel.cs" />
     <Compile Include="ViewModels\StartupViewModel.cs" />
+    <Compile Include="Views\WizardView.xaml.cs">
+      <DependentUpon>WizardView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\StartupView.xaml.cs">
       <DependentUpon>StartupView.xaml</DependentUpon>
     </Compile>
@@ -246,7 +254,7 @@
     <Compile Include="DimensionEdit-unused\View\IDimensionEditView.cs" />
     <Compile Include="Models\IssueModel.cs" />
     <Compile Include="ViewModels\IssueViewModel.cs" />
-    <Compile Include="ViewModels\IssueViewRequest.cs" />
+    <Compile Include="Models\IssueViewRequest.cs" />
     <Page Include="DimensionEdit-unused\View\DimensionEditView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

@@ -1,10 +1,10 @@
 ﻿using System.Reactive;
-using Kanban.Desktop.LocalBase.DataBaseSelector.Model;
+using Kanban.Desktop.LocalBase.Models;
 using MahApps.Metro.Controls.Dialogs;
 using ReactiveUI;
 using Ui.Wpf.Common.ViewModels;
 
-namespace Kanban.Desktop.LocalBase.DataBaseSelector.ViewModel
+namespace Kanban.Desktop.LocalBase.ViewModels
 {
     public class StartupViewModel : ViewModelBase, IViewModel
     {

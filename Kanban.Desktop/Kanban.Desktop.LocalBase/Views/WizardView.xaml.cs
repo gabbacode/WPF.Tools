@@ -5,9 +5,9 @@ using Ui.Wpf.Common.ViewModels;
 
 namespace Kanban.Desktop.LocalBase.Views
 {
-    public partial class IssueView : IView
+    public partial class WizardView : IView
     {
-        public IssueView(IssueViewModel viewModel)
+        public WizardView(WizardViewModel viewModel)
         {
             InitializeComponent();
             ViewModel = viewModel;
@@ -18,6 +18,7 @@ namespace Kanban.Desktop.LocalBase.Views
 
         public void Configure(UiShowOptions options)
         {
+            ViewModel.Title = options.Title;
         }
     }
 }
