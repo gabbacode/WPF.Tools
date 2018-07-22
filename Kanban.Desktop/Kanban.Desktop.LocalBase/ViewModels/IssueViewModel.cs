@@ -10,34 +10,35 @@ using Ui.Wpf.Common.ViewModels;
 
 namespace Kanban.Desktop.LocalBase.Issues.ViewModel
 {
-    public class IssueViewModel : ViewModelBase, IIssueViewModel
+    public class IssueViewModel : ViewModelBase, IViewModel, IInitializableViewModel
     {
         private readonly IMapper mapper;
-        private readonly IIssueModel model;
+        private readonly IssueModel model;
 
-        public int      Id      { get; set; }
+        public int Id { get; set; }
         public DateTime Created { get; set; }
 
-        public            ReactiveList<RowInfo>    AwailableRows    { get; set; } = new ReactiveList<RowInfo>();
-        public            ReactiveList<ColumnInfo> AwailableColumns { get; set; } = new ReactiveList<ColumnInfo>();
-        [Reactive] public string                   Head             { get; set; }
-        [Reactive] public string                   Body             { get; set; }
-        [Reactive] public RowInfo                  Row              { get; set; }
-        [Reactive] public ColumnInfo               Column           { get; set; }
-        [Reactive] public string                   Color            { get; set; }
-        public            ReactiveCommand          CancelCommand    { get; set; }
-        public            ReactiveCommand          SaveCommand      { get; set; }
+        public ReactiveList<RowInfo> AwailableRows { get; set; } = new ReactiveList<RowInfo>();
+        public ReactiveList<ColumnInfo> AwailableColumns { get; set; } = new ReactiveList<ColumnInfo>();
 
-        public IssueViewModel(IIssueModel model)
+        [Reactive] public string Head { get; set; }
+        [Reactive] public string Body { get; set; }
+        [Reactive] public RowInfo Row { get; set; }
+        [Reactive] public ColumnInfo Column { get; set; }
+        [Reactive] public string Color { get; set; }
+
+        public ReactiveCommand CancelCommand { get; set; }
+        public ReactiveCommand SaveCommand { get; set; }
+
+        public IssueViewModel(IssueModel model)
         {
             this.model = model;
-            mapper     = CreateMapper();
+            mapper = CreateMapper();
 
             var issueFilled = this.WhenAnyValue(t => t.Head, t => t.Body, t => t.Row, t => t.Column,
-                (sh, sb, sr, sc) => sr != null                && sc != null &&
+                (sh, sb, sr, sc) => sr != null && sc != null &&
                                     !string.IsNullOrEmpty(sh) && !string.IsNullOrEmpty(sb));
             //TODO :add selectcommand when click uneditable with nulling all "selected" fields
-
 
             SaveCommand = ReactiveCommand.CreateFromTask(async _ =>
             {
@@ -52,7 +53,6 @@ namespace Kanban.Desktop.LocalBase.Issues.ViewModel
 
             CancelCommand = ReactiveCommand.Create(Close);
         }
-
 
         public void Initialize(ViewRequest viewRequest)
         {
@@ -98,6 +98,5 @@ namespace Kanban.Desktop.LocalBase.Issues.ViewModel
                 CreateMap<IssueViewModel, LocalIssue>();
             }
         }
-
     }
 }

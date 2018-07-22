@@ -15,22 +15,21 @@ using Ui.Wpf.KanbanControl.Elements.CardElement;
 
 namespace Kanban.Desktop.LocalBase.LocalBoard.ViewModel
 {
-    public class LocalBoardViewModel : ViewModelBase, ILocalBoardViewModel //,IInitializableViewModel
+    public class BoardViewModel : ViewModelBase, IViewModel //,IInitializableViewModel
     {
-
-        private readonly ILocalBoardModel model;
+        private readonly BoardModel model;
 
         private readonly IDialogCoordinator dialogCoordinator = DialogCoordinator.Instance;
 
         [Reactive] private LocalIssue SelectedIssue  { get; set; }
         [Reactive] private RowInfo    SelectedRow    { get; set; }
         [Reactive] private ColumnInfo SelectedColumn { get; set; }
+
         public IDropTarget LocalBoardHandler { get; set; } = new LocalBoardDropHandler();
 
         [Reactive] public IDimension VerticalDimension { get; internal set; }
 
         [Reactive] public IDimension HorizontalDimension { get; internal set; }
-
 
         public ReactiveList<string> Entities { get; } 
             = new ReactiveList<string>() { "Задачу", "Столбец", "Строку" };
@@ -53,8 +52,7 @@ namespace Kanban.Desktop.LocalBase.LocalBoard.ViewModel
 
         public ReactiveCommand ColumnHeaderSelectCommand { get; set; }
 
-
-        public LocalBoardViewModel(ILocalBoardModel model)
+        public BoardViewModel(BoardModel model)
         {
             this.model = model;
 
@@ -249,7 +247,5 @@ namespace Kanban.Desktop.LocalBase.LocalBoard.ViewModel
                 .ObserveOnDispatcher()
                 .Subscribe(issues => Issues.AddRange(issues)); // TODO: make initialize works
         }
-
-
     }
 }

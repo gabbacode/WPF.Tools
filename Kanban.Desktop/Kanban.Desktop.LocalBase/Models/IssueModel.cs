@@ -6,7 +6,7 @@ using Data.Sources.LocalStorage.Sqlite;
 
 namespace Kanban.Desktop.LocalBase.Issues.Model
 {
-    public class IssueModel : IIssueModel
+    public class IssueModel
     {
         public IssueModel(SqliteLocalRepository repository)
         {

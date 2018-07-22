@@ -31,7 +31,9 @@ namespace Kanban.Desktop.LocalBase
                 .As<IShell>()
                 .SingleInstance();
 
-            builder.RegisterType<MainWindow>().As<IDockWindow>();
+            builder
+                .RegisterType<MainWindow>()
+                .As<IDockWindow>();
 
             builder
                 .RegisterType<SqliteLocalRepository>();
@@ -40,53 +42,19 @@ namespace Kanban.Desktop.LocalBase
                 .As<IDataBaseSettings>()
                 .SingleInstance();
 
-            //TODO Modules discovering
-            ConfigureDataBaseSelector(builder);
-
-            ConfigureLocalBoardView(builder);
-
-            ConfigureIssueRedactor(builder);
+            //TODO: Modules discovering?
+            ConfigureView<StartupModel, StartupViewModel, StartupView>(builder);
+            ConfigureView<BoardModel, BoardViewModel, BoardView>(builder);
+            ConfigureView<IssueModel, IssueViewModel, IssueView>(builder);
 
             return builder.Build();
         }
 
-        private static void ConfigureDataBaseSelector(ContainerBuilder builder)
+        private static void ConfigureView<TModel, TViewModel, TView>(ContainerBuilder builder)
         {
-            builder.RegisterType<DataBaseSelectorModel>()
-                .As<IDataBaseSelectorModel>();
-
-            builder.RegisterType<BaseSelectorViewModel>()
-                .As<IBaseSelectorViewModel>();
-
-            builder.RegisterType<DataBaseSelectorView>()
-                .As<IBaseSelectorView>();
-        }
-
-        private static void ConfigureLocalBoardView(ContainerBuilder builder)
-        {
-            builder.RegisterType<LocalBoardModel>()
-                .As<ILocalBoardModel>();
-
-            builder.RegisterType<LocalBoardViewModel>()
-                .As<ILocalBoardViewModel>();
-
-            builder.RegisterType<LocalBoardView>()
-                .As<ILocalBoardView>();
-        }
-
-        private static void ConfigureIssueRedactor(ContainerBuilder builder)
-        {
-            builder
-                .RegisterType<IssueModel>()
-                .As<IIssueModel>();
-
-            builder
-                .RegisterType<IssueViewModel>()
-                .As<IIssueViewModel>();
-
-            builder
-                .RegisterType<IssueView>()
-                .As<IIssueView>();
+            builder.RegisterType<TModel>();
+            builder.RegisterType<TViewModel>();
+            builder.RegisterType<TView>();
         }
     }
 }

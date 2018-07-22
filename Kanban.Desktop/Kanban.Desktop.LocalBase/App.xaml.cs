@@ -19,7 +19,7 @@ namespace Kanban.Desktop.LocalBase
                     ToolPaneWidth = 100
                 });
 
-            shell.ShowView<IBaseSelectorView>(options: new UiShowOptions() {Title = "BaseChoooose", CanClose = false});
+            shell.ShowView<StartupView>(options: new UiShowOptions() {Title = "Start Page", CanClose = false});
         }
     }
 }

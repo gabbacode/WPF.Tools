@@ -1,15 +1,16 @@
-﻿using Kanban.Desktop.LocalBase.Issues.ViewModel;
+﻿using Kanban.Desktop.LocalBase.DataBaseSelector.ViewModel;
+using Ui.Wpf.Common;
 using Ui.Wpf.Common.ShowOptions;
 using Ui.Wpf.Common.ViewModels;
 
-namespace Kanban.Desktop.LocalBase.Issues.View
+namespace Kanban.Desktop.LocalBase.DataBaseSelector.View
 {
     /// <summary>
-    /// Interaction logic for IssueView.xaml
+    /// Interaction logic for DataBaseSelectorView.xaml
     /// </summary>
-    public partial class IssueView : IIssueView
+    public partial class StartupView : IView
     {
-        public IssueView(IIssueViewModel viewModel)
+        public StartupView(StartupViewModel viewModel)
         {
             InitializeComponent();
             ViewModel = viewModel;
@@ -20,6 +21,7 @@ namespace Kanban.Desktop.LocalBase.Issues.View
 
         public void Configure(UiShowOptions options)
         {
+            ViewModel.Title = options.Title;
         }
     }
 }

@@ -6,16 +6,16 @@ using Ui.Wpf.Common.ViewModels;
 
 namespace Kanban.Desktop.LocalBase.DataBaseSelector.ViewModel
 {
-    public class BaseSelectorViewModel : ViewModelBase, IBaseSelectorViewModel
+    public class StartupViewModel : ViewModelBase, IViewModel
     {
-        public ReactiveList<string>          BaseList            { get; set; }
-        public ReactiveCommand               NewDbCommand        { get; set; }
-        public ReactiveCommand               OpenDbCommand       { get; set; }
+        public ReactiveList<string> BaseList { get; set; }
+        public ReactiveCommand NewDbCommand { get; set; }
+        public ReactiveCommand OpenDbCommand { get; set; }
         public ReactiveCommand<string, Unit> OpenRecentDbCommand { get; set; }
 
-        private readonly IDataBaseSelectorModel model;
+        private readonly StartupModel model;
 
-        public BaseSelectorViewModel(IDataBaseSelectorModel model)
+        public StartupViewModel(StartupModel model)
         {
             this.model = model;
 
@@ -31,7 +31,6 @@ namespace Kanban.Desktop.LocalBase.DataBaseSelector.ViewModel
                 {
                     this.model.ShowSelectedBaseTab(basePath);
                 }
-
                 else
                 {
                     BaseList.Remove(basePath);

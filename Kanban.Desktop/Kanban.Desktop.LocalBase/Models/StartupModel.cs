@@ -10,14 +10,14 @@ using Ui.Wpf.Common.ShowOptions;
 
 namespace Kanban.Desktop.LocalBase.DataBaseSelector.Model
 {
-    public class DataBaseSelectorModel : IDataBaseSelectorModel
+    public class StartupModel
     {
         private readonly IShell shell;
         private IDataBaseSettings dataBaseSettings;
 
-        public DataBaseSelectorModel(IShell shell)
+        public StartupModel(IShell shell)
         {
-            this.shell       = shell;
+            this.shell = shell;
             dataBaseSettings = shell.Container.Resolve<IDataBaseSettings>();
         }
 
@@ -26,7 +26,7 @@ namespace Kanban.Desktop.LocalBase.DataBaseSelector.Model
             var saveDialog = new SaveFileDialog()
             {
                 Filter = "SQLite DataBase | *.db",
-                Title  = "Создание базы"
+                Title = "Создание базы"
             };
             saveDialog.ShowDialog();
 
@@ -45,7 +45,7 @@ namespace Kanban.Desktop.LocalBase.DataBaseSelector.Model
             var openDialog = new OpenFileDialog()
             {
                 Filter = "SQLite DataBase | *.db",
-                Title  = "Открытие базы"
+                Title = "Открытие базы"
             };
             openDialog.ShowDialog();
 
@@ -75,7 +75,7 @@ namespace Kanban.Desktop.LocalBase.DataBaseSelector.Model
             var exists = File.Exists(basePath);
             if (!exists)
             {
-                var path     = Directory.GetCurrentDirectory() + "\\BaseList.txt";
+                var path = Directory.GetCurrentDirectory() + "\\BaseList.txt";
                 var baseList = File.ReadAllLines(path).ToList();
                 baseList.Remove(basePath);
                 File.WriteAllLines(path, baseList);
@@ -88,7 +88,7 @@ namespace Kanban.Desktop.LocalBase.DataBaseSelector.Model
         {
             dataBaseSettings.BasePath = path;
 
-            shell.ShowView<ILocalBoardView>(options: new UiShowOptions
+            shell.ShowView<BoardView>(options: new UiShowOptions
             {
                 Title = "Работа с базой " + path
                             .Substring(path.LastIndexOf('\\') + 1)

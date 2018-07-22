@@ -13,7 +13,7 @@ using Ui.Wpf.KanbanControl.Elements.CardElement;
 
 namespace Kanban.Desktop.LocalBase.LocalBoard.Model
 {
-    public class LocalBoardModel : ILocalBoardModel
+    public class BoardModel
     {
         private readonly SqliteLocalRepository repository;
         private readonly IShell shell;
@@ -21,7 +21,7 @@ namespace Kanban.Desktop.LocalBase.LocalBoard.Model
         private List<RowInfo> rows = new List<RowInfo>();
         private List<ColumnInfo> columns = new List<ColumnInfo>();
 
-        public LocalBoardModel(SqliteLocalRepository repository, IShell shell)
+        public BoardModel(SqliteLocalRepository repository, IShell shell)
         {
             this.repository = repository;
             this.shell      = shell;
@@ -107,8 +107,8 @@ namespace Kanban.Desktop.LocalBase.LocalBoard.Model
 
         public void ShowIssueView(LocalIssue issue)
         {
-            shell.ShowView<IIssueView>(
-                viewRequest:new IssueViewRequest(){IssueId = issue.Id});
+            shell.ShowView<IssueView>(
+                viewRequest: new IssueViewRequest() { IssueId = issue.Id });
         }
 
         public async Task CreateOrUpdateColumn(ColumnInfo column)
