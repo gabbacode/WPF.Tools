@@ -10,9 +10,9 @@
         d:DesignHeight="300"
         d:DesignWidth="400">
 
-    <Grid>
+    <StackPanel Orientation="Vertical">
         <Label>Board name</Label>
-        <TextBox Text="{Binding BoardName}"/>
+        <TextBox Text="{Binding BoardName, UpdateSourceTrigger=PropertyChanged}"/>
 
         <Label>File name and directory</Label>
         <TextBox Text="{Binding FileName}"/>
@@ -28,5 +28,5 @@
         
         <Button Command="{Binding CreateCommand}">Create Board</Button>
         <Button Command="{Binding CancelCommand}">Cancel</Button>
-    </Grid>
+    </StackPanel>
 </UserControl>

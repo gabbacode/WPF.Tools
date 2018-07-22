@@ -1,4 +1,6 @@
-﻿using System.Reactive;
+﻿using System;
+using System.Reactive;
+using System.Reactive.Linq;
 using MahApps.Metro.Controls.Dialogs;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -23,6 +25,31 @@ namespace Kanban.Desktop.LocalBase.ViewModels
 
         public WizardViewModel()//StartupModel model)
         {
+            Title = "Creating a board";
+
+            this.WhenAnyValue(x => x.BoardName)
+                .Where(x => !string.IsNullOrWhiteSpace(x))
+                .Subscribe(v => FileName = v);
+
+            BoardName = "MyBoard";
+
+            ColumnList = new ReactiveList<string>()
+            {
+                "Backlog",
+                "In progress",
+                "Done"
+            };
+
+            AddColumnCommand = ReactiveCommand.Create(() => ColumnList.Add("New column"));
+
+            RowList = new ReactiveList<string>()
+            {
+                "Important",
+                "So-so",
+                "Trash"
+            };
+
+            AddRowCommand = ReactiveCommand.Create(() => RowList.Add("New row"));
         }
     }
 }
