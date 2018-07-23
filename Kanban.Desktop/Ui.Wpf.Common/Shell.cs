@@ -2,6 +2,7 @@
 using System.Reactive.Linq;
 using System.Windows;
 using Autofac;
+using Autofac.Core;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Ui.Wpf.Common.ShowOptions;
@@ -19,13 +20,13 @@ namespace Ui.Wpf.Common
 
         public void ShowView<TView>(
             ViewRequest viewRequest = null,
-            UiShowOptions options = null)
+            UiShowOptions options = null,
+            Parameter[] parameters = null)
             where TView : class, IView
         {
             var view = Container.Resolve<TView>();
             if (options != null)
                 view.Configure(options);
-
 
             var layoutDocument = new LayoutDocument {Content = view};
             if (options != null)
@@ -36,10 +37,10 @@ namespace Ui.Wpf.Common
 
             DocumentPane.Children.Add(layoutDocument);
 
+            // TODO: provide parameters to ViewModel ???
             (view.ViewModel as IInitializableViewModel)?.Initialize(viewRequest);
 
             layoutDocument.IsActive = true;
-
         }
 
         public void ShowTool<TToolView>(

@@ -2,6 +2,7 @@
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Windows.Forms;
+using Autofac;
 using Kanban.Desktop.LocalBase.Models;
 using Kanban.Desktop.LocalBase.Views;
 using MahApps.Metro.Controls.Dialogs;
@@ -109,10 +110,8 @@ namespace Kanban.Desktop.LocalBase.ViewModels
             var scope = appModel_.CreateScope(uri);
             this.Close();
 
-            shell_.ShowView<BoardView>(options: new UiShowOptions
-            {
-                Title = FileName
-            });
+            shell_.ShowView<BoardView>(options: new UiShowOptions { Title = FileName},
+                parameters: new NamedParameter("scope", scope));
         }
     }
 

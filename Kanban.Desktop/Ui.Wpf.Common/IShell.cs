@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Autofac.Core;
 using Ui.Wpf.Common.ShowOptions;
 using Xceed.Wpf.AvalonDock;
 
@@ -12,7 +13,8 @@ namespace Ui.Wpf.Common
 
         void ShowView<TView>(
             ViewRequest viewRequest = null, 
-            UiShowOptions options = null)
+            UiShowOptions options = null,
+            params Parameter[] parameters)
             where TView : class, IView;
 
         void ShowTool<TToolView>(

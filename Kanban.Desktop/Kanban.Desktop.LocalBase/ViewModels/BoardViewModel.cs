@@ -17,7 +17,7 @@ namespace Kanban.Desktop.LocalBase.ViewModels
 {
     public class BoardViewModel : ViewModelBase, IViewModel //,IInitializableViewModel
     {
-        private readonly BoardModel model;
+        private readonly IScopeModel scopeModel;
 
         private readonly IDialogCoordinator dialogCoordinator = DialogCoordinator.Instance;
 
@@ -52,9 +52,10 @@ namespace Kanban.Desktop.LocalBase.ViewModels
 
         public ReactiveCommand ColumnHeaderSelectCommand { get; set; }
 
-        public BoardViewModel(BoardModel model)
+        public BoardViewModel(IScopeModel scope)
         {
-            this.model = model;
+            // TODO: ??? Where connection between View & ViewModel ???
+            this.scopeModel = scope;
 
             Issues = new ReactiveList<LocalIssue>();
 
@@ -82,7 +83,7 @@ namespace Kanban.Desktop.LocalBase.ViewModels
 
             RowHeaderSelectCommand = ReactiveCommand.Create<object>(o =>
             {
-                SelectedRow = this.model.GetSelectedRow(o.ToString());
+                SelectedRow = this.scopeModel.GetSelectedRow(o.ToString());
 
                 if (SelectedRow == null) return;
 
@@ -92,7 +93,7 @@ namespace Kanban.Desktop.LocalBase.ViewModels
 
             ColumnHeaderSelectCommand = ReactiveCommand.Create<object>(o =>
             {
-                SelectedColumn = this.model.GetSelectedColumn(o.ToString());
+                SelectedColumn = this.scopeModel.GetSelectedColumn(o.ToString());
 
                 if (SelectedColumn == null) return;
 
@@ -107,14 +108,14 @@ namespace Kanban.Desktop.LocalBase.ViewModels
             Issues.Clear();
 
             VerticalDimension = null;
-            VerticalDimension = await model.GetRowHeadersAsync();
+            VerticalDimension = await scopeModel.GetRowHeadersAsync();
 
             HorizontalDimension = null;
-            HorizontalDimension = await model.GetColumnHeadersAsync();
+            HorizontalDimension = await scopeModel.GetColumnHeadersAsync();
 
-            CardContent = model.GetCardContent();
+            CardContent = scopeModel.GetCardContent();
 
-            Issues.PublishCollection(await model.GetIssuesAsync());
+            Issues.PublishCollection(await scopeModel.GetIssuesAsync());
         }
 
         private async Task DeleteElement()
@@ -129,31 +130,31 @@ namespace Kanban.Desktop.LocalBase.ViewModels
                 return;
 
             if (SelectedIssue != null)
-                await model.DeleteIssueAsync(SelectedIssue.Id);
+                await scopeModel.DeleteIssueAsync(SelectedIssue.Id);
 
             else if (SelectedRow != null)
-                await model.DeleteRowAsync(SelectedRow.Id);
+                await scopeModel.DeleteRowAsync(SelectedRow.Id);
 
             else if (SelectedColumn != null)
-                await model.DeleteColumnAsync(SelectedColumn.Id);
+                await scopeModel.DeleteColumnAsync(SelectedColumn.Id);
 
             await RefreshContent();
         }
 
         private async Task UpdateElement()
         {
-            if (SelectedIssue != null)
-                model.ShowIssueView(SelectedIssue);
+            //if (SelectedIssue != null)
+            //    scopeModel.ShowIssueView(SelectedIssue);
 
-
-            else if (SelectedRow != null)
+            //else 
+            if (SelectedRow != null)
             {
                 var newName = await ShowRowNameInput();
 
                 if (!string.IsNullOrEmpty(newName))
                 {
                     SelectedRow.Name = newName;
-                    await model.CreateOrUpdateRow(SelectedRow);
+                    await scopeModel.CreateOrUpdateRow(SelectedRow);
                 }
             }
 
@@ -166,7 +167,7 @@ namespace Kanban.Desktop.LocalBase.ViewModels
 
                 {
                     SelectedColumn.Name = newName;
-                    await model.CreateOrUpdateColumn(SelectedColumn);
+                    await scopeModel.CreateOrUpdateColumn(SelectedColumn);
                 }
             }
 
@@ -175,17 +176,18 @@ namespace Kanban.Desktop.LocalBase.ViewModels
 
         private async Task AddNewElement(string elementName) //TODO: add enum(?) as command parameter instead of string
         {
-            if (elementName == "Задачу")
-                    model.ShowIssueView(new LocalIssue());
+            //if (elementName == "Задачу")
+            //        scopeModel.ShowIssueView(new LocalIssue());
 
-            else if (elementName == "Строку")
+            //else 
+            if (elementName == "Строку")
             {
                 var newName = await ShowRowNameInput();
 
                 if (!string.IsNullOrEmpty(newName))
                 {
                     var newRow = new RowInfo {Name = newName};
-                    await model.CreateOrUpdateRow(newRow);
+                    await scopeModel.CreateOrUpdateRow(newRow);
                 }
             }
 
@@ -196,7 +198,7 @@ namespace Kanban.Desktop.LocalBase.ViewModels
                 if (!string.IsNullOrEmpty(newName))
                 {
                     var newColumn = new ColumnInfo { Name = newName };
-                    await model.CreateOrUpdateColumn(newColumn);
+                    await scopeModel.CreateOrUpdateColumn(newColumn);
                 }
             }
 
@@ -233,17 +235,17 @@ namespace Kanban.Desktop.LocalBase.ViewModels
         {
             Issues.Clear();
 
-            Observable.FromAsync(() => model.GetRowHeadersAsync())
+            Observable.FromAsync(() => scopeModel.GetRowHeadersAsync())
                 .ObserveOnDispatcher()
                 .Subscribe(vert => VerticalDimension = vert);
 
-            Observable.FromAsync(() => model.GetColumnHeadersAsync())
+            Observable.FromAsync(() => scopeModel.GetColumnHeadersAsync())
                 .ObserveOnDispatcher()
                 .Subscribe(horiz => HorizontalDimension = horiz);
 
-            CardContent = model.GetCardContent();
+            CardContent = scopeModel.GetCardContent();
 
-            Observable.FromAsync(() => model.GetIssuesAsync())
+            Observable.FromAsync(() => scopeModel.GetIssuesAsync())
                 .ObserveOnDispatcher()
                 .Subscribe(issues => Issues.AddRange(issues)); // TODO: make initialize works
         }
