@@ -1,4 +1,5 @@
-﻿using System.Reactive;
+﻿using System.IO;
+using System.Reactive;
 using Kanban.Desktop.LocalBase.Models;
 using Kanban.Desktop.LocalBase.Views;
 using MahApps.Metro.Controls.Dialogs;
@@ -17,29 +18,32 @@ namespace Kanban.Desktop.LocalBase.ViewModels
 
         private readonly StartupModel model;
         private readonly IShell shell_;
+        private readonly IAppModel appModel_;
 
-        public StartupViewModel(StartupModel model, IShell shell)
+        public StartupViewModel(StartupModel model, IShell shell, IAppModel appModel)
         {
             this.model = model;
             shell_ = shell;
+            appModel_ = appModel;
 
-            BaseList = new ReactiveList<string>();
-            var list = this.model.GetBaseList();
-            foreach (var addr in list) BaseList.Add(addr);
+            appModel_.Load();
 
+            var recent = appModel_.GetRecentDocuments();
+            BaseList = new ReactiveList<string>(recent);
+            
             OpenRecentDbCommand = ReactiveCommand.Create<string>(basePath =>
             {
-                var exists = this.model.CheckDataBaseExists(basePath);
-
-                if (exists)
-                {
+                if (File.Exists(basePath))
                     this.model.ShowSelectedBaseTab(basePath);
-                }
                 else
                 {
-                    BaseList.Remove(basePath);
-                    DialogCoordinator.Instance
-                        .ShowMessageAsync(this, "Ошибка", "База была удалена или перемещена из данной папки");
+                    appModel_.RemoveRecent(basePath);
+                    appModel_.Save();
+
+                    BaseList.Clear();
+                    BaseList.AddRange(recent);
+
+                    DialogCoordinator.Instance.ShowMessageAsync(this, "Ошибка", "База была удалена или перемещена из данной папки");
                 }
             });
 

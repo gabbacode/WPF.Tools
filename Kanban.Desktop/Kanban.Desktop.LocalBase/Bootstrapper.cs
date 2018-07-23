@@ -33,8 +33,14 @@ namespace Kanban.Desktop.LocalBase
             builder
                 .RegisterType<SqliteLocalRepository>();
 
-            builder.RegisterType<SqliteSettings>()
+            builder
+                .RegisterType<SqliteSettings>()
                 .As<IDataBaseSettings>()
+                .SingleInstance();
+
+            builder
+                .RegisterType<AppModel>()
+                .As<IAppModel>()
                 .SingleInstance();
 
             //TODO: Modules discovering?

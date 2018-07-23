@@ -7,17 +7,20 @@
         dialogs:DialogParticipation.Register="{Binding}"
         xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
         mc:Ignorable="d"
-        d:DesignHeight="300"
+        d:DesignHeight="400"
         d:DesignWidth="400">
 
     <StackPanel Orientation="Vertical">
         <Label>Board name</Label>
         <TextBox Text="{Binding BoardName, UpdateSourceTrigger=PropertyChanged}"/>
 
-        <Label>File name and directory</Label>
-        <TextBox Text="{Binding FileName}"/>
-        <Button Command="{Binding SelectFileCommand}">...</Button>
+        <Label>Folder name</Label>
+        <TextBox Text="{Binding FolderName}"/>
+        <Button Command="{Binding SelectFolderCommand}">...</Button>
 
+        <Label>File name</Label>
+        <TextBox Text="{Binding FileName}"/>
+        
         <Label>Columns</Label>
         <ListBox ItemsSource="{Binding ColumnList}"/>
         <Button Command="{Binding AddColumnCommand}">Add column</Button>
