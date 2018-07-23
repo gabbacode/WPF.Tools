@@ -3,9 +3,12 @@ using System.Reactive;
 using System.Reactive.Linq;
 using System.Windows.Forms;
 using Kanban.Desktop.LocalBase.Models;
+using Kanban.Desktop.LocalBase.Views;
 using MahApps.Metro.Controls.Dialogs;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
+using Ui.Wpf.Common;
+using Ui.Wpf.Common.ShowOptions;
 using Ui.Wpf.Common.ViewModels;
 
 namespace Kanban.Desktop.LocalBase.ViewModels
@@ -27,10 +30,12 @@ namespace Kanban.Desktop.LocalBase.ViewModels
         public ReactiveCommand AddRowCommand { get; set; }
 
         private readonly IAppModel appModel_;
+        private readonly IShell shell_;
 
-        public WizardViewModel(IAppModel appModel)
+        public WizardViewModel(IAppModel appModel, IShell shell)
         {
             appModel_ = appModel;
+            shell_ = shell;
 
             Title = "Creating a board";
 
@@ -46,7 +51,7 @@ namespace Kanban.Desktop.LocalBase.ViewModels
             // TODO: Delayed check file exists (Warning)
 
             BoardName = "My Board";
-            FolderName = "..";
+            FolderName = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
             SelectFolderCommand = ReactiveCommand.Create(SelectFolder);
 
@@ -88,7 +93,8 @@ namespace Kanban.Desktop.LocalBase.ViewModels
         {
             FolderBrowserDialog dialog = new FolderBrowserDialog();
             dialog.ShowNewFolderButton = false;
-            //folderDialog.RootFolder = Environment.SpecialFolder.MyDocuments;
+            //dialog.RootFolder = Environment.SpecialFolder.MyDocuments;
+            dialog.SelectedPath = FolderName;
 
             if (dialog.ShowDialog() == DialogResult.OK)
                 FolderName = dialog.SelectedPath;
@@ -96,8 +102,17 @@ namespace Kanban.Desktop.LocalBase.ViewModels
 
         public void Create()
         {
+            string uri = FolderName + "\\" + FileName;
             appModel_.AddRecent(FolderName + "\\" + FileName);
-            appModel_.Save();
+            appModel_.SaveConfig();
+
+            var scope = appModel_.CreateScope(uri);
+            this.Close();
+
+            shell_.ShowView<BoardView>(options: new UiShowOptions
+            {
+                Title = FileName
+            });
         }
     }
 

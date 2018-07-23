@@ -237,6 +237,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Models\AppModel.cs" />
+    <Compile Include="Models\ScopeModel.cs" />
     <Compile Include="ViewModels\WizardViewModel.cs" />
     <Compile Include="ViewModels\StartupViewModel.cs" />
     <Compile Include="Views\WizardView.xaml.cs">
@@ -245,7 +246,6 @@
     <Compile Include="Views\StartupView.xaml.cs">
       <DependentUpon>StartupView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Models\StartupModel.cs" />
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="DimensionEdit-unused\Model\DimensionEditModel.cs" />
     <Compile Include="DimensionEdit-unused\Model\DimensionViewRequest.cs" />

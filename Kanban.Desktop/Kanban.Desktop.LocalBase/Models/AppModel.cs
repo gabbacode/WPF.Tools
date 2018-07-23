@@ -5,6 +5,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Ui.Wpf.Common;
+using Autofac;
 
 namespace Kanban.Desktop.LocalBase.Models
 {
@@ -16,16 +18,19 @@ namespace Kanban.Desktop.LocalBase.Models
 
         string Caption { get; set; }
 
-        void Load();
-        void Save();
+        void LoadConfig();
+        void SaveConfig();
+
+        IScopeModel CreateScope(string uri);
+        IScopeModel LoadScope(string uri);
     }
 
-    public class AppData
+    public class AppConfig
     {
         public List<string> Recent { get; set; }
         public string Caption { get; set; }
 
-        public AppData()
+        public AppConfig()
         {
             Recent = new List<string>();
             Caption = "";
@@ -34,52 +39,69 @@ namespace Kanban.Desktop.LocalBase.Models
 
     public class AppModel : IAppModel
     {
-        private AppData appData_;
+        private readonly IShell shell_;
 
+        private AppConfig appConfig_;
         private string path_;
 
         public string Caption
         {
-            get { return appData_.Caption; }
-            set { appData_.Caption = value; }
+            get { return appConfig_.Caption; }
+            set { appConfig_.Caption = value; }
         }
 
-        public AppModel()
+        public AppModel(IShell shell)
         {
+            shell_ = shell;
+
             path_ = Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData).ToString();
             path_ += "\\kanban.config";
 
-            appData_ = new AppData();
+            appConfig_ = new AppConfig();
         }
 
         public void AddRecent(string doc)
         {
-            appData_.Recent.Insert(0, doc);
+            appConfig_.Recent.Insert(0, doc);
         }
 
         public IEnumerable<string> GetRecentDocuments()
         {
-            return appData_.Recent;
+            return appConfig_.Recent;
         }
 
         public void RemoveRecent(string doc)
         {
-            appData_.Recent.Remove(doc);
+            appConfig_.Recent.Remove(doc);
         }
 
-        public void Load()
+        public void LoadConfig()
         {
             if (File.Exists(path_))
             {
                 string data = File.ReadAllText(path_);
-                appData_ = JsonConvert.DeserializeObject<AppData>(data);
+                appConfig_ = JsonConvert.DeserializeObject<AppConfig>(data);
             }
         }
 
-        public void Save()
+        public void SaveConfig()
         {
-            string data = JsonConvert.SerializeObject(appData_);
+            string data = JsonConvert.SerializeObject(appConfig_);
             File.WriteAllText(path_, data);
+        }
+
+        public IScopeModel CreateScope(string uri)
+        {
+            var scope = shell_
+                .Container
+                .Resolve<IScopeModel>(new NamedParameter("uri", uri));
+
+            return scope;
+        }
+
+        public IScopeModel LoadScope(string uri)
+        {
+            return null;
         }
     }
 }

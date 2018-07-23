@@ -34,9 +34,8 @@ namespace Kanban.Desktop.LocalBase
                 .RegisterType<SqliteLocalRepository>();
 
             builder
-                .RegisterType<SqliteSettings>()
-                .As<IDataBaseSettings>()
-                .SingleInstance();
+                .RegisterType<ScopeModel>()
+                .As<IScopeModel>();
 
             builder
                 .RegisterType<AppModel>()
@@ -44,9 +43,9 @@ namespace Kanban.Desktop.LocalBase
                 .SingleInstance();
 
             //TODO: Modules discovering?
-            ConfigureView<StartupModel, StartupViewModel, StartupView>(builder);
+            ConfigureView<StartupViewModel, StartupView>(builder);
             ConfigureView<WizardViewModel, WizardView>(builder);
-            ConfigureView<BoardModel, BoardViewModel, BoardView>(builder);
+            ConfigureView<BoardViewModel, BoardView>(builder);
             ConfigureView<IssueModel, IssueViewModel, IssueView>(builder);
 
             return builder.Build();

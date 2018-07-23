@@ -15,9 +15,9 @@ namespace Data.Sources.LocalStorage.Sqlite
         private readonly IMapper mapper;
         public string BaseConnstr { get; set; }
 
-        public SqliteLocalRepository(IDataBaseSettings settings)
+        public SqliteLocalRepository(string conStr)
         {
-            BaseConnstr = settings.GetConnectionString();
+            BaseConnstr = conStr;
             mapper = CreateMapper();
         }
 
