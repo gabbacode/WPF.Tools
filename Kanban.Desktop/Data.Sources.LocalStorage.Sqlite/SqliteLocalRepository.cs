@@ -17,7 +17,7 @@ namespace Data.Sources.LocalStorage.Sqlite
 
         public SqliteLocalRepository(string conStr)
         {
-            BaseConnstr = conStr;
+            BaseConnstr = $"Data Source = {conStr}";
             mapper = CreateMapper();
         }
 

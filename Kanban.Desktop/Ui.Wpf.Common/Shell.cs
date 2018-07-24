@@ -20,8 +20,7 @@ namespace Ui.Wpf.Common
 
         public void ShowView<TView>(
             ViewRequest viewRequest = null,
-            UiShowOptions options = null,
-            Parameter[] parameters = null)
+            UiShowOptions options = null)
             where TView : class, IView
         {
             var view = Container.Resolve<TView>();

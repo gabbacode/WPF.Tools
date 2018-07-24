@@ -13,8 +13,7 @@ namespace Ui.Wpf.Common
 
         void ShowView<TView>(
             ViewRequest viewRequest = null, 
-            UiShowOptions options = null,
-            params Parameter[] parameters)
+            UiShowOptions options = null)
             where TView : class, IView;
 
         void ShowTool<TToolView>(

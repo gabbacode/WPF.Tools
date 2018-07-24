@@ -33,14 +33,14 @@ namespace Kanban.Desktop.LocalBase.ViewModels
             
             OpenRecentDbCommand = ReactiveCommand.Create<string>(uri =>
             {
-                if (File.Exists(uri))
+                var file = new FileInfo(uri);
+                if (file.Exists)
                 {
                     var scope = appModel_.LoadScope(uri);
 
-                    shell_.ShowView<BoardView>(options: new UiShowOptions
-                    {
-                        Title = uri
-                    });
+                    shell_.ShowView<BoardView>(
+                        viewRequest: new BoardViewRequest { Scope = scope },
+                        options: new UiShowOptions { Title = file.Name});
                 }
                 else
                 {
@@ -56,11 +56,6 @@ namespace Kanban.Desktop.LocalBase.ViewModels
             NewDbCommand = ReactiveCommand.Create(() =>
             {
                 shell.ShowView<WizardView>();
-
-                /*var basePath = this.model.CreateDatabase();
-                if (string.IsNullOrEmpty(basePath)) return;
-
-                this.model.ShowSelectedBaseTab(basePath);*/
             });
 
             OpenDbCommand = ReactiveCommand.Create(() =>

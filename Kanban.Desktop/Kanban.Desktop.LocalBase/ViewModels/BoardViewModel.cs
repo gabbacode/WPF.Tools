@@ -15,9 +15,14 @@ using Ui.Wpf.KanbanControl.Elements.CardElement;
 
 namespace Kanban.Desktop.LocalBase.ViewModels
 {
-    public class BoardViewModel : ViewModelBase, IViewModel //,IInitializableViewModel
+    public class BoardViewRequest : ViewRequest
     {
-        private readonly IScopeModel scopeModel;
+        public IScopeModel Scope { get; set; }
+    }
+
+    public class BoardViewModel : ViewModelBase, IViewModel, IInitializableViewModel
+    {
+        private IScopeModel scopeModel;
 
         private readonly IDialogCoordinator dialogCoordinator = DialogCoordinator.Instance;
 
@@ -52,11 +57,8 @@ namespace Kanban.Desktop.LocalBase.ViewModels
 
         public ReactiveCommand ColumnHeaderSelectCommand { get; set; }
 
-        public BoardViewModel(IScopeModel scope)
+        public BoardViewModel()
         {
-            // TODO: ??? Where connection between View & ViewModel ???
-            this.scopeModel = scope;
-
             Issues = new ReactiveList<LocalIssue>();
 
             RefreshCommand =
@@ -233,6 +235,8 @@ namespace Kanban.Desktop.LocalBase.ViewModels
 
         public void Initialize(ViewRequest viewRequest)
         {
+            scopeModel = (viewRequest as BoardViewRequest).Scope;
+
             Issues.Clear();
 
             Observable.FromAsync(() => scopeModel.GetRowHeadersAsync())

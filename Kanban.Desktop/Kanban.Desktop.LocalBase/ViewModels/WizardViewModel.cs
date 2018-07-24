@@ -3,6 +3,7 @@ using System.Reactive;
 using System.Reactive.Linq;
 using System.Windows.Forms;
 using Autofac;
+using Data.Entities.Common.LocalBase;
 using Kanban.Desktop.LocalBase.Models;
 using Kanban.Desktop.LocalBase.Views;
 using MahApps.Metro.Controls.Dialogs;
@@ -108,10 +109,18 @@ namespace Kanban.Desktop.LocalBase.ViewModels
             appModel_.SaveConfig();
 
             var scope = appModel_.CreateScope(uri);
+
+            foreach (var colName in ColumnList)
+                scope.CreateOrUpdateColumn(new ColumnInfo { Name = colName });
+
+            foreach (var rowName in RowList)
+                scope.CreateOrUpdateRow(new RowInfo { Name = rowName });
+
             this.Close();
 
-            shell_.ShowView<BoardView>(options: new UiShowOptions { Title = FileName},
-                parameters: new NamedParameter("scope", scope));
+            shell_.ShowView<BoardView>(
+                viewRequest: new BoardViewRequest { Scope = scope },
+                options: new UiShowOptions { Title = FileName });
         }
     }
 

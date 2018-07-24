@@ -101,7 +101,11 @@ namespace Kanban.Desktop.LocalBase.Models
 
         public IScopeModel LoadScope(string uri)
         {
-            return null;
+            var scope = shell_
+                .Container
+                .Resolve<IScopeModel>(new NamedParameter("uri", uri));
+
+            return scope;
         }
     }
 }
