@@ -30,19 +30,10 @@ namespace Kanban.Desktop.LocalBase.ViewModels
 
             var recent = appModel_.GetRecentDocuments();
             BaseList = new ReactiveList<string>(recent);
-            
+
             OpenRecentDbCommand = ReactiveCommand.Create<string>(uri =>
             {
-                var file = new FileInfo(uri);
-                if (file.Exists)
-                {
-                    var scope = appModel_.LoadScope(uri);
-
-                    shell_.ShowView<BoardView>(
-                        viewRequest: new BoardViewRequest { Scope = scope },
-                        options: new UiShowOptions { Title = file.Name});
-                }
-                else
+                if (!OpenBoardView(uri))
                 {
                     appModel_.RemoveRecent(uri);
                     appModel_.SaveConfig();
@@ -53,30 +44,35 @@ namespace Kanban.Desktop.LocalBase.ViewModels
                 }
             });
 
-            NewDbCommand = ReactiveCommand.Create(() =>
-            {
-                shell.ShowView<WizardView>();
-            });
+            NewDbCommand = ReactiveCommand.Create(() => shell.ShowView<WizardView>());
 
             OpenDbCommand = ReactiveCommand.Create(() =>
             {
-                var openDialog = new OpenFileDialog()
+                var dialog = new OpenFileDialog()
                 {
                     Filter = "SQLite DataBase | *.db",
                     Title = "Открытие базы"
                 };
 
-                if (openDialog.ShowDialog() == DialogResult.OK &&
-                    !string.IsNullOrEmpty(openDialog.FileName))
-                {
-                    var scope = appModel_.LoadScope(openDialog.FileName);
-
-                    shell_.ShowView<BoardView>(options: new UiShowOptions
-                    {
-                        Title = openDialog.FileName
-                    });
-                }
+                if (dialog.ShowDialog() == DialogResult.OK)
+                    OpenBoardView(dialog.FileName);
             });
         }//ctor
+
+        private bool OpenBoardView(string uri)
+        {
+            var file = new FileInfo(uri);
+
+            if (!file.Exists)
+                return false;
+
+            var scope = appModel_.LoadScope(uri);
+
+            shell_.ShowView<BoardView>(
+                viewRequest: new BoardViewRequest { Scope = scope },
+                options: new UiShowOptions { Title = file.Name });
+
+            return true;
+        }
     }
 }
