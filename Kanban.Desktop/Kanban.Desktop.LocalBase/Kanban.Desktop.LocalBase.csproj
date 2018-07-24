@@ -256,9 +256,7 @@
       <DependentUpon>DimensionEditView.xaml</DependentUpon>
     </Compile>
     <Compile Include="DimensionEdit-unused\View\IDimensionEditView.cs" />
-    <Compile Include="Models\IssueModel.cs" />
     <Compile Include="ViewModels\IssueViewModel.cs" />
-    <Compile Include="Models\IssueViewRequest.cs" />
     <Page Include="DimensionEdit-unused\View\DimensionEditView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -276,7 +274,6 @@
     <Compile Include="Views\IssueView.xaml.cs">
       <DependentUpon>IssueView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Models\BoardModel.cs" />
     <Compile Include="ViewModels\BoardDropHandler.cs" />
     <Compile Include="ViewModels\BoardViewModel.cs" />
     <Compile Include="Views\BoardView.xaml.cs">

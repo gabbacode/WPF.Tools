@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Data.Entities.Common.LocalBase;
 using GongSolutions.Wpf.DragDrop;
 using Kanban.Desktop.LocalBase.Models;
+using Kanban.Desktop.LocalBase.Views;
 using MahApps.Metro.Controls.Dialogs;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -22,7 +23,8 @@ namespace Kanban.Desktop.LocalBase.ViewModels
 
     public class BoardViewModel : ViewModelBase, IViewModel, IInitializableViewModel
     {
-        private IScopeModel scopeModel;
+        private IScopeModel scope;
+        private readonly IShell shell_;
 
         private readonly IDialogCoordinator dialogCoordinator = DialogCoordinator.Instance;
 
@@ -57,8 +59,10 @@ namespace Kanban.Desktop.LocalBase.ViewModels
 
         public ReactiveCommand ColumnHeaderSelectCommand { get; set; }
 
-        public BoardViewModel()
+        public BoardViewModel(IShell shell)
         {
+            shell_ = shell;
+
             Issues = new ReactiveList<LocalIssue>();
 
             RefreshCommand =
@@ -85,7 +89,7 @@ namespace Kanban.Desktop.LocalBase.ViewModels
 
             RowHeaderSelectCommand = ReactiveCommand.Create<object>(o =>
             {
-                SelectedRow = this.scopeModel.GetSelectedRow(o.ToString());
+                SelectedRow = this.scope.GetSelectedRow(o.ToString());
 
                 if (SelectedRow == null) return;
 
@@ -95,14 +99,13 @@ namespace Kanban.Desktop.LocalBase.ViewModels
 
             ColumnHeaderSelectCommand = ReactiveCommand.Create<object>(o =>
             {
-                SelectedColumn = this.scopeModel.GetSelectedColumn(o.ToString());
+                SelectedColumn = this.scope.GetSelectedColumn(o.ToString());
 
                 if (SelectedColumn == null) return;
 
                 SelectedRow   = null;
                 SelectedIssue = null;
             });
-
         }
 
         private async Task RefreshContent()
@@ -110,14 +113,14 @@ namespace Kanban.Desktop.LocalBase.ViewModels
             Issues.Clear();
 
             VerticalDimension = null;
-            VerticalDimension = await scopeModel.GetRowHeadersAsync();
+            VerticalDimension = await scope.GetRowHeadersAsync();
 
             HorizontalDimension = null;
-            HorizontalDimension = await scopeModel.GetColumnHeadersAsync();
+            HorizontalDimension = await scope.GetColumnHeadersAsync();
 
-            CardContent = scopeModel.GetCardContent();
+            CardContent = scope.GetCardContent();
 
-            Issues.PublishCollection(await scopeModel.GetIssuesAsync());
+            Issues.PublishCollection(await scope.GetIssuesAsync());
         }
 
         private async Task DeleteElement()
@@ -132,31 +135,33 @@ namespace Kanban.Desktop.LocalBase.ViewModels
                 return;
 
             if (SelectedIssue != null)
-                await scopeModel.DeleteIssueAsync(SelectedIssue.Id);
+                await scope.DeleteIssueAsync(SelectedIssue.Id);
 
             else if (SelectedRow != null)
-                await scopeModel.DeleteRowAsync(SelectedRow.Id);
+                await scope.DeleteRowAsync(SelectedRow.Id);
 
             else if (SelectedColumn != null)
-                await scopeModel.DeleteColumnAsync(SelectedColumn.Id);
+                await scope.DeleteColumnAsync(SelectedColumn.Id);
 
             await RefreshContent();
         }
 
         private async Task UpdateElement()
         {
-            //if (SelectedIssue != null)
-            //    scopeModel.ShowIssueView(SelectedIssue);
+            if (SelectedIssue != null)
+            {
+                shell_.ShowView<IssueView>(
+                    viewRequest: new IssueViewRequest() { IssueId = SelectedIssue.Id, Scope = scope });
+            }
 
-            //else 
-            if (SelectedRow != null)
+            else if (SelectedRow != null)
             {
                 var newName = await ShowRowNameInput();
 
                 if (!string.IsNullOrEmpty(newName))
                 {
                     SelectedRow.Name = newName;
-                    await scopeModel.CreateOrUpdateRow(SelectedRow);
+                    await scope.CreateOrUpdateRow(SelectedRow);
                 }
             }
 
@@ -169,7 +174,7 @@ namespace Kanban.Desktop.LocalBase.ViewModels
 
                 {
                     SelectedColumn.Name = newName;
-                    await scopeModel.CreateOrUpdateColumn(SelectedColumn);
+                    await scope.CreateOrUpdateColumn(SelectedColumn);
                 }
             }
 
@@ -178,18 +183,20 @@ namespace Kanban.Desktop.LocalBase.ViewModels
 
         private async Task AddNewElement(string elementName) //TODO: add enum(?) as command parameter instead of string
         {
-            //if (elementName == "Задачу")
-            //        scopeModel.ShowIssueView(new LocalIssue());
+            if (elementName == "Задачу")
+            {
+                shell_.ShowView<IssueView>(
+                    viewRequest: new IssueViewRequest() { IssueId = 0, Scope = scope });
+            }
 
-            //else 
-            if (elementName == "Строку")
+            else if (elementName == "Строку")
             {
                 var newName = await ShowRowNameInput();
 
                 if (!string.IsNullOrEmpty(newName))
                 {
                     var newRow = new RowInfo {Name = newName};
-                    await scopeModel.CreateOrUpdateRow(newRow);
+                    await scope.CreateOrUpdateRow(newRow);
                 }
             }
 
@@ -200,7 +207,7 @@ namespace Kanban.Desktop.LocalBase.ViewModels
                 if (!string.IsNullOrEmpty(newName))
                 {
                     var newColumn = new ColumnInfo { Name = newName };
-                    await scopeModel.CreateOrUpdateColumn(newColumn);
+                    await scope.CreateOrUpdateColumn(newColumn);
                 }
             }
 
@@ -235,21 +242,21 @@ namespace Kanban.Desktop.LocalBase.ViewModels
 
         public void Initialize(ViewRequest viewRequest)
         {
-            scopeModel = (viewRequest as BoardViewRequest).Scope;
+            scope = (viewRequest as BoardViewRequest).Scope;
 
             Issues.Clear();
 
-            Observable.FromAsync(() => scopeModel.GetRowHeadersAsync())
+            Observable.FromAsync(() => scope.GetRowHeadersAsync())
                 .ObserveOnDispatcher()
                 .Subscribe(vert => VerticalDimension = vert);
 
-            Observable.FromAsync(() => scopeModel.GetColumnHeadersAsync())
+            Observable.FromAsync(() => scope.GetColumnHeadersAsync())
                 .ObserveOnDispatcher()
                 .Subscribe(horiz => HorizontalDimension = horiz);
 
-            CardContent = scopeModel.GetCardContent();
+            CardContent = scope.GetCardContent();
 
-            Observable.FromAsync(() => scopeModel.GetIssuesAsync())
+            Observable.FromAsync(() => scope.GetIssuesAsync())
                 .ObserveOnDispatcher()
                 .Subscribe(issues => Issues.AddRange(issues)); // TODO: make initialize works
         }

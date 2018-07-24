@@ -10,10 +10,16 @@ using Ui.Wpf.Common.ViewModels;
 
 namespace Kanban.Desktop.LocalBase.ViewModels
 {
+    public class IssueViewRequest : ViewRequest
+    {
+        public int? IssueId { get; set; }
+        public IScopeModel Scope { get; set; }
+    }
+
     public class IssueViewModel : ViewModelBase, IViewModel, IInitializableViewModel
     {
         private readonly IMapper mapper;
-        private readonly IssueModel model;
+        private IScopeModel scope;
 
         public int Id { get; set; }
         public DateTime Created { get; set; }
@@ -30,9 +36,8 @@ namespace Kanban.Desktop.LocalBase.ViewModels
         public ReactiveCommand CancelCommand { get; set; }
         public ReactiveCommand SaveCommand { get; set; }
 
-        public IssueViewModel(IssueModel model)
+        public IssueViewModel()
         {
-            this.model = model;
             mapper = CreateMapper();
 
             var issueFilled = this.WhenAnyValue(t => t.Head, t => t.Body, t => t.Row, t => t.Column,
@@ -46,7 +51,7 @@ namespace Kanban.Desktop.LocalBase.ViewModels
 
                 mapper.Map(this, editedIssue);
 
-                await model.SaveIssueAsync(editedIssue);
+                await scope.SaveIssueAsync(editedIssue);
 
                 Close();
             }, issueFilled);
@@ -56,16 +61,20 @@ namespace Kanban.Desktop.LocalBase.ViewModels
 
         public void Initialize(ViewRequest viewRequest)
         {
-            var issueId = (viewRequest as IssueViewRequest)?.IssueId;
+            var request = viewRequest as IssueViewRequest;
+
+            scope = request.Scope;
+
+            var issueId = request?.IssueId;
             if (issueId == 0)
                 issueId = null;
 
-            Observable.FromAsync(() => model.LoadOrCreateAsync(issueId))
+            Observable.FromAsync(() => scope.LoadOrCreateAsync(issueId))
                 .ObserveOnDispatcher()
                 .Subscribe(issue =>
                     mapper.Map(issue, this));
 
-            Observable.FromAsync(() => model.GetRows())
+            Observable.FromAsync(() => scope.GetRows())
                 .ObserveOnDispatcher()
                 .Subscribe(rows =>
                 {
@@ -73,7 +82,7 @@ namespace Kanban.Desktop.LocalBase.ViewModels
                     AwailableRows.AddRange(rows);
                 });
 
-            Observable.FromAsync(() => model.GetColumns())
+            Observable.FromAsync(() => scope.GetColumns())
                 .ObserveOnDispatcher()
                 .Subscribe(columns =>
                     AwailableColumns.PublishCollection(columns));

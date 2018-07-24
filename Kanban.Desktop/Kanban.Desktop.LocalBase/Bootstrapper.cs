@@ -46,7 +46,7 @@ namespace Kanban.Desktop.LocalBase
             ConfigureView<StartupViewModel, StartupView>(builder);
             ConfigureView<WizardViewModel, WizardView>(builder);
             ConfigureView<BoardViewModel, BoardView>(builder);
-            ConfigureView<IssueModel, IssueViewModel, IssueView>(builder);
+            ConfigureView<IssueViewModel, IssueView>(builder);
 
             return builder.Build();
         }
@@ -55,15 +55,6 @@ namespace Kanban.Desktop.LocalBase
             where TViewModel : IViewModel
             where TView : IView
         {
-            builder.RegisterType<TViewModel>();
-            builder.RegisterType<TView>();
-        }
-
-        private static void ConfigureView<TModel, TViewModel, TView>(ContainerBuilder builder)
-            where TViewModel : IViewModel
-            where TView : IView
-        {
-            builder.RegisterType<TModel>();
             builder.RegisterType<TViewModel>();
             builder.RegisterType<TView>();
         }

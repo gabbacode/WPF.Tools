@@ -31,6 +31,13 @@ namespace Kanban.Desktop.LocalBase.Models
 
         Task CreateOrUpdateColumn(ColumnInfo column);
         Task CreateOrUpdateRow(RowInfo row);
+
+        //
+
+        Task<LocalIssue> LoadOrCreateAsync(int? issueId);
+        Task SaveIssueAsync(LocalIssue issue);
+        Task<List<RowInfo>> GetRows();
+        Task<List<ColumnInfo>> GetColumns();
     }
 
     public class ScopeModel : IScopeModel
@@ -132,6 +139,31 @@ namespace Kanban.Desktop.LocalBase.Models
         public async Task CreateOrUpdateRow(RowInfo row)
         {
             await repo_.CreateOrUpdateRowAsync(row);
+        }
+
+        public async Task<LocalIssue> LoadOrCreateAsync(int? issueId)
+        {
+            var t = new LocalIssue();
+            if (issueId.HasValue)
+                t = await repo_.GetIssueAsync(issueId.Value);
+
+            return t;
+        }
+
+        public async Task SaveIssueAsync(LocalIssue issue)
+        {
+            issue.Modified = DateTime.Now;
+            await repo_.CreateOrUpdateIssueAsync(issue);
+        }
+
+        public async Task<List<RowInfo>> GetRows()
+        {
+            return await repo_.GetRowsAsync();
+        }
+
+        public async Task<List<ColumnInfo>> GetColumns()
+        {
+            return await repo_.GetColumnsAsync();
         }
     }
 }
