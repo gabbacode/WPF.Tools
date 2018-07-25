@@ -1,5 +1,5 @@
 ﻿using System.Windows;
-using Kanban.Desktop.LocalBase.DataBaseSelector.View;
+using Kanban.Desktop.LocalBase.Views;
 using Ui.Wpf.Common;
 using Ui.Wpf.Common.ShowOptions;
 
@@ -19,7 +19,7 @@ namespace Kanban.Desktop.LocalBase
                     ToolPaneWidth = 100
                 });
 
-            shell.ShowView<IBaseSelectorView>(options: new UiShowOptions() {Title = "BaseChoooose"});
+            shell.ShowView<StartupView>(options: new UiShowOptions() {Title = "Start Page", CanClose = false});
         }
     }
 }

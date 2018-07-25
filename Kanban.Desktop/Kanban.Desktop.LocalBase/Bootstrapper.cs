@@ -1,14 +1,14 @@
 ﻿using Autofac;
 using Data.Sources.LocalStorage.Sqlite;
-using Kanban.Desktop.LocalBase.DataBaseSelector.Model;
-using Kanban.Desktop.LocalBase.DataBaseSelector.View;
-using Kanban.Desktop.LocalBase.DataBaseSelector.ViewModel;
-using Kanban.Desktop.Settings;
+using Kanban.Desktop.LocalBase.Models;
+using Kanban.Desktop.LocalBase.Views;
+using Kanban.Desktop.LocalBase.ViewModels;
 using Ui.Wpf.Common;
+using Ui.Wpf.Common.ViewModels;
 
 namespace Kanban.Desktop.LocalBase
 {
-    class Bootstrapper : IBootstraper
+    public class Bootstrapper : IBootstraper
     {
         public IShell Init()
         {
@@ -26,79 +26,37 @@ namespace Kanban.Desktop.LocalBase
                 .As<IShell>()
                 .SingleInstance();
 
-            builder.RegisterType<MainWindow>().As<IDockWindow>();
-
-            builder.RegisterType<DataBaseSelectorModel>()
-                .As<IDataBaseSelectorModel>();
-
-            builder.RegisterType<BaseSelectorViewModel>()
-                .As<IBaseSelectorViewModel>();
-
-            builder.RegisterType<DataBaseSelectorView>()
-                .As<IBaseSelectorView>();
+            builder
+                .RegisterType<MainWindow>()
+                .As<IDockWindow>();
 
             builder
-               .RegisterType<SqliteLocalRepository>()
-               .SingleInstance();
+                .RegisterType<SqliteLocalRepository>();
 
-            //TODO Modules discovering
-            ConfigureIssues(builder);
+            builder
+                .RegisterType<ScopeModel>()
+                .As<IScopeModel>();
 
-            ConfigureKanbanBoard(builder);
+            builder
+                .RegisterType<AppModel>()
+                .As<IAppModel>()
+                .SingleInstance();
 
-            ConfigureSettings(builder);
+            //TODO: Modules discovering?
+            ConfigureView<StartupViewModel, StartupView>(builder);
+            ConfigureView<WizardViewModel, WizardView>(builder);
+            ConfigureView<BoardViewModel, BoardView>(builder);
+            ConfigureView<IssueViewModel, IssueView>(builder);
 
             return builder.Build();
         }
 
-        private static void ConfigureIssues(ContainerBuilder builder)
+        private static void ConfigureView<TViewModel, TView>(ContainerBuilder builder)
+            where TViewModel : IViewModel
+            where TView : IView
         {
-            //builder
-            //    .RegisterType<IssuesToolView>()
-            //    .As<IIssuesTool>();
-
-            //builder
-            //    .RegisterType<IssueView>()
-            //    .As<IIssueView>();
-
-            //builder
-            //    .RegisterType<IssueViewModel>()
-            //    .As<IIssueViewModel>();
-
-            //builder
-            //    .RegisterType<IssueModel>()
-            //    .As<IIssueModel>();
-        }
-
-        private static void ConfigureKanbanBoard(ContainerBuilder builder)
-        {
-            //builder
-            //    .RegisterType<KanbanBoardModel>()
-            //    .As<IKanbanBoardModel>();
-
-            //builder
-            //    .RegisterType<KanbanBoardViewModel>()
-            //    .As<IKanbanBoardViewModel>();
-
-            //builder
-            //    .RegisterType<KanbanBoardView>()
-            //    .As<IKanbanBoardView>();
-
-
-            //builder
-            //    .RegisterType<KanbanConfigurationRepository>()
-            //    .As<IKanbanConfigurationRepository>();
-        }
-
-        private static void ConfigureSettings(ContainerBuilder builder)
-        {
-            builder
-                .RegisterType<SettingsViewModel>()
-                .As<ISettingsViewModel>();
-
-            builder
-                .RegisterType<SettingsView>()
-                .As<ISettingsView>();
+            builder.RegisterType<TViewModel>();
+            builder.RegisterType<TView>();
         }
     }
 }

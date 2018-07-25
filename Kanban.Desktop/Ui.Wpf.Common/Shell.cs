@@ -2,6 +2,7 @@
 using System.Reactive.Linq;
 using System.Windows;
 using Autofac;
+using Autofac.Core;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Ui.Wpf.Common.ShowOptions;
@@ -26,18 +27,19 @@ namespace Ui.Wpf.Common
             if (options != null)
                 view.Configure(options);
 
-
             var layoutDocument = new LayoutDocument {Content = view};
+            if (options != null)
+                layoutDocument.CanClose = options.CanClose;
 
-            addTitleRefreshing(view, layoutDocument);
-            addClosingByRequest(view, layoutDocument);
+            AddTitleRefreshing(view, layoutDocument);
+            AddClosingByRequest(view, layoutDocument);
 
             DocumentPane.Children.Add(layoutDocument);
 
+            // TODO: provide parameters to ViewModel ???
             (view.ViewModel as IInitializableViewModel)?.Initialize(viewRequest);
 
             layoutDocument.IsActive = true;
-
         }
 
         public void ShowTool<TToolView>(
@@ -53,10 +55,10 @@ namespace Ui.Wpf.Common
 
             var layoutAnchorable = new LayoutAnchorable
             {
-                CanClose = false,
+                CanClose    = false,
                 CanAutoHide = false,
-                CanHide = false,
-                CanFloat = false,
+                CanHide     = false,
+                CanFloat    = false,
             };
 
             layoutAnchorable.Content = view;
@@ -87,7 +89,7 @@ namespace Ui.Wpf.Common
 
         public void ShowStartView<TStartWindow>(
             UiShowStartWindowOptions options = null)
-            where TStartWindow : class 
+            where TStartWindow : class
         {
             if (options != null)
                 ToolPaneWidth = options.ToolPaneWidth;
@@ -118,7 +120,8 @@ namespace Ui.Wpf.Common
             ToolsPane.DockWidth = new GridLength(ToolPaneWidth.GetValueOrDefault(410));
         }
 
-        private static void addClosingByRequest<TView>(TView view, LayoutDocument layoutDocument) where TView : class, IView
+        private static void AddClosingByRequest<TView>(TView view, LayoutDocument layoutDocument)
+            where TView : class, IView
         {
             if (view.ViewModel is ViewModelBase baseViewModel)
             {
@@ -126,16 +129,14 @@ namespace Ui.Wpf.Common
                     x => baseViewModel.CloseQuery += x,
                     x => baseViewModel.CloseQuery -= x);
 
-                var subscription = closeQuery.Subscribe(x =>
-                {
-                    layoutDocument.Close();
-                });
+                var subscription = closeQuery.Subscribe(x => { layoutDocument.Close(); });
 
                 layoutDocument.Closed += (s, e) => subscription.Dispose();
             }
         }
 
-        private static void addTitleRefreshing<TView>(TView view, LayoutDocument layoutDocument) where TView : class, IView
+        private static void AddTitleRefreshing<TView>(TView view, LayoutDocument layoutDocument)
+            where TView : class, IView
         {
             var titleRefreshSubsription = view.ViewModel
                 .WhenAnyValue(vm => vm.Title)
