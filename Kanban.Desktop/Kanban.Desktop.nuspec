@@ -16,6 +16,7 @@
                 <dependency id="Autofac" version="4.7.1"/>
                 <dependency id="ControlzEx" version="3.0.2.4"/>
                 <dependency id="Extended.Wpf.Toolkit" version="3.3.0"/>
+		<dependency id="FluentValidation" version="7.6.104"/>
                 <dependency id="Fody" version="2.0.7"/>
                 <dependency id="MahApps.Metro" version="1.6.1"/>
                 <dependency id="reactiveui" version="7.0.0"/>
