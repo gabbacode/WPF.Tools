@@ -1,18 +1,16 @@
 ﻿using System.Windows;
 using System.Windows.Input;
-using Kanban.Desktop.LocalBase.LocalBoard.ViewModel;
+using Kanban.Desktop.LocalBase.ViewModels;
+using Ui.Wpf.Common;
 using Ui.Wpf.Common.ShowOptions;
 using Ui.Wpf.Common.ViewModels;
 using Ui.Wpf.KanbanControl.Elements.CardElement;
 
-namespace Kanban.Desktop.LocalBase.LocalBoard.View
+namespace Kanban.Desktop.LocalBase.Views
 {
-    /// <summary>
-    /// Interaction logic for LocalBoardView.xaml
-    /// </summary>
-    public partial class LocalBoardView : ILocalBoardView
+    public partial class BoardView : IView
     {
-        public LocalBoardView(ILocalBoardViewModel localBoardViewModel)
+        public BoardView(BoardViewModel localBoardViewModel)
         {
             InitializeComponent();
             ViewModel = localBoardViewModel;
@@ -25,6 +23,5 @@ namespace Kanban.Desktop.LocalBase.LocalBoard.View
         {
             ViewModel.Title = options.Title;
         }
-
     }
 }

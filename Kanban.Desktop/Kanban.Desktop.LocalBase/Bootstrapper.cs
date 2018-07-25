@@ -1,15 +1,10 @@
 ﻿using Autofac;
 using Data.Sources.LocalStorage.Sqlite;
-using Kanban.Desktop.LocalBase.DataBaseSelector.Model;
-using Kanban.Desktop.LocalBase.DataBaseSelector.View;
-using Kanban.Desktop.LocalBase.DataBaseSelector.ViewModel;
-using Kanban.Desktop.LocalBase.Issues.Model;
-using Kanban.Desktop.LocalBase.Issues.View;
-using Kanban.Desktop.LocalBase.Issues.ViewModel;
-using Kanban.Desktop.LocalBase.LocalBoard.Model;
-using Kanban.Desktop.LocalBase.LocalBoard.View;
-using Kanban.Desktop.LocalBase.LocalBoard.ViewModel;
+using Kanban.Desktop.LocalBase.Models;
+using Kanban.Desktop.LocalBase.Views;
+using Kanban.Desktop.LocalBase.ViewModels;
 using Ui.Wpf.Common;
+using Ui.Wpf.Common.ViewModels;
 
 namespace Kanban.Desktop.LocalBase
 {
@@ -31,62 +26,37 @@ namespace Kanban.Desktop.LocalBase
                 .As<IShell>()
                 .SingleInstance();
 
-            builder.RegisterType<MainWindow>().As<IDockWindow>();
+            builder
+                .RegisterType<MainWindow>()
+                .As<IDockWindow>();
 
             builder
                 .RegisterType<SqliteLocalRepository>();
 
-            builder.RegisterType<SqliteSettings>()
-                .As<IDataBaseSettings>()
+            builder
+                .RegisterType<ScopeModel>()
+                .As<IScopeModel>();
+
+            builder
+                .RegisterType<AppModel>()
+                .As<IAppModel>()
                 .SingleInstance();
 
-            //TODO Modules discovering
-            ConfigureDataBaseSelector(builder);
-
-            ConfigureLocalBoardView(builder);
-
-            ConfigureIssueRedactor(builder);
+            //TODO: Modules discovering?
+            ConfigureView<StartupViewModel, StartupView>(builder);
+            ConfigureView<WizardViewModel, WizardView>(builder);
+            ConfigureView<BoardViewModel, BoardView>(builder);
+            ConfigureView<IssueViewModel, IssueView>(builder);
 
             return builder.Build();
         }
 
-        private static void ConfigureDataBaseSelector(ContainerBuilder builder)
+        private static void ConfigureView<TViewModel, TView>(ContainerBuilder builder)
+            where TViewModel : IViewModel
+            where TView : IView
         {
-            builder.RegisterType<DataBaseSelectorModel>()
-                .As<IDataBaseSelectorModel>();
-
-            builder.RegisterType<BaseSelectorViewModel>()
-                .As<IBaseSelectorViewModel>();
-
-            builder.RegisterType<DataBaseSelectorView>()
-                .As<IBaseSelectorView>();
-        }
-
-        private static void ConfigureLocalBoardView(ContainerBuilder builder)
-        {
-            builder.RegisterType<LocalBoardModel>()
-                .As<ILocalBoardModel>();
-
-            builder.RegisterType<LocalBoardViewModel>()
-                .As<ILocalBoardViewModel>();
-
-            builder.RegisterType<LocalBoardView>()
-                .As<ILocalBoardView>();
-        }
-
-        private static void ConfigureIssueRedactor(ContainerBuilder builder)
-        {
-            builder
-                .RegisterType<IssueModel>()
-                .As<IIssueModel>();
-
-            builder
-                .RegisterType<IssueViewModel>()
-                .As<IIssueViewModel>();
-
-            builder
-                .RegisterType<IssueView>()
-                .As<IIssueView>();
+            builder.RegisterType<TViewModel>();
+            builder.RegisterType<TView>();
         }
     }
 }

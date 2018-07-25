@@ -2,6 +2,7 @@
 using System.Reactive.Linq;
 using System.Windows;
 using Autofac;
+using Autofac.Core;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Ui.Wpf.Common.ShowOptions;
@@ -26,7 +27,6 @@ namespace Ui.Wpf.Common
             if (options != null)
                 view.Configure(options);
 
-
             var layoutDocument = new LayoutDocument {Content = view};
             if (options != null)
                 layoutDocument.CanClose = options.CanClose;
@@ -36,10 +36,10 @@ namespace Ui.Wpf.Common
 
             DocumentPane.Children.Add(layoutDocument);
 
+            // TODO: provide parameters to ViewModel ???
             (view.ViewModel as IInitializableViewModel)?.Initialize(viewRequest);
 
             layoutDocument.IsActive = true;
-
         }
 
         public void ShowTool<TToolView>(

@@ -1,15 +1,13 @@
-﻿using Kanban.Desktop.LocalBase.Issues.ViewModel;
+﻿using Kanban.Desktop.LocalBase.ViewModels;
+using Ui.Wpf.Common;
 using Ui.Wpf.Common.ShowOptions;
 using Ui.Wpf.Common.ViewModels;
 
-namespace Kanban.Desktop.LocalBase.Issues.View
+namespace Kanban.Desktop.LocalBase.Views
 {
-    /// <summary>
-    /// Interaction logic for IssueView.xaml
-    /// </summary>
-    public partial class IssueView : IIssueView
+    public partial class IssueView : IView
     {
-        public IssueView(IIssueViewModel viewModel)
+        public IssueView(IssueViewModel viewModel)
         {
             InitializeComponent();
             ViewModel = viewModel;
