@@ -12,6 +12,7 @@
             BorderBrush="#E1E1E1"
             BorderThickness="1"/>
         <ScrollViewer
+            Focusable="False"
             Margin="6"
             VerticalScrollBarVisibility="Auto"
             HorizontalScrollBarVisibility="Disabled"
