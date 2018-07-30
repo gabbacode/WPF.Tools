@@ -1,0 +1,35 @@
+﻿<UserControl  x:Class="Kanban.Desktop.LocalBase.Views.WizardView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:dialogs="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
+        dialogs:DialogParticipation.Register="{Binding}"
+        xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
+        mc:Ignorable="d"
+        d:DesignHeight="400"
+        d:DesignWidth="400">
+
+    <StackPanel Orientation="Vertical">
+        <Label>Board name</Label>
+        <TextBox Text="{Binding BoardName, UpdateSourceTrigger=PropertyChanged}"/>
+
+        <Label>Folder name</Label>
+        <TextBox Text="{Binding FolderName}"/>
+        <Button Command="{Binding SelectFolderCommand}">...</Button>
+
+        <Label>File name</Label>
+        <TextBox Text="{Binding FileName}"/>
+        
+        <Label>Columns</Label>
+        <ListBox ItemsSource="{Binding ColumnList}"/>
+        <Button Command="{Binding AddColumnCommand}">Add column</Button>
+
+        <Label>Rows</Label>
+        <ListBox ItemsSource="{Binding RowList}"/>
+        <Button Command="{Binding AddRowCommand}">Add row</Button>
+        
+        <Button Command="{Binding CreateCommand}">Create Board</Button>
+        <Button Command="{Binding CancelCommand}">Cancel</Button>
+    </StackPanel>
+</UserControl>

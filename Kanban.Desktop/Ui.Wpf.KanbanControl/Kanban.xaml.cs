@@ -6,16 +6,15 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using Ui.Wpf.KanbanControl.Common;
 using Ui.Wpf.KanbanControl.Dimensions;
-using Ui.Wpf.KanbanControl.Dimensions.Generic;
 using Ui.Wpf.KanbanControl.Elements;
 using Ui.Wpf.KanbanControl.ElementsManagement;
 using Ui.Wpf.KanbanControl.Elements.CardElement;
 using Ui.Wpf.KanbanControl.Expressions;
+using System.Diagnostics;
 
 namespace Ui.Wpf.KanbanControl
 {
@@ -59,11 +58,7 @@ namespace Ui.Wpf.KanbanControl
                 ClearHeaders();
             }
 
-            if (Cards == null
-                || !Cards.Cast<object>().Any())
-            {
-                ClearCards();
-            }
+            ClearCards();
 
             // TODO create only when type changed
             propertyAccessors = new PropertyAccessorsExpressionCreator(Cards);
@@ -84,12 +79,15 @@ namespace Ui.Wpf.KanbanControl
 
         private void BuildCells()
         {
+            Debug.WriteLine($"BuildCells old cells: {cells?.GetHashCode()}");
+
             if (HorizontalDimension?.Categories == null
                 || HorizontalDimension?.Categories.Count == 0
                 || VerticalDimension?.Categories == null
                 || VerticalDimension?.Categories.Count == 0)
             {
                 cells = new Cell[0, 0];
+                Debug.WriteLine($"BuildCells new cells: {cells?.GetHashCode()}");
                 return;
             }
 
@@ -101,7 +99,7 @@ namespace Ui.Wpf.KanbanControl
                     cells[i, j] = new Cell(new CellView());
                 }
             }
-            
+            Debug.WriteLine($"BuildCells new cells: {cells?.GetHashCode()}");
         }
 
         private void SetCards(object oldValue, object newValue)
