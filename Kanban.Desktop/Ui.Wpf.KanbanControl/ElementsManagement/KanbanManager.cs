@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Diagnostics;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using Ui.Wpf.KanbanControl.Elements;
@@ -22,6 +23,9 @@ namespace Ui.Wpf.KanbanControl.ElementsManagement
             RemoveCells();
             RemoveHeaders();
 
+            ClearSplitters();
+            ClearDefinitions();
+
             if (kanbanBoard.HorizontalDimension == null
                 || kanbanBoard.HorizontalDimension.Categories.Count == 0
                 || kanbanBoard.VerticalDimension == null
@@ -29,8 +33,6 @@ namespace Ui.Wpf.KanbanControl.ElementsManagement
                 return;
 
 
-            ClearSplitters();
-            ClearDefinitions();
 
             elementsDispenser.DispenceItems(
                  kanbanBoard.CardElements,
@@ -184,6 +186,8 @@ namespace Ui.Wpf.KanbanControl.ElementsManagement
         
         private void PlaceCells()
         {
+            Debug.WriteLine($"PlaceCells {kanbanBoard.Cells.GetHashCode()}");
+
             for (int i = 0; i < kanbanBoard.HorizontalDimension.Categories.Count; i++)
             {
                 for (int j = 0; j < kanbanBoard.VerticalDimension.Categories.Count; j++)
@@ -200,11 +204,15 @@ namespace Ui.Wpf.KanbanControl.ElementsManagement
 
         private void PlaceItems()
         {
+            Debug.WriteLine($"PlaceItems {kanbanBoard.Cells.GetHashCode()}");
+
             foreach (var card in kanbanBoard.CardElements)
             {
                 if (card.HorizontalCategoryIndex < 0
                     || card.VerticalCategoryIndex < 0)
                     continue;
+
+                Debug.WriteLine("place: " + card.View.GetHashCode());
 
                 kanbanBoard.Cells[card.HorizontalCategoryIndex, card.VerticalCategoryIndex].ItemsCount++;
                 kanbanBoard.Cells[card.HorizontalCategoryIndex, card.VerticalCategoryIndex].View.ItemContainer.Children.Add(card.View);
@@ -213,25 +221,28 @@ namespace Ui.Wpf.KanbanControl.ElementsManagement
 
         private void RemoveItems()
         {
-            var maxI = kanbanBoard.Cells.GetLength(0);
-            var maxJ = kanbanBoard.Cells.GetLength(1);
-            for (int i = 0; i < maxI; i++)
-            {
-                for (int j = 0; j < maxJ; j++)
+            var cellsToRemoveItems = kanbanBoard.KanbanGrid.Children
+                .OfType<CellView>()
+                .ToArray();
+
+            foreach (var cell in cellsToRemoveItems)
+            {                
+                foreach (var item in cell.ItemContainer.Children)
                 {
-                    kanbanBoard.Cells[i, j].ItemsCount = 0;
-                    kanbanBoard.Cells[i, j].View.ItemContainer.Children.Clear();
+                    Debug.WriteLine("remove item: " + item.GetHashCode());
+
                 }
+                cell.ItemContainer.Children.Clear();
             }
         }
 
         private void RemoveCells()
         {
-            var toRemoveItems = kanbanBoard.KanbanGrid.Children
+            var cellsToRemoveItems = kanbanBoard.KanbanGrid.Children
                 .OfType<CellView>()
                 .ToArray();
 
-            foreach (var toRemove in toRemoveItems)
+            foreach (var toRemove in cellsToRemoveItems)
             {
                 kanbanBoard.KanbanGrid.Children.Remove(toRemove);
             }

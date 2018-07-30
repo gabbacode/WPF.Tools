@@ -2,7 +2,7 @@
 <package >
     <metadata>
         <id>Kanban.Desktop</id>
-        <version>1.0.32</version>
+        <version>1.0.34</version>
         <authors>Sergej Kochekovsky</authors>
         <licenseUrl>https://github.com/gabbacode/Kanban.Desktop/master/LICENSE</licenseUrl>
         <projectUrl>https://github.com/gabbacode/Kanban.Desktop</projectUrl>
@@ -34,11 +34,9 @@
     </metadata>
     <files>
         <file src="Ui.Wpf.Common\bin\Release\Ui.Wpf.Common.dll"                 target="lib"/>
+        <file src="Ui.Wpf.Common\bin\Release\Ui.Wpf.Common.pdb"                 target="lib"/>
         <file src="Ui.Wpf.KanbanControl\bin\Release\Ui.Wpf.KanbanControl.dll"   target="lib"/>
-<!--         <file src="Data.Entities.Common\bin\Release\Data.Entities.Common.dll"   target="lib"/>
-        <file src="Data.Sources.Common\bin\Release\Data.Sources.Common.dll"     target="lib"/>
-        <file src="Data.Sources.Redmine\bin\Release\Data.Sources.Redmine.dll"   target="lib"/>
- -->        
+        <file src="Ui.Wpf.KanbanControl\bin\Release\Ui.Wpf.KanbanControl.pdb"   target="lib"/>
         <file src="Ui.Wpf.*\**\*.cs"                                            target="src" />
     </files>
 </package>
