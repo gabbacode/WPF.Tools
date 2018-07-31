@@ -63,11 +63,17 @@
     <Reference Include="ControlzEx, Version=3.0.2.4, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ControlzEx.3.0.2.4\lib\net462\ControlzEx.dll</HintPath>
     </Reference>
+    <Reference Include="FluentValidation, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7de548da2fbae0f0, processorArchitecture=MSIL">
+      <HintPath>..\packages\FluentValidation.7.6.104\lib\net45\FluentValidation.dll</HintPath>
+    </Reference>
     <Reference Include="GongSolutions.Wpf.DragDrop, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\gong-wpf-dragdrop.1.1.0\lib\net46\GongSolutions.Wpf.DragDrop.dll</HintPath>
     </Reference>
     <Reference Include="MahApps.Metro, Version=1.6.5.1, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MahApps.Metro.1.6.5\lib\net46\MahApps.Metro.dll</HintPath>
+    </Reference>
+    <Reference Include="MahApps.Metro.IconPacks, Version=2.3.0.4, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MahApps.Metro.IconPacks.2.3.0\lib\net46\MahApps.Metro.IconPacks.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Data.Sqlite, Version=2.1.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Data.Sqlite.Core.2.1.0\lib\netstandard2.0\Microsoft.Data.Sqlite.dll</HintPath>
@@ -155,6 +161,11 @@
       <HintPath>..\packages\System.ComponentModel.Annotations.4.5.0\lib\net461\System.ComponentModel.Annotations.dll</HintPath>
     </Reference>
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.ComponentModel.Primitives, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ComponentModel.Primitives.4.3.0\lib\net45\System.ComponentModel.Primitives.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Diagnostics.DiagnosticSource, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Diagnostics.DiagnosticSource.4.5.0\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
@@ -238,6 +249,9 @@
     </Compile>
     <Compile Include="Models\AppModel.cs" />
     <Compile Include="Models\ScopeModel.cs" />
+    <Compile Include="SqliteLocalStorage\Context\SqliteContext.cs" />
+    <Compile Include="SqliteLocalStorage\Context\SqliteIssue.cs" />
+    <Compile Include="SqliteLocalStorage\SqliteLocalRepository.cs" />
     <Compile Include="ViewModels\WizardViewModel.cs" />
     <Compile Include="ViewModels\StartupViewModel.cs" />
     <Compile Include="Views\WizardView.xaml.cs">
@@ -314,10 +328,6 @@
       <Project>{C1D73699-7C75-48BB-8076-913018DB6852}</Project>
       <Name>Data.Sources.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Data.Sources.LocalStorage.Sqlite\Data.Sources.LocalStorage.Sqlite.csproj">
-      <Project>{947A8888-74FE-4789-B4A6-83CFFE394984}</Project>
-      <Name>Data.Sources.LocalStorage.Sqlite</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Ui.Wpf.Common\Ui.Wpf.Common.csproj">
       <Project>{FDB62508-AFFA-4281-8472-8D00FC1403BA}</Project>
       <Name>Ui.Wpf.Common</Name>
@@ -342,7 +352,6 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Fody.2.0.7\build\netstandard1.4\Fody.targets" Condition="Exists('..\packages\Fody.2.0.7\build\netstandard1.4\Fody.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

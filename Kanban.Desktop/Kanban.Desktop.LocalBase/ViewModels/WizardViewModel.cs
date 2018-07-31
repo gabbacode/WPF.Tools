@@ -1,17 +1,15 @@
 ﻿using System;
-using System.Reactive;
 using System.Reactive.Linq;
 using System.Windows.Forms;
-using Autofac;
 using Data.Entities.Common.LocalBase;
 using Kanban.Desktop.LocalBase.Models;
 using Kanban.Desktop.LocalBase.Views;
-using MahApps.Metro.Controls.Dialogs;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Ui.Wpf.Common;
 using Ui.Wpf.Common.ShowOptions;
 using Ui.Wpf.Common.ViewModels;
+using FluentValidation;
 
 namespace Kanban.Desktop.LocalBase.ViewModels
 {
@@ -31,13 +29,16 @@ namespace Kanban.Desktop.LocalBase.ViewModels
         public ReactiveCommand AddColumnCommand { get; set; }
         public ReactiveCommand AddRowCommand { get; set; }
 
-        private readonly IAppModel appModel_;
-        private readonly IShell shell_;
+
+        private readonly IAppModel appModel;
+        private readonly IShell shell;
 
         public WizardViewModel(IAppModel appModel, IShell shell)
         {
-            appModel_ = appModel;
-            shell_ = shell;
+            this.appModel = appModel;
+            this.shell = shell;
+
+//            RuleFor(customer => customer.Surname).NotEmpty();
 
             Title = "Creating a board";
 
@@ -76,6 +77,8 @@ namespace Kanban.Desktop.LocalBase.ViewModels
             AddRowCommand = ReactiveCommand.Create(() => RowList.Add("New row"));
 
             CreateCommand = ReactiveCommand.Create(Create);
+
+            CancelCommand =ReactiveCommand.Create(Close);
         }
 
         private string BoardNameToFileName(string boardName)
@@ -105,20 +108,20 @@ namespace Kanban.Desktop.LocalBase.ViewModels
         public void Create()
         {
             string uri = FolderName + "\\" + FileName;
-            appModel_.AddRecent(FolderName + "\\" + FileName);
-            appModel_.SaveConfig();
+            appModel.AddRecent(FolderName + "\\" + FileName);
+            appModel.SaveConfig();
 
-            var scope = appModel_.CreateScope(uri);
+            var scope = appModel.CreateScope(uri);
 
             foreach (var colName in ColumnList)
-                scope.CreateOrUpdateColumn(new ColumnInfo { Name = colName });
+                scope.CreateOrUpdateColumnAsync(new ColumnInfo { Name = colName });
 
             foreach (var rowName in RowList)
-                scope.CreateOrUpdateRow(new RowInfo { Name = rowName });
+                scope.CreateOrUpdateRowAsync(new RowInfo { Name = rowName });
 
             this.Close();
 
-            shell_.ShowView<BoardView>(
+            shell.ShowView<BoardView>(
                 viewRequest: new BoardViewRequest { Scope = scope },
                 options: new UiShowOptions { Title = FileName });
         }

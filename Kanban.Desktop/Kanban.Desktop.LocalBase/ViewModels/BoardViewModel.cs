@@ -161,7 +161,7 @@ namespace Kanban.Desktop.LocalBase.ViewModels
                 if (!string.IsNullOrEmpty(newName))
                 {
                     SelectedRow.Name = newName;
-                    await scope.CreateOrUpdateRow(SelectedRow);
+                    await scope.CreateOrUpdateRowAsync(SelectedRow);
                 }
             }
 
@@ -174,7 +174,7 @@ namespace Kanban.Desktop.LocalBase.ViewModels
 
                 {
                     SelectedColumn.Name = newName;
-                    await scope.CreateOrUpdateColumn(SelectedColumn);
+                    await scope.CreateOrUpdateColumnAsync(SelectedColumn);
                 }
             }
 
@@ -196,7 +196,7 @@ namespace Kanban.Desktop.LocalBase.ViewModels
                 if (!string.IsNullOrEmpty(newName))
                 {
                     var newRow = new RowInfo {Name = newName};
-                    await scope.CreateOrUpdateRow(newRow);
+                    await scope.CreateOrUpdateRowAsync(newRow);
                 }
             }
 
@@ -207,7 +207,7 @@ namespace Kanban.Desktop.LocalBase.ViewModels
                 if (!string.IsNullOrEmpty(newName))
                 {
                     var newColumn = new ColumnInfo { Name = newName };
-                    await scope.CreateOrUpdateColumn(newColumn);
+                    await scope.CreateOrUpdateColumnAsync(newColumn);
                 }
             }
 

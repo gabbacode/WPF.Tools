@@ -10,7 +10,6 @@ using System.Data.SqlClient;
 using System.Linq;
 using CommonRemineEntities = Data.Entities.Common.Redmine;
 using System.Threading.Tasks;
-using Data.Sources.LocalStorage.Sqlite;
 
 namespace Data.Sources.Redmine
 {

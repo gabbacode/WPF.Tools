@@ -1,16 +1,15 @@
 ﻿using Data.Entities.Common.LocalBase;
-using Data.Sources.LocalStorage.Sqlite;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Ui.Wpf.Common;
 using Ui.Wpf.KanbanControl.Dimensions;
 using Ui.Wpf.KanbanControl.Dimensions.Generic;
 using Ui.Wpf.KanbanControl.Elements.CardElement;
 using Autofac;
+using Data.Sources.LocalStorage.Sqlite;
 
 namespace Kanban.Desktop.LocalBase.Models
 {
@@ -29,27 +28,25 @@ namespace Kanban.Desktop.LocalBase.Models
         Task DeleteRowAsync(int rowId);
         Task DeleteColumnAsync(int columnId);
 
-        Task CreateOrUpdateColumn(ColumnInfo column);
-        Task CreateOrUpdateRow(RowInfo row);
+        Task CreateOrUpdateColumnAsync(ColumnInfo column);
+        Task CreateOrUpdateRowAsync(RowInfo row);
 
-        //
-
-        Task<LocalIssue> LoadOrCreateAsync(int? issueId);
-        Task SaveIssueAsync(LocalIssue issue);
-        Task<List<RowInfo>> GetRows();
-        Task<List<ColumnInfo>> GetColumns();
+        Task<LocalIssue> LoadOrCreateIssueAsync(int? issueId);
+        Task CreateOrUpdateIssueAsync(LocalIssue issue);
+        Task<List<RowInfo>> GetRowsAsync();
+        Task<List<ColumnInfo>> GetColumnsAsync();
     }
 
     public class ScopeModel : IScopeModel
     {
-        private readonly SqliteLocalRepository repo_;
+        private readonly SqliteLocalRepository repo;
 
         private List<RowInfo> rows = new List<RowInfo>();
         private List<ColumnInfo> columns = new List<ColumnInfo>();
 
         public ScopeModel(IShell shell, string uri)
         {
-            repo_ = shell.Container.Resolve<SqliteLocalRepository>(
+            repo = shell.Container.Resolve<SqliteLocalRepository>(
                 new NamedParameter("conStr", uri));
         }
 
@@ -58,7 +55,7 @@ namespace Kanban.Desktop.LocalBase.Models
         public async Task<IDimension> GetColumnHeadersAsync()
         {
             columns.Clear();
-            columns = await repo_.GetColumnsAsync();
+            columns = await repo.GetColumnsAsync();
 
             var columnHeaders = columns.Select(c => c.Name).ToArray();
             return new TagDimension<string, LocalIssue>(
@@ -73,7 +70,7 @@ namespace Kanban.Desktop.LocalBase.Models
         public async Task<IDimension> GetRowHeadersAsync()
         {
             rows.Clear();
-            rows = await repo_.GetRowsAsync();
+            rows = await repo.GetRowsAsync();
 
             var rowHeaders = rows.Select(r => r.Name).ToArray();
             return new TagDimension<string, LocalIssue>(
@@ -88,7 +85,7 @@ namespace Kanban.Desktop.LocalBase.Models
 
         public async Task<IEnumerable<LocalIssue>> GetIssuesAsync()
         {
-            return await repo_.GetIssuesAsync(new NameValueCollection());
+            return await repo.GetIssuesAsync(new NameValueCollection());
         }
 
         public CardContent GetCardContent()
@@ -110,60 +107,65 @@ namespace Kanban.Desktop.LocalBase.Models
             return columns.FirstOrDefault(c => c.Name == colName);
         }
 
+        public async Task<List<RowInfo>> GetRowsAsync()
+        {
+            return await repo.GetRowsAsync();
+        }
+
+        public async Task<List<ColumnInfo>> GetColumnsAsync()
+        {
+            return await repo.GetColumnsAsync();
+        }
+
         #endregion
 
         #region DeletingInfo
 
         public async Task DeleteIssueAsync(int issueId)
         {
-            await repo_.DeleteIssueAsync(issueId);
+            await repo.DeleteIssueAsync(issueId);
         }
 
         public async Task DeleteRowAsync(int rowId)
         {
-            await repo_.DeleteRowAsync(rowId);
+            await repo.DeleteRowAsync(rowId);
         }
 
         public async Task DeleteColumnAsync(int columnId)
         {
-            await repo_.DeleteColumnAsync(columnId);
+            await repo.DeleteColumnAsync(columnId);
         }
 
         #endregion
 
-        public async Task CreateOrUpdateColumn(ColumnInfo column)
+        #region SavingInfo
+
+        public async Task CreateOrUpdateColumnAsync(ColumnInfo column)
         {
-            await repo_.CreateOrUpdateColumnAsync(column);
+            await repo.CreateOrUpdateColumnAsync(column);
         }
 
-        public async Task CreateOrUpdateRow(RowInfo row)
+        public async Task CreateOrUpdateRowAsync(RowInfo row)
         {
-            await repo_.CreateOrUpdateRowAsync(row);
+            await repo.CreateOrUpdateRowAsync(row);
         }
 
-        public async Task<LocalIssue> LoadOrCreateAsync(int? issueId)
+        public async Task CreateOrUpdateIssueAsync(LocalIssue issue)
+        {
+            issue.Modified = DateTime.Now;
+            await repo.CreateOrUpdateIssueAsync(issue);
+        }
+        
+
+        #endregion
+
+        public async Task<LocalIssue> LoadOrCreateIssueAsync(int? issueId)
         {
             var t = new LocalIssue();
             if (issueId.HasValue)
-                t = await repo_.GetIssueAsync(issueId.Value);
+                t = await repo.GetIssueAsync(issueId.Value);
 
             return t;
-        }
-
-        public async Task SaveIssueAsync(LocalIssue issue)
-        {
-            issue.Modified = DateTime.Now;
-            await repo_.CreateOrUpdateIssueAsync(issue);
-        }
-
-        public async Task<List<RowInfo>> GetRows()
-        {
-            return await repo_.GetRowsAsync();
-        }
-
-        public async Task<List<ColumnInfo>> GetColumns()
-        {
-            return await repo_.GetColumnsAsync();
         }
     }
 }

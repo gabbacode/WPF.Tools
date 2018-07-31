@@ -67,10 +67,6 @@
       <Project>{C1D73699-7C75-48BB-8076-913018DB6852}</Project>
       <Name>Data.Sources.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Data.Sources.LocalStorage.Sqlite\Data.Sources.LocalStorage.Sqlite.csproj">
-      <Project>{947A8888-74FE-4789-B4A6-83CFFE394984}</Project>
-      <Name>Data.Sources.LocalStorage.Sqlite</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
