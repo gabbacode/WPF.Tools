@@ -6,29 +6,129 @@
         xmlns:dialogs="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
         dialogs:DialogParticipation.Register="{Binding}"
         xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
+        xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
         mc:Ignorable="d"
+        xmlns:resources="clr-namespace:Kanban.Desktop.LocalBase.WpfResources"
         d:DesignHeight="400"
         d:DesignWidth="400">
 
-    <StackPanel Orientation="Vertical">
-        <Label>Board name</Label>
-        <TextBox Text="{Binding BoardName, UpdateSourceTrigger=PropertyChanged}"/>
+    <UserControl.Resources>
+        <Style TargetType="Label">
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+        <Style TargetType="TextBox">
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="True">
+                    <Setter Property="Foreground" Value="Red"/>
+                    <Setter Property="ToolTip" 
+                    Value="{Binding RelativeSource={RelativeSource Self}, 
+                    Path=(Validation.Errors)[0].ErrorContent}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="ListBoxItem">
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="True">
+                    <Setter Property="Foreground" Value="Red"/>
+                    <Setter Property="ToolTip" 
+                    Value="{Binding RelativeSource={RelativeSource Self}, 
+                    Path=(Validation.Errors)[0].ErrorContent}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+    
 
-        <Label>Folder name</Label>
-        <TextBox Text="{Binding FolderName}"/>
+    <StackPanel Orientation="Vertical">
+
+        <Label>Board name</Label>
+        <TextBox Text="{Binding BoardName,
+            UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}">
+        </TextBox>
+
+            <Label>Folder name</Label>
+        <TextBox Text="{Binding FolderName,
+            ValidatesOnDataErrors=True}"/>
         <Button Command="{Binding SelectFolderCommand}">...</Button>
 
         <Label>File name</Label>
-        <TextBox Text="{Binding FileName}"/>
-        
+        <TextBox Text="{Binding FileName,
+            ValidatesOnDataErrors=True}"/>
+
         <Label>Columns</Label>
-        <ListBox ItemsSource="{Binding ColumnList}"/>
+        <ListBox ItemsSource="{Binding ColumnList, ValidatesOnDataErrors=True}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBox Text="{Binding Path=Name, ValidatesOnDataErrors=True }"
+                            Validation.ValidationAdornerSite="{Binding 
+                            RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}"/>
+                       
+                        <Button Grid.Column="1"
+                            Visibility="{Binding 
+                            RelativeSource={RelativeSource AncestorType={x:Type ListBox}},
+                            Path=DataContext.ColumnList.Count,
+                            Converter={resources:CountToVisibility}}"
+
+                            Command="{Binding 
+                            RelativeSource={RelativeSource AncestorType={x:Type ListBox}},
+                            Path=DataContext.DeleteColumnCommand}" CommandParameter="{Binding Path=Index}" 
+                            Content="{iconPacks:Entypo SquaredCross}" 
+                            Margin="0"/>
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="{x:Type ListBoxItem}">
+                    <Style.Triggers>
+                        <Trigger Property="Validation.HasError" Value="True">
+                            <Setter Property="Foreground" Value="Red"/>
+                            <Setter Property="ToolTip" 
+                                    Value="{Binding RelativeSource={RelativeSource Self}, 
+                    Path=DataContext.(Validation.Errors)[0].ErrorContent}"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </ListBox.ItemContainerStyle>                 
+        </ListBox>
         <Button Command="{Binding AddColumnCommand}">Add column</Button>
 
         <Label>Rows</Label>
-        <ListBox ItemsSource="{Binding RowList}"/>
+        <ListBox ItemsSource="{Binding RowList}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBox Text="{Binding Path=Name}"/>
+                        <Button Grid.Column="1" 
+
+                                Visibility="{Binding 
+                            RelativeSource={RelativeSource AncestorType={x:Type ListBox}},
+                            Path=DataContext.RowList.Count,
+                            Converter={resources:CountToVisibility}}"
+
+                            Command="{Binding 
+                            RelativeSource={RelativeSource AncestorType={x:Type ListBox}},
+                            Path=DataContext.DeleteRowCommand}" 
+                                CommandParameter="{Binding Path=Index}" 
+                                Content="{iconPacks:Entypo SquaredCross}" 
+                                Margin="0"/>
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
         <Button Command="{Binding AddRowCommand}">Add row</Button>
-        
+
         <Button Command="{Binding CreateCommand}">Create Board</Button>
         <Button Command="{Binding CancelCommand}">Cancel</Button>
     </StackPanel>

@@ -18,7 +18,7 @@ namespace Kanban.Desktop.LocalBase.ViewModels
         public ReactiveCommand NewDbCommand { get; set; }
         public ReactiveCommand OpenDbCommand { get; set; }
         public ReactiveCommand<string, Unit> OpenRecentDbCommand { get; set; }
-        public ReactiveCommand<string,Unit> RemoveRecentCommand { get; set; }
+        public ReactiveCommand<string, Unit> RemoveRecentCommand { get; set; }
 
         private readonly IShell shell;
         private readonly IAppModel appModel;
@@ -31,14 +31,15 @@ namespace Kanban.Desktop.LocalBase.ViewModels
             this.appModel.LoadConfig();
 
             var recent = this.appModel.GetRecentDocuments();
-            BaseList = new ReactiveList<string>(recent);
+            BaseList = new ReactiveList<string>(recent.Take(3));
 
             OpenRecentDbCommand = ReactiveCommand.Create<string>(uri =>
             {
                 if (!OpenBoardView(uri))
                 {
                     RemoveRecent(uri);
-                    DialogCoordinator.Instance.ShowMessageAsync(this, "Ошибка", "База была удалена или перемещена из данной папки");
+                    DialogCoordinator.Instance.ShowMessageAsync(this, "Ошибка",
+                        "База была удалена или перемещена из данной папки");
                 }
             });
 
@@ -61,13 +62,13 @@ namespace Kanban.Desktop.LocalBase.ViewModels
                     AddRecent(uri);
                 }
             });
-        }//ctor
+        } //ctor
 
         private void RemoveRecent(string uri)
         {
             appModel.RemoveRecent(uri);
             appModel.SaveConfig();
-            BaseList.Remove(uri);
+            BaseList.PublishCollection(appModel.GetRecentDocuments().Take(3));
         }
 
         private void AddRecent(string uri)
@@ -76,6 +77,7 @@ namespace Kanban.Desktop.LocalBase.ViewModels
             appModel.SaveConfig();
             BaseList.Remove(uri);
             BaseList.Insert(0, uri);
+            if (BaseList.Count > 3) BaseList.RemoveAt(3);
         }
 
         private bool OpenBoardView(string uri)
@@ -88,8 +90,8 @@ namespace Kanban.Desktop.LocalBase.ViewModels
             var scope = appModel.LoadScope(uri);
 
             shell.ShowView<BoardView>(
-                viewRequest: new BoardViewRequest { Scope = scope },
-                options: new UiShowOptions { Title = file.Name });
+                viewRequest: new BoardViewRequest {Scope = scope},
+                options: new UiShowOptions {Title = file.Name});
 
             AddRecent(uri);
 

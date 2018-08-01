@@ -79,7 +79,7 @@ namespace Ui.Wpf.Common.ViewModels
                 {
                     var firstOrDefault = validator.Validate(this).Errors.FirstOrDefault(lol => lol.PropertyName == columnName);
                     if (firstOrDefault != null)
-                        return validator != null ? firstOrDefault.ErrorMessage : "";
+                       return validator != null ? firstOrDefault.ErrorMessage : "";
                 }
                 return "";
             }

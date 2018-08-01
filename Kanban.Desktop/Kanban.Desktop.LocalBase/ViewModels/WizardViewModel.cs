@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Reactive;
 using System.Reactive.Linq;
 using System.Windows.Forms;
 using Data.Entities.Common.LocalBase;
@@ -9,7 +11,7 @@ using ReactiveUI.Fody.Helpers;
 using Ui.Wpf.Common;
 using Ui.Wpf.Common.ShowOptions;
 using Ui.Wpf.Common.ViewModels;
-using FluentValidation;
+using Kanban.Desktop.LocalBase.WpfResources;
 
 namespace Kanban.Desktop.LocalBase.ViewModels
 {
@@ -18,17 +20,17 @@ namespace Kanban.Desktop.LocalBase.ViewModels
         [Reactive] public string BoardName { get; set; }
         [Reactive] public string FolderName { get; set; }
         [Reactive] public string FileName { get; set; }
-
-        public ReactiveList<string> ColumnList { get; set; }
-        public ReactiveList<string> RowList { get; set; }
+        public ReactiveList<LocalDimension> ColumnList { get; set; }
+        public ReactiveList<LocalDimension> RowList { get; set; }
 
         public ReactiveCommand CreateCommand { get; set; }
         public ReactiveCommand CancelCommand { get; set; }
         public ReactiveCommand SelectFolderCommand { get; set; }
 
         public ReactiveCommand AddColumnCommand { get; set; }
+        public ReactiveCommand<int, Unit> DeleteColumnCommand { get; set; }
         public ReactiveCommand AddRowCommand { get; set; }
-
+        public ReactiveCommand<int, Unit> DeleteRowCommand { get; set; }
 
         private readonly IAppModel appModel;
         private readonly IShell shell;
@@ -37,14 +39,14 @@ namespace Kanban.Desktop.LocalBase.ViewModels
         {
             this.appModel = appModel;
             this.shell = shell;
-
-//            RuleFor(customer => customer.Surname).NotEmpty();
+            validator = new WizardValidator();
 
             Title = "Creating a board";
 
             this.WhenAnyValue(x => x.BoardName)
                 .Where(x => !string.IsNullOrWhiteSpace(x))
-                .Subscribe(v => FileName = BoardNameToFileName(v));
+                .Subscribe(v => { FileName = BoardNameToFileName(v); });
+
 
             /* TODO: Delayed check folder exists (Error)
              * this.WhenAnyValue(x => x.FolderName)
@@ -58,27 +60,36 @@ namespace Kanban.Desktop.LocalBase.ViewModels
 
             SelectFolderCommand = ReactiveCommand.Create(SelectFolder);
 
-            ColumnList = new ReactiveList<string>()
+            ColumnList = new ReactiveList<LocalDimension>()
             {
-                "Backlog",
-                "In progress",
-                "Done"
+                new LocalDimension("Backlog"),
+                new LocalDimension("In progress"),
+                new LocalDimension("Done")
             };
 
-            AddColumnCommand = ReactiveCommand.Create(() => ColumnList.Add("New column"));
+            AddColumnCommand =
+                ReactiveCommand.Create(() => ColumnList.Add(new LocalDimension("New column")));
 
-            RowList = new ReactiveList<string>()
+            DeleteColumnCommand = ReactiveCommand
+                .Create<int>(index =>
+                    ColumnList.Remove(ColumnList.First(column => column.Index == index)));
+
+            RowList = new ReactiveList<LocalDimension>()
             {
-                "Important",
-                "So-so",
-                "Trash"
+                new LocalDimension("Important"),
+                new LocalDimension("So-so"),
+                new LocalDimension("Trash")
             };
 
-            AddRowCommand = ReactiveCommand.Create(() => RowList.Add("New row"));
+            DeleteRowCommand = ReactiveCommand
+                .Create<int>(index => RowList.Remove(RowList.First(row => row.Index == index)));
+
+            AddRowCommand =
+                ReactiveCommand.Create(() => RowList.Add(new LocalDimension("New row")));
 
             CreateCommand = ReactiveCommand.Create(Create);
 
-            CancelCommand =ReactiveCommand.Create(Close);
+            CancelCommand = ReactiveCommand.Create(Close);
         }
 
         private string BoardNameToFileName(string boardName)
@@ -86,9 +97,11 @@ namespace Kanban.Desktop.LocalBase.ViewModels
             // stop chars for short file name    +=[]:;«,./?'space'
             // stops for long                    /\:*?«<>|
 
-            char[] separators = new char[] {
+            char[] separators =
+            {
                 '+', '=', '[', ']', ':', ';', '"', ',', '.', '/', '?', ' ',
-                '\\', '*', '<', '>', '|'};
+                '\\', '*', '<', '>', '|'
+            };
 
             string str = boardName.Replace(separators, "_");
             return str + ".db";
@@ -107,23 +120,37 @@ namespace Kanban.Desktop.LocalBase.ViewModels
 
         public void Create()
         {
-            string uri = FolderName + "\\" + FileName;
+            string uri = FolderName + "\\"       + FileName;
             appModel.AddRecent(FolderName + "\\" + FileName);
             appModel.SaveConfig();
 
             var scope = appModel.CreateScope(uri);
 
-            foreach (var colName in ColumnList)
-                scope.CreateOrUpdateColumnAsync(new ColumnInfo { Name = colName });
+            foreach (var colName in ColumnList.Select(column => column.Name))
+                scope.CreateOrUpdateColumnAsync(new ColumnInfo {Name = colName});
 
-            foreach (var rowName in RowList)
-                scope.CreateOrUpdateRowAsync(new RowInfo { Name = rowName });
+            foreach (var rowName in RowList.Select(row => row.Name))
+                scope.CreateOrUpdateRowAsync(new RowInfo {Name = rowName});
 
-            this.Close();
+            Close();
 
             shell.ShowView<BoardView>(
-                viewRequest: new BoardViewRequest { Scope = scope },
-                options: new UiShowOptions { Title = FileName });
+                viewRequest: new BoardViewRequest {Scope = scope},
+                options: new UiShowOptions {Title = FileName});
+        }
+
+        public class LocalDimension
+        {
+            private static int elementCount;
+
+            public LocalDimension(string name)
+            {
+                Index = ++elementCount;
+                Name = name;
+            }
+
+            [Reactive] public int Index { get; set; }
+            [Reactive] public string Name { get; set; }
         }
     }
 
@@ -131,9 +158,8 @@ namespace Kanban.Desktop.LocalBase.ViewModels
     {
         public static string Replace(this string s, char[] separators, string newVal)
         {
-            string[] temp;
+            var temp = s.Split(separators, StringSplitOptions.RemoveEmptyEntries);
 
-            temp = s.Split(separators, StringSplitOptions.RemoveEmptyEntries);
             return String.Join(newVal, temp);
         }
     }

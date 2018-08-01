@@ -235,6 +235,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="WpfResources\Validators.cs" />
     <Page Include="Views\WizardView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -247,6 +248,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="WpfResources\Converters.cs" />
     <Compile Include="Models\AppModel.cs" />
     <Compile Include="Models\ScopeModel.cs" />
     <Compile Include="SqliteLocalStorage\Context\SqliteContext.cs" />
