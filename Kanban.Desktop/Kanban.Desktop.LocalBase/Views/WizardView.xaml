@@ -9,6 +9,7 @@
         xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
         mc:Ignorable="d"
         xmlns:resources="clr-namespace:Kanban.Desktop.LocalBase.WpfResources"
+        xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
         d:DesignHeight="400"
         d:DesignWidth="400">
 
@@ -38,39 +39,43 @@
             </Style.Triggers>
         </Style>
     </UserControl.Resources>
-    
 
-    <StackPanel Orientation="Vertical">
-
-        <Label>Board name</Label>
-        <TextBox Text="{Binding BoardName,
-            UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}">
-        </TextBox>
+    <ScrollViewer VerticalScrollBarVisibility="Auto" >
+      <StackPanel Orientation="Vertical">
+            <Label>Board name</Label>
+            <TextBox Text="{Binding BoardName,
+            UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
 
             <Label>Folder name</Label>
-        <TextBox Text="{Binding FolderName,
-            ValidatesOnDataErrors=True}"/>
-        <Button Command="{Binding SelectFolderCommand}">...</Button>
+            <TextBox Text="{Binding FolderName,
+            UpdateSourceTrigger=PropertyChanged,ValidatesOnDataErrors=True}"/>
+            <Button Command="{Binding SelectFolderCommand}">...</Button>
 
-        <Label>File name</Label>
-        <TextBox Text="{Binding FileName,
-            ValidatesOnDataErrors=True}"/>
+            <Label>File name</Label>
+            <TextBox Text="{Binding FileName, 
+           UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
 
-        <Label>Columns</Label>
-        <ListBox ItemsSource="{Binding ColumnList, ValidatesOnDataErrors=True}">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
+            <Label>Columns</Label>
+            <ListBox  dd:DragDrop.IsDragSource="True"
+                  dd:DragDrop.IsDropTarget="True" 
+                  dd:DragDrop.UseDefaultEffectDataTemplate="True"
+            ItemsSource="{Binding ColumnList,
+            UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate >
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
 
-                        <TextBox Text="{Binding Path=Name, ValidatesOnDataErrors=True }"
-                            Validation.ValidationAdornerSite="{Binding 
-                            RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}"/>
-                       
-                        <Button Grid.Column="1"
+                            <Button Content="{iconPacks:Modern CursorHand}"/>
+
+                            <TextBox Grid.Column="1" Text="{Binding Path=Name,
+                            UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True }"/>
+
+                            <Button Grid.Column="2"
                             Visibility="{Binding 
                             RelativeSource={RelativeSource AncestorType={x:Type ListBox}},
                             Path=DataContext.ColumnList.Count,
@@ -78,39 +83,36 @@
 
                             Command="{Binding 
                             RelativeSource={RelativeSource AncestorType={x:Type ListBox}},
-                            Path=DataContext.DeleteColumnCommand}" CommandParameter="{Binding Path=Index}" 
+                            Path=DataContext.DeleteColumnCommand}" CommandParameter="{Binding}" 
                             Content="{iconPacks:Entypo SquaredCross}" 
                             Margin="0"/>
-                    </Grid>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-            <ListBox.ItemContainerStyle>
-                <Style TargetType="{x:Type ListBoxItem}">
-                    <Style.Triggers>
-                        <Trigger Property="Validation.HasError" Value="True">
-                            <Setter Property="Foreground" Value="Red"/>
-                            <Setter Property="ToolTip" 
-                                    Value="{Binding RelativeSource={RelativeSource Self}, 
-                    Path=DataContext.(Validation.Errors)[0].ErrorContent}"/>
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-            </ListBox.ItemContainerStyle>                 
-        </ListBox>
-        <Button Command="{Binding AddColumnCommand}">Add column</Button>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <Button Command="{Binding AddColumnCommand}">Add column</Button>
 
-        <Label>Rows</Label>
-        <ListBox ItemsSource="{Binding RowList}">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
+            <Label>Rows</Label>
+            <ListBox
+            dd:DragDrop.IsDragSource="True"
+            dd:DragDrop.IsDropTarget="True" 
+            dd:DragDrop.UseDefaultEffectDataTemplate="True"
+            ItemsSource="{Binding RowList}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
 
-                        <TextBox Text="{Binding Path=Name}"/>
-                        <Button Grid.Column="1" 
+                            <Button Content="{iconPacks:Modern CursorHand}"/>
+
+                            <TextBox Grid.Column="1" Text="{Binding Path=Name,
+                            UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True }"/>
+
+                            <Button Grid.Column="2" 
 
                                 Visibility="{Binding 
                             RelativeSource={RelativeSource AncestorType={x:Type ListBox}},
@@ -120,16 +122,17 @@
                             Command="{Binding 
                             RelativeSource={RelativeSource AncestorType={x:Type ListBox}},
                             Path=DataContext.DeleteRowCommand}" 
-                                CommandParameter="{Binding Path=Index}" 
+                                CommandParameter="{Binding}" 
                                 Content="{iconPacks:Entypo SquaredCross}" 
                                 Margin="0"/>
-                    </Grid>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
-        <Button Command="{Binding AddRowCommand}">Add row</Button>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <Button Command="{Binding AddRowCommand}">Add row</Button>
 
-        <Button Command="{Binding CreateCommand}">Create Board</Button>
-        <Button Command="{Binding CancelCommand}">Cancel</Button>
-    </StackPanel>
+            <Button Command="{Binding CreateCommand}" Click="Button_Click">Create Board</Button>
+            <Button Command="{Binding CancelCommand}">Cancel</Button>
+        </StackPanel>
+    </ScrollViewer>
 </UserControl>

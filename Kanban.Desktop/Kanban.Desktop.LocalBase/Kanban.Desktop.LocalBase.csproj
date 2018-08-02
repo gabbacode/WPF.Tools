@@ -235,6 +235,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="WpfResources\ControlElements.cs" />
     <Compile Include="WpfResources\Validators.cs" />
     <Page Include="Views\WizardView.xaml">
       <Generator>MSBuild:Compile</Generator>

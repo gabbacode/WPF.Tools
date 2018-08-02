@@ -20,5 +20,10 @@ namespace Kanban.Desktop.LocalBase.Views
         {
             ViewModel.Title = options.Title;
         }
+
+        private void Button_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+
+        }
     }
 }

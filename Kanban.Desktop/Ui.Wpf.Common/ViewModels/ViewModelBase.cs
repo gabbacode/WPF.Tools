@@ -53,7 +53,7 @@ namespace Ui.Wpf.Common.ViewModels
 
         protected IValidator validator;
 
-        public string Error
+       public string Error
         {
             get
             {
@@ -69,7 +69,6 @@ namespace Ui.Wpf.Common.ViewModels
                 return string.Empty;
             }
         }
-
 
         public string this[string columnName]
         {
