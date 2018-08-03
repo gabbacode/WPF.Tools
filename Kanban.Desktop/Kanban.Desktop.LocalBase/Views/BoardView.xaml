@@ -10,10 +10,11 @@
              xmlns:kanbanControl="clr-namespace:Ui.Wpf.KanbanControl;assembly=Ui.Wpf.KanbanControl"
              xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
              mc:Ignorable="d">
-    <Grid >
+
+    <Grid Width="Auto" Height="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition/>
+            <RowDefinition />
         </Grid.RowDefinitions>
 
         <StackPanel
@@ -40,10 +41,12 @@
         </StackPanel>
 
         <kanbanControl:Kanban 
+            
             Grid.Row="1" 
             HorizontalDimension="{Binding HorizontalDimension}" 
             VerticalDimension="{Binding VerticalDimension}"
             Cards="{Binding Issues}"
+            CardMouseDoubleClickCommand="{Binding UpdateCardCommand}"
             CardContent="{Binding CardContent}"
             CardMouseClickCommand="{Binding IssueSelectCommand}"
             HorizontalHeaderMouseClickCommand="{Binding ColumnHeaderSelectCommand}"

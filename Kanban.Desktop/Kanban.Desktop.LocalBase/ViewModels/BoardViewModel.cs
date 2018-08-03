@@ -32,8 +32,6 @@ namespace Kanban.Desktop.LocalBase.ViewModels
         [Reactive] private RowInfo    SelectedRow    { get; set; }
         [Reactive] private ColumnInfo SelectedColumn { get; set; }
 
-        public IDropTarget LocalBoardHandler { get; set; } = new LocalBoardDropHandler();
-
         [Reactive] public IDimension VerticalDimension { get; internal set; }
 
         [Reactive] public IDimension HorizontalDimension { get; internal set; }
@@ -50,6 +48,8 @@ namespace Kanban.Desktop.LocalBase.ViewModels
         public ReactiveCommand DeleteCommand { get; set; }
 
         public ReactiveCommand UpdateCommand { get; set; }
+
+        public ReactiveCommand<object, Unit> UpdateCardCommand { get; set; }
 
         public ReactiveCommand<string,Unit> AddNewElementCommand { get; set; }
 
@@ -74,6 +74,8 @@ namespace Kanban.Desktop.LocalBase.ViewModels
             DeleteCommand = ReactiveCommand.CreateFromTask(DeleteElement, isSelectedEditable);
 
             UpdateCommand = ReactiveCommand.Create(UpdateElement, isSelectedEditable);
+
+            UpdateCardCommand = ReactiveCommand.Create<object>(UpdateCard);
 
             AddNewElementCommand = ReactiveCommand.CreateFromTask<string>(async name=>await AddNewElement(name));
 
@@ -144,6 +146,18 @@ namespace Kanban.Desktop.LocalBase.ViewModels
                 await scope.DeleteColumnAsync(SelectedColumn.Id);
 
             await RefreshContent();
+        }
+
+        private void UpdateCard(object o)
+        {
+            if (o is LocalIssue lis)
+                shell_.ShowView<IssueView>(
+                    viewRequest: new IssueViewRequest() { IssueId = SelectedIssue.Id, Scope = scope });
+            else if(o is null)
+            {
+                shell_.ShowView<IssueView>(
+                    viewRequest: new IssueViewRequest() { IssueId = 0, Scope = scope });
+            }
         }
 
         private async Task UpdateElement()

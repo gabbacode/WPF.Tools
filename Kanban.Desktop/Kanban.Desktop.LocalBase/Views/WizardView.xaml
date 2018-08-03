@@ -40,42 +40,43 @@
         </Style>
     </UserControl.Resources>
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto" >
-      <StackPanel Orientation="Vertical">
-            <Label>Board name</Label>
-            <TextBox Text="{Binding BoardName,
+    <StackPanel Orientation="Vertical">
+        <Label>Board name</Label>
+        <TextBox Text="{Binding BoardName,
             UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
 
-            <Label>Folder name</Label>
-            <TextBox Text="{Binding FolderName,
+        <Label>Folder name</Label>
+        <TextBox Text="{Binding FolderName,
             UpdateSourceTrigger=PropertyChanged,ValidatesOnDataErrors=True}"/>
-            <Button Command="{Binding SelectFolderCommand}">...</Button>
+        <Button Command="{Binding SelectFolderCommand}">...</Button>
 
-            <Label>File name</Label>
-            <TextBox Text="{Binding FileName, 
+        <Label>File name</Label>
+        <TextBox Text="{Binding FileName, 
            UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
 
-            <Label>Columns</Label>
-            <ListBox  dd:DragDrop.IsDragSource="True"
-                  dd:DragDrop.IsDropTarget="True" 
-                  dd:DragDrop.UseDefaultEffectDataTemplate="True"
-            ItemsSource="{Binding ColumnList,
-            UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}">
-                <ListBox.ItemTemplate>
-                    <DataTemplate >
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
+        <Label>Columns</Label>
+        <ListBox 
+            dd:DragDrop.IsDragSource="True"
+            dd:DragDrop.IsDropTarget="True" 
+            dd:DragDrop.UseDefaultEffectDataTemplate="True"
+            ScrollViewer.CanContentScroll="True"
+            MaxHeight="330"
+            ItemsSource="{Binding ColumnList}">
+            <ListBox.ItemTemplate>
+                <DataTemplate >
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
 
-                            <Button Content="{iconPacks:Modern CursorHand}"/>
+                        <Button Content="{iconPacks:Modern CursorHand}"/>
 
-                            <TextBox Grid.Column="1" Text="{Binding Path=Name,
+                        <TextBox Grid.Column="1" Text="{Binding Path=Name,
                             UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True }"/>
 
-                            <Button Grid.Column="2"
+                        <Button Grid.Column="2"
                             Visibility="{Binding 
                             RelativeSource={RelativeSource AncestorType={x:Type ListBox}},
                             Path=DataContext.ColumnList.Count,
@@ -86,16 +87,19 @@
                             Path=DataContext.DeleteColumnCommand}" CommandParameter="{Binding}" 
                             Content="{iconPacks:Entypo SquaredCross}" 
                             Margin="0"/>
-                        </Grid>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-            <Button Command="{Binding AddColumnCommand}">Add column</Button>
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <Button Command="{Binding AddColumnCommand}">Add column</Button>
 
-            <Label>Rows</Label>
+        <Label>Rows</Label>
+        <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="500">
             <ListBox
             dd:DragDrop.IsDragSource="True"
             dd:DragDrop.IsDropTarget="True" 
+            ScrollViewer.CanContentScroll="True"
+            MaxHeight="330"
             dd:DragDrop.UseDefaultEffectDataTemplate="True"
             ItemsSource="{Binding RowList}">
                 <ListBox.ItemTemplate>
@@ -129,10 +133,10 @@
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
-            <Button Command="{Binding AddRowCommand}">Add row</Button>
+        </ScrollViewer>
+        <Button Command="{Binding AddRowCommand}">Add row</Button>
 
-            <Button Command="{Binding CreateCommand}" Click="Button_Click">Create Board</Button>
-            <Button Command="{Binding CancelCommand}">Cancel</Button>
-        </StackPanel>
-    </ScrollViewer>
+        <Button Command="{Binding CreateCommand}" Click="Button_Click">Create Board</Button>
+        <Button Command="{Binding CancelCommand}">Cancel</Button>
+    </StackPanel>
 </UserControl>

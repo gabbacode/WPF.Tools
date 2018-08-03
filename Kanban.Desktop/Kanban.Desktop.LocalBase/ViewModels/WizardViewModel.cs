@@ -6,8 +6,6 @@ using System.Reactive.Linq;
 using System.Windows.Forms;
 using Data.Entities.Common.LocalBase;
 using FluentValidation;
-using FluentValidation.Results;
-using GongSolutions.Wpf.DragDrop;
 using Kanban.Desktop.LocalBase.Models;
 using Kanban.Desktop.LocalBase.Views;
 using ReactiveUI;
@@ -24,7 +22,6 @@ namespace Kanban.Desktop.LocalBase.ViewModels
         [Reactive] public string BoardName { get; set; }
         [Reactive] public string FolderName { get; set; }
         [Reactive] public string FileName { get; set; }
-        [Reactive] public bool ColumnListCorrect { get; set; }
         public ReactiveList<LocalDimension> ColumnList { get; set; }
         public ReactiveList<LocalDimension> RowList { get; set; }
 
@@ -101,48 +98,39 @@ namespace Kanban.Desktop.LocalBase.ViewModels
             CancelCommand = ReactiveCommand.Create(Close);
 
             this.WhenAnyObservable(s => s.ColumnList.ItemChanged)
-                .Subscribe(ol2 =>
-                {
-                    foreach (var dim in ColumnList) dim.IsDuplicate = false;
+                .Subscribe(_ =>UpdateDimensionList(ColumnList));
 
-                    var duplicatgroups = ColumnList
-                        .GroupBy(col => col.Name)
-                        .Where(g => g.Count() > 1)
-                        .ToList();
-
-                    foreach (var group in duplicatgroups)
-                    {
-                        foreach (var dim in group)
-                        {
-                            dim.IsDuplicate = true;
-                            dim.validator.Validate(dim);
-                        }
-                    }
-                });
-
+            this.WhenAnyObservable(s => s.RowList.ItemChanged)
+                .Subscribe(_ => UpdateDimensionList(RowList));
 
             this.WhenAnyObservable(s => s.ColumnList.Changed)
-                .Subscribe(ol2 =>
+                .Subscribe(_ =>UpdateDimensionList(ColumnList));
+
+            this.WhenAnyObservable(s => s.RowList.Changed)
+                .Subscribe(_ => UpdateDimensionList(RowList));
+        }
+
+        private void UpdateDimensionList(ReactiveList<LocalDimension> list)
+        {
+            foreach (var dim in list) dim.IsDuplicate = false;
+
+            var duplicatgroups = list
+                .GroupBy(dim => dim.Name)
+                .Where(g => g.Count() > 1)
+                .ToList();
+
+            foreach (var group in duplicatgroups)
+            {
+                foreach (var dim in group)
                 {
-                    foreach (var dim in ColumnList) dim.IsDuplicate = false;
+                    dim.IsDuplicate = true;
+                }
+            }
 
-                    var duplicatgroups = ColumnList
-                        .GroupBy(col => col.Name)
-                        .Where(g => g.Count() > 1)
-                        .ToList();
-
-                    foreach (var group in duplicatgroups)
-                    {
-                        foreach (var dim in group)
-                        {
-                            dim.IsDuplicate = true;
-                            
-                            dim.validator.Validate(dim);
-                        }
-                        
-                    }
-                });
-
+            //foreach (var dim in list)
+            //{
+            //    var t=dim.validator.Validate(dim);
+            //}
         }
 
         private string BoardNameToFileName(string boardName)
