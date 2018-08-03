@@ -51,7 +51,7 @@ namespace Kanban.Desktop.LocalBase.ViewModels
 
                 mapper.Map(this, editedIssue);
 
-                await scope.SaveIssueAsync(editedIssue);
+                await scope.CreateOrUpdateIssueAsync(editedIssue);
 
                 Close();
             }, issueFilled);
@@ -69,12 +69,12 @@ namespace Kanban.Desktop.LocalBase.ViewModels
             if (issueId == 0)
                 issueId = null;
 
-            Observable.FromAsync(() => scope.LoadOrCreateAsync(issueId))
+            Observable.FromAsync(() => scope.LoadOrCreateIssueAsync(issueId))
                 .ObserveOnDispatcher()
                 .Subscribe(issue =>
                     mapper.Map(issue, this));
 
-            Observable.FromAsync(() => scope.GetRows())
+            Observable.FromAsync(() => scope.GetRowsAsync())
                 .ObserveOnDispatcher()
                 .Subscribe(rows =>
                 {
@@ -82,7 +82,7 @@ namespace Kanban.Desktop.LocalBase.ViewModels
                     AwailableRows.AddRange(rows);
                 });
 
-            Observable.FromAsync(() => scope.GetColumns())
+            Observable.FromAsync(() => scope.GetColumnsAsync())
                 .ObserveOnDispatcher()
                 .Subscribe(columns =>
                     AwailableColumns.PublishCollection(columns));

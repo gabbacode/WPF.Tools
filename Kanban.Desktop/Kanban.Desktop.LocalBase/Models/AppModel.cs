@@ -3,8 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Ui.Wpf.Common;
 using Autofac;
 
@@ -39,69 +37,70 @@ namespace Kanban.Desktop.LocalBase.Models
 
     public class AppModel : IAppModel
     {
-        private readonly IShell shell_;
+        private readonly IShell shell;
 
-        private AppConfig appConfig_;
-        private string path_;
+        private AppConfig appConfig;
+        private readonly string path;
 
         public string Caption
         {
-            get { return appConfig_.Caption; }
-            set { appConfig_.Caption = value; }
+            get => appConfig.Caption;
+            set => appConfig.Caption = value;
         }
 
         public AppModel(IShell shell)
         {
-            shell_ = shell;
+            this.shell = shell;
 
-            path_ = Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData).ToString();
-            path_ += "\\kanban.config";
+            path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData); 
+            path += "\\kanban.config";
 
-            appConfig_ = new AppConfig();
+            appConfig = new AppConfig();
         }
 
-        public void AddRecent(string doc)
+        public void AddRecent(string doc) 
         {
-            appConfig_.Recent.Insert(0, doc);
+            appConfig.Recent.Insert(0, doc);
+            appConfig.Recent = appConfig.Recent.Distinct().ToList();
         }
 
         public IEnumerable<string> GetRecentDocuments()
         {
-            return appConfig_.Recent;
+            return appConfig.Recent;
         }
 
         public void RemoveRecent(string doc)
         {
-            appConfig_.Recent.Remove(doc);
+            appConfig.Recent.Remove(doc);
         }
 
         public void LoadConfig()
         {
-            if (File.Exists(path_))
+            if (File.Exists(path))
             {
-                string data = File.ReadAllText(path_);
-                appConfig_ = JsonConvert.DeserializeObject<AppConfig>(data);
+                string data = File.ReadAllText(path);
+                appConfig = JsonConvert.DeserializeObject<AppConfig>(data);
             }
         }
 
         public void SaveConfig()
         {
-            string data = JsonConvert.SerializeObject(appConfig_);
-            File.WriteAllText(path_, data);
+            string data = JsonConvert.SerializeObject(appConfig);
+            File.WriteAllText(path, data);
         }
 
         public IScopeModel CreateScope(string uri)
         {
-            var scope = shell_
+            var scope = shell
                 .Container
                 .Resolve<IScopeModel>(new NamedParameter("uri", uri));
 
             return scope;
         }
 
-        public IScopeModel LoadScope(string uri)
+        public IScopeModel LoadScope(string uri)//future? taking from env too?
         {
-            var scope = shell_
+            var scope = shell
                 .Container
                 .Resolve<IScopeModel>(new NamedParameter("uri", uri));
 

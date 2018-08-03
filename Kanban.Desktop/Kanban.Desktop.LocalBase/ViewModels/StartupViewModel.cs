@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Linq;
 using System.Reactive;
 using System.Windows.Forms;
 using Kanban.Desktop.LocalBase.Models;
@@ -17,32 +18,32 @@ namespace Kanban.Desktop.LocalBase.ViewModels
         public ReactiveCommand NewDbCommand { get; set; }
         public ReactiveCommand OpenDbCommand { get; set; }
         public ReactiveCommand<string, Unit> OpenRecentDbCommand { get; set; }
+        public ReactiveCommand<string, Unit> RemoveRecentCommand { get; set; }
 
-        private readonly IShell shell_;
-        private readonly IAppModel appModel_;
+        private readonly IShell shell;
+        private readonly IAppModel appModel;
 
         public StartupViewModel(IShell shell, IAppModel appModel)
         {
-            shell_ = shell;
-            appModel_ = appModel;
+            this.shell = shell;
+            this.appModel = appModel;
 
-            appModel_.LoadConfig();
+            this.appModel.LoadConfig();
 
-            var recent = appModel_.GetRecentDocuments();
-            BaseList = new ReactiveList<string>(recent);
+            var recent = this.appModel.GetRecentDocuments();
+            BaseList = new ReactiveList<string>(recent.Take(3));
 
             OpenRecentDbCommand = ReactiveCommand.Create<string>(uri =>
             {
                 if (!OpenBoardView(uri))
                 {
-                    appModel_.RemoveRecent(uri);
-                    appModel_.SaveConfig();
-
-                    BaseList.Remove(uri);
-
-                    DialogCoordinator.Instance.ShowMessageAsync(this, "Ошибка", "База была удалена или перемещена из данной папки");
+                    RemoveRecent(uri);
+                    DialogCoordinator.Instance.ShowMessageAsync(this, "Ошибка",
+                        "База была удалена или перемещена из данной папки");
                 }
             });
+
+            RemoveRecentCommand = ReactiveCommand.Create<string>(RemoveRecent);
 
             NewDbCommand = ReactiveCommand.Create(() => shell.ShowView<WizardView>());
 
@@ -55,9 +56,29 @@ namespace Kanban.Desktop.LocalBase.ViewModels
                 };
 
                 if (dialog.ShowDialog() == DialogResult.OK)
-                    OpenBoardView(dialog.FileName);
+                {
+                    var uri = dialog.FileName;
+                    OpenBoardView(uri);
+                    AddRecent(uri);
+                }
             });
-        }//ctor
+        } //ctor
+
+        private void RemoveRecent(string uri)
+        {
+            appModel.RemoveRecent(uri);
+            appModel.SaveConfig();
+            BaseList.PublishCollection(appModel.GetRecentDocuments().Take(3));
+        }
+
+        private void AddRecent(string uri)
+        {
+            appModel.AddRecent(uri);
+            appModel.SaveConfig();
+            BaseList.Remove(uri);
+            BaseList.Insert(0, uri);
+            if (BaseList.Count > 3) BaseList.RemoveAt(3);
+        }
 
         private bool OpenBoardView(string uri)
         {
@@ -66,11 +87,13 @@ namespace Kanban.Desktop.LocalBase.ViewModels
             if (!file.Exists)
                 return false;
 
-            var scope = appModel_.LoadScope(uri);
+            var scope = appModel.LoadScope(uri);
 
-            shell_.ShowView<BoardView>(
-                viewRequest: new BoardViewRequest { Scope = scope },
-                options: new UiShowOptions { Title = file.Name });
+            shell.ShowView<BoardView>(
+                viewRequest: new BoardViewRequest {Scope = scope},
+                options: new UiShowOptions {Title = file.Name});
+
+            AddRecent(uri);
 
             return true;
         }

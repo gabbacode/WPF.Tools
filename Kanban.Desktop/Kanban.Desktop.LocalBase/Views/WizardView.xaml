@@ -6,30 +6,137 @@
         xmlns:dialogs="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
         dialogs:DialogParticipation.Register="{Binding}"
         xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
+        xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
         mc:Ignorable="d"
+        xmlns:resources="clr-namespace:Kanban.Desktop.LocalBase.WpfResources"
+        xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
         d:DesignHeight="400"
         d:DesignWidth="400">
 
+    <UserControl.Resources>
+        <Style TargetType="Label">
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+        <Style TargetType="TextBox">
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="True">
+                    <Setter Property="Foreground" Value="Red"/>
+                    <Setter Property="ToolTip" 
+                    Value="{Binding RelativeSource={RelativeSource Self}, 
+                    Path=(Validation.Errors)[0].ErrorContent}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="ListBoxItem">
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="True">
+                    <Setter Property="Foreground" Value="Red"/>
+                    <Setter Property="ToolTip" 
+                    Value="{Binding RelativeSource={RelativeSource Self}, 
+                    Path=(Validation.Errors)[0].ErrorContent}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+
     <StackPanel Orientation="Vertical">
         <Label>Board name</Label>
-        <TextBox Text="{Binding BoardName, UpdateSourceTrigger=PropertyChanged}"/>
+        <TextBox Text="{Binding BoardName,
+            UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
 
         <Label>Folder name</Label>
-        <TextBox Text="{Binding FolderName}"/>
+        <TextBox Text="{Binding FolderName,
+            UpdateSourceTrigger=PropertyChanged,ValidatesOnDataErrors=True}"/>
         <Button Command="{Binding SelectFolderCommand}">...</Button>
 
         <Label>File name</Label>
-        <TextBox Text="{Binding FileName}"/>
-        
+        <TextBox Text="{Binding FileName, 
+           UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
+
         <Label>Columns</Label>
-        <ListBox ItemsSource="{Binding ColumnList}"/>
+        <ListBox 
+            dd:DragDrop.IsDragSource="True"
+            dd:DragDrop.IsDropTarget="True" 
+            dd:DragDrop.UseDefaultEffectDataTemplate="True"
+            ScrollViewer.CanContentScroll="True"
+            MaxHeight="330"
+            ItemsSource="{Binding ColumnList}">
+            <ListBox.ItemTemplate>
+                <DataTemplate >
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Button Content="{iconPacks:Modern CursorHand}"/>
+
+                        <TextBox Grid.Column="1" Text="{Binding Path=Name,
+                            UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True }"/>
+
+                        <Button Grid.Column="2"
+                            Visibility="{Binding 
+                            RelativeSource={RelativeSource AncestorType={x:Type ListBox}},
+                            Path=DataContext.ColumnList.Count,
+                            Converter={resources:CountToVisibility}}"
+
+                            Command="{Binding 
+                            RelativeSource={RelativeSource AncestorType={x:Type ListBox}},
+                            Path=DataContext.DeleteColumnCommand}" CommandParameter="{Binding}" 
+                            Content="{iconPacks:Entypo SquaredCross}" 
+                            Margin="0"/>
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
         <Button Command="{Binding AddColumnCommand}">Add column</Button>
 
         <Label>Rows</Label>
-        <ListBox ItemsSource="{Binding RowList}"/>
+        <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="500">
+            <ListBox
+            dd:DragDrop.IsDragSource="True"
+            dd:DragDrop.IsDropTarget="True" 
+            ScrollViewer.CanContentScroll="True"
+            MaxHeight="330"
+            dd:DragDrop.UseDefaultEffectDataTemplate="True"
+            ItemsSource="{Binding RowList}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Button Content="{iconPacks:Modern CursorHand}"/>
+
+                            <TextBox Grid.Column="1" Text="{Binding Path=Name,
+                            UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True }"/>
+
+                            <Button Grid.Column="2" 
+
+                                Visibility="{Binding 
+                            RelativeSource={RelativeSource AncestorType={x:Type ListBox}},
+                            Path=DataContext.RowList.Count,
+                            Converter={resources:CountToVisibility}}"
+
+                            Command="{Binding 
+                            RelativeSource={RelativeSource AncestorType={x:Type ListBox}},
+                            Path=DataContext.DeleteRowCommand}" 
+                                CommandParameter="{Binding}" 
+                                Content="{iconPacks:Entypo SquaredCross}" 
+                                Margin="0"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </ScrollViewer>
         <Button Command="{Binding AddRowCommand}">Add row</Button>
-        
-        <Button Command="{Binding CreateCommand}">Create Board</Button>
+
+        <Button Command="{Binding CreateCommand}" Click="Button_Click">Create Board</Button>
         <Button Command="{Binding CancelCommand}">Cancel</Button>
     </StackPanel>
 </UserControl>

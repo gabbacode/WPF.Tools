@@ -1,5 +1,4 @@
-﻿using Data.Sources.LocalStorage.Sqlite;
-using MahApps.Metro.Controls;
+﻿using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using System;
 using System.Collections.Specialized;

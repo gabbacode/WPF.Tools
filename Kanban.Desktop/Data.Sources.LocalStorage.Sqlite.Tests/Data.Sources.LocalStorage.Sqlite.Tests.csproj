@@ -162,9 +162,9 @@
       <Project>{D70D3F81-6B4F-4F6C-873F-53482DE2DE52}</Project>
       <Name>Data.Entities.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Data.Sources.LocalStorage.Sqlite\Data.Sources.LocalStorage.Sqlite.csproj">
-      <Project>{947A8888-74FE-4789-B4A6-83CFFE394984}</Project>
-      <Name>Data.Sources.LocalStorage.Sqlite</Name>
+    <ProjectReference Include="..\Kanban.Desktop.LocalBase\Kanban.Desktop.LocalBase.csproj">
+      <Project>{8BA427B7-F1BE-4AFD-8FE2-48256F518B66}</Project>
+      <Name>Kanban.Desktop.LocalBase</Name>
     </ProjectReference>
     <ProjectReference Include="..\Kanban.Desktop.Tests\Ui.Wpf.KanbanControl.Tests\Ui.Wpf.KanbanControl.Tests.csproj">
       <Project>{7ff04819-5de0-4a2c-86cb-850a930897e5}</Project>

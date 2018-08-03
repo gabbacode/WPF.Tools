@@ -53,7 +53,7 @@ namespace Ui.Wpf.Common.ViewModels
 
         protected IValidator validator;
 
-        public string Error
+       public string Error
         {
             get
             {
@@ -70,7 +70,6 @@ namespace Ui.Wpf.Common.ViewModels
             }
         }
 
-
         public string this[string columnName]
         {
             get
@@ -79,7 +78,7 @@ namespace Ui.Wpf.Common.ViewModels
                 {
                     var firstOrDefault = validator.Validate(this).Errors.FirstOrDefault(lol => lol.PropertyName == columnName);
                     if (firstOrDefault != null)
-                        return validator != null ? firstOrDefault.ErrorMessage : "";
+                       return validator != null ? firstOrDefault.ErrorMessage : "";
                 }
                 return "";
             }

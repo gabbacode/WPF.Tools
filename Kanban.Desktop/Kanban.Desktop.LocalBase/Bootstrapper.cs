@@ -60,3 +60,4 @@ namespace Kanban.Desktop.LocalBase
         }
     }
 }
+// loadscope,validation,
