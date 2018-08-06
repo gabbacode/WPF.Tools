@@ -14,6 +14,7 @@ using Ui.Wpf.Common;
 using Ui.Wpf.Common.ShowOptions;
 using Ui.Wpf.Common.ViewModels;
 using Kanban.Desktop.LocalBase.WpfResources;
+using System.Threading.Tasks;
 
 namespace Kanban.Desktop.LocalBase.ViewModels
 {
@@ -24,6 +25,8 @@ namespace Kanban.Desktop.LocalBase.ViewModels
         [Reactive] public string FileName { get; set; }
         public ReactiveList<LocalDimension> ColumnList { get; set; }
         public ReactiveList<LocalDimension> RowList { get; set; }
+
+
 
         public ReactiveCommand CreateCommand { get; set; }
         public ReactiveCommand CancelCommand { get; set; }
@@ -49,14 +52,6 @@ namespace Kanban.Desktop.LocalBase.ViewModels
                 .Where(x => !string.IsNullOrWhiteSpace(x))
                 .Subscribe(v => { FileName = BoardNameToFileName(v); });
 
-
-            /* TODO: Delayed check folder exists (Error)
-             * this.WhenAnyValue(x => x.FolderName)
-                .Throttle()
-                .Subscribe();*/
-
-            // TODO: Delayed check file exists (Warning)
-
             BoardName = "My Board";
 
             FolderName = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
@@ -69,14 +64,17 @@ namespace Kanban.Desktop.LocalBase.ViewModels
                 new LocalDimension("In progress"),
                 new LocalDimension("Done")
             };
-            ColumnList.ChangeTrackingEnabled = true;
 
             AddColumnCommand =
                 ReactiveCommand.Create(() => ColumnList.Add(new LocalDimension("New column")));
 
             DeleteColumnCommand = ReactiveCommand
                 .Create<LocalDimension>(column =>
-                    ColumnList.Remove(column));
+                {
+                    ColumnList.Remove(column);
+                    UpdateDimensionList(ColumnList);
+                });
+
 
             RowList = new ReactiveList<LocalDimension>()
             {
@@ -85,52 +83,63 @@ namespace Kanban.Desktop.LocalBase.ViewModels
                 new LocalDimension("Trash")
             };
 
+
             DeleteRowCommand = ReactiveCommand
-                .Create<LocalDimension>(row => RowList.Remove(row));
+                .Create<LocalDimension>(row =>
+                {
+                    RowList.Remove(row);
+                    UpdateDimensionList(RowList);
+                });
 
             AddRowCommand =
                 ReactiveCommand.Create(() => RowList.Add(new LocalDimension("New row")));
 
-            var canCreate = this.WhenAnyValue(w => w.Error, string.IsNullOrEmpty);
+            var canCreate = this.WhenAnyValue(w => w.Error, e => string.IsNullOrEmpty(e));
 
             CreateCommand = ReactiveCommand.Create(Create, canCreate);
 
             CancelCommand = ReactiveCommand.Create(Close);
 
             this.WhenAnyObservable(s => s.ColumnList.ItemChanged)
-                .Subscribe(_ =>UpdateDimensionList(ColumnList));
+                .Subscribe(_ =>
+                    UpdateDimensionList(ColumnList));
 
             this.WhenAnyObservable(s => s.RowList.ItemChanged)
-                .Subscribe(_ => UpdateDimensionList(RowList));
+                .Subscribe(_ =>
+                    UpdateDimensionList(RowList));
 
-            this.WhenAnyObservable(s => s.ColumnList.Changed)
-                .Subscribe(_ =>UpdateDimensionList(ColumnList));
+            this.WhenAnyObservable(s => s.ColumnList.ItemsAdded)
+                .Subscribe(_ => UpdateDimensionList(ColumnList));
 
-            this.WhenAnyObservable(s => s.RowList.Changed)
+            this.WhenAnyObservable(s => s.RowList.ItemsAdded)
                 .Subscribe(_ => UpdateDimensionList(RowList));
         }
 
         private void UpdateDimensionList(ReactiveList<LocalDimension> list)
         {
-            foreach (var dim in list) dim.IsDuplicate = false;
+            list.ChangeTrackingEnabled = false;
+            foreach (var dim in list)
+            {
+                dim.IsDuplicate = false;
+                dim?.RaisePropertyChanged(nameof(dim.Name));
+            }
 
             var duplicatgroups = list
                 .GroupBy(dim => dim.Name)
                 .Where(g => g.Count() > 1)
                 .ToList();
 
+
             foreach (var group in duplicatgroups)
             {
                 foreach (var dim in group)
                 {
                     dim.IsDuplicate = true;
+                    dim?.RaisePropertyChanged(nameof(dim.Name));
                 }
             }
 
-            //foreach (var dim in list)
-            //{
-            //    var t=dim.validator.Validate(dim);
-            //}
+            list.ChangeTrackingEnabled = true;
         }
 
         private string BoardNameToFileName(string boardName)
@@ -161,23 +170,23 @@ namespace Kanban.Desktop.LocalBase.ViewModels
 
         public void Create()
         {
-            string uri = FolderName + "\\"       + FileName;
+            string uri = FolderName + "\\" + FileName;
             appModel.AddRecent(FolderName + "\\" + FileName);
             appModel.SaveConfig();
 
             var scope = appModel.CreateScope(uri);
 
             foreach (var colName in ColumnList.Select(column => column.Name))
-                scope.CreateOrUpdateColumnAsync(new ColumnInfo {Name = colName});
+                scope.CreateOrUpdateColumnAsync(new ColumnInfo { Name = colName });
 
             foreach (var rowName in RowList.Select(row => row.Name))
-                scope.CreateOrUpdateRowAsync(new RowInfo {Name = rowName});
+                scope.CreateOrUpdateRowAsync(new RowInfo { Name = rowName });
 
             Close();
 
             shell.ShowView<BoardView>(
-                viewRequest: new BoardViewRequest {Scope = scope},
-                options: new UiShowOptions {Title = FileName});
+                viewRequest: new BoardViewRequest { Scope = scope },
+                options: new UiShowOptions { Title = FileName });
         }
 
         public class LocalDimension : ViewModelBase, IDataErrorInfo
@@ -186,7 +195,6 @@ namespace Kanban.Desktop.LocalBase.ViewModels
             {
                 Name = name;
                 validator = new LocalDimensionValidator();
-                this.WhenAnyValue(t => t.IsDuplicate).Subscribe(_ => validator.Validate(this));
             }
 
             public bool IsDuplicate { get; set; }
@@ -198,15 +206,15 @@ namespace Kanban.Desktop.LocalBase.ViewModels
             {
                 get
                 {
-                    if (validator != null)
+                    var results = validator?.Validate(this);
+
+                    if (results != null && results.Errors.Any())
                     {
-                        var results = validator.Validate(this);
-                        if (results != null && results.Errors.Any())
-                        {
-                            var errors = string.Join(Environment.NewLine, results.Errors.Select(x => x.ErrorMessage).ToArray());
-                            return errors;
-                        }
+                        var errors = string.Join(Environment.NewLine,
+                            results.Errors.Select(x => x.ErrorMessage).ToArray());
+                        return errors;
                     }
+
                     return string.Empty;
                 }
             }
@@ -217,16 +225,16 @@ namespace Kanban.Desktop.LocalBase.ViewModels
                 {
                     var errs = validator?
                         .Validate(this).Errors;
-                    
+
                     if (errs != null)
-                        return validator != null ?
-                            string.Join("; ",  errs.Select(e=>e.ErrorMessage)) 
+                        return validator != null
+                            ? string.Join("; ", errs.Select(e => e.ErrorMessage))
                             : "";
                     return "";
                 }
             }
 
-        }
+        } //class
     }
 
     public static class ExtensionMethods
