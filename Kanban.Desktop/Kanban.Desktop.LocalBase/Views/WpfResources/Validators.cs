@@ -4,7 +4,7 @@ using System.Security.AccessControl;
 using FluentValidation;
 using Kanban.Desktop.LocalBase.ViewModels;
 
-namespace Kanban.Desktop.LocalBase.WpfResources
+namespace Kanban.Desktop.LocalBase.Views.WpfResources
 {
     public class WizardValidator : AbstractValidator<WizardViewModel>
     {

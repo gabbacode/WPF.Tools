@@ -48,6 +48,7 @@
     <Compile Include="IssuesBoard\ColorMap.cs" />
     <Compile Include="IssuesBoard\DimensionConfiguration.cs" />
     <Compile Include="IssuesBoard\KanbanConfiguration.cs" />
+    <Compile Include="LocalBase\BoardInfo.cs" />
     <Compile Include="LocalBase\ColumnInfo.cs" />
     <Compile Include="LocalBase\LocalIssue.cs" />
     <Compile Include="LocalBase\RowInfo.cs" />

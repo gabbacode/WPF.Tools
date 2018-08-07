@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Drawing;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Markup;
 
-namespace Kanban.Desktop.LocalBase.WpfResources
+namespace Kanban.Desktop.LocalBase.Views.WpfResources
 {
     public abstract class BaseConverter : MarkupExtension, IValueConverter
     {

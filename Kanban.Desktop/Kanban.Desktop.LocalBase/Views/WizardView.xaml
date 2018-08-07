@@ -8,36 +8,13 @@
         xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
         xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
         mc:Ignorable="d"
-        xmlns:resources="clr-namespace:Kanban.Desktop.LocalBase.WpfResources"
+        xmlns:resources="clr-namespace:Kanban.Desktop.LocalBase.Views.WpfResources"
         xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
         d:DesignHeight="400"
         d:DesignWidth="400">
 
     <UserControl.Resources>
-        <Style TargetType="Label">
-            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-        </Style>
-        <Style TargetType="TextBox">
-            <Style.Triggers>
-                <Trigger Property="Validation.HasError" Value="True">
-                    <Setter Property="Foreground" Value="Red"/>
-                    <Setter Property="ToolTip" 
-                    Value="{Binding RelativeSource={RelativeSource Self}, 
-                    Path=(Validation.Errors)[0].ErrorContent}"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-        <Style TargetType="ListBoxItem">
-            <Style.Triggers>
-                <Trigger Property="Validation.HasError" Value="True">
-                    <Setter Property="Foreground" Value="Red"/>
-                    <Setter Property="ToolTip" 
-                    Value="{Binding RelativeSource={RelativeSource Self}, 
-                    Path=(Validation.Errors)[0].ErrorContent}"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
+        <ResourceDictionary Source="Wizard/WizardTemplatesDictionary.xaml"/>
     </UserControl.Resources>
 
     <StackPanel Orientation="Vertical">

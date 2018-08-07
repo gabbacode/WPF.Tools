@@ -55,7 +55,7 @@ namespace Kanban.Desktop.LocalBase.Models
         public async Task<IDimension> GetColumnHeadersAsync()
         {
             columns.Clear();
-            columns = await repo.GetColumnsAsync();
+            columns = await repo.GetColumnsAsync(1);
 
             var columnHeaders = columns.Select(c => c.Name).ToArray();
             return new TagDimension<string, LocalIssue>(
@@ -70,7 +70,7 @@ namespace Kanban.Desktop.LocalBase.Models
         public async Task<IDimension> GetRowHeadersAsync()
         {
             rows.Clear();
-            rows = await repo.GetRowsAsync();
+            rows = await repo.GetRowsAsync(1);
 
             var rowHeaders = rows.Select(r => r.Name).ToArray();
             return new TagDimension<string, LocalIssue>(
@@ -109,12 +109,12 @@ namespace Kanban.Desktop.LocalBase.Models
 
         public async Task<List<RowInfo>> GetRowsAsync()
         {
-            return await repo.GetRowsAsync();
+            return await repo.GetRowsAsync(1);
         }
 
         public async Task<List<ColumnInfo>> GetColumnsAsync()
         {
-            return await repo.GetColumnsAsync();
+            return await repo.GetColumnsAsync(1);
         }
 
         #endregion

@@ -8,13 +8,12 @@ using Data.Entities.Common.LocalBase;
 using FluentValidation;
 using Kanban.Desktop.LocalBase.Models;
 using Kanban.Desktop.LocalBase.Views;
+using Kanban.Desktop.LocalBase.Views.WpfResources;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Ui.Wpf.Common;
 using Ui.Wpf.Common.ShowOptions;
 using Ui.Wpf.Common.ViewModels;
-using Kanban.Desktop.LocalBase.WpfResources;
-using System.Threading.Tasks;
 
 namespace Kanban.Desktop.LocalBase.ViewModels
 {
@@ -83,6 +82,8 @@ namespace Kanban.Desktop.LocalBase.ViewModels
                 new LocalDimension("Trash")
             };
 
+            AddRowCommand =
+                ReactiveCommand.Create(() => RowList.Add(new LocalDimension("New row")));
 
             DeleteRowCommand = ReactiveCommand
                 .Create<LocalDimension>(row =>
@@ -90,9 +91,6 @@ namespace Kanban.Desktop.LocalBase.ViewModels
                     RowList.Remove(row);
                     UpdateDimensionList(RowList);
                 });
-
-            AddRowCommand =
-                ReactiveCommand.Create(() => RowList.Add(new LocalDimension("New row")));
 
             var canCreate = this.WhenAnyValue(w => w.Error, e => string.IsNullOrEmpty(e));
 

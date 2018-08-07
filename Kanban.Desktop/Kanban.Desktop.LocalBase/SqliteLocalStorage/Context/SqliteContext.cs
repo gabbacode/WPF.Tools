@@ -1,5 +1,4 @@
-﻿using System.Configuration;
-using Data.Entities.Common.LocalBase;
+﻿using Data.Entities.Common.LocalBase;
 using Microsoft.EntityFrameworkCore;
 
 namespace Data.Sources.LocalStorage.Sqlite.Context
@@ -17,6 +16,7 @@ namespace Data.Sources.LocalStorage.Sqlite.Context
 
         public DbSet<RowInfo> Row { get; set; }
         public DbSet<ColumnInfo> Column { get; set; }
+        public DbSet<BoardInfo> Board { get; set; }
         public DbSet<SqliteIssue> Issue    { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder builder)
@@ -24,6 +24,5 @@ namespace Data.Sources.LocalStorage.Sqlite.Context
             builder.EnableSensitiveDataLogging();
             builder.UseSqlite(_baseConnstr);
         }
-
     }
 }
