@@ -17,7 +17,7 @@ namespace Ui.Wpf.Common
 
         [Reactive] public string Title { get; set; }
 
-        public void ShowView<TView>(
+        public LayoutDocument ShowView<TView>(
             ViewRequest viewRequest = null,
             UiShowOptions options = null)
             where TView : class, IView
@@ -34,11 +34,13 @@ namespace Ui.Wpf.Common
             AddTitleRefreshing(view, layoutDocument);
             AddClosingByRequest(view, layoutDocument);
 
+
             DocumentPane.Children.Add(layoutDocument);
 
             (view.ViewModel as IInitializableViewModel)?.Initialize(viewRequest);
 
             layoutDocument.IsActive = true;
+            return layoutDocument;
 
         }
 

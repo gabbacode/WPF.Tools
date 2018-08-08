@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Ui.Wpf.Common.ShowOptions;
 using Xceed.Wpf.AvalonDock;
+using Xceed.Wpf.AvalonDock.Layout;
 
 namespace Ui.Wpf.Common
 {
@@ -10,7 +11,7 @@ namespace Ui.Wpf.Common
 
         IContainer Container { get; set; }
 
-        void ShowView<TView>(
+        LayoutDocument ShowView<TView>(
             ViewRequest viewRequest = null, 
             UiShowOptions options = null)
             where TView : class, IView;
