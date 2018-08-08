@@ -11,9 +11,11 @@ namespace Ui.Wpf.Common
 
         IContainer Container { get; set; }
 
-        LayoutDocument ShowView<TView>(
+        void ShowView<TView>(
             ViewRequest viewRequest = null, 
-            UiShowOptions options = null)
+            UiShowOptions options = null,
+            string viewId=null
+            )
             where TView : class, IView;
 
         void ShowTool<TToolView>(

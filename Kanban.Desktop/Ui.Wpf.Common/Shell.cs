@@ -8,6 +8,7 @@ using Ui.Wpf.Common.ShowOptions;
 using Ui.Wpf.Common.ViewModels;
 using Xceed.Wpf.AvalonDock;
 using Xceed.Wpf.AvalonDock.Layout;
+using System.Linq;
 
 namespace Ui.Wpf.Common
 {
@@ -17,31 +18,51 @@ namespace Ui.Wpf.Common
 
         [Reactive] public string Title { get; set; }
 
-        public LayoutDocument ShowView<TView>(
+        public void ShowView<TView>(
             ViewRequest viewRequest = null,
-            UiShowOptions options = null)
+            UiShowOptions options = null,
+            string viewId=null)
             where TView : class, IView
         {
-            var view = Container.Resolve<TView>();
-            if (options != null)
-                view.Configure(options);
+
+            LayoutContent lc = null;
+            if (viewId != null)
+            {
+                lc = DocumentPane.Children.FirstOrDefault(x => x.ContentId == viewId);
+            }
+
+            if (lc != null)
+            {
+                lc.IsActive = true;
+            }
+            else
+            {
 
 
-            var layoutDocument = new LayoutDocument {Content = view};
-            if (options != null)
-                layoutDocument.CanClose = options.CanClose;
-
-            AddTitleRefreshing(view, layoutDocument);
-            AddClosingByRequest(view, layoutDocument);
+                var view = Container.Resolve<TView>();
+                if (options != null)
+                    view.Configure(options);
 
 
-            DocumentPane.Children.Add(layoutDocument);
+                var layoutDocument = new LayoutDocument { Content = view };
 
-            (view.ViewModel as IInitializableViewModel)?.Initialize(viewRequest);
+                layoutDocument.ContentId = viewId;
 
-            layoutDocument.IsActive = true;
-            return layoutDocument;
+                if (options != null)
+                    layoutDocument.CanClose = options.CanClose;
 
+                AddTitleRefreshing(view, layoutDocument);
+                AddClosingByRequest(view, layoutDocument);
+
+
+                DocumentPane.Children.Add(layoutDocument);
+
+                (view.ViewModel as IInitializableViewModel)?.Initialize(viewRequest);
+
+
+                layoutDocument.IsActive = true;
+            }
+            
         }
 
         public void ShowTool<TToolView>(
