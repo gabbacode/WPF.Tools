@@ -15,8 +15,9 @@ namespace Kanban.Desktop.LocalBase.ViewModels
     public class StartupViewModel : ViewModelBase, IViewModel
     {
         public ReactiveList<string> BaseList { get; set; }
-        public ReactiveCommand NewDbCommand { get; set; }
-        public ReactiveCommand OpenDbCommand { get; set; }
+        public ReactiveCommand NewFileCommand { get; set; }
+        public ReactiveCommand NewBoardCommand { get; set; }
+        public ReactiveCommand OpenFileCommand { get; set; }
         public ReactiveCommand<string, Unit> OpenRecentDbCommand { get; set; }
         public ReactiveCommand<string, Unit> RemoveRecentCommand { get; set; }
 
@@ -39,20 +40,36 @@ namespace Kanban.Desktop.LocalBase.ViewModels
                 {
                     RemoveRecent(uri);
                     DialogCoordinator.Instance.ShowMessageAsync(this, "Ошибка",
-                        "База была удалена или перемещена из данной папки");
+                        "Файл был удалён или перемещён из данной папки");
                 }
             });
 
             RemoveRecentCommand = ReactiveCommand.Create<string>(RemoveRecent);
 
-            NewDbCommand = ReactiveCommand.Create(() => shell.ShowView<WizardView>());
+            NewFileCommand = ReactiveCommand.Create(() => shell.ShowView<WizardView>());
 
-            OpenDbCommand = ReactiveCommand.Create(() =>
+            NewBoardCommand = ReactiveCommand.Create(() =>
             {
                 var dialog = new OpenFileDialog()
                 {
                     Filter = "SQLite DataBase | *.db",
-                    Title = "Открытие базы"
+                    Title = "Выбор существующего файла базы данных"
+                };
+
+                if (dialog.ShowDialog() == DialogResult.OK)
+                {
+                    var uri = dialog.FileName;
+                    AddRecent(uri);
+                    shell.ShowView<WizardView>(new WizardViewRequest() { Step = 2 });
+                }
+            });
+
+            OpenFileCommand = ReactiveCommand.Create(() =>
+            {
+                var dialog = new OpenFileDialog()
+                {
+                    Filter = "SQLite DataBase | *.db",
+                    Title = "Выбор существующего файла базы данных"
                 };
 
                 if (dialog.ShowDialog() == DialogResult.OK)
@@ -90,8 +107,8 @@ namespace Kanban.Desktop.LocalBase.ViewModels
             var scope = appModel.LoadScope(uri);
 
             shell.ShowView<BoardView>(
-                viewRequest: new BoardViewRequest {Scope = scope},
-                options: new UiShowOptions {Title = file.Name});
+                viewRequest: new BoardViewRequest { Scope = scope },
+                options: new UiShowOptions { Title = file.Name });
 
             AddRecent(uri);
 

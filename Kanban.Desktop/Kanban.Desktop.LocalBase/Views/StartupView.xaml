@@ -14,29 +14,36 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
 
-        <TextBlock FontSize="14" Margin="5" HorizontalAlignment="Stretch" TextAlignment="Center" Grid.ColumnSpan="2">
-            Выберите существующую базу или введите название новой для начала работы:
+        <TextBlock FontSize="14" Margin="5" HorizontalAlignment="Stretch" TextAlignment="Center" Grid.ColumnSpan="3">
+            Выберите режим работы программы
         </TextBlock>
 
-        <Button Grid.Row="1"   Grid.Column="0" Height="75" Command="{Binding NewDbCommand}" Style="{DynamicResource  MetroCircleButtonStyle}">
-            Создать новую базу
-        </Button>
-        <Button Grid.Row="1"  Grid.Column="1" Height="75" Command="{Binding OpenDbCommand}" Style="{DynamicResource  MetroCircleButtonStyle}">
-            Открыть существующую базу
+        <Button Grid.Row="1" FontSize="16"  Grid.Column="0" Height="75" Command="{Binding NewFileCommand}" Style="{DynamicResource  FlatButton}">
+            Создать новый файл
         </Button>
 
-        <TextBlock FontSize="14"  Margin="5" HorizontalAlignment="Stretch" TextAlignment="Center" Grid.Row="2" Grid.ColumnSpan="2">
-            Недавние базы:
+        <Button Grid.Row="1"  FontSize="16"  Grid.Column="1" Height="75" Command="{Binding NewBoardCommand}" Style="{DynamicResource  FlatButton}">
+            Создать новую доску в существующем файле
+        </Button>
+
+        <Button Grid.Row="1"  FontSize="16"  Grid.Column="2" Height="75" Command="{Binding OpenFileCommand}" Style="{DynamicResource  FlatButton}">
+            Открыть существующий файл
+        </Button>
+
+        <TextBlock FontSize="14"  Margin="5" HorizontalAlignment="Stretch" TextAlignment="Center" Grid.Row="2" Grid.ColumnSpan="3">
+            Открыть один из последних файлов
         </TextBlock>
 
-        <ListBox Grid.Row="3"  Grid.ColumnSpan="2" Margin="0" ItemsSource="{Binding BaseList}">
+        <ListBox Grid.Row="3"  Grid.ColumnSpan="3" Margin="0" ItemsSource="{Binding BaseList}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                    <Grid>

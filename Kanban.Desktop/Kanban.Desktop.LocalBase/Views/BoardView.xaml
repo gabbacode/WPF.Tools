@@ -21,6 +21,15 @@
             Orientation="Horizontal"
             dd:DragDrop.IsDragSource="True"
             dd:DragDrop.IsDropTarget="True">
+
+            <mah:SplitButton 
+                Height="auto" 
+                ItemsSource="{Binding BoardsInFile}"
+                DisplayMemberPath="Name"
+                SelectedItem="{Binding CurrentBoard}"
+                Margin="5">
+            </mah:SplitButton>
+
             <mah:DropDownButton 
                 Content="Создать"
                 Height="auto" 

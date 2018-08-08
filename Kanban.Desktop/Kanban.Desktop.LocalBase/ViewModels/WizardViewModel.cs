@@ -3,6 +3,8 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Forms;
 using Data.Entities.Common.LocalBase;
 using FluentValidation;
@@ -17,16 +19,14 @@ using Ui.Wpf.Common.ViewModels;
 
 namespace Kanban.Desktop.LocalBase.ViewModels
 {
-    public class WizardViewModel : ViewModelBase, IViewModel
+    public class WizardViewModel : ViewModelBase, IViewModel, IInitializableViewModel
     {
         [Reactive] public string BoardName { get; set; }
         [Reactive] public string FolderName { get; set; }
         [Reactive] public string FileName { get; set; }
+        [Reactive] public int? StartStep { get; set; }
         public ReactiveList<LocalDimension> ColumnList { get; set; }
         public ReactiveList<LocalDimension> RowList { get; set; }
-
-
-
         public ReactiveCommand CreateCommand { get; set; }
         public ReactiveCommand CancelCommand { get; set; }
         public ReactiveCommand SelectFolderCommand { get; set; }
@@ -44,7 +44,6 @@ namespace Kanban.Desktop.LocalBase.ViewModels
             this.appModel = appModel;
             this.shell = shell;
             validator = new WizardValidator();
-
             Title = "Creating a board";
 
             this.WhenAnyValue(x => x.BoardName)
@@ -94,7 +93,7 @@ namespace Kanban.Desktop.LocalBase.ViewModels
 
             var canCreate = this.WhenAnyValue(w => w.Error, e => string.IsNullOrEmpty(e));
 
-            CreateCommand = ReactiveCommand.Create(Create, canCreate);
+            CreateCommand = ReactiveCommand.CreateFromTask(Create, canCreate);
 
             CancelCommand = ReactiveCommand.Create(Close);
 
@@ -166,7 +165,7 @@ namespace Kanban.Desktop.LocalBase.ViewModels
                 FolderName = dialog.SelectedPath;
         }
 
-        public void Create()
+        public async Task Create()
         {
             string uri = FolderName + "\\" + FileName;
             appModel.AddRecent(FolderName + "\\" + FileName);
@@ -174,17 +173,26 @@ namespace Kanban.Desktop.LocalBase.ViewModels
 
             var scope = appModel.CreateScope(uri);
 
+            var newBoard = new BoardInfo() { Name = BoardName, Created = DateTime.Now, Modified = DateTime.Now };
+
+            newBoard = await scope.CreateOrUpdateBoardAsync(newBoard);
+
             foreach (var colName in ColumnList.Select(column => column.Name))
-                scope.CreateOrUpdateColumnAsync(new ColumnInfo { Name = colName });
+                await scope.CreateOrUpdateColumnAsync(new ColumnInfo { Name = colName, Board = newBoard });
 
             foreach (var rowName in RowList.Select(row => row.Name))
-                scope.CreateOrUpdateRowAsync(new RowInfo { Name = rowName });
+                await scope.CreateOrUpdateRowAsync(new RowInfo { Name = rowName, Board = newBoard });
 
             Close();
 
             shell.ShowView<BoardView>(
                 viewRequest: new BoardViewRequest { Scope = scope },
                 options: new UiShowOptions { Title = FileName });
+        }
+
+        public void Initialize(ViewRequest viewRequest)
+        {
+            StartStep = (viewRequest as WizardViewRequest)?.Step;
         }
 
         public class LocalDimension : ViewModelBase, IDataErrorInfo
@@ -234,6 +242,7 @@ namespace Kanban.Desktop.LocalBase.ViewModels
 
         } //class
     }
+
 
     public static class ExtensionMethods
     {

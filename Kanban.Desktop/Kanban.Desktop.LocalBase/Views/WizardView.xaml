@@ -10,50 +10,65 @@
         mc:Ignorable="d"
         xmlns:resources="clr-namespace:Kanban.Desktop.LocalBase.Views.WpfResources"
         xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         d:DesignHeight="400"
         d:DesignWidth="400">
 
     <UserControl.Resources>
-        <ResourceDictionary Source="Wizard/WizardTemplatesDictionary.xaml"/>
+        <ResourceDictionary Source="WpfResources/WizardTemplatesDictionary.xaml"/>
     </UserControl.Resources>
-
-    <StackPanel Orientation="Vertical">
-        <Label>Board name</Label>
-        <TextBox Text="{Binding BoardName,
+    
+    <xctk:Wizard FinishButtonClosesWindow="False" Finish="Wizard_Finish"
+                 CurrentPage="{Binding StartPageName}"
+                CancelButtonClosesWindow="False"  Cancel="Wizard_Cancel" >
+        
+        <xctk:WizardPage x:Name="BaseSelectingPage" 
+        Title="Database file select"        HelpButtonVisibility="Hidden"
+                     NextButtonVisibility="Visible" FinishButtonVisibility="Hidden"
+        NextPage="{Binding ElementName=Page2}" BackButtonVisibility="Hidden" >
+            <StackPanel Orientation="Vertical">
+                <Label>Board name</Label>
+                <TextBox Text="{Binding BoardName,
             UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
 
-        <Label>Folder name</Label>
-        <TextBox Text="{Binding FolderName,
+                <Label>Folder name</Label>
+                <TextBox Text="{Binding FolderName,
             UpdateSourceTrigger=PropertyChanged,ValidatesOnDataErrors=True}"/>
-        <Button Command="{Binding SelectFolderCommand}">...</Button>
+                <Button Command="{Binding SelectFolderCommand}">...</Button>
 
-        <Label>File name</Label>
-        <TextBox Text="{Binding FileName, 
+                <Label>File name</Label>
+                <TextBox Text="{Binding FileName, 
            UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
+            </StackPanel>
+        </xctk:WizardPage>
 
-        <Label>Columns</Label>
-        <ListBox 
+        <xctk:WizardPage x:Name="BoardCreatingPage"
+        Title="Database configuration manager" 
+        HelpButtonVisibility="Hidden" CanFinish="True"
+        CanCancel="True"    FinishButtonVisibility="Visible"
+        BackButtonVisibility="Visible">
+            <StackPanel Orientation="Vertical">
+                <Label>Columns</Label>
+                <ListBox 
             dd:DragDrop.IsDragSource="True"
             dd:DragDrop.IsDropTarget="True" 
             dd:DragDrop.UseDefaultEffectDataTemplate="True"
             ScrollViewer.CanContentScroll="True"
             MaxHeight="330"
             ItemsSource="{Binding ColumnList}">
-            <ListBox.ItemTemplate>
-                <DataTemplate >
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-
-                        <Button Content="{iconPacks:Modern CursorHand}"/>
-
-                        <TextBox Grid.Column="1" Text="{Binding Path=Name,
+                    <ListBox.ItemTemplate>
+                        <DataTemplate >
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Button Content="{iconPacks:Modern CursorHand}"/>
+                                <TextBox Grid.Column="1" Text="{Binding Path=Name,
                             UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True }"/>
 
-                        <Button Grid.Column="2"
+                                <Button Grid.Column="2"
                             Visibility="{Binding 
                             RelativeSource={RelativeSource AncestorType={x:Type ListBox}},
                             Path=DataContext.ColumnList.Count,
@@ -64,36 +79,36 @@
                             Path=DataContext.DeleteColumnCommand}" CommandParameter="{Binding}" 
                             Content="{iconPacks:Entypo SquaredCross}" 
                             Margin="0"/>
-                    </Grid>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
-        <Button Command="{Binding AddColumnCommand}">Add column</Button>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+                <Button Command="{Binding AddColumnCommand}">Add column</Button>
 
-        <Label>Rows</Label>
-        <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="500">
-            <ListBox
+                <Label>Rows</Label>
+                <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="500">
+                    <ListBox
             dd:DragDrop.IsDragSource="True"
             dd:DragDrop.IsDropTarget="True" 
             ScrollViewer.CanContentScroll="True"
             MaxHeight="330"
             dd:DragDrop.UseDefaultEffectDataTemplate="True"
             ItemsSource="{Binding RowList}">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
 
-                            <Button Content="{iconPacks:Modern CursorHand}"/>
+                                    <Button Content="{iconPacks:Modern CursorHand}"/>
 
-                            <TextBox Grid.Column="1" Text="{Binding Path=Name,
+                                    <TextBox Grid.Column="1" Text="{Binding Path=Name,
                             UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True }"/>
 
-                            <Button Grid.Column="2" 
+                                    <Button Grid.Column="2" 
 
                                 Visibility="{Binding 
                             RelativeSource={RelativeSource AncestorType={x:Type ListBox}},
@@ -106,14 +121,13 @@
                                 CommandParameter="{Binding}" 
                                 Content="{iconPacks:Entypo SquaredCross}" 
                                 Margin="0"/>
-                        </Grid>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-        </ScrollViewer>
-        <Button Command="{Binding AddRowCommand}">Add row</Button>
-
-        <Button Command="{Binding CreateCommand}" Click="Button_Click">Create Board</Button>
-        <Button Command="{Binding CancelCommand}">Cancel</Button>
-    </StackPanel>
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </ScrollViewer>
+                <Button Command="{Binding AddRowCommand}">Add row</Button>
+            </StackPanel>
+        </xctk:WizardPage>
+    </xctk:Wizard>
 </UserControl>

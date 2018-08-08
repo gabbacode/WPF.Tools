@@ -17,9 +17,10 @@ namespace Kanban.Desktop.LocalBase.Models
     // TODO: local or server access
     public interface IScopeModel
     {
-        Task<IDimension> GetColumnHeadersAsync();
-        Task<IDimension> GetRowHeadersAsync();
-        Task<IEnumerable<LocalIssue>> GetIssuesAsync();
+        Task<IDimension> GetColumnHeadersAsync(int boardId);
+        Task<IDimension> GetRowHeadersAsync(int boardId);
+        Task<IEnumerable<LocalIssue>> GetIssuesAsync(int boardId);
+        Task<List<BoardInfo>> GetAllBoardsInFileAsync();
         CardContent GetCardContent();
         RowInfo GetSelectedRow(string rowName);
         ColumnInfo GetSelectedColumn(string colName);
@@ -28,13 +29,14 @@ namespace Kanban.Desktop.LocalBase.Models
         Task DeleteRowAsync(int rowId);
         Task DeleteColumnAsync(int columnId);
 
+        Task<BoardInfo> CreateOrUpdateBoardAsync(BoardInfo board);
         Task CreateOrUpdateColumnAsync(ColumnInfo column);
         Task CreateOrUpdateRowAsync(RowInfo row);
 
         Task<LocalIssue> LoadOrCreateIssueAsync(int? issueId);
         Task CreateOrUpdateIssueAsync(LocalIssue issue);
-        Task<List<RowInfo>> GetRowsAsync();
-        Task<List<ColumnInfo>> GetColumnsAsync();
+        Task<List<RowInfo>> GetRowsAsync(int boardId);
+        Task<List<ColumnInfo>> GetColumnsAsync(int boardId);
     }
 
     public class ScopeModel : IScopeModel
@@ -52,10 +54,15 @@ namespace Kanban.Desktop.LocalBase.Models
 
         #region GettingInfo
 
-        public async Task<IDimension> GetColumnHeadersAsync()
+        public async Task<List<BoardInfo>> GetAllBoardsInFileAsync()
+        {
+            return await repo.GetAllBoardsInFileAsync();
+        }
+
+        public async Task<IDimension> GetColumnHeadersAsync(int boardId)
         {
             columns.Clear();
-            columns = await repo.GetColumnsAsync(1);
+            columns = await repo.GetColumnsAsync(boardId);
 
             var columnHeaders = columns.Select(c => c.Name).ToArray();
             return new TagDimension<string, LocalIssue>(
@@ -67,10 +74,10 @@ namespace Kanban.Desktop.LocalBase.Models
                     .ToArray());
         }
 
-        public async Task<IDimension> GetRowHeadersAsync()
+        public async Task<IDimension> GetRowHeadersAsync(int boardId)
         {
             rows.Clear();
-            rows = await repo.GetRowsAsync(1);
+            rows = await repo.GetRowsAsync(boardId);
 
             var rowHeaders = rows.Select(r => r.Name).ToArray();
             return new TagDimension<string, LocalIssue>(
@@ -83,9 +90,12 @@ namespace Kanban.Desktop.LocalBase.Models
             );
         }
 
-        public async Task<IEnumerable<LocalIssue>> GetIssuesAsync()
+        public async Task<IEnumerable<LocalIssue>> GetIssuesAsync(int boardId)
         {
-            return await repo.GetIssuesAsync(new NameValueCollection());
+            return await repo.GetIssuesAsync
+                (new NameValueCollection {
+                    { "BoardId", boardId.ToString() }
+                });
         }
 
         public CardContent GetCardContent()
@@ -107,14 +117,14 @@ namespace Kanban.Desktop.LocalBase.Models
             return columns.FirstOrDefault(c => c.Name == colName);
         }
 
-        public async Task<List<RowInfo>> GetRowsAsync()
+        public async Task<List<RowInfo>> GetRowsAsync(int boardId)
         {
-            return await repo.GetRowsAsync(1);
+            return await repo.GetRowsAsync(boardId);
         }
 
-        public async Task<List<ColumnInfo>> GetColumnsAsync()
+        public async Task<List<ColumnInfo>> GetColumnsAsync(int boardId)
         {
-            return await repo.GetColumnsAsync(1);
+            return await repo.GetColumnsAsync(boardId);
         }
 
         #endregion
@@ -140,6 +150,11 @@ namespace Kanban.Desktop.LocalBase.Models
 
         #region SavingInfo
 
+        public async Task<BoardInfo> CreateOrUpdateBoardAsync(BoardInfo board)
+        {
+            return await repo.CreateOrUpdateBoardInfoAsync(board);
+        }
+
         public async Task CreateOrUpdateColumnAsync(ColumnInfo column)
         {
             await repo.CreateOrUpdateColumnAsync(column);
@@ -155,7 +170,7 @@ namespace Kanban.Desktop.LocalBase.Models
             issue.Modified = DateTime.Now;
             await repo.CreateOrUpdateIssueAsync(issue);
         }
-        
+
 
         #endregion
 

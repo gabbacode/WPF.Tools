@@ -1,7 +1,5 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:local="clr-namespace:Kanban.Desktop.LocalBase.Views.Wizard"
-                    xmlns:viewModels="clr-namespace:Kanban.Desktop.LocalBase.ViewModels">
+                    xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit">
 
     <Style TargetType="Label">
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
@@ -30,8 +28,7 @@
         </Style.Triggers>
     </Style>
 
-    <DataTemplate DataType="viewModels:WizardViewModel">
-        <local:WizardStep1View/>
-    </DataTemplate>
-    
+    <Style TargetType="xctk:WizardPage">
+        
+    </Style>
 </ResourceDictionary>

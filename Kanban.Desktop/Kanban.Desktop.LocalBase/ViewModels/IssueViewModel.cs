@@ -14,6 +14,7 @@ namespace Kanban.Desktop.LocalBase.ViewModels
     {
         public int? IssueId { get; set; }
         public IScopeModel Scope { get; set; }
+        public BoardInfo Board { get; set; }
     }
 
     public class IssueViewModel : ViewModelBase, IViewModel, IInitializableViewModel
@@ -32,6 +33,7 @@ namespace Kanban.Desktop.LocalBase.ViewModels
         [Reactive] public RowInfo Row { get; set; }
         [Reactive] public ColumnInfo Column { get; set; }
         [Reactive] public string Color { get; set; }
+        private BoardInfo board;
 
         public ReactiveCommand CancelCommand { get; set; }
         public ReactiveCommand SaveCommand { get; set; }
@@ -47,7 +49,7 @@ namespace Kanban.Desktop.LocalBase.ViewModels
 
             SaveCommand = ReactiveCommand.CreateFromTask(async _ =>
             {
-                var editedIssue = new LocalIssue();
+                var editedIssue = new LocalIssue() { Board = board };
 
                 mapper.Map(this, editedIssue);
 
@@ -61,20 +63,22 @@ namespace Kanban.Desktop.LocalBase.ViewModels
 
         public void Initialize(ViewRequest viewRequest)
         {
-            var request = viewRequest as IssueViewRequest;
+            if (viewRequest is IssueViewRequest request)
+            {
+                scope = request.Scope;
 
-            scope = request.Scope;
+                 board = request.Board;
+                var issueId = request.IssueId;
+                if (issueId == 0)
+                    issueId = null;
 
-            var issueId = request?.IssueId;
-            if (issueId == 0)
-                issueId = null;
+                Observable.FromAsync(() => scope.LoadOrCreateIssueAsync(issueId))
+                    .ObserveOnDispatcher()
+                    .Subscribe(issue =>
+                        mapper.Map(issue, this));
+            }
 
-            Observable.FromAsync(() => scope.LoadOrCreateIssueAsync(issueId))
-                .ObserveOnDispatcher()
-                .Subscribe(issue =>
-                    mapper.Map(issue, this));
-
-            Observable.FromAsync(() => scope.GetRowsAsync())
+            Observable.FromAsync(() => scope.GetRowsAsync(board.Id))
                 .ObserveOnDispatcher()
                 .Subscribe(rows =>
                 {
@@ -82,7 +86,7 @@ namespace Kanban.Desktop.LocalBase.ViewModels
                     AwailableRows.AddRange(rows);
                 });
 
-            Observable.FromAsync(() => scope.GetColumnsAsync())
+            Observable.FromAsync(() => scope.GetColumnsAsync(board.Id))
                 .ObserveOnDispatcher()
                 .Subscribe(columns =>
                     AwailableColumns.PublishCollection(columns));

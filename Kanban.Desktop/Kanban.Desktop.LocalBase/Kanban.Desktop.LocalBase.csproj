@@ -249,12 +249,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Views\Wizard\Wizard.xaml.cs">
-      <DependentUpon>Wizard.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Wizard\WizardStep1View.xaml.cs">
-      <DependentUpon>WizardStep1View.xaml</DependentUpon>
-    </Compile>
+    <Compile Include="Models\WizardViewRequest.cs" />
     <Compile Include="Views\WpfResources\ControlElements.cs" />
     <Compile Include="Views\WpfResources\Validators.cs" />
     <Page Include="Views\WizardView.xaml">
@@ -293,15 +288,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Wizard\Wizard.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Wizard\WizardStep1View.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Wizard\WizardTemplatesDictionary.xaml">
+    <Page Include="Views\WpfResources\WizardTemplatesDictionary.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

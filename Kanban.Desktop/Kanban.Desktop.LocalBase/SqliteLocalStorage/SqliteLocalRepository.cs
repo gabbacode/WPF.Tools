@@ -27,7 +27,10 @@ namespace Data.Sources.LocalStorage.Sqlite
             using (context = new SqliteContext(BaseConnstr))
             {
                 if (row.Id == 0 || context.Row.Find(row.Id) == null)
+                {
+                    context.Attach(row.Board);
                     await context.AddAsync(row);
+                }
 
                 else context.Update(row);
                 await context.SaveChangesAsync();
@@ -41,8 +44,10 @@ namespace Data.Sources.LocalStorage.Sqlite
             {
                 if (column.Id == 0 || context.Column.AsNoTracking()
                         .FirstOrDefault(c => c.Id == column.Id) == null)
+                {
+                    context.Attach(column.Board);
                     await context.AddAsync(column);
-
+                }
 
                 else context.Update(column);
                 await context.SaveChangesAsync();
@@ -65,7 +70,8 @@ namespace Data.Sources.LocalStorage.Sqlite
                 if (existed == null)
                 {
                     var newiss = mapper.Map<SqliteIssue>(issue);
-                    context.Attach(newiss.Row);
+                    var r = context.Row.AsNoTracking().First(rr => rr.Id == issue.Row.Id);
+                    context.Attach(r);
                     context.Attach(newiss.Column);
 
                     await context.AddAsync(newiss);
@@ -75,6 +81,10 @@ namespace Data.Sources.LocalStorage.Sqlite
                     await context.SaveChangesAsync();
                     return mapper.Map<LocalIssue>(newiss);
                 }
+
+                existed.Row = context.Row.AsNoTracking().First(rr => rr.Id == issue.Row.Id);
+                existed.Column =
+                    context.Column.AsNoTracking().First(cc => cc.Id == issue.Column.Id);
 
                 context.Update(existed);
                 await context.SaveChangesAsync();
@@ -143,7 +153,7 @@ namespace Data.Sources.LocalStorage.Sqlite
 
                 if (keys.Contains("BoardId"))
                     dbIssues = dbIssues
-                        .Where(iss => filters.GetValues("RowId")
+                        .Where(iss => filters.GetValues("BoardId")
                             .Contains(iss.Board.Id.ToString())).ToList();
 
                 if (keys.Contains("RowId"))
@@ -222,8 +232,9 @@ namespace Data.Sources.LocalStorage.Sqlite
         {
             using (context = new SqliteContext(BaseConnstr))
             {
-                return await context.Board
+                var е= await  context.Board
                     .ToListAsync();
+                return е;
             }
         }
 
