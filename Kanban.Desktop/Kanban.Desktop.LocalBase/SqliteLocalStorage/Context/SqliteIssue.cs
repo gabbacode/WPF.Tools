@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using Data.Entities.Common.LocalBase;
 
-namespace Data.Sources.LocalStorage.Sqlite.Context
+namespace Kanban.Desktop.LocalBase.SqliteLocalStorage.Context
 {
     public class SqliteIssue
     {

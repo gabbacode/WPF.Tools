@@ -16,11 +16,6 @@ using Ui.Wpf.KanbanControl.Elements.CardElement;
 
 namespace Kanban.Desktop.LocalBase.ViewModels
 {
-    public class BoardViewRequest : ViewRequest
-    {
-        public IScopeModel Scope { get; set; }
-    }
-
     public class BoardViewModel : ViewModelBase, IViewModel, IInitializableViewModel
     {
         private IScopeModel scope;
@@ -117,10 +112,7 @@ namespace Kanban.Desktop.LocalBase.ViewModels
 
             this.WhenAnyValue(bvm => bvm.CurrentBoard)
                 .Where(val => val != null)
-                .Subscribe(async _ =>
-                {
-                    await RefreshContent();
-                });
+                .Subscribe(async _ => { await RefreshContent(); });
         }
 
         private async Task RefreshContent()
@@ -135,7 +127,7 @@ namespace Kanban.Desktop.LocalBase.ViewModels
 
             CardContent = scope.GetCardContent();
 
-            Issues.PublishCollection(await scope.GetIssuesAsync(CurrentBoard.Id));
+            Issues.PublishCollection(await scope.GetIssuesByBoardIdAsync(CurrentBoard.Id));
         }
 
         private async Task DeleteElement()
@@ -287,32 +279,37 @@ namespace Kanban.Desktop.LocalBase.ViewModels
 
         public void Initialize(ViewRequest viewRequest)
         {
-            scope = (viewRequest as BoardViewRequest).Scope;
+            var request = viewRequest as BoardViewRequest;
+
+            scope = request.Scope;
 
             Observable.FromAsync(() => scope.GetAllBoardsInFileAsync())
                 .ObserveOnDispatcher()
                 .Subscribe(boards =>
                 {
                     BoardsInFile.PublishCollection(boards);
-                    CurrentBoard = BoardsInFile.First();
-            Issues.Clear();
 
-            Observable.FromAsync(() => scope.GetRowHeadersAsync(CurrentBoard.Id))
-                .ObserveOnDispatcher()
-                .Subscribe(vert => VerticalDimension = vert);
+                    CurrentBoard = !string.IsNullOrEmpty(request.SelectedBoardName)
+                        ? BoardsInFile.First(board => board.Name == request.SelectedBoardName)
+                        : BoardsInFile.First();
 
-            Observable.FromAsync(() => scope.GetColumnHeadersAsync(CurrentBoard.Id))
-                .ObserveOnDispatcher()
-                .Subscribe(horiz => HorizontalDimension = horiz);
+                    Issues.Clear();
 
-            CardContent = scope.GetCardContent();
+                    Observable.FromAsync(() => scope.GetRowHeadersAsync(CurrentBoard.Id))
+                        .ObserveOnDispatcher()
+                        .Subscribe(vert => VerticalDimension = vert);
 
-            Observable.FromAsync(() => scope.GetIssuesAsync(CurrentBoard.Id))
-                .ObserveOnDispatcher()
-                .Subscribe(issues => Issues.AddRange(issues)); // TODO: make initialize works
+                    Observable.FromAsync(() => scope.GetColumnHeadersAsync(CurrentBoard.Id))
+                        .ObserveOnDispatcher()
+                        .Subscribe(horiz => HorizontalDimension = horiz);
+
+                    CardContent = scope.GetCardContent();
+
+                    Observable.FromAsync(() => scope.GetIssuesByBoardIdAsync(CurrentBoard.Id))
+                        .ObserveOnDispatcher()
+                        .Subscribe(issues =>
+                            Issues.AddRange(issues)); // TODO: make initialize works
                 });
-
-
         }
     }
 }

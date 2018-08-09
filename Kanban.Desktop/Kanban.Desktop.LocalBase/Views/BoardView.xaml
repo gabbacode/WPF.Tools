@@ -44,7 +44,6 @@
                 </mah:DropDownButton.ItemContainerStyle>
             </mah:DropDownButton>
 
-            <Button Content="Изменить" Command="{Binding UpdateCommand}" Margin="5"/>
             <Button Content="Удалить" Command="{Binding DeleteCommand}" Margin="5"/>
             <Button Content="Обновить данные" Margin="5" Command="{Binding RefreshCommand}"/>
         </StackPanel>

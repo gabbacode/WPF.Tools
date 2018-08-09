@@ -1,17 +1,17 @@
 ﻿using Data.Entities.Common.LocalBase;
 using Microsoft.EntityFrameworkCore;
 
-namespace Data.Sources.LocalStorage.Sqlite.Context
+namespace Kanban.Desktop.LocalBase.SqliteLocalStorage.Context
 {
     public class SqliteContext : DbContext
     {
-        private string _baseConnstr;
+        private readonly string baseConnstr;
+
         public SqliteContext(string baseConnstr) 
         {
-            _baseConnstr = baseConnstr;
+            this.baseConnstr = baseConnstr;
             //Database.EnsureDeleted();
             Database.EnsureCreated();
-
         }
 
         public DbSet<RowInfo> Row { get; set; }
@@ -22,7 +22,7 @@ namespace Data.Sources.LocalStorage.Sqlite.Context
         protected override void OnConfiguring(DbContextOptionsBuilder builder)
         {
             builder.EnableSensitiveDataLogging();
-            builder.UseSqlite(_baseConnstr);
+            builder.UseSqlite(baseConnstr);
         }
     }
 }

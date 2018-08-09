@@ -10,7 +10,6 @@ namespace Kanban.Desktop.LocalBase.Views.WpfResources
     {
         public WizardValidator()
         {
-            
             RuleFor(wiz => wiz.BoardName)
                 .NotNull().Length(5, 25)
                 .WithMessage("This field must be between 5 and 25 chars length");
@@ -22,9 +21,12 @@ namespace Kanban.Desktop.LocalBase.Views.WpfResources
                 .WithMessage("You have no rights in this directory...");
 
             RuleFor(wiz => wiz.FileName)
-                .NotNull().Must(IsValidDataBaseName)
-                .WithMessage(
-                    "File name must have .db extension and can't contain any specific chars");
+                .NotNull()
+                .Must(IsValidDataBaseName)
+                .WithMessage("File name must have .db extension and can't contain any specific chars")
+                .Must((wiz, filename) =>
+                !File.Exists(wiz.FolderName+'\\'+filename))
+                .WithMessage("This file already exists..");
         }
 
         private bool IsValidDataBaseName(string name)
@@ -49,10 +51,9 @@ namespace Kanban.Desktop.LocalBase.Views.WpfResources
             var accessControlList = Directory.GetAccessControl(path);
             if (accessControlList == null)
                 return false;
+
             var accessRules = accessControlList.GetAccessRules(true, true,
                                         typeof(System.Security.Principal.SecurityIdentifier));
-            if (accessRules == null)
-                return false;
 
             foreach (FileSystemAccessRule rule in accessRules)
             {

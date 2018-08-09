@@ -12,7 +12,7 @@ using Ui.Wpf.Common.ViewModels;
 
 namespace Kanban.Desktop.LocalBase.ViewModels
 {
-    public class StartupViewModel : ViewModelBase, IViewModel
+    public class StartupViewModel : ViewModelBase
     {
         public ReactiveList<string> BaseList { get; set; }
         public ReactiveCommand NewFileCommand { get; set; }
@@ -36,31 +36,37 @@ namespace Kanban.Desktop.LocalBase.ViewModels
 
             OpenRecentDbCommand = ReactiveCommand.Create<string>(uri =>
             {
-                if (!OpenBoardView(uri))
-                {
-                    RemoveRecent(uri);
-                    DialogCoordinator.Instance.ShowMessageAsync(this, "Ошибка",
-                        "Файл был удалён или перемещён из данной папки");
-                }
+                if (OpenBoardView(uri)) return;
+
+                RemoveRecent(uri);
+                DialogCoordinator.Instance.ShowMessageAsync(this, "Ошибка",
+                    "Файл был удалён или перемещён из данной папки");
             });
 
             RemoveRecentCommand = ReactiveCommand.Create<string>(RemoveRecent);
 
-            NewFileCommand = ReactiveCommand.Create(() => shell.ShowView<WizardView>());
+            NewFileCommand = ReactiveCommand.Create(() =>
+                shell.ShowView<WizardView>(new WizardViewRequest {CreateNewFile = true}));
 
             NewBoardCommand = ReactiveCommand.Create(() =>
             {
-                var dialog = new OpenFileDialog()
+                var dialog = new OpenFileDialog
                 {
-                    Filter = "SQLite DataBase | *.db",
-                    Title = "Выбор существующего файла базы данных"
+                    Filter = @"SQLite DataBase | *.db",
+                    Title = @"Выбор существующего файла базы данных"
                 };
 
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
                     var uri = dialog.FileName;
+
+                    var t = Path.GetDirectoryName(uri);
                     AddRecent(uri);
-                    shell.ShowView<WizardView>(new WizardViewRequest() { Step = 2 });
+                    shell.ShowView<WizardView>(new WizardViewRequest
+                    {
+                        CreateNewFile = false,
+                        Uri = uri
+                    });
                 }
             });
 
@@ -68,8 +74,8 @@ namespace Kanban.Desktop.LocalBase.ViewModels
             {
                 var dialog = new OpenFileDialog()
                 {
-                    Filter = "SQLite DataBase | *.db",
-                    Title = "Выбор существующего файла базы данных"
+                    Filter = @"SQLite DataBase | *.db",
+                    Title = @"Выбор существующего файла базы данных"
                 };
 
                 if (dialog.ShowDialog() == DialogResult.OK)
@@ -79,6 +85,7 @@ namespace Kanban.Desktop.LocalBase.ViewModels
                     AddRecent(uri);
                 }
             });
+
         } //ctor
 
         private void RemoveRecent(string uri)
@@ -92,9 +99,11 @@ namespace Kanban.Desktop.LocalBase.ViewModels
         {
             appModel.AddRecent(uri);
             appModel.SaveConfig();
+
             BaseList.Remove(uri);
             BaseList.Insert(0, uri);
-            if (BaseList.Count > 3) BaseList.RemoveAt(3);
+            if (BaseList.Count > 3)
+                BaseList.RemoveAt(3);
         }
 
         private bool OpenBoardView(string uri)
@@ -107,8 +116,8 @@ namespace Kanban.Desktop.LocalBase.ViewModels
             var scope = appModel.LoadScope(uri);
 
             shell.ShowView<BoardView>(
-                viewRequest: new BoardViewRequest { Scope = scope },
-                options: new UiShowOptions { Title = file.Name });
+                viewRequest: new BoardViewRequest {Scope = scope},
+                options: new UiShowOptions {Title = file.Name});
 
             AddRecent(uri);
 

@@ -249,7 +249,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Models\WizardViewRequest.cs" />
+    <Compile Include="Models\ViewRequests.cs" />
     <Compile Include="Views\WpfResources\ControlElements.cs" />
     <Compile Include="Views\WpfResources\Validators.cs" />
     <Page Include="Views\WizardView.xaml">

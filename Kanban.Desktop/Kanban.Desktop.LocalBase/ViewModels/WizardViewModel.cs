@@ -1,10 +1,10 @@
 ﻿using System;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Forms;
 using Data.Entities.Common.LocalBase;
 using FluentValidation;
@@ -19,12 +19,12 @@ using Ui.Wpf.Common.ViewModels;
 
 namespace Kanban.Desktop.LocalBase.ViewModels
 {
-    public class WizardViewModel : ViewModelBase, IViewModel, IInitializableViewModel
+    public class WizardViewModel : ViewModelBase, IInitializableViewModel
     {
         [Reactive] public string BoardName { get; set; }
         [Reactive] public string FolderName { get; set; }
         [Reactive] public string FileName { get; set; }
-        [Reactive] public int? StartStep { get; set; }
+        [Reactive] public bool CreateNewFile { get; set; }
         public ReactiveList<LocalDimension> ColumnList { get; set; }
         public ReactiveList<LocalDimension> RowList { get; set; }
         public ReactiveCommand CreateCommand { get; set; }
@@ -45,10 +45,15 @@ namespace Kanban.Desktop.LocalBase.ViewModels
             this.shell = shell;
             validator = new WizardValidator();
             Title = "Creating a board";
+            CreateNewFile = true;
 
             this.WhenAnyValue(x => x.BoardName)
                 .Where(x => !string.IsNullOrWhiteSpace(x))
-                .Subscribe(v => { FileName = BoardNameToFileName(v); });
+                .Subscribe(v =>
+                {
+                    if (CreateNewFile)
+                        FileName = BoardNameToFileName(v);
+                });
 
             BoardName = "My Board";
 
@@ -56,7 +61,7 @@ namespace Kanban.Desktop.LocalBase.ViewModels
 
             SelectFolderCommand = ReactiveCommand.Create(SelectFolder);
 
-            ColumnList = new ReactiveList<LocalDimension>()
+            ColumnList = new ReactiveList<LocalDimension>
             {
                 new LocalDimension("Backlog"),
                 new LocalDimension("In progress"),
@@ -91,7 +96,7 @@ namespace Kanban.Desktop.LocalBase.ViewModels
                     UpdateDimensionList(RowList);
                 });
 
-            var canCreate = this.WhenAnyValue(w => w.Error, e => string.IsNullOrEmpty(e));
+            var canCreate = this.WhenAnyValue(w => w.Error, string.IsNullOrEmpty);
 
             CreateCommand = ReactiveCommand.CreateFromTask(Create, canCreate);
 
@@ -118,7 +123,7 @@ namespace Kanban.Desktop.LocalBase.ViewModels
             foreach (var dim in list)
             {
                 dim.IsDuplicate = false;
-                dim?.RaisePropertyChanged(nameof(dim.Name));
+                dim.RaisePropertyChanged(nameof(dim.Name));
             }
 
             var duplicatgroups = list
@@ -132,7 +137,7 @@ namespace Kanban.Desktop.LocalBase.ViewModels
                 foreach (var dim in group)
                 {
                     dim.IsDuplicate = true;
-                    dim?.RaisePropertyChanged(nameof(dim.Name));
+                    dim.RaisePropertyChanged(nameof(dim.Name));
                 }
             }
 
@@ -156,10 +161,12 @@ namespace Kanban.Desktop.LocalBase.ViewModels
 
         public void SelectFolder()
         {
-            FolderBrowserDialog dialog = new FolderBrowserDialog();
-            dialog.ShowNewFolderButton = false;
+            FolderBrowserDialog dialog = new FolderBrowserDialog
+            {
+                ShowNewFolderButton = false,
+                SelectedPath = FolderName
+            };
             //dialog.RootFolder = Environment.SpecialFolder.MyDocuments;
-            dialog.SelectedPath = FolderName;
 
             if (dialog.ShowDialog() == DialogResult.OK)
                 FolderName = dialog.SelectedPath;
@@ -167,32 +174,49 @@ namespace Kanban.Desktop.LocalBase.ViewModels
 
         public async Task Create()
         {
-            string uri = FolderName + "\\" + FileName;
+            string uri = FolderName + "\\"       + FileName;
             appModel.AddRecent(FolderName + "\\" + FileName);
             appModel.SaveConfig();
 
             var scope = appModel.CreateScope(uri);
 
-            var newBoard = new BoardInfo() { Name = BoardName, Created = DateTime.Now, Modified = DateTime.Now };
+            var newBoard = new BoardInfo()
+            {
+                Name = BoardName,
+                Created = DateTime.Now,
+                Modified = DateTime.Now
+            };
 
             newBoard = await scope.CreateOrUpdateBoardAsync(newBoard);
 
             foreach (var colName in ColumnList.Select(column => column.Name))
-                await scope.CreateOrUpdateColumnAsync(new ColumnInfo { Name = colName, Board = newBoard });
+                await scope.CreateOrUpdateColumnAsync(new ColumnInfo
+                {
+                    Name = colName,
+                    Board = newBoard
+                });
 
             foreach (var rowName in RowList.Select(row => row.Name))
-                await scope.CreateOrUpdateRowAsync(new RowInfo { Name = rowName, Board = newBoard });
+                await scope.CreateOrUpdateRowAsync(new RowInfo {Name = rowName, Board = newBoard});
 
             Close();
 
             shell.ShowView<BoardView>(
-                viewRequest: new BoardViewRequest { Scope = scope },
-                options: new UiShowOptions { Title = FileName });
+                viewRequest: new BoardViewRequest {Scope = scope,SelectedBoardName = BoardName},
+                options: new UiShowOptions {Title = FileName});
         }
 
         public void Initialize(ViewRequest viewRequest)
         {
-            StartStep = (viewRequest as WizardViewRequest)?.Step;
+            var request = viewRequest as WizardViewRequest;
+
+            CreateNewFile = (bool) request?.CreateNewFile;
+
+            if (!CreateNewFile)
+            {
+                FolderName = Path.GetDirectoryName(request.Uri);
+                FileName = Path.GetFileName(request.Uri);
+            }
         }
 
         public class LocalDimension : ViewModelBase, IDataErrorInfo

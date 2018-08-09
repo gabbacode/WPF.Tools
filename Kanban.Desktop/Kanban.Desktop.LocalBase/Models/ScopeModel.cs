@@ -9,17 +9,21 @@ using Ui.Wpf.KanbanControl.Dimensions;
 using Ui.Wpf.KanbanControl.Dimensions.Generic;
 using Ui.Wpf.KanbanControl.Elements.CardElement;
 using Autofac;
-using Data.Sources.LocalStorage.Sqlite;
+using Kanban.Desktop.LocalBase.SqliteLocalStorage;
 
 namespace Kanban.Desktop.LocalBase.Models
 {
     // TODO: container for boards
     // TODO: local or server access
+
     public interface IScopeModel
     {
         Task<IDimension> GetColumnHeadersAsync(int boardId);
         Task<IDimension> GetRowHeadersAsync(int boardId);
-        Task<IEnumerable<LocalIssue>> GetIssuesAsync(int boardId);
+
+        Task<List<RowInfo>> GetRowsByBoardIdAsync(int boardId);
+        Task<List<ColumnInfo>> GetColumnsByBoardIdAsync(int boardId);
+        Task<IEnumerable<LocalIssue>> GetIssuesByBoardIdAsync(int boardId);
         Task<List<BoardInfo>> GetAllBoardsInFileAsync();
         CardContent GetCardContent();
         RowInfo GetSelectedRow(string rowName);
@@ -32,11 +36,9 @@ namespace Kanban.Desktop.LocalBase.Models
         Task<BoardInfo> CreateOrUpdateBoardAsync(BoardInfo board);
         Task CreateOrUpdateColumnAsync(ColumnInfo column);
         Task CreateOrUpdateRowAsync(RowInfo row);
+        Task CreateOrUpdateIssueAsync(LocalIssue issue);
 
         Task<LocalIssue> LoadOrCreateIssueAsync(int? issueId);
-        Task CreateOrUpdateIssueAsync(LocalIssue issue);
-        Task<List<RowInfo>> GetRowsAsync(int boardId);
-        Task<List<ColumnInfo>> GetColumnsAsync(int boardId);
     }
 
     public class ScopeModel : IScopeModel
@@ -65,6 +67,7 @@ namespace Kanban.Desktop.LocalBase.Models
             columns = await repo.GetColumnsAsync(boardId);
 
             var columnHeaders = columns.Select(c => c.Name).ToArray();
+
             return new TagDimension<string, LocalIssue>(
                 tags: columnHeaders,
                 getItemTags: i => new[] { i.Column.Name },
@@ -80,6 +83,7 @@ namespace Kanban.Desktop.LocalBase.Models
             rows = await repo.GetRowsAsync(boardId);
 
             var rowHeaders = rows.Select(r => r.Name).ToArray();
+
             return new TagDimension<string, LocalIssue>(
                 tags: rowHeaders,
                 getItemTags: i => new[] { i.Row.Name },
@@ -90,7 +94,7 @@ namespace Kanban.Desktop.LocalBase.Models
             );
         }
 
-        public async Task<IEnumerable<LocalIssue>> GetIssuesAsync(int boardId)
+        public async Task<IEnumerable<LocalIssue>> GetIssuesByBoardIdAsync(int boardId)
         {
             return await repo.GetIssuesAsync
                 (new NameValueCollection {
@@ -117,14 +121,23 @@ namespace Kanban.Desktop.LocalBase.Models
             return columns.FirstOrDefault(c => c.Name == colName);
         }
 
-        public async Task<List<RowInfo>> GetRowsAsync(int boardId)
+        public async Task<List<RowInfo>> GetRowsByBoardIdAsync(int boardId)
         {
             return await repo.GetRowsAsync(boardId);
         }
 
-        public async Task<List<ColumnInfo>> GetColumnsAsync(int boardId)
+        public async Task<List<ColumnInfo>> GetColumnsByBoardIdAsync(int boardId)
         {
             return await repo.GetColumnsAsync(boardId);
+        }
+
+        public async Task<LocalIssue> LoadOrCreateIssueAsync(int? issueId)
+        {
+            var t = new LocalIssue();
+            if (issueId.HasValue)
+                t = await repo.GetIssueAsync(issueId.Value);
+
+            return t;
         }
 
         #endregion
@@ -167,20 +180,11 @@ namespace Kanban.Desktop.LocalBase.Models
 
         public async Task CreateOrUpdateIssueAsync(LocalIssue issue)
         {
-            issue.Modified = DateTime.Now;
             await repo.CreateOrUpdateIssueAsync(issue);
         }
 
 
         #endregion
 
-        public async Task<LocalIssue> LoadOrCreateIssueAsync(int? issueId)
-        {
-            var t = new LocalIssue();
-            if (issueId.HasValue)
-                t = await repo.GetIssueAsync(issueId.Value);
-
-            return t;
-        }
     }
 }

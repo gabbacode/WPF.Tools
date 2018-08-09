@@ -1,6 +1,6 @@
 ﻿using Autofac;
-using Data.Sources.LocalStorage.Sqlite;
 using Kanban.Desktop.LocalBase.Models;
+using Kanban.Desktop.LocalBase.SqliteLocalStorage;
 using Kanban.Desktop.LocalBase.Views;
 using Kanban.Desktop.LocalBase.ViewModels;
 using Ui.Wpf.Common;

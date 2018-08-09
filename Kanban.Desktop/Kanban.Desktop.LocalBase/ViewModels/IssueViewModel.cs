@@ -17,7 +17,7 @@ namespace Kanban.Desktop.LocalBase.ViewModels
         public BoardInfo Board { get; set; }
     }
 
-    public class IssueViewModel : ViewModelBase, IViewModel, IInitializableViewModel
+    public class IssueViewModel : ViewModelBase, IInitializableViewModel
     {
         private readonly IMapper mapper;
         private IScopeModel scope;
@@ -26,7 +26,9 @@ namespace Kanban.Desktop.LocalBase.ViewModels
         public DateTime Created { get; set; }
 
         public ReactiveList<RowInfo> AwailableRows { get; set; } = new ReactiveList<RowInfo>();
-        public ReactiveList<ColumnInfo> AwailableColumns { get; set; } = new ReactiveList<ColumnInfo>();
+
+        public ReactiveList<ColumnInfo> AwailableColumns { get; set; } =
+            new ReactiveList<ColumnInfo>();
 
         [Reactive] public string Head { get; set; }
         [Reactive] public string Body { get; set; }
@@ -43,15 +45,20 @@ namespace Kanban.Desktop.LocalBase.ViewModels
             mapper = CreateMapper();
 
             var issueFilled = this.WhenAnyValue(t => t.Head, t => t.Body, t => t.Row, t => t.Column,
-                (sh, sb, sr, sc) => sr != null && sc != null &&
+                (sh, sb, sr, sc) => sr != null                && sc != null &&
                                     !string.IsNullOrEmpty(sh) && !string.IsNullOrEmpty(sb));
             //TODO :add selectcommand when click uneditable with nulling all "selected" fields
 
             SaveCommand = ReactiveCommand.CreateFromTask(async _ =>
             {
-                var editedIssue = new LocalIssue() { Board = board };
+                var editedIssue = new LocalIssue() {Board = board};
 
                 mapper.Map(this, editedIssue);
+
+                if (editedIssue.Id == 0)
+                    editedIssue.Created = DateTime.Now;
+
+                editedIssue.Modified = DateTime.Now;
 
                 await scope.CreateOrUpdateIssueAsync(editedIssue);
 
@@ -67,7 +74,7 @@ namespace Kanban.Desktop.LocalBase.ViewModels
             {
                 scope = request.Scope;
 
-                 board = request.Board;
+                board = request.Board;
                 var issueId = request.IssueId;
                 if (issueId == 0)
                     issueId = null;
@@ -78,7 +85,7 @@ namespace Kanban.Desktop.LocalBase.ViewModels
                         mapper.Map(issue, this));
             }
 
-            Observable.FromAsync(() => scope.GetRowsAsync(board.Id))
+            Observable.FromAsync(() => scope.GetRowsByBoardIdAsync(board.Id))
                 .ObserveOnDispatcher()
                 .Subscribe(rows =>
                 {
@@ -86,7 +93,7 @@ namespace Kanban.Desktop.LocalBase.ViewModels
                     AwailableRows.AddRange(rows);
                 });
 
-            Observable.FromAsync(() => scope.GetColumnsAsync(board.Id))
+            Observable.FromAsync(() => scope.GetColumnsByBoardIdAsync(board.Id))
                 .ObserveOnDispatcher()
                 .Subscribe(columns =>
                     AwailableColumns.PublishCollection(columns));

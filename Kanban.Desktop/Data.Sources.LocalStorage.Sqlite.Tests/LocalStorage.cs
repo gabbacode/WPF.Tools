@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using Data.Entities.Common.LocalBase;
 using Data.Entities.Common.Redmine;
+using Kanban.Desktop.LocalBase.SqliteLocalStorage;
 using NUnit.Framework;
 
 namespace Data.Sources.LocalStorage.Sqlite.Tests

@@ -4,10 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Data.Entities.Common.LocalBase;
-using Data.Sources.LocalStorage.Sqlite.Context;
+using Kanban.Desktop.LocalBase.SqliteLocalStorage.Context;
 using Microsoft.EntityFrameworkCore;
 
-namespace Data.Sources.LocalStorage.Sqlite
+namespace Kanban.Desktop.LocalBase.SqliteLocalStorage
 {
     public class SqliteLocalRepository
     {
@@ -22,6 +22,7 @@ namespace Data.Sources.LocalStorage.Sqlite
         }
 
         #region creating&updating entities
+
         public async Task<RowInfo> CreateOrUpdateRowAsync(RowInfo row)
         {
             using (context = new SqliteContext(BaseConnstr))
@@ -108,6 +109,7 @@ namespace Data.Sources.LocalStorage.Sqlite
         #endregion
 
         #region getting entities
+
         public List<LocalIssue> GetIssues(NameValueCollection filters)
         {
             using (context = new SqliteContext(BaseConnstr))
@@ -249,6 +251,9 @@ namespace Data.Sources.LocalStorage.Sqlite
 
         #endregion
 
+
+        #region deleting entities
+        
         public async Task DeleteRowAsync(int? rowId)
         {
             using (context = new SqliteContext(BaseConnstr))
@@ -333,6 +338,8 @@ namespace Data.Sources.LocalStorage.Sqlite
             }
 
         }
+
+        #endregion
 
         private IMapper CreateMapper()
         {
