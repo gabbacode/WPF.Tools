@@ -2,6 +2,7 @@
 using Ui.Wpf.Common.ShowOptions;
 using Xceed.Wpf.AvalonDock;
 using Xceed.Wpf.AvalonDock.Layout;
+using System;
 
 namespace Ui.Wpf.Common
 {
@@ -14,7 +15,8 @@ namespace Ui.Wpf.Common
         void ShowView<TView>(
             ViewRequest viewRequest = null, 
             UiShowOptions options = null,
-            string viewId=null
+            string viewId=null,
+            Action<string> closeFunc=null
             )
             where TView : class, IView;
 

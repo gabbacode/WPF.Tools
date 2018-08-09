@@ -21,7 +21,8 @@ namespace Ui.Wpf.Common
         public void ShowView<TView>(
             ViewRequest viewRequest = null,
             UiShowOptions options = null,
-            string viewId=null)
+            string viewId=null,
+            Action<string> closeFunc = null)
             where TView : class, IView
         {
 
@@ -45,6 +46,15 @@ namespace Ui.Wpf.Common
 
 
                 var layoutDocument = new LayoutDocument { Content = view };
+
+                if (closeFunc != null)
+                {
+                    layoutDocument.Closed += (sender, e) =>
+                    {
+                        closeFunc(layoutDocument.ContentId);
+                    };
+                }
+
 
                 layoutDocument.ContentId = viewId;
 
