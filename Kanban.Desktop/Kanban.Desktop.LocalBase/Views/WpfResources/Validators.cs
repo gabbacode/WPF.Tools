@@ -25,7 +25,7 @@ namespace Kanban.Desktop.LocalBase.Views.WpfResources
                 .Must(IsValidDataBaseName)
                 .WithMessage("File name must have .db extension and can't contain any specific chars")
                 .Must((wiz, filename) =>
-                !File.Exists(wiz.FolderName+'\\'+filename))
+                 wiz.InExistedFile || !File.Exists(wiz.FolderName+'\\'+filename))
                 .WithMessage("This file already exists..");
         }
 

@@ -4,7 +4,7 @@ namespace Kanban.Desktop.LocalBase.Models
 {
     public class WizardViewRequest : ViewRequest
     {
-        public bool CreateNewFile { get; set; }
+        public bool InExistedFile { get; set; }
         public string Uri { get; set; }
     }
 

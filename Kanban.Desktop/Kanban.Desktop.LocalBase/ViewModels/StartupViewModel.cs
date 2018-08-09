@@ -46,7 +46,7 @@ namespace Kanban.Desktop.LocalBase.ViewModels
             RemoveRecentCommand = ReactiveCommand.Create<string>(RemoveRecent);
 
             NewFileCommand = ReactiveCommand.Create(() =>
-                shell.ShowView<WizardView>(new WizardViewRequest {CreateNewFile = true}));
+                shell.ShowView<WizardView>(new WizardViewRequest {InExistedFile = false}));
 
             NewBoardCommand = ReactiveCommand.Create(() =>
             {
@@ -64,7 +64,7 @@ namespace Kanban.Desktop.LocalBase.ViewModels
                     AddRecent(uri);
                     shell.ShowView<WizardView>(new WizardViewRequest
                     {
-                        CreateNewFile = false,
+                        InExistedFile = true,
                         Uri = uri
                     });
                 }

@@ -24,7 +24,8 @@ namespace Kanban.Desktop.LocalBase.ViewModels
         [Reactive] public string BoardName { get; set; }
         [Reactive] public string FolderName { get; set; }
         [Reactive] public string FileName { get; set; }
-        [Reactive] public bool CreateNewFile { get; set; }
+        [Reactive] public bool InExistedFile { get; set; }
+        [Reactive] public bool CanCreate { get; set; }
         public ReactiveList<LocalDimension> ColumnList { get; set; }
         public ReactiveList<LocalDimension> RowList { get; set; }
         public ReactiveCommand CreateCommand { get; set; }
@@ -45,13 +46,12 @@ namespace Kanban.Desktop.LocalBase.ViewModels
             this.shell = shell;
             validator = new WizardValidator();
             Title = "Creating a board";
-            CreateNewFile = true;
 
             this.WhenAnyValue(x => x.BoardName)
                 .Where(x => !string.IsNullOrWhiteSpace(x))
                 .Subscribe(v =>
                 {
-                    if (CreateNewFile)
+                    if (!InExistedFile)
                         FileName = BoardNameToFileName(v);
                 });
 
@@ -96,7 +96,7 @@ namespace Kanban.Desktop.LocalBase.ViewModels
                     UpdateDimensionList(RowList);
                 });
 
-            var canCreate = this.WhenAnyValue(w => w.Error, string.IsNullOrEmpty);
+            var canCreate = this.WhenAnyValue(w => w.AllErrors, ae => !ae.Any());
 
             CreateCommand = ReactiveCommand.CreateFromTask(Create, canCreate);
 
@@ -115,6 +115,11 @@ namespace Kanban.Desktop.LocalBase.ViewModels
 
             this.WhenAnyObservable(s => s.RowList.ItemsAdded)
                 .Subscribe(_ => UpdateDimensionList(RowList));
+
+            this.WhenAnyObservable(s => s.AllErrors.Changed)
+                .Subscribe(_ => CanCreate = !AllErrors.Any()                            &&
+                                            ColumnList.Count(col => col.HasErrors) == 0 &&
+                                            RowList.Count(row => row.HasErrors)    == 0);
         }
 
         private void UpdateDimensionList(ReactiveList<LocalDimension> list)
@@ -142,6 +147,10 @@ namespace Kanban.Desktop.LocalBase.ViewModels
             }
 
             list.ChangeTrackingEnabled = true;
+
+            CanCreate = !AllErrors.Any()                            &&
+                        ColumnList.Count(col => col.HasErrors) == 0 &&
+                        RowList.Count(row => row.HasErrors)    == 0;
         }
 
         private string BoardNameToFileName(string boardName)
@@ -202,7 +211,7 @@ namespace Kanban.Desktop.LocalBase.ViewModels
             Close();
 
             shell.ShowView<BoardView>(
-                viewRequest: new BoardViewRequest {Scope = scope,SelectedBoardName = BoardName},
+                viewRequest: new BoardViewRequest {Scope = scope, SelectedBoardName = BoardName},
                 options: new UiShowOptions {Title = FileName});
         }
 
@@ -210,9 +219,9 @@ namespace Kanban.Desktop.LocalBase.ViewModels
         {
             var request = viewRequest as WizardViewRequest;
 
-            CreateNewFile = (bool) request?.CreateNewFile;
+            InExistedFile = (bool) request?.InExistedFile;
 
-            if (!CreateNewFile)
+            if (InExistedFile)
             {
                 FolderName = Path.GetDirectoryName(request.Uri);
                 FileName = Path.GetFileName(request.Uri);
@@ -227,6 +236,7 @@ namespace Kanban.Desktop.LocalBase.ViewModels
                 validator = new LocalDimensionValidator();
             }
 
+            public bool HasErrors { get; set; }
             public bool IsDuplicate { get; set; }
             [Reactive] public string Name { get; set; }
 
@@ -255,6 +265,8 @@ namespace Kanban.Desktop.LocalBase.ViewModels
                 {
                     var errs = validator?
                         .Validate(this).Errors;
+
+                    HasErrors = errs?.Any() ?? false;
 
                     if (errs != null)
                         return validator != null
