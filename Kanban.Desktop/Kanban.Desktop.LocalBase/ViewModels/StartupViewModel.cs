@@ -4,11 +4,13 @@ using System.Reactive;
 using System.Windows.Forms;
 using Kanban.Desktop.LocalBase.Models;
 using Kanban.Desktop.LocalBase.Views;
+using MahApps.Metro;
 using MahApps.Metro.Controls.Dialogs;
 using ReactiveUI;
 using Ui.Wpf.Common;
 using Ui.Wpf.Common.ShowOptions;
 using Ui.Wpf.Common.ViewModels;
+using Application = System.Windows.Application;
 
 namespace Kanban.Desktop.LocalBase.ViewModels
 {
@@ -20,6 +22,7 @@ namespace Kanban.Desktop.LocalBase.ViewModels
         public ReactiveCommand OpenFileCommand { get; set; }
         public ReactiveCommand<string, Unit> OpenRecentDbCommand { get; set; }
         public ReactiveCommand<string, Unit> RemoveRecentCommand { get; set; }
+        public ReactiveCommand<string, Unit> AccentChangeCommand { get; set; }
 
         private readonly IShell shell;
         private readonly IAppModel appModel;
@@ -33,6 +36,12 @@ namespace Kanban.Desktop.LocalBase.ViewModels
 
             var recent = this.appModel.GetRecentDocuments();
             BaseList = new ReactiveList<string>(recent.Take(3));
+
+            AccentChangeCommand =
+                ReactiveCommand.Create<string>(color=> // now set the Green accent and dark theme
+                    ThemeManager.ChangeAppStyle(Application.Current,
+                        ThemeManager.GetAccent(color),
+                        ThemeManager.GetAppTheme("baselight")));
 
             OpenRecentDbCommand = ReactiveCommand.Create<string>(uri =>
             {

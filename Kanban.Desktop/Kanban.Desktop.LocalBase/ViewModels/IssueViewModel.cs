@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Reactive.Linq;
 using AutoMapper;
 using Data.Entities.Common.LocalBase;
@@ -25,7 +26,8 @@ namespace Kanban.Desktop.LocalBase.ViewModels
         public int Id { get; set; }
         public DateTime Created { get; set; }
 
-        public ReactiveList<RowInfo> AwailableRows { get; set; } = new ReactiveList<RowInfo>();
+        public ReactiveList<RowInfo> AwailableRows { get; set; } =
+            new ReactiveList<RowInfo>();
 
         public ReactiveList<ColumnInfo> AwailableColumns { get; set; } =
             new ReactiveList<ColumnInfo>();
@@ -45,8 +47,8 @@ namespace Kanban.Desktop.LocalBase.ViewModels
             mapper = CreateMapper();
 
             var issueFilled = this.WhenAnyValue(t => t.Head, t => t.Body, t => t.Row, t => t.Column,
-                (sh, sb, sr, sc) => sr != null                && sc != null &&
-                                    !string.IsNullOrEmpty(sh) && !string.IsNullOrEmpty(sb));
+                (sh, sb, sr, sc) => sr != null && sc != null &&
+                !string.IsNullOrEmpty(sh) && !string.IsNullOrEmpty(sb));
             //TODO :add selectcommand when click uneditable with nulling all "selected" fields
 
             SaveCommand = ReactiveCommand.CreateFromTask(async _ =>
@@ -75,28 +77,37 @@ namespace Kanban.Desktop.LocalBase.ViewModels
                 scope = request.Scope;
 
                 board = request.Board;
-                var issueId = request.IssueId;
-                if (issueId == 0)
-                    issueId = null;
-
-                Observable.FromAsync(() => scope.LoadOrCreateIssueAsync(issueId))
+                Observable.FromAsync(() => scope.GetRowsByBoardIdAsync(board.Id))
                     .ObserveOnDispatcher()
-                    .Subscribe(issue =>
-                        mapper.Map(issue, this));
+                    .Subscribe(rows =>
+                    {
+                        AwailableRows.Clear();
+                        AwailableRows.AddRange(rows);
+                        Row = AwailableRows.First();
+                    });
+
+                Observable.FromAsync(() => scope.GetColumnsByBoardIdAsync(board.Id))
+                    .ObserveOnDispatcher()
+                    .Subscribe(columns =>
+                    {
+                        AwailableColumns.Clear();
+                        AwailableColumns.AddRange(columns);
+                        Column = AwailableColumns.First();
+                    });
+
+                var issueId = request.IssueId;
+
+                if (issueId != null && issueId > 0)
+
+                    Observable.FromAsync(() => scope.LoadOrCreateIssueAsync(issueId))
+                        .ObserveOnDispatcher()
+                        .Subscribe(issue =>
+                        {
+                            mapper.Map(issue, this);
+                            Row = AwailableRows.First(r => r.Id       == Row.Id);
+                            Column = AwailableColumns.First(c => c.Id == Column.Id);
+                        });
             }
-
-            Observable.FromAsync(() => scope.GetRowsByBoardIdAsync(board.Id))
-                .ObserveOnDispatcher()
-                .Subscribe(rows =>
-                {
-                    AwailableRows.Clear();
-                    AwailableRows.AddRange(rows);
-                });
-
-            Observable.FromAsync(() => scope.GetColumnsByBoardIdAsync(board.Id))
-                .ObserveOnDispatcher()
-                .Subscribe(columns =>
-                    AwailableColumns.PublishCollection(columns));
 
             Title = $"Редактирование задачи {Head}";
         }
