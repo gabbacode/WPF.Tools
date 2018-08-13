@@ -77,6 +77,27 @@ namespace Kanban.Desktop.LocalBase.Models
                     .ToArray());
         }
 
+        public async Task<CardsColors> GetTaskColorsAsync(int boardId)
+        {
+            var isss = await GetIssuesByBoardIdAsync(boardId);
+
+            var cardsColors = new CardsColors
+            {
+                Path = "pasd",
+                ColorMap = isss
+                    .ToDictionary(
+                        k => (object) k.Id,
+                        v => (ICardColor) new CardColor
+                        {
+                            Background = v.Color,
+                            BorderBrush = v.Color
+                        })
+            };
+
+            return cardsColors;
+        }
+        
+
         public async Task<IDimension> GetRowHeadersAsync(int boardId)
         {
             rows.Clear();

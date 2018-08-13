@@ -22,6 +22,7 @@ namespace Kanban.Desktop.LocalBase.ViewModels
     {
         private readonly IMapper mapper;
         private IScopeModel scope;
+        private BoardInfo board;
 
         public int Id { get; set; }
         public DateTime Created { get; set; }
@@ -37,18 +38,19 @@ namespace Kanban.Desktop.LocalBase.ViewModels
         [Reactive] public RowInfo Row { get; set; }
         [Reactive] public ColumnInfo Column { get; set; }
         [Reactive] public string Color { get; set; }
-        private BoardInfo board;
 
         public ReactiveCommand CancelCommand { get; set; }
         public ReactiveCommand SaveCommand { get; set; }
+        [Reactive] public bool IsOpened { get; set; }
+        [Reactive] public bool IssueChanged { get; set; }
 
         public IssueViewModel()
         {
             mapper = CreateMapper();
 
             var issueFilled = this.WhenAnyValue(t => t.Head, t => t.Body, t => t.Row, t => t.Column,
-                (sh, sb, sr, sc) => sr != null && sc != null &&
-                !string.IsNullOrEmpty(sh) && !string.IsNullOrEmpty(sb));
+                (sh, sb, sr, sc) => sr != null                && sc != null &&
+                                    !string.IsNullOrEmpty(sh) && !string.IsNullOrEmpty(sb));
             //TODO :add selectcommand when click uneditable with nulling all "selected" fields
 
             SaveCommand = ReactiveCommand.CreateFromTask(async _ =>
@@ -64,10 +66,11 @@ namespace Kanban.Desktop.LocalBase.ViewModels
 
                 await scope.CreateOrUpdateIssueAsync(editedIssue);
 
-                Close();
+                IsOpened = false;
+                IssueChanged = true;
             }, issueFilled);
 
-            CancelCommand = ReactiveCommand.Create(Close);
+            CancelCommand = ReactiveCommand.Create(() => IsOpened = false);
         }
 
         public void Initialize(ViewRequest viewRequest)
@@ -77,12 +80,16 @@ namespace Kanban.Desktop.LocalBase.ViewModels
                 scope = request.Scope;
 
                 board = request.Board;
+
+                mapper.Map(new LocalIssue(), this);
+
+                IssueChanged = false;
+
                 Observable.FromAsync(() => scope.GetRowsByBoardIdAsync(board.Id))
                     .ObserveOnDispatcher()
                     .Subscribe(rows =>
                     {
-                        AwailableRows.Clear();
-                        AwailableRows.AddRange(rows);
+                        AwailableRows.PublishCollection(rows);
                         Row = AwailableRows.First();
                     });
 
@@ -90,8 +97,7 @@ namespace Kanban.Desktop.LocalBase.ViewModels
                     .ObserveOnDispatcher()
                     .Subscribe(columns =>
                     {
-                        AwailableColumns.Clear();
-                        AwailableColumns.AddRange(columns);
+                        AwailableColumns.PublishCollection(columns);
                         Column = AwailableColumns.First();
                     });
 
@@ -110,6 +116,7 @@ namespace Kanban.Desktop.LocalBase.ViewModels
             }
 
             Title = $"Редактирование задачи {Head}";
+            IsOpened = true;
         }
 
         private IMapper CreateMapper()

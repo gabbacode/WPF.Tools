@@ -33,7 +33,6 @@
         <Label Content="Название задачи" />
         <TextBox Grid.Column="1"
                  Text="{Binding Head,UpdateSourceTrigger=PropertyChanged}" 
-                 TextWrapping="Wrap"
                  mah:TextBoxHelper.Watermark="Введите значение"
                  mah:TextBoxHelper.ClearTextButton="True" />
 
@@ -42,6 +41,7 @@
         <TextBox Grid.Column="1" Grid.Row="1"
                  Text="{Binding Body,UpdateSourceTrigger=PropertyChanged}" 
                  TextWrapping="Wrap"
+                 AcceptsReturn="True"
                  mah:TextBoxHelper.Watermark="Введите значение"
                  mah:TextBoxHelper.ClearTextButton="True" />
 

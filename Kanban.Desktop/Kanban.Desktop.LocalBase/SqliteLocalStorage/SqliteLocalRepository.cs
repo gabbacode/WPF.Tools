@@ -27,7 +27,8 @@ namespace Kanban.Desktop.LocalBase.SqliteLocalStorage
         {
             using (context = new SqliteContext(BaseConnstr))
             {
-                if (row.Id == 0 || context.Row.Find(row.Id) == null)
+                if (row.Id == 0 || context.Row.AsNoTracking()
+                        .FirstOrDefault(c => c.Id == row.Id) == null)
                 {
                     context.Attach(row.Board);
                     await context.AddAsync(row);

@@ -52,7 +52,7 @@ namespace Ui.Wpf.KanbanControl
             // TODO store changesets and animate last little part of it with some low frequency
 
 
-            if (HorizontalDimension == null
+            if (HorizontalDimension  == null
                 || VerticalDimension == null)
             {
                 ClearHeaders();
@@ -60,20 +60,27 @@ namespace Ui.Wpf.KanbanControl
 
             ClearCards();
 
+            if (cells != null)
+                foreach (var cell in cells)
+                {
+                    cell.View.MouseDoubleClick -= CardElementMouseDoubleClick;
+                } //todo:change clearcard method and add clearcell
+
             // TODO create only when type changed
             propertyAccessors = new PropertyAccessorsExpressionCreator(Cards);
 
             categoriesManager.BuildAutoCategories(
-                Cards, 
+                Cards,
                 HorizontalDimension, VerticalDimension,
                 propertyAccessors);
 
             BuildCards();
             BuildCells();
-            BuildHeaders();            
+            BuildHeaders();
+
 
             kanbanManager.AddActionsToShow(
-                changeObjectType, 
+                changeObjectType,
                 propertyAccessors);
         }
 
@@ -97,6 +104,7 @@ namespace Ui.Wpf.KanbanControl
                 for (int j = 0; j < VerticalDimension.Categories.Count; j++)
                 {
                     cells[i, j] = new Cell(new CellView());
+                    cells[i, j].View.MouseDoubleClick += CardElementMouseDoubleClick;
                 }
             }
             Debug.WriteLine($"BuildCells new cells: {cells?.GetHashCode()}");
@@ -174,7 +182,6 @@ namespace Ui.Wpf.KanbanControl
                         .ToList();
 
                 cardElement.View.ContentTemplate = CardTemplate;
-                cardElement.View.MouseDoubleClick += CardElementMouseDoubleClick;
                 cardElement.View.MouseLeftButtonDown += CardMouseClick;
                 cardElements.Add(cardElement);
             }
@@ -184,7 +191,6 @@ namespace Ui.Wpf.KanbanControl
         {
             foreach (var card in cardElements)
             {
-                card.View.MouseDoubleClick -= CardElementMouseDoubleClick;
                 card.View.MouseLeftButtonDown -= CardMouseClick;
             }
             cardElements.Clear();
@@ -203,6 +209,8 @@ namespace Ui.Wpf.KanbanControl
             {
                 CardMouseDoubleClickCommand?.Execute(c.Item);
             }
+
+            else CardMouseDoubleClickCommand?.Execute(null);
         }
 
         private void CardMouseClick(object sender, MouseButtonEventArgs e)
@@ -234,6 +242,20 @@ namespace Ui.Wpf.KanbanControl
             }
         }
 
+        private void HorizontalHeaderDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var source = e.OriginalSource as FrameworkElement;
+            var dc = source?.DataContext;
+            if (dc is IDimensionCategory h)
+            {
+                HorizontalHeaderDoubleClickCommand?.Execute(h.Caption);
+            }
+            else
+            {
+                CardMouseClickCommand?.Execute(null);
+            }
+        }
+
         private void VerticalHeaderMouseClick(object sender, MouseButtonEventArgs e)
         {
             var source = e.OriginalSource as FrameworkElement;
@@ -248,16 +270,32 @@ namespace Ui.Wpf.KanbanControl
             }
         }
 
+        private void VerticalHeaderDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var source = e.OriginalSource as FrameworkElement;
+            var dc = source?.DataContext;
+            if (dc is IDimensionCategory h)
+            {
+                VerticalHeaderDoubleClickCommand?.Execute(h.Caption);
+            }
+            else
+            {
+                CardMouseClickCommand?.Execute(null);
+            }
+        }
+
         private void ClearHeaders()
         {
             foreach (var header in horizontalHeaders)
             {
                 header.View.MouseLeftButtonDown -= HorizontalHeaderMouseClick;
+                header.View.MouseDoubleClick -= HorizontalHeaderDoubleClick;
             }
 
             foreach (var header in verticalHeaders)
             {
                 header.View.MouseLeftButtonDown -= VerticalHeaderMouseClick;
+                header.View.MouseDoubleClick -= VerticalHeaderDoubleClick;
             }
 
             horizontalHeaders.Clear();
@@ -273,6 +311,7 @@ namespace Ui.Wpf.KanbanControl
                 head.Content = HorizontalDimension.Categories[i];
                 horizontalHeaders.Add(new Header(head));
                 head.MouseLeftButtonDown += HorizontalHeaderMouseClick;
+                head.MouseDoubleClick += HorizontalHeaderDoubleClick;
             }
 
             for (int j = 0; j < VerticalDimension?.Categories?.Count; j++)
@@ -282,6 +321,7 @@ namespace Ui.Wpf.KanbanControl
                 head.Content = VerticalDimension.Categories[j];
                 verticalHeaders.Add(new Header(head));
                 head.MouseLeftButtonDown += VerticalHeaderMouseClick;
+                head.MouseDoubleClick += VerticalHeaderDoubleClick;
             }
         }
 
@@ -581,6 +621,18 @@ namespace Ui.Wpf.KanbanControl
                 typeof(ICommand), typeof(Kanban),
                 new PropertyMetadata(null));
 
+        public ICommand HorizontalHeaderDoubleClickCommand
+        {
+            get => (ICommand)GetValue(HorizontalHeaderDoubleClickCommandProperty);
+            set => SetValue(HorizontalHeaderDoubleClickCommandProperty, value);
+        }
+
+        public static readonly DependencyProperty HorizontalHeaderDoubleClickCommandProperty =
+            DependencyProperty.Register(
+                "HorizontalHeaderDoubleClickCommand",
+                typeof(ICommand), typeof(Kanban),
+                new PropertyMetadata(null));
+
         public ICommand VerticalHeaderMouseClickCommand
         {
             get => (ICommand)GetValue(VerticalHeaderMouseClickCommandProperty);
@@ -590,6 +642,18 @@ namespace Ui.Wpf.KanbanControl
         public static readonly DependencyProperty VerticalHeaderMouseClickCommandProperty =
             DependencyProperty.Register(
                 "VerticalHeaderMouseClickCommand",
+                typeof(ICommand), typeof(Kanban),
+                new PropertyMetadata(null));
+
+        public ICommand VerticalHeaderDoubleClickCommand
+        {
+            get => (ICommand)GetValue(VerticalHeaderDoubleClickCommandProperty);
+            set => SetValue(VerticalHeaderDoubleClickCommandProperty, value);
+        }
+
+        public static readonly DependencyProperty VerticalHeaderDoubleClickCommandProperty =
+            DependencyProperty.Register(
+                "VerticalHeaderDoubleClickCommand",
                 typeof(ICommand), typeof(Kanban),
                 new PropertyMetadata(null));
         #endregion

@@ -5,7 +5,6 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Data.Entities.Common.LocalBase;
 using Kanban.Desktop.LocalBase.Models;
-using Kanban.Desktop.LocalBase.Views;
 using MahApps.Metro.Controls.Dialogs;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -16,10 +15,9 @@ using Ui.Wpf.KanbanControl.Elements.CardElement;
 
 namespace Kanban.Desktop.LocalBase.ViewModels
 {
-    public class BoardViewModel : ViewModelBase, IViewModel, IInitializableViewModel
+    public class BoardViewModel : ViewModelBase, IInitializableViewModel
     {
         private IScopeModel scope;
-        private readonly IShell shell_;
 
         private readonly IDialogCoordinator dialogCoordinator = DialogCoordinator.Instance;
 
@@ -31,21 +29,25 @@ namespace Kanban.Desktop.LocalBase.ViewModels
         [Reactive] public IDimension HorizontalDimension { get; internal set; }
         [Reactive] public ReactiveList<BoardInfo> BoardsInFile { get; set; }
         [Reactive] public BoardInfo CurrentBoard { get; set; }
+        [Reactive] public ICardContent CardContent { get; private set; }
+
+        [Reactive] public IssueViewModel IssueViewModel { get; set; }
 
         public ReactiveList<string> Entities { get; }
             = new ReactiveList<string>() {"Задачу", "Столбец", "Строку"};
 
         public ReactiveList<LocalIssue> Issues { get; internal set; }
 
-        [Reactive] public ICardContent CardContent { get; private set; }
 
         public ReactiveCommand RefreshCommand { get; set; }
 
         public ReactiveCommand DeleteCommand { get; set; }
 
-        public ReactiveCommand UpdateCommand { get; set; }
-
         public ReactiveCommand<object, Unit> UpdateCardCommand { get; set; }
+
+        public ReactiveCommand<object, Unit> UpdateHorizontalHeaderCommand { get; set; }
+
+        public ReactiveCommand<object, Unit> UpdateVerticalHeaderCommand { get; set; }
 
         public ReactiveCommand<string, Unit> AddNewElementCommand { get; set; }
 
@@ -55,10 +57,8 @@ namespace Kanban.Desktop.LocalBase.ViewModels
 
         public ReactiveCommand ColumnHeaderSelectCommand { get; set; }
 
-        public BoardViewModel(IShell shell)
+        public BoardViewModel()
         {
-            shell_ = shell;
-
             Issues = new ReactiveList<LocalIssue>();
             BoardsInFile = new ReactiveList<BoardInfo>();
 
@@ -73,9 +73,13 @@ namespace Kanban.Desktop.LocalBase.ViewModels
 
             DeleteCommand = ReactiveCommand.CreateFromTask(DeleteElement, isSelectedEditable);
 
-            UpdateCommand = ReactiveCommand.Create(UpdateElement, isSelectedEditable);
-
             UpdateCardCommand = ReactiveCommand.Create<object>(UpdateCard);
+
+            UpdateHorizontalHeaderCommand = ReactiveCommand
+                .Create<object>(async ob => await UpdateHorizontalHeader(ob));
+
+            UpdateVerticalHeaderCommand = ReactiveCommand
+                .Create<object>(async ob => await UpdateVerticalHeader(ob));
 
             AddNewElementCommand =
                 ReactiveCommand.CreateFromTask<string>(async name => await AddNewElement(name));
@@ -102,7 +106,7 @@ namespace Kanban.Desktop.LocalBase.ViewModels
 
             ColumnHeaderSelectCommand = ReactiveCommand.Create<object>(o =>
             {
-                SelectedColumn = this.scope.GetSelectedColumn(o.ToString());
+                SelectedColumn = scope.GetSelectedColumn(o.ToString());
 
                 if (SelectedColumn == null) return;
 
@@ -113,6 +117,10 @@ namespace Kanban.Desktop.LocalBase.ViewModels
             this.WhenAnyValue(bvm => bvm.CurrentBoard)
                 .Where(val => val != null)
                 .Subscribe(async _ => { await RefreshContent(); });
+
+            this.WhenAnyValue(w => w.IssueViewModel.IssueChanged)
+                .Where(ch => ch)
+                .Subscribe(async _ => await RefreshContent());
         }
 
         private async Task RefreshContent()
@@ -156,74 +164,64 @@ namespace Kanban.Desktop.LocalBase.ViewModels
 
         private void UpdateCard(object o)
         {
-            if (o is LocalIssue lis)
-                shell_.ShowView<IssueView>(
-                    viewRequest: new IssueViewRequest()
-                    {
-                        IssueId = SelectedIssue.Id,
-                        Scope = scope,
-                        Board = CurrentBoard
-                    });
+            if (o is LocalIssue)
+                IssueViewModel.Initialize(new IssueViewRequest
+                {
+                    IssueId = SelectedIssue.Id,
+                    Scope = scope,
+                    Board = CurrentBoard
+                });
+
             else if (o is null)
-            {
-                shell_.ShowView<IssueView>(
-                    viewRequest: new IssueViewRequest() {IssueId = 0, Scope = scope});
-            }
+                IssueViewModel.Initialize(new IssueViewRequest
+                {
+                    IssueId = 0,
+                    Scope = scope,
+                    Board = CurrentBoard
+                });
         }
 
-        private async Task UpdateElement()
+        private async Task UpdateHorizontalHeader(object o)
         {
-            if (SelectedIssue != null)
+            var newName = await ShowColumnNameInput();
+
+            var column = scope.GetSelectedColumn(o.ToString());
+
+            if (!string.IsNullOrEmpty(newName))
             {
-                shell_.ShowView<IssueView>(
-                    viewRequest: new IssueViewRequest()
-                    {
-                        IssueId = SelectedIssue.Id,
-                        Scope = scope,
-                        Board = CurrentBoard
-                    });
+                column.Name = newName;
+                await scope.CreateOrUpdateColumnAsync(column);
             }
 
-            else if (SelectedRow != null)
+            await RefreshContent();
+        }
+
+        private async Task UpdateVerticalHeader(object o)
+        {
+            var newName = await ShowRowNameInput();
+
+            var row = scope.GetSelectedRow(o.ToString());
+
+            if (!string.IsNullOrEmpty(newName))
             {
-                var newName = await ShowRowNameInput();
-
-                if (!string.IsNullOrEmpty(newName))
-                {
-                    SelectedRow.Name = newName;
-                    await scope.CreateOrUpdateRowAsync(SelectedRow);
-                }
-            }
-
-
-            else if (SelectedColumn != null)
-            {
-                var newName = await ShowColumnNameInput();
-
-                if (!string.IsNullOrEmpty(newName))
-
-                {
-                    SelectedColumn.Name = newName;
-                    await scope.CreateOrUpdateColumnAsync(SelectedColumn);
-                }
+                row.Name = newName;
+                await scope.CreateOrUpdateRowAsync(row);
             }
 
             await RefreshContent();
         }
 
         private async Task
-            AddNewElement(
-            string elementName) //TODO: add enum(?) as command parameter instead of string
+            AddNewElement(string elementName)
         {
             if (elementName == "Задачу")
             {
-                shell_.ShowView<IssueView>(
-                    viewRequest: new IssueViewRequest()
-                    {
-                        IssueId = 0,
-                        Scope = scope,
-                        Board = CurrentBoard
-                    });
+                IssueViewModel.Initialize(new IssueViewRequest
+                {
+                    IssueId = 0,
+                    Scope = scope,
+                    Board = CurrentBoard
+                });
             }
 
             else if (elementName == "Строку")
@@ -280,6 +278,7 @@ namespace Kanban.Desktop.LocalBase.ViewModels
         public void Initialize(ViewRequest viewRequest)
         {
             var request = viewRequest as BoardViewRequest;
+            IssueViewModel = new IssueViewModel();
 
             scope = request.Scope;
 

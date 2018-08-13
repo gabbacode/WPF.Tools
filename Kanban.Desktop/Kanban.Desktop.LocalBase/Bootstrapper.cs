@@ -46,7 +46,6 @@ namespace Kanban.Desktop.LocalBase
             ConfigureView<StartupViewModel, StartupView>(builder);
             ConfigureView<WizardViewModel, WizardView>(builder);
             ConfigureView<BoardViewModel, BoardView>(builder);
-            ConfigureView<IssueViewModel, IssueView>(builder);
 
             return builder.Build();
         }

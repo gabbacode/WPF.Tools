@@ -11,6 +11,7 @@ using FluentValidation;
 using Kanban.Desktop.LocalBase.Models;
 using Kanban.Desktop.LocalBase.Views;
 using Kanban.Desktop.LocalBase.Views.WpfResources;
+using MahApps.Metro.Controls.Dialogs;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Ui.Wpf.Common;
@@ -39,6 +40,7 @@ namespace Kanban.Desktop.LocalBase.ViewModels
 
         private readonly IAppModel appModel;
         private readonly IShell shell;
+        private readonly IDialogCoordinator dialogCoordinator = DialogCoordinator.Instance;
 
         public WizardViewModel(IAppModel appModel, IShell shell)
         {
@@ -96,9 +98,7 @@ namespace Kanban.Desktop.LocalBase.ViewModels
                     UpdateDimensionList(RowList);
                 });
 
-            var canCreate = this.WhenAnyValue(w => w.AllErrors, ae => !ae.Any());
-
-            CreateCommand = ReactiveCommand.CreateFromTask(Create, canCreate);
+            CreateCommand = ReactiveCommand.CreateFromTask(Create);
 
             CancelCommand = ReactiveCommand.Create(Close);
 
@@ -185,9 +185,19 @@ namespace Kanban.Desktop.LocalBase.ViewModels
         {
             string uri = FolderName + "\\"       + FileName;
             appModel.AddRecent(FolderName + "\\" + FileName);
-            appModel.SaveConfig();
 
             var scope = appModel.CreateScope(uri);
+
+            if ((await scope.GetAllBoardsInFileAsync()).Select(board => board.Name)
+                .Contains(BoardName))
+            {
+                await dialogCoordinator.ShowMessageAsync(this,"Can not create board",
+                    "Board with such name already exists in file");
+                return;
+            }
+
+            appModel.SaveConfig();
+
 
             var newBoard = new BoardInfo()
             {
