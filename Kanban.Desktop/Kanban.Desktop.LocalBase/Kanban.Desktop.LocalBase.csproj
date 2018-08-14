@@ -251,6 +251,10 @@
     </ApplicationDefinition>
     <Compile Include="Models\IDistinctShell.cs" />
     <Compile Include="Models\ViewRequests.cs" />
+    <Compile Include="SqliteLocalStorage\Entities\BoardInfo.cs" />
+    <Compile Include="SqliteLocalStorage\Entities\ColumnInfo.cs" />
+    <Compile Include="SqliteLocalStorage\Entities\LocalIssue.cs" />
+    <Compile Include="SqliteLocalStorage\Entities\RowInfo.cs" />
     <Compile Include="Views\WpfResources\ControlElements.cs" />
     <Compile Include="Views\WpfResources\Validators.cs" />
     <Page Include="Views\WizardView.xaml">
@@ -330,14 +334,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Data.Entities.Common\Data.Entities.Common.csproj">
-      <Project>{D70D3F81-6B4F-4F6C-873F-53482DE2DE52}</Project>
-      <Name>Data.Entities.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Data.Sources.Common\Data.Sources.Common.csproj">
-      <Project>{C1D73699-7C75-48BB-8076-913018DB6852}</Project>
-      <Name>Data.Sources.Common</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Ui.Wpf.Common\Ui.Wpf.Common.csproj">
       <Project>{FDB62508-AFFA-4281-8472-8D00FC1403BA}</Project>
       <Name>Ui.Wpf.Common</Name>

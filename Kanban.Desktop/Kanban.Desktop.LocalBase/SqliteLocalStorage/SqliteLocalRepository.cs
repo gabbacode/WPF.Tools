@@ -3,8 +3,8 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using Data.Entities.Common.LocalBase;
 using Kanban.Desktop.LocalBase.SqliteLocalStorage.Context;
+using Kanban.Desktop.LocalBase.SqliteLocalStorage.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Kanban.Desktop.LocalBase.SqliteLocalStorage

@@ -1,5 +1,4 @@
-﻿using Data.Entities.Common.LocalBase;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
@@ -10,6 +9,7 @@ using Ui.Wpf.KanbanControl.Dimensions.Generic;
 using Ui.Wpf.KanbanControl.Elements.CardElement;
 using Autofac;
 using Kanban.Desktop.LocalBase.SqliteLocalStorage;
+using Kanban.Desktop.LocalBase.SqliteLocalStorage.Entities;
 
 namespace Kanban.Desktop.LocalBase.Models
 {
@@ -70,10 +70,10 @@ namespace Kanban.Desktop.LocalBase.Models
 
             return new TagDimension<string, LocalIssue>(
                 tags: columnHeaders,
-                getItemTags: i => new[] { i.Column.Name },
+                getItemTags: i => new[] {i.Column.Name},
                 categories: columnHeaders
                     .Select(c => new TagsDimensionCategory<string>(c, c))
-                    .Select(tdc => (IDimensionCategory)tdc)
+                    .Select(tdc => (IDimensionCategory) tdc)
                     .ToArray());
         }
 
@@ -96,7 +96,7 @@ namespace Kanban.Desktop.LocalBase.Models
 
             return cardsColors;
         }
-        
+
 
         public async Task<IDimension> GetRowHeadersAsync(int boardId)
         {
@@ -107,10 +107,10 @@ namespace Kanban.Desktop.LocalBase.Models
 
             return new TagDimension<string, LocalIssue>(
                 tags: rowHeaders,
-                getItemTags: i => new[] { i.Row.Name },
+                getItemTags: i => new[] {i.Row.Name},
                 categories: rowHeaders
                     .Select(r => new TagsDimensionCategory<string>(r, r))
-                    .Select(tdc => (IDimensionCategory)tdc)
+                    .Select(tdc => (IDimensionCategory) tdc)
                     .ToArray()
             );
         }
@@ -118,9 +118,10 @@ namespace Kanban.Desktop.LocalBase.Models
         public async Task<IEnumerable<LocalIssue>> GetIssuesByBoardIdAsync(int boardId)
         {
             return await repo.GetIssuesAsync
-                (new NameValueCollection {
-                    { "BoardId", boardId.ToString() }
-                });
+            (new NameValueCollection
+            {
+                {"BoardId", boardId.ToString()}
+            });
         }
 
         public CardContent GetCardContent()
@@ -128,7 +129,7 @@ namespace Kanban.Desktop.LocalBase.Models
             return new CardContent(new ICardContentItem[]
             {
                 new CardContentItem("Head"),
-                new CardContentItem("Body"),
+                new CardContentItem("Body", CardContentArea.Additional),
             });
         }
 

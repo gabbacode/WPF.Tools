@@ -1,4 +1,4 @@
-﻿namespace Data.Entities.Common.LocalBase
+﻿namespace Kanban.Desktop.LocalBase.SqliteLocalStorage.Entities
 {
     public class ColumnInfo
     {

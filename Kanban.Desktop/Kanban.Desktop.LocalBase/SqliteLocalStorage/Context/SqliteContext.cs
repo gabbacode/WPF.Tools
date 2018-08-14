@@ -1,4 +1,4 @@
-﻿using Data.Entities.Common.LocalBase;
+﻿using Kanban.Desktop.LocalBase.SqliteLocalStorage.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Kanban.Desktop.LocalBase.SqliteLocalStorage.Context

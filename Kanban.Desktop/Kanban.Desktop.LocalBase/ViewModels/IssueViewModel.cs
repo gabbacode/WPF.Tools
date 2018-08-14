@@ -2,8 +2,8 @@
 using System.Linq;
 using System.Reactive.Linq;
 using AutoMapper;
-using Data.Entities.Common.LocalBase;
 using Kanban.Desktop.LocalBase.Models;
+using Kanban.Desktop.LocalBase.SqliteLocalStorage.Entities;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Ui.Wpf.Common;

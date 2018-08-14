@@ -1,6 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using Data.Entities.Common.LocalBase;
+using Kanban.Desktop.LocalBase.SqliteLocalStorage.Entities;
 
 namespace Kanban.Desktop.LocalBase.SqliteLocalStorage.Context
 {
