@@ -22,7 +22,7 @@ namespace Kanban.Desktop.LocalBase
         {
             var builder = new ContainerBuilder();
 
-            builder.RegisterType<Shell>()
+            builder.RegisterType<DistinctShell>()
                 .As<IShell>()
                 .SingleInstance();
 

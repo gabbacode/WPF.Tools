@@ -15,6 +15,9 @@ namespace Ui.Wpf.Common.ViewModels
         public string Title { get; set; }
 
         [Reactive]
+        public string FullTitle { get; set; }
+
+        [Reactive]
         public bool IsBusy { get; set; }
 
         #region CloseQuery

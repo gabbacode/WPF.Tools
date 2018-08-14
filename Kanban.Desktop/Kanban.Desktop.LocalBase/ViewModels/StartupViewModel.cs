@@ -24,12 +24,12 @@ namespace Kanban.Desktop.LocalBase.ViewModels
         public ReactiveCommand<string, Unit> RemoveRecentCommand { get; set; }
         public ReactiveCommand<string, Unit> AccentChangeCommand { get; set; }
 
-        private readonly IShell shell;
+        private readonly IDistinctShell shell;
         private readonly IAppModel appModel;
 
         public StartupViewModel(IShell shell, IAppModel appModel)
         {
-            this.shell = shell;
+            this.shell = shell as IDistinctShell;
             this.appModel = appModel;
 
             this.appModel.LoadConfig();
@@ -38,7 +38,7 @@ namespace Kanban.Desktop.LocalBase.ViewModels
             BaseList = new ReactiveList<string>(recent.Take(3));
 
             AccentChangeCommand =
-                ReactiveCommand.Create<string>(color=> // now set the Green accent and dark theme
+                ReactiveCommand.Create<string>(color=> 
                     ThemeManager.ChangeAppStyle(Application.Current,
                         ThemeManager.GetAccent(color),
                         ThemeManager.GetAppTheme("baselight")));
@@ -55,7 +55,7 @@ namespace Kanban.Desktop.LocalBase.ViewModels
             RemoveRecentCommand = ReactiveCommand.Create<string>(RemoveRecent);
 
             NewFileCommand = ReactiveCommand.Create(() =>
-                shell.ShowView<WizardView>(new WizardViewRequest {InExistedFile = false}));
+                this.shell.ShowDistinctView<WizardView>("Creating new file", new WizardViewRequest {InExistedFile = false}));
 
             NewBoardCommand = ReactiveCommand.Create(() =>
             {
@@ -69,9 +69,8 @@ namespace Kanban.Desktop.LocalBase.ViewModels
                 {
                     var uri = dialog.FileName;
 
-                    var t = Path.GetDirectoryName(uri);
                     AddRecent(uri);
-                    shell.ShowView<WizardView>(new WizardViewRequest
+                    this.shell.ShowDistinctView<WizardView>($"Creating new board in {uri}", new WizardViewRequest
                     {
                         InExistedFile = true,
                         Uri = uri
@@ -81,7 +80,7 @@ namespace Kanban.Desktop.LocalBase.ViewModels
 
             OpenFileCommand = ReactiveCommand.Create(() =>
             {
-                var dialog = new OpenFileDialog()
+                var dialog = new OpenFileDialog
                 {
                     Filter = @"SQLite DataBase | *.db",
                     Title = @"Выбор существующего файла базы данных"
@@ -124,9 +123,11 @@ namespace Kanban.Desktop.LocalBase.ViewModels
 
             var scope = appModel.LoadScope(uri);
 
-            shell.ShowView<BoardView>(
+            var title = file.FullName;
+
+            shell.ShowDistinctView<BoardView>(title,
                 viewRequest: new BoardViewRequest {Scope = scope},
-                options: new UiShowOptions {Title = file.Name});
+                options: new UiShowOptions {Title = title});
 
             AddRecent(uri);
 

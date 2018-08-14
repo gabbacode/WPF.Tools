@@ -12,7 +12,10 @@ namespace Kanban.Desktop.LocalBase.Views.WpfResources
         {
             RuleFor(wiz => wiz.BoardName)
                 .NotNull().Length(5, 25)
-                .WithMessage("This field must be between 5 and 25 chars length");
+                .WithMessage("This field must be between 5 and 25 chars length")
+                .Must((wiz,boardName)=>
+                    !wiz.BoardsInFile.Contains(boardName))
+                .WithMessage("Such board already exists in this file...");
 
             RuleFor(wiz => wiz.FolderName)
                 .Must(Directory.Exists)

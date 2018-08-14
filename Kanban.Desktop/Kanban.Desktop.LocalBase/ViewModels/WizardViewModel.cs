@@ -29,6 +29,7 @@ namespace Kanban.Desktop.LocalBase.ViewModels
         [Reactive] public bool CanCreate { get; set; }
         public ReactiveList<LocalDimension> ColumnList { get; set; }
         public ReactiveList<LocalDimension> RowList { get; set; }
+        public ReactiveList<string> BoardsInFile { get; set; }
         public ReactiveCommand CreateCommand { get; set; }
         public ReactiveCommand CancelCommand { get; set; }
         public ReactiveCommand SelectFolderCommand { get; set; }
@@ -39,15 +40,18 @@ namespace Kanban.Desktop.LocalBase.ViewModels
         public ReactiveCommand<LocalDimension, Unit> DeleteRowCommand { get; set; }
 
         private readonly IAppModel appModel;
-        private readonly IShell shell;
+        private readonly IDistinctShell shell;
         private readonly IDialogCoordinator dialogCoordinator = DialogCoordinator.Instance;
+        private IScopeModel scope;
 
         public WizardViewModel(IAppModel appModel, IShell shell)
         {
             this.appModel = appModel;
-            this.shell = shell;
+            this.shell = shell as IDistinctShell;
             validator = new WizardValidator();
-            Title = "Creating a board";
+            Title = "Creating new file";
+            FullTitle = "Creating new file";
+            BoardsInFile = new ReactiveList<string>();
 
             this.WhenAnyValue(x => x.BoardName)
                 .Where(x => !string.IsNullOrWhiteSpace(x))
@@ -181,23 +185,31 @@ namespace Kanban.Desktop.LocalBase.ViewModels
                 FolderName = dialog.SelectedPath;
         }
 
-        public async Task Create()
+        public async Task Create() // todo:validate first wizard page again when creating?
         {
-            string uri = FolderName + "\\"       + FileName;
-            appModel.AddRecent(FolderName + "\\" + FileName);
+            var uri = FolderName + "\\" + FileName;
 
-            var scope = appModel.CreateScope(uri);
-
-            if ((await scope.GetAllBoardsInFileAsync()).Select(board => board.Name)
-                .Contains(BoardName))
+            if (!InExistedFile)
             {
-                await dialogCoordinator.ShowMessageAsync(this,"Can not create board",
-                    "Board with such name already exists in file");
-                return;
+                scope = appModel.CreateScope(uri);
             }
 
-            appModel.SaveConfig();
+            else
+            {
+                var boards = await scope.GetAllBoardsInFileAsync();
+                BoardsInFile.PublishCollection(boards.Select(board => board.Name));
 
+                if (BoardsInFile.Contains(BoardName))
+                {
+                    await dialogCoordinator.ShowMessageAsync(this, "Can not create board",
+                        "Board with such name already exists in file");
+                    return;
+                }
+            }
+
+            appModel.AddRecent(uri);
+
+            appModel.SaveConfig();
 
             var newBoard = new BoardInfo()
             {
@@ -216,13 +228,17 @@ namespace Kanban.Desktop.LocalBase.ViewModels
                 });
 
             foreach (var rowName in RowList.Select(row => row.Name))
-                await scope.CreateOrUpdateRowAsync(new RowInfo {Name = rowName, Board = newBoard});
+                await scope.CreateOrUpdateRowAsync(new RowInfo
+                {
+                    Name = rowName,
+                    Board = newBoard
+                });
 
             Close();
 
-            shell.ShowView<BoardView>(
+            shell.ShowDistinctView<BoardView>(uri,
                 viewRequest: new BoardViewRequest {Scope = scope, SelectedBoardName = BoardName},
-                options: new UiShowOptions {Title = FileName});
+                options: new UiShowOptions {Title = uri});
         }
 
         public void Initialize(ViewRequest viewRequest)
@@ -233,8 +249,16 @@ namespace Kanban.Desktop.LocalBase.ViewModels
 
             if (InExistedFile)
             {
-                FolderName = Path.GetDirectoryName(request.Uri);
-                FileName = Path.GetFileName(request.Uri);
+                var uri = request.Uri;
+                FolderName = Path.GetDirectoryName(uri);
+                FileName = Path.GetFileName(uri);
+                FullTitle = $"Creating new board";
+                FullTitle = $"Creating new board in {uri}";
+                scope = appModel.CreateScope(uri);
+                Observable.FromAsync(() => scope.GetAllBoardsInFileAsync())
+                    .ObserveOnDispatcher()
+                    .Subscribe(boards =>
+                        BoardsInFile.PublishCollection(boards.Select(board => board.Name)));
             }
         }
 

@@ -307,7 +307,7 @@ namespace Kanban.Desktop.LocalBase.ViewModels
                     Observable.FromAsync(() => scope.GetIssuesByBoardIdAsync(CurrentBoard.Id))
                         .ObserveOnDispatcher()
                         .Subscribe(issues =>
-                            Issues.AddRange(issues)); // TODO: make initialize works
+                            Issues.AddRange(issues)); 
                 });
         }
     }
