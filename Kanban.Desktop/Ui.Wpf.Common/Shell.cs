@@ -20,16 +20,14 @@ namespace Ui.Wpf.Common
 
         public void ShowView<TView>(
             ViewRequest viewRequest = null,
-            UiShowOptions options = null,
-            string viewId=null,
-            Action<string> closeFunc = null)
+            UiShowOptions options = null)
             where TView : class, IView
         {
 
             LayoutContent lc = null;
-            if (viewId != null)
+            if (viewRequest?.ViewId != null)
             {
-                lc = DocumentPane.Children.FirstOrDefault(x => x.ContentId == viewId);
+                lc = DocumentPane.Children.FirstOrDefault(x => x.ContentId == viewRequest?.ViewId);
             }
 
             if (lc != null)
@@ -44,19 +42,9 @@ namespace Ui.Wpf.Common
                 if (options != null)
                     view.Configure(options);
 
-
                 var layoutDocument = new LayoutDocument { Content = view };
 
-                if (closeFunc != null)
-                {
-                    layoutDocument.Closed += (sender, e) =>
-                    {
-                        closeFunc(layoutDocument.ContentId);
-                    };
-                }
-
-
-                layoutDocument.ContentId = viewId;
+                layoutDocument.ContentId = viewRequest?.ViewId;
 
                 if (options != null)
                     layoutDocument.CanClose = options.CanClose;
@@ -67,8 +55,13 @@ namespace Ui.Wpf.Common
 
                 DocumentPane.Children.Add(layoutDocument);
 
-                (view.ViewModel as IInitializableViewModel)?.Initialize(viewRequest);
+                if (view.ViewModel is ViewModelBase)
+                {
+                    (view.ViewModel as ViewModelBase).ViewId = viewRequest?.ViewId;
+                }
 
+
+                (view.ViewModel as IInitializableViewModel)?.Initialize(viewRequest);
 
                 layoutDocument.IsActive = true;
             }
@@ -158,13 +151,24 @@ namespace Ui.Wpf.Common
         {
             if (view.ViewModel is ViewModelBase baseViewModel)
             {
+                var v = view.ViewModel as ViewModelBase;
                 var closeQuery = Observable.FromEventPattern<ViewModelCloseQueryArgs>(
                     x => baseViewModel.CloseQuery += x,
                     x => baseViewModel.CloseQuery -= x);
 
                 var subscription = closeQuery.Subscribe(x => { layoutDocument.Close(); });
 
-                layoutDocument.Closed += (s, e) => subscription.Dispose();
+                layoutDocument.Closed += (s, e) =>
+                {
+                    try
+                    {
+                        v.Closed(new ViewModelCloseQueryArgs { ViewId = layoutDocument.ContentId });
+                    }
+                    finally
+                    {
+                        subscription.Dispose();
+                    }
+                };
             }
         }
 

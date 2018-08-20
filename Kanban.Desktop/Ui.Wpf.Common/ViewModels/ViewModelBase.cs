@@ -16,11 +16,15 @@ namespace Ui.Wpf.Common.ViewModels
         [Reactive]
         public bool IsBusy { get; set; }
 
+        public string ViewId { get; internal set; }
+
         #region CloseQuery
 
         public void Close()
         {
-            var args = new ViewModelCloseQueryArgs();
+            var args=new ViewModelCloseQueryArgs();
+
+            args.ViewId = this.ViewId;
 
             Closing(args);
             CloseQuery?.Invoke(this, args);
@@ -32,8 +36,23 @@ namespace Ui.Wpf.Common.ViewModels
             DisposeInternals();
         }
 
-        protected virtual void Closed(ViewModelCloseQueryArgs args)
+
+        
+        protected virtual void ClosedInternal(ViewModelCloseQueryArgs args)
         {
+        }
+
+
+        private bool _closedCalled = false;
+        protected internal void Closed(ViewModelCloseQueryArgs args)
+        {
+            if (!_closedCalled)
+            {
+                MessageBus.Current.SendMessage<ViewModelCloseQueryArgs>(args);
+            }
+            this.ClosedInternal(args);
+            _closedCalled = true;
+
         }
 
         protected virtual void Closing(ViewModelCloseQueryArgs args)
