@@ -162,7 +162,10 @@ namespace Ui.Wpf.Common
                 {
                     try
                     {
-                        v.Closed(new ViewModelCloseQueryArgs { ViewId = layoutDocument.ContentId });
+                        if (!v.IsClosed)
+                        {
+                            v.Closing(new ViewModelCloseQueryArgs { IsCanceled = true });
+                        }
                     }
                     finally
                     {

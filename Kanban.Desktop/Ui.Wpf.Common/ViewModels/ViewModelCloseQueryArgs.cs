@@ -3,6 +3,5 @@
     public class ViewModelCloseQueryArgs
     {
         public bool IsCanceled { get; set; }
-        public string ViewId;
     }
 }
