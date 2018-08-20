@@ -158,13 +158,30 @@ namespace Ui.Wpf.Common
 
                 var subscription = closeQuery.Subscribe(x => { layoutDocument.Close(); });
 
+
+                layoutDocument.Closing += (s, e) =>
+                {
+                    if (!v.isBusinesscall)
+                    {
+                        ViewModelCloseQueryArgs vcq = new ViewModelCloseQueryArgs { IsCanceled = false };
+                        v.Closing(vcq);
+
+                        if (vcq.IsCanceled)
+                        {
+                            e.Cancel = true;
+                        }
+                    }
+                        
+                };
+
+
                 layoutDocument.Closed += (s, e) =>
                 {
                     try
                     {
-                        if (!v.IsClosed)
+                        if (!v.isBusinesscall)
                         {
-                            v.Closing(new ViewModelCloseQueryArgs { IsCanceled = true });
+                            v.Closed(new ViewModelCloseQueryArgs { IsCanceled = false });
                         }
                     }
                     finally
