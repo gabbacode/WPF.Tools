@@ -18,14 +18,14 @@ namespace Ui.Wpf.Common.ViewModels
 
         public string ViewId { get; internal set; }
 
-        internal bool isBusinesscall { get; set; } = false;
+        internal bool isBusinessCall { get; set; } = false;
 
         #region CloseQuery
 
 
         public void Close()
         {
-            isBusinesscall = true;
+            isBusinessCall = true;
             var args=new ViewModelCloseQueryArgs();
             args.IsCanceled = false;
             
@@ -34,7 +34,7 @@ namespace Ui.Wpf.Common.ViewModels
 
             if (args.IsCanceled)
             {
-                isBusinesscall = false;
+                isBusinessCall = false;
                 return;
             }
 
