@@ -161,17 +161,14 @@ namespace Ui.Wpf.Common
 
                 layoutDocument.Closing += (s, e) =>
                 {
-                    if (!v.isBusinessCall)
-                    {
-                        ViewModelCloseQueryArgs vcq = new ViewModelCloseQueryArgs { IsCanceled = false };
-                        v.Closing(vcq);
+                    ViewModelCloseQueryArgs vcq = new ViewModelCloseQueryArgs { IsCanceled = false };
+                    v.Closing(vcq);
 
-                        if (vcq.IsCanceled)
-                        {
-                            e.Cancel = true;
-                        }
+                    if (vcq.IsCanceled)
+                    {
+                       e.Cancel = true;
                     }
-                        
+                       
                 };
 
 
@@ -179,10 +176,7 @@ namespace Ui.Wpf.Common
                 {
                     try
                     {
-                        if (!v.isBusinessCall)
-                        {
-                            v.Closed(new ViewModelCloseQueryArgs { IsCanceled = false });
-                        }
+                       v.Closed(new ViewModelCloseQueryArgs { IsCanceled = false });
                     }
                     finally
                     {

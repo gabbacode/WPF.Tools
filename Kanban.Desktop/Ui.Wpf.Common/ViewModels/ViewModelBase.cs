@@ -18,38 +18,27 @@ namespace Ui.Wpf.Common.ViewModels
 
         public string ViewId { get; internal set; }
 
-        internal bool isBusinessCall { get; set; } = false;
-
+        
         #region CloseQuery
 
 
         public void Close()
         {
-            isBusinessCall = true;
             var args=new ViewModelCloseQueryArgs();
-            args.IsCanceled = false;
-            
-            Closing(args);
+
             CloseQuery?.Invoke(this, args);
 
             if (args.IsCanceled)
-            {
-                isBusinessCall = false;
                 return;
-            }
-
-            Closed(args);
-            DisposeInternals();
-
+        
+            
         }
 
 
-        
-        
-        
         protected internal virtual void Closed(ViewModelCloseQueryArgs args)
         {
-            
+            DisposeInternals();
+
         }
 
         protected internal virtual void Closing(ViewModelCloseQueryArgs args)
