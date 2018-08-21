@@ -23,7 +23,7 @@ namespace Ui.Wpf.Common
             UiShowOptions options = null)
             where TView : class, IView
         {
-            var layoutContent = null;
+            LayoutContent layoutContent = null;
             if (viewRequest?.ViewId != null)
             {
                 layoutContent = DocumentPane.Children.FirstOrDefault(x => x.ContentId == viewRequest?.ViewId);
@@ -49,8 +49,14 @@ namespace Ui.Wpf.Common
 
                 DocumentPane.Children.Add(layoutDocument);
 
-                (view.ViewModel as ViewModelBase)?.ViewId = viewRequest?.ViewId;
-                (view.ViewModel as IInitializableViewModel)?.Initialize(viewRequest);
+                if (view.ViewModel is ViewModelBase vmb)
+                {
+                    vmb.ViewId = viewRequest?.ViewId;
+                }
+                if (view.ViewModel is IInitializableViewModel initializibleViewModel)
+                {
+                    initializibleViewModel.Initialize(viewRequest);
+                }
 
                 layoutDocument.IsActive = true;
             }
