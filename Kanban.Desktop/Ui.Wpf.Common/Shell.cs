@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Reactive.Linq;
 using System.Windows;
 using Autofac;
@@ -8,6 +8,7 @@ using Ui.Wpf.Common.ShowOptions;
 using Ui.Wpf.Common.ViewModels;
 using Xceed.Wpf.AvalonDock;
 using Xceed.Wpf.AvalonDock.Layout;
+using System.Linq;
 
 namespace Ui.Wpf.Common
 {
@@ -22,23 +23,37 @@ namespace Ui.Wpf.Common
             UiShowOptions options = null)
             where TView : class, IView
         {
-            var view = Container.Resolve<TView>();
-            if (options != null)
-                view.Configure(options);
+            var layoutContent = null;
+            if (viewRequest?.ViewId != null)
+            {
+                layoutContent = DocumentPane.Children.FirstOrDefault(x => x.ContentId == viewRequest?.ViewId);
+            }
 
-            var layoutDocument = new LayoutDocument {Content = view};
-            if (options != null)
-                layoutDocument.CanClose = options.CanClose;
+            if (layoutContent != null)
+            {
+                layoutContent.IsActive = true;
+            }
+            else
+            {
+                var view = Container.Resolve<TView>();
+                if (options != null)
+                    view.Configure(options);
 
-            AddTitleRefreshing(view, layoutDocument);
-            AddClosingByRequest(view, layoutDocument);
+                var layoutDocument = new LayoutDocument { Content = view };
+                layoutDocument.ContentId = viewRequest?.ViewId;
+                if (options != null)
+                    layoutDocument.CanClose = options.CanClose;
 
-            DocumentPane.Children.Add(layoutDocument);
+                AddTitleRefreshing(view, layoutDocument);
+                AddClosingByRequest(view, layoutDocument);
 
-            // TODO: provide parameters to ViewModel ???
-            (view.ViewModel as IInitializableViewModel)?.Initialize(viewRequest);
+                DocumentPane.Children.Add(layoutDocument);
 
-            layoutDocument.IsActive = true;
+                (view.ViewModel as ViewModelBase)?.ViewId = viewRequest?.ViewId;
+                (view.ViewModel as IInitializableViewModel)?.Initialize(viewRequest);
+
+                layoutDocument.IsActive = true;
+            }
         }
 
         public void ShowTool<TToolView>(
@@ -124,13 +139,38 @@ namespace Ui.Wpf.Common
         {
             if (view.ViewModel is ViewModelBase baseViewModel)
             {
+                var v = view.ViewModel as ViewModelBase;
                 var closeQuery = Observable.FromEventPattern<ViewModelCloseQueryArgs>(
                     x => baseViewModel.CloseQuery += x,
                     x => baseViewModel.CloseQuery -= x);
 
                 var subscription = closeQuery.Subscribe(x => { layoutDocument.Close(); });
 
-                layoutDocument.Closed += (s, e) => subscription.Dispose();
+
+                layoutDocument.Closing += (s, e) =>
+                {
+                    ViewModelCloseQueryArgs vcq = new ViewModelCloseQueryArgs { IsCanceled = false };
+                    v.Closing(vcq);
+
+                    if (vcq.IsCanceled)
+                    {
+                       e.Cancel = true;
+                    }
+                       
+                };
+
+
+                layoutDocument.Closed += (s, e) =>
+                {
+                    try
+                    {
+                       v.Closed(new ViewModelCloseQueryArgs { IsCanceled = false });
+                    }
+                    finally
+                    {
+                        subscription.Dispose();
+                    }
+                };
             }
         }
 
