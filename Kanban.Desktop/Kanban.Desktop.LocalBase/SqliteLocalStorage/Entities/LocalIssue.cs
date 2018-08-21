@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Data.Entities.Common.LocalBase
+namespace Kanban.Desktop.LocalBase.SqliteLocalStorage.Entities
 {
     public class LocalIssue
     {
@@ -9,6 +9,7 @@ namespace Data.Entities.Common.LocalBase
         public string Body { get; set; }
         public RowInfo Row { get; set; }
         public ColumnInfo Column { get; set; }
+        public BoardInfo Board { get; set; }
         public string Color { get; set; }
         public DateTime Created { get; set; }
         public DateTime Modified { get; set; }

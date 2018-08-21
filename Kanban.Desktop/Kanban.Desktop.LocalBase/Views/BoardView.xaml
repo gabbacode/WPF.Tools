@@ -9,7 +9,12 @@
              xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
              xmlns:kanbanControl="clr-namespace:Ui.Wpf.KanbanControl;assembly=Ui.Wpf.KanbanControl"
              xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:viewModels="clr-namespace:Kanban.Desktop.LocalBase.ViewModels"
              mc:Ignorable="d">
+    
+    <UserControl.Resources>
+          <ResourceDictionary Source="WpfResources/TemplatesDictionary.xaml"/>
+    </UserControl.Resources>
 
     <Grid Width="Auto" Height="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <Grid.RowDefinitions>
@@ -21,11 +26,22 @@
             Orientation="Horizontal"
             dd:DragDrop.IsDragSource="True"
             dd:DragDrop.IsDropTarget="True">
+
+            <mah:SplitButton 
+                Height="auto" 
+                ItemsSource="{Binding BoardsInFile}"
+                DisplayMemberPath="Name"
+                SelectedItem="{Binding CurrentBoard}"
+                Margin="5"
+                BorderThickness="1" BorderBrush="{DynamicResource AccentBaseColorBrush}">
+            </mah:SplitButton>
+
             <mah:DropDownButton 
                 Content="Создать"
                 Height="auto" 
                 ItemsSource="{Binding Entities}"
-                Margin="5">
+                Margin="5"
+                BorderThickness="1" BorderBrush="{DynamicResource AccentBaseColorBrush}">
                 <mah:DropDownButton.ItemContainerStyle>
                     <Style TargetType="MenuItem">
                         <Setter Property="Command" 
@@ -35,10 +51,9 @@
                 </mah:DropDownButton.ItemContainerStyle>
             </mah:DropDownButton>
 
-            <Button Content="Изменить" Command="{Binding UpdateCommand}" Margin="5"/>
             <Button Content="Удалить" Command="{Binding DeleteCommand}" Margin="5"/>
-            <Button Content="Обновить данные" Margin="5" Command="{Binding RefreshCommand}"/>
         </StackPanel>
+
 
         <kanbanControl:Kanban 
             
@@ -51,6 +66,21 @@
             CardMouseClickCommand="{Binding IssueSelectCommand}"
             HorizontalHeaderMouseClickCommand="{Binding ColumnHeaderSelectCommand}"
             VerticalHeaderMouseClickCommand="{Binding RowHeaderSelectCommand}"
+            HorizontalHeaderDoubleClickCommand="{Binding UpdateHorizontalHeaderCommand}"
+            VerticalHeaderDoubleClickCommand="{Binding UpdateVerticalHeaderCommand}"
             />
+
+        <mah:Flyout Header="Issue editor"
+                    BorderThickness="1" BorderBrush="{DynamicResource AccentBaseColorBrush}"
+                    Position="Top"
+                    Grid.RowSpan="2"
+                    CloseButtonVisibility="Hidden"
+                    Width="auto"
+                    IsOpen="{Binding IssueViewModel.IsOpened}"
+                    Theme="Light"
+                    IsModal="True"
+                    Content="{Binding IssueViewModel}"
+                    >
+        </mah:Flyout>
     </Grid>
 </UserControl>

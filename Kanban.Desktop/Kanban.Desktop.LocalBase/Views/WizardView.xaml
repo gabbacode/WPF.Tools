@@ -8,135 +8,165 @@
         xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
         xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
         mc:Ignorable="d"
-        xmlns:resources="clr-namespace:Kanban.Desktop.LocalBase.WpfResources"
+        xmlns:resources="clr-namespace:Kanban.Desktop.LocalBase.Views.WpfResources"
         xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         d:DesignHeight="400"
         d:DesignWidth="400">
 
     <UserControl.Resources>
-        <Style TargetType="Label">
-            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-        </Style>
-        <Style TargetType="TextBox">
-            <Style.Triggers>
-                <Trigger Property="Validation.HasError" Value="True">
-                    <Setter Property="Foreground" Value="Red"/>
-                    <Setter Property="ToolTip" 
-                    Value="{Binding RelativeSource={RelativeSource Self}, 
-                    Path=(Validation.Errors)[0].ErrorContent}"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-        <Style TargetType="ListBoxItem">
-            <Style.Triggers>
-                <Trigger Property="Validation.HasError" Value="True">
-                    <Setter Property="Foreground" Value="Red"/>
-                    <Setter Property="ToolTip" 
-                    Value="{Binding RelativeSource={RelativeSource Self}, 
-                    Path=(Validation.Errors)[0].ErrorContent}"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
+        <ResourceDictionary Source="WpfResources/TemplatesDictionary.xaml"/>
     </UserControl.Resources>
 
-    <StackPanel Orientation="Vertical">
-        <Label>Board name</Label>
-        <TextBox Text="{Binding BoardName,
-            UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
+    <xctk:Wizard FinishButtonClosesWindow="False" Finish="Wizard_Finish"
+                 CurrentPage="{Binding ElementName=BoardCreatingPage}"
+                CancelButtonClosesWindow="False"  Cancel="Wizard_Cancel"
+                 >
 
-        <Label>Folder name</Label>
-        <TextBox Text="{Binding FolderName,
-            UpdateSourceTrigger=PropertyChanged,ValidatesOnDataErrors=True}"/>
-        <Button Command="{Binding SelectFolderCommand}">...</Button>
+        <xctk:WizardPage x:Name="BaseSelectingPage" 
+        Title="Database file select"        HelpButtonVisibility="Hidden"
+                     NextButtonVisibility="Visible" FinishButtonVisibility="Hidden"
+        NextPage="{Binding ElementName=Page2}" BackButtonVisibility="Hidden" >
 
-        <Label>File name</Label>
-        <TextBox Text="{Binding FileName, 
-           UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
+            <StackPanel Orientation="Vertical" Width="750">
 
-        <Label>Columns</Label>
-        <ListBox 
-            dd:DragDrop.IsDragSource="True"
-            dd:DragDrop.IsDropTarget="True" 
-            dd:DragDrop.UseDefaultEffectDataTemplate="True"
-            ScrollViewer.CanContentScroll="True"
-            MaxHeight="330"
-            ItemsSource="{Binding ColumnList}">
-            <ListBox.ItemTemplate>
-                <DataTemplate >
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
+                <Label Height="50">Board name</Label>
+                <TextBox Height="50" Text="{Binding BoardName,
+            UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                         Margin="0 0 0 10"/>
 
-                        <Button Content="{iconPacks:Modern CursorHand}"/>
+                <Label Height="50">Folder name</Label>
+                <StackPanel Orientation="Horizontal" Height="50">
+                    <TextBox Height="50" Width="700" Text="{Binding FolderName,
+            UpdateSourceTrigger=PropertyChanged,ValidatesOnDataErrors=True}" 
+                         IsEnabled="{Binding InExistedFile,Converter={resources:BoolInverse}}" 
+                             />
+                    <Button Style="{DynamicResource  FlatButton}"
+                        Width="50"
+                        Command="{Binding SelectFolderCommand}"
+                        IsEnabled="{Binding InExistedFile,Converter={resources:BoolInverse}}">...</Button>
+                </StackPanel>
 
-                        <TextBox Grid.Column="1" Text="{Binding Path=Name,
+                <Label Height="50" Margin="0 10 0 0">File name</Label>
+                <TextBox Height="50" Text="{Binding FileName, 
+           UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                         IsEnabled="{Binding InExistedFile,Converter={resources:BoolInverse}}"/>
+            </StackPanel>
+        </xctk:WizardPage>
+
+        <xctk:WizardPage x:Name="BoardCreatingPage"
+        Title="Database configuration manager" 
+        HelpButtonVisibility="Hidden" 
+        CanFinish="{Binding CanCreate}"
+        CanCancel="True"    FinishButtonVisibility="Visible"
+        BackButtonVisibility="Visible">
+            <StackPanel Orientation="Vertical" Width="750">
+
+                <StackPanel Orientation="Horizontal">
+                    <Label Height="50" Width="700">Columns</Label>
+                    <Button Width="50" Command="{Binding AddColumnCommand}"
+                            FontSize="30">+</Button>
+                </StackPanel>
+
+                <ListBox 
+                    BorderThickness="1"
+BorderBrush="{DynamicResource AccentColorBrush}"
+                    dd:DragDrop.IsDragSource="True"
+                    dd:DragDrop.IsDropTarget="True" 
+                    dd:DragDrop.UseDefaultEffectDataTemplate="True"
+                    ScrollViewer.CanContentScroll="True"
+                    ItemsSource="{Binding ColumnList}"
+                    Height="365"
+                    Margin="0 0 0 20">
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="{x:Type ListBoxItem}">
+                            <Setter Property="Padding" Value="0"/>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Height="40">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Button Content="{iconPacks:Modern CursorHand}"
+                                        Width="40" Margin="0 0 2 0"/>
+                                <TextBox Grid.Column="1" Text="{Binding Path=Name,
                             UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True }"/>
 
-                        <Button Grid.Column="2"
+                                <Button Grid.Column="2"
                             Visibility="{Binding 
                             RelativeSource={RelativeSource AncestorType={x:Type ListBox}},
                             Path=DataContext.ColumnList.Count,
-                            Converter={resources:CountToVisibility}}"
+                            Converter={resources:MoreThenOneToVisibility}}"
 
                             Command="{Binding 
                             RelativeSource={RelativeSource AncestorType={x:Type ListBox}},
                             Path=DataContext.DeleteColumnCommand}" CommandParameter="{Binding}" 
                             Content="{iconPacks:Entypo SquaredCross}" 
-                            Margin="0"/>
-                    </Grid>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
-        <Button Command="{Binding AddColumnCommand}">Add column</Button>
+                                        Width="40"  Margin="2 0 0 0"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
 
-        <Label>Rows</Label>
-        <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="500">
-            <ListBox
+                <StackPanel Orientation="Horizontal">
+                    <Label Height="50" Width="700">Rows</Label>
+                    <Button Width="50" Command="{Binding AddRowCommand}"
+                            FontSize="30">+</Button>
+                </StackPanel>
+
+                <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="500">
+                    <ListBox
+                        BorderThickness="1"
+                        BorderBrush="{DynamicResource AccentColorBrush}"
             dd:DragDrop.IsDragSource="True"
             dd:DragDrop.IsDropTarget="True" 
             ScrollViewer.CanContentScroll="True"
-            MaxHeight="330"
             dd:DragDrop.UseDefaultEffectDataTemplate="True"
-            ItemsSource="{Binding RowList}">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
+            ItemsSource="{Binding RowList}"
+                        Height="365">
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="{x:Type ListBoxItem}">
+                                <Setter Property="Padding" Value="0"/>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Height="40">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
 
-                            <Button Content="{iconPacks:Modern CursorHand}"/>
+                                    <Button Width="40" Content="{iconPacks:Modern CursorHand}"
+                                            Margin="0 0 2 0"/>
 
-                            <TextBox Grid.Column="1" Text="{Binding Path=Name,
+                                    <TextBox Grid.Column="1" Text="{Binding Path=Name,
                             UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True }"/>
 
-                            <Button Grid.Column="2" 
-
+                                    <Button Grid.Column="2" 
+                                            Width="40"
                                 Visibility="{Binding 
                             RelativeSource={RelativeSource AncestorType={x:Type ListBox}},
                             Path=DataContext.RowList.Count,
-                            Converter={resources:CountToVisibility}}"
-
+                            Converter={resources:MoreThenOneToVisibility}}"
                             Command="{Binding 
                             RelativeSource={RelativeSource AncestorType={x:Type ListBox}},
                             Path=DataContext.DeleteRowCommand}" 
                                 CommandParameter="{Binding}" 
                                 Content="{iconPacks:Entypo SquaredCross}" 
-                                Margin="0"/>
-                        </Grid>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-        </ScrollViewer>
-        <Button Command="{Binding AddRowCommand}">Add row</Button>
-
-        <Button Command="{Binding CreateCommand}" Click="Button_Click">Create Board</Button>
-        <Button Command="{Binding CancelCommand}">Cancel</Button>
-    </StackPanel>
+                                            Margin="2 0 0 0"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </ScrollViewer>
+            </StackPanel>
+        </xctk:WizardPage>
+    </xctk:Wizard>
 </UserControl>

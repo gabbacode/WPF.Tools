@@ -2,7 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace Kanban.Desktop.LocalBase.WpfResources
+namespace Kanban.Desktop.LocalBase.Views.WpfResources
 {
     public class MyScrollViewer : ScrollViewer
     {

@@ -6,61 +6,103 @@
         xmlns:dialogs="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
         dialogs:DialogParticipation.Register="{Binding}"
         xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+        xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
         mc:Ignorable="d">
 
-    <Grid>
+    <UserControl.Resources>
+        <ResourceDictionary Source="WpfResources/TemplatesDictionary.xaml"/>
+    </UserControl.Resources>
+
+    <Grid >
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="90"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
 
-        <TextBlock FontSize="14" Margin="5" HorizontalAlignment="Stretch" TextAlignment="Center" Grid.ColumnSpan="2">
-            Выберите существующую базу или введите название новой для начала работы:
-        </TextBlock>
+        <Label Grid.Row="1" Margin="5" BorderThickness="0" HorizontalAlignment="Stretch" Grid.ColumnSpan="4">
+            Выберите режим работы программы
+        </Label>
 
-        <Button Grid.Row="1"   Grid.Column="0" Height="75" Command="{Binding NewDbCommand}" Style="{DynamicResource  MetroCircleButtonStyle}">
-            Создать новую базу
+        <metro:DropDownButton HorizontalAlignment="Left"
+                  Margin="2"
+                  VerticalAlignment="Top"
+            Content="Цветовая схема"
+                  ItemsSource="{x:Static metro:ThemeManager.Accents}"
+            DisplayMemberPath="Name">
+            <metro:DropDownButton.ItemContainerStyle>
+                <Style TargetType="MenuItem">
+                    <Setter Property="Command" 
+                            Value="{Binding RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}, Path=DataContext.AccentChangeCommand}"/>
+                    <Setter Property="CommandParameter" Value="{Binding Path=Name}"/>
+                </Style>
+            </metro:DropDownButton.ItemContainerStyle>
+        </metro:DropDownButton>
+
+        <Button Grid.Row="2" FontSize="16" Margin="5" Background="White" BorderThickness="1" BorderBrush="{DynamicResource AccentColorBrush}"  Grid.Column="0" Command="{Binding NewFileCommand}" Style="{DynamicResource  FlatButton}">
+            Создать новый файл
         </Button>
-        <Button Grid.Row="1"  Grid.Column="1" Height="75" Command="{Binding OpenDbCommand}" Style="{DynamicResource  MetroCircleButtonStyle}">
-            Открыть существующую базу
+
+        <Button Grid.Row="2"  FontSize="16" Margin="5" Background="White" BorderThickness="1" BorderBrush="{DynamicResource AccentColorBrush}"  Grid.Column="1" Command="{Binding NewBoardCommand}" Style="{DynamicResource  FlatButton}">
+            Создать новую доску в существующем файле
         </Button>
 
-        <TextBlock FontSize="14"  Margin="5" HorizontalAlignment="Stretch" TextAlignment="Center" Grid.Row="2" Grid.ColumnSpan="2">
-            Недавние базы:
-        </TextBlock>
+        <Button Grid.Row="2"  FontSize="16" Margin="5" Background="White" BorderThickness="1" BorderBrush="{DynamicResource AccentColorBrush}"  Grid.Column="2" Command="{Binding OpenFileCommand}" Style="{DynamicResource  FlatButton}">
+            Открыть существующий файл
+        </Button>
 
-        <ListBox Grid.Row="3"  Grid.ColumnSpan="2" Margin="0" ItemsSource="{Binding BaseList}">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                   <Grid>
-                       <Grid.ColumnDefinitions>
-                           <ColumnDefinition/>
-                           <ColumnDefinition Width="Auto"/>
-                       </Grid.ColumnDefinitions>
-                        <Button Content="{Binding}"
+        <Border Grid.Row="2" Grid.Column="3" Margin="5" BorderThickness="1" BorderBrush="{DynamicResource AccentColorBrush}" >
+            <StackPanel >
+
+                <TextBlock FontSize="16"  Margin="5" HorizontalAlignment="Stretch" TextAlignment="Center">
+            Открыть один из последних файлов
+                </TextBlock>
+
+                <ListBox Background="White" ItemsSource="{Binding BaseList}">
+                    <ListBox.ItemContainerStyle>
+                        <Style>
+                            <Style.Triggers>
+                                <Trigger Property="Selector.IsSelected" Value="True">
+                                    <Setter Property="TextElement.Foreground" Value="White"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Button Content="{Binding}"
                             Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListBox}},
                             Path=DataContext.OpenRecentDbCommand}"
                             CommandParameter="{Binding}" 
-                            Margin="0" Height="40" 
+                             Height="40" 
                             />
 
-                        <Button Grid.Column="1" 
-                               Command="{Binding 
-                            RelativeSource={RelativeSource AncestorType={x:Type ListBox}},
-                            Path=DataContext.RemoveRecentCommand}" CommandParameter="{Binding}" 
+                                <Button Grid.Column="1" 
+                                        Width="35"
+                                        Margin="2 0 2 0"
+                                Command="{Binding 
+                                RelativeSource={RelativeSource AncestorType={x:Type ListBox}},
+                                Path=DataContext.RemoveRecentCommand}" CommandParameter="{Binding}" 
                                 Content="{iconPacks:Entypo SquaredCross}" 
-                                Margin="0"/>
-                    </Grid>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
-
+                                />
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </StackPanel>
+        </Border>
     </Grid>
 </UserControl>

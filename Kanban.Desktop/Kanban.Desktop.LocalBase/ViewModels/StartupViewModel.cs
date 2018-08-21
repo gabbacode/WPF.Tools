@@ -4,28 +4,32 @@ using System.Reactive;
 using System.Windows.Forms;
 using Kanban.Desktop.LocalBase.Models;
 using Kanban.Desktop.LocalBase.Views;
+using MahApps.Metro;
 using MahApps.Metro.Controls.Dialogs;
 using ReactiveUI;
 using Ui.Wpf.Common;
 using Ui.Wpf.Common.ShowOptions;
 using Ui.Wpf.Common.ViewModels;
+using Application = System.Windows.Application;
 
 namespace Kanban.Desktop.LocalBase.ViewModels
 {
-    public class StartupViewModel : ViewModelBase, IViewModel
+    public class StartupViewModel : ViewModelBase
     {
         public ReactiveList<string> BaseList { get; set; }
-        public ReactiveCommand NewDbCommand { get; set; }
-        public ReactiveCommand OpenDbCommand { get; set; }
+        public ReactiveCommand NewFileCommand { get; set; }
+        public ReactiveCommand NewBoardCommand { get; set; }
+        public ReactiveCommand OpenFileCommand { get; set; }
         public ReactiveCommand<string, Unit> OpenRecentDbCommand { get; set; }
         public ReactiveCommand<string, Unit> RemoveRecentCommand { get; set; }
+        public ReactiveCommand<string, Unit> AccentChangeCommand { get; set; }
 
-        private readonly IShell shell;
+        private readonly IDistinctShell shell;
         private readonly IAppModel appModel;
 
         public StartupViewModel(IShell shell, IAppModel appModel)
         {
-            this.shell = shell;
+            this.shell = shell as IDistinctShell;
             this.appModel = appModel;
 
             this.appModel.LoadConfig();
@@ -33,26 +37,53 @@ namespace Kanban.Desktop.LocalBase.ViewModels
             var recent = this.appModel.GetRecentDocuments();
             BaseList = new ReactiveList<string>(recent.Take(3));
 
+            AccentChangeCommand =
+                ReactiveCommand.Create<string>(color=> 
+                    ThemeManager.ChangeAppStyle(Application.Current,
+                        ThemeManager.GetAccent(color),
+                        ThemeManager.GetAppTheme("baselight")));
+
             OpenRecentDbCommand = ReactiveCommand.Create<string>(uri =>
             {
-                if (!OpenBoardView(uri))
-                {
-                    RemoveRecent(uri);
-                    DialogCoordinator.Instance.ShowMessageAsync(this, "Ошибка",
-                        "База была удалена или перемещена из данной папки");
-                }
+                if (OpenBoardView(uri)) return;
+
+                RemoveRecent(uri);
+                DialogCoordinator.Instance.ShowMessageAsync(this, "Ошибка",
+                    "Файл был удалён или перемещён из данной папки");
             });
 
             RemoveRecentCommand = ReactiveCommand.Create<string>(RemoveRecent);
 
-            NewDbCommand = ReactiveCommand.Create(() => shell.ShowView<WizardView>());
+            NewFileCommand = ReactiveCommand.Create(() =>
+                this.shell.ShowDistinctView<WizardView>("Creating new file", new WizardViewRequest {InExistedFile = false}));
 
-            OpenDbCommand = ReactiveCommand.Create(() =>
+            NewBoardCommand = ReactiveCommand.Create(() =>
             {
-                var dialog = new OpenFileDialog()
+                var dialog = new OpenFileDialog
                 {
-                    Filter = "SQLite DataBase | *.db",
-                    Title = "Открытие базы"
+                    Filter = @"SQLite DataBase | *.db",
+                    Title = @"Выбор существующего файла базы данных"
+                };
+
+                if (dialog.ShowDialog() == DialogResult.OK)
+                {
+                    var uri = dialog.FileName;
+
+                    AddRecent(uri);
+                    this.shell.ShowDistinctView<WizardView>($"Creating new board in {uri}", new WizardViewRequest
+                    {
+                        InExistedFile = true,
+                        Uri = uri
+                    });
+                }
+            });
+
+            OpenFileCommand = ReactiveCommand.Create(() =>
+            {
+                var dialog = new OpenFileDialog
+                {
+                    Filter = @"SQLite DataBase | *.db",
+                    Title = @"Выбор существующего файла базы данных"
                 };
 
                 if (dialog.ShowDialog() == DialogResult.OK)
@@ -62,6 +93,7 @@ namespace Kanban.Desktop.LocalBase.ViewModels
                     AddRecent(uri);
                 }
             });
+
         } //ctor
 
         private void RemoveRecent(string uri)
@@ -75,9 +107,11 @@ namespace Kanban.Desktop.LocalBase.ViewModels
         {
             appModel.AddRecent(uri);
             appModel.SaveConfig();
+
             BaseList.Remove(uri);
             BaseList.Insert(0, uri);
-            if (BaseList.Count > 3) BaseList.RemoveAt(3);
+            if (BaseList.Count > 3)
+                BaseList.RemoveAt(3);
         }
 
         private bool OpenBoardView(string uri)
@@ -89,9 +123,11 @@ namespace Kanban.Desktop.LocalBase.ViewModels
 
             var scope = appModel.LoadScope(uri);
 
-            shell.ShowView<BoardView>(
+            var title = file.FullName;
+
+            shell.ShowDistinctView<BoardView>(title,
                 viewRequest: new BoardViewRequest {Scope = scope},
-                options: new UiShowOptions {Title = file.Name});
+                options: new UiShowOptions {Title = title});
 
             AddRecent(uri);
 

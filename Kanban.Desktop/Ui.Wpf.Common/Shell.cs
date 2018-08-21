@@ -2,7 +2,6 @@
 using System.Reactive.Linq;
 using System.Windows;
 using Autofac;
-using Autofac.Core;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Ui.Wpf.Common.ShowOptions;
@@ -148,7 +147,7 @@ namespace Ui.Wpf.Common
         //TODO replace to abstract manager
         private DockingManager DockingManager { get; set; }
 
-        private LayoutDocumentPane DocumentPane { get; set; }
+        protected LayoutDocumentPane DocumentPane { get; set; }
 
         private LayoutAnchorablePane ToolsPane { get; set; }
 

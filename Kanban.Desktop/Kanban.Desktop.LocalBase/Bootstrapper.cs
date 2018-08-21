@@ -1,6 +1,6 @@
 ﻿using Autofac;
-using Data.Sources.LocalStorage.Sqlite;
 using Kanban.Desktop.LocalBase.Models;
+using Kanban.Desktop.LocalBase.SqliteLocalStorage;
 using Kanban.Desktop.LocalBase.Views;
 using Kanban.Desktop.LocalBase.ViewModels;
 using Ui.Wpf.Common;
@@ -22,7 +22,7 @@ namespace Kanban.Desktop.LocalBase
         {
             var builder = new ContainerBuilder();
 
-            builder.RegisterType<Shell>()
+            builder.RegisterType<DistinctShell>()
                 .As<IShell>()
                 .SingleInstance();
 
@@ -46,7 +46,6 @@ namespace Kanban.Desktop.LocalBase
             ConfigureView<StartupViewModel, StartupView>(builder);
             ConfigureView<WizardViewModel, WizardView>(builder);
             ConfigureView<BoardViewModel, BoardView>(builder);
-            ConfigureView<IssueViewModel, IssueView>(builder);
 
             return builder.Build();
         }

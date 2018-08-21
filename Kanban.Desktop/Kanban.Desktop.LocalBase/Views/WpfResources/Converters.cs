@@ -1,11 +1,13 @@
 ﻿using System;
-using System.Drawing;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Markup;
+using ReactiveUI;
 
-namespace Kanban.Desktop.LocalBase.WpfResources
+namespace Kanban.Desktop.LocalBase.Views.WpfResources
 {
     public abstract class BaseConverter : MarkupExtension, IValueConverter
     {
@@ -25,12 +27,21 @@ namespace Kanban.Desktop.LocalBase.WpfResources
         }
     }
 
-    public class CountToVisibility : BaseConverter
+    public class MoreThenOneToVisibility : BaseConverter
     {
         public override object Convert(object value, Type targetType, object parameter,
                                        CultureInfo culture)
         {
             return (int?) value > 1 ? Visibility.Visible : Visibility.Hidden;
+        } 
+    } 
+
+    public class BoolInverse : BaseConverter
+    {
+        public override object Convert(object value, Type targetType, object parameter,
+                                       CultureInfo culture)
+        {
+            return !(bool)value;
         }
     }
 }

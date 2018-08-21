@@ -1,10 +1,8 @@
-﻿using System.Windows;
-using System.Windows.Input;
+﻿using System.IO;
 using Kanban.Desktop.LocalBase.ViewModels;
 using Ui.Wpf.Common;
 using Ui.Wpf.Common.ShowOptions;
 using Ui.Wpf.Common.ViewModels;
-using Ui.Wpf.KanbanControl.Elements.CardElement;
 
 namespace Kanban.Desktop.LocalBase.Views
 {
@@ -21,7 +19,8 @@ namespace Kanban.Desktop.LocalBase.Views
 
         public void Configure(UiShowOptions options)
         {
-            ViewModel.Title = options.Title;
+            ViewModel.FullTitle = options.Title;
+            ViewModel.Title = Path.GetFileName(options.Title);
         }
     }
 }

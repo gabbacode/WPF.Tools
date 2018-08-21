@@ -225,9 +225,23 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="Xceed.Wpf.AvalonDock, Version=3.3.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Extended.Wpf.Toolkit.3.3.0\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
+    <Reference Include="Xceed.Wpf.AvalonDock, Version=3.4.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.4.0\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Aero, Version=3.4.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.4.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.Aero.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Metro, Version=3.4.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.4.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.Metro.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.VS2010, Version=3.4.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.4.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.VS2010.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.DataGrid, Version=3.4.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.4.0\lib\net40\Xceed.Wpf.DataGrid.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.Toolkit, Version=3.4.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.4.0\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -235,8 +249,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="WpfResources\ControlElements.cs" />
-    <Compile Include="WpfResources\Validators.cs" />
+    <Compile Include="Models\IDistinctShell.cs" />
+    <Compile Include="Models\ViewRequests.cs" />
+    <Compile Include="SqliteLocalStorage\Entities\BoardInfo.cs" />
+    <Compile Include="SqliteLocalStorage\Entities\ColumnInfo.cs" />
+    <Compile Include="SqliteLocalStorage\Entities\LocalIssue.cs" />
+    <Compile Include="SqliteLocalStorage\Entities\RowInfo.cs" />
+    <Compile Include="Views\WpfResources\ControlElements.cs" />
+    <Compile Include="Views\WpfResources\Validators.cs" />
     <Page Include="Views\WizardView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -249,7 +269,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="WpfResources\Converters.cs" />
+    <Compile Include="Views\WpfResources\Converters.cs" />
     <Compile Include="Models\AppModel.cs" />
     <Compile Include="Models\ScopeModel.cs" />
     <Compile Include="SqliteLocalStorage\Context\SqliteContext.cs" />
@@ -264,25 +284,16 @@
       <DependentUpon>StartupView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Bootstrapper.cs" />
-    <Compile Include="DimensionEdit-unused\Model\DimensionEditModel.cs" />
-    <Compile Include="DimensionEdit-unused\Model\DimensionViewRequest.cs" />
-    <Compile Include="DimensionEdit-unused\Model\IDimensionEditModel.cs" />
-    <Compile Include="DimensionEdit-unused\ViewModel\DimensionEditViewModel.cs" />
-    <Compile Include="DimensionEdit-unused\ViewModel\IDimensionEditViewModel.cs" />
-    <Compile Include="DimensionEdit-unused\View\DimensionEditView.xaml.cs">
-      <DependentUpon>DimensionEditView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="DimensionEdit-unused\View\IDimensionEditView.cs" />
     <Compile Include="ViewModels\IssueViewModel.cs" />
-    <Page Include="DimensionEdit-unused\View\DimensionEditView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\IssueView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\BoardView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\WpfResources\TemplatesDictionary.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -323,14 +334,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Data.Entities.Common\Data.Entities.Common.csproj">
-      <Project>{D70D3F81-6B4F-4F6C-873F-53482DE2DE52}</Project>
-      <Name>Data.Entities.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Data.Sources.Common\Data.Sources.Common.csproj">
-      <Project>{C1D73699-7C75-48BB-8076-913018DB6852}</Project>
-      <Name>Data.Sources.Common</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Ui.Wpf.Common\Ui.Wpf.Common.csproj">
       <Project>{FDB62508-AFFA-4281-8472-8D00FC1403BA}</Project>
       <Name>Ui.Wpf.Common</Name>

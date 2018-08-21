@@ -1,6 +1,7 @@
 ﻿using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
+using System.Collections.Generic;
 using System.Reactive.Disposables;
 using System.ComponentModel;
 using FluentValidation;
@@ -12,6 +13,9 @@ namespace Ui.Wpf.Common.ViewModels
     {
         [Reactive]
         public string Title { get; set; }
+
+        [Reactive]
+        public string FullTitle { get; set; }
 
         [Reactive]
         public bool IsBusy { get; set; }
@@ -53,7 +57,10 @@ namespace Ui.Wpf.Common.ViewModels
 
         protected IValidator validator;
 
-       public string Error
+        [Reactive] protected ReactiveList<KeyValuePair<string,string>> AllErrors { get; set; } =
+            new ReactiveList<KeyValuePair<string, string>>();
+
+        public string Error
         {
             get
             {
@@ -62,10 +69,12 @@ namespace Ui.Wpf.Common.ViewModels
                     var results = validator.Validate(this);
                     if (results != null && results.Errors.Any())
                     {
-                        var errors = string.Join(Environment.NewLine, results.Errors.Select(x => x.ErrorMessage).ToArray());
+                        var errors = string.Join(Environment.NewLine,
+                            results.Errors.Select(x => x.ErrorMessage).ToArray());
                         return errors;
                     }
                 }
+
                 return string.Empty;
             }
         }
@@ -76,14 +85,19 @@ namespace Ui.Wpf.Common.ViewModels
             {
                 if (validator != null)
                 {
-                    var firstOrDefault = validator.Validate(this).Errors.FirstOrDefault(lol => lol.PropertyName == columnName);
+                    var errs = validator.Validate(this).Errors;
+                    AllErrors.Clear();
+                    AllErrors.AddRange(errs.Select(e=>
+                        new KeyValuePair<string, string>(e.PropertyName,e.ErrorMessage)));
+
+                    var firstOrDefault = errs.FirstOrDefault(lol => lol.PropertyName == columnName);
                     if (firstOrDefault != null)
-                       return validator != null ? firstOrDefault.ErrorMessage : "";
+                        return validator != null ? firstOrDefault.ErrorMessage : "";
                 }
+
                 return "";
             }
         }
-
 
     }
 }

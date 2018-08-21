@@ -1,29 +1,28 @@
-﻿using System.Configuration;
-using Data.Entities.Common.LocalBase;
+﻿using Kanban.Desktop.LocalBase.SqliteLocalStorage.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Data.Sources.LocalStorage.Sqlite.Context
+namespace Kanban.Desktop.LocalBase.SqliteLocalStorage.Context
 {
     public class SqliteContext : DbContext
     {
-        private string _baseConnstr;
+        private readonly string baseConnstr;
+
         public SqliteContext(string baseConnstr) 
         {
-            _baseConnstr = baseConnstr;
+            this.baseConnstr = baseConnstr;
             //Database.EnsureDeleted();
             Database.EnsureCreated();
-
         }
 
         public DbSet<RowInfo> Row { get; set; }
         public DbSet<ColumnInfo> Column { get; set; }
+        public DbSet<BoardInfo> Board { get; set; }
         public DbSet<SqliteIssue> Issue    { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder builder)
         {
             builder.EnableSensitiveDataLogging();
-            builder.UseSqlite(_baseConnstr);
+            builder.UseSqlite(baseConnstr);
         }
-
     }
 }

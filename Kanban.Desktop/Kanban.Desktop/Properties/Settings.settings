@@ -28,7 +28,8 @@
           &lt;Path&gt;Priority&lt;/Path&gt;
         &lt;/CardItem&gt;
         &lt;CardItem&gt;
-          &lt;Area&gt;Additional&lt;/Area&gt;
+          &lt;Area&gt;
+        &lt;/Area&gt;
           &lt;Path&gt;Description&lt;/Path&gt;
         &lt;/CardItem&gt;
     &lt;/CardsItems&gt;
