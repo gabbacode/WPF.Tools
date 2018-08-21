@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Reactive.Linq;
 using System.Windows;
 using Autofac;
@@ -23,49 +23,37 @@ namespace Ui.Wpf.Common
             UiShowOptions options = null)
             where TView : class, IView
         {
-
-            LayoutContent lc = null;
+            var layoutContent = null;
             if (viewRequest?.ViewId != null)
             {
-                lc = DocumentPane.Children.FirstOrDefault(x => x.ContentId == viewRequest?.ViewId);
+                layoutContent = DocumentPane.Children.FirstOrDefault(x => x.ContentId == viewRequest?.ViewId);
             }
 
-            if (lc != null)
+            if (layoutContent != null)
             {
-                lc.IsActive = true;
+                layoutContent.IsActive = true;
             }
             else
             {
-
-
                 var view = Container.Resolve<TView>();
                 if (options != null)
                     view.Configure(options);
 
                 var layoutDocument = new LayoutDocument { Content = view };
-
                 layoutDocument.ContentId = viewRequest?.ViewId;
-
                 if (options != null)
                     layoutDocument.CanClose = options.CanClose;
 
                 AddTitleRefreshing(view, layoutDocument);
                 AddClosingByRequest(view, layoutDocument);
 
-
                 DocumentPane.Children.Add(layoutDocument);
 
-                if (view.ViewModel is ViewModelBase)
-                {
-                    (view.ViewModel as ViewModelBase).ViewId = viewRequest?.ViewId;
-                }
-
-
+                (view.ViewModel as ViewModelBase)?.ViewId = viewRequest?.ViewId;
                 (view.ViewModel as IInitializableViewModel)?.Initialize(viewRequest);
 
                 layoutDocument.IsActive = true;
             }
-            
         }
 
         public void ShowTool<TToolView>(
@@ -199,7 +187,7 @@ namespace Ui.Wpf.Common
         //TODO replace to abstract manager
         private DockingManager DockingManager { get; set; }
 
-        private LayoutDocumentPane DocumentPane { get; set; }
+        protected LayoutDocumentPane DocumentPane { get; set; }
 
         private LayoutAnchorablePane ToolsPane { get; set; }
 

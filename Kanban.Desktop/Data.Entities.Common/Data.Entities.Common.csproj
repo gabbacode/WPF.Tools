@@ -48,9 +48,6 @@
     <Compile Include="IssuesBoard\ColorMap.cs" />
     <Compile Include="IssuesBoard\DimensionConfiguration.cs" />
     <Compile Include="IssuesBoard\KanbanConfiguration.cs" />
-    <Compile Include="LocalBase\ColumnInfo.cs" />
-    <Compile Include="LocalBase\LocalIssue.cs" />
-    <Compile Include="LocalBase\RowInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Redmine\CustomField.cs" />
     <Compile Include="Redmine\CustomFieldValue.cs" />

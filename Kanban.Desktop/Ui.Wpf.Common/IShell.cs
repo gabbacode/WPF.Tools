@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Autofac.Core;
 using Ui.Wpf.Common.ShowOptions;
 using Xceed.Wpf.AvalonDock;
 using Xceed.Wpf.AvalonDock.Layout;

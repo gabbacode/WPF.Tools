@@ -3,11 +3,11 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using Data.Entities.Common.LocalBase;
-using Data.Sources.LocalStorage.Sqlite.Context;
+using Kanban.Desktop.LocalBase.SqliteLocalStorage.Context;
+using Kanban.Desktop.LocalBase.SqliteLocalStorage.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Data.Sources.LocalStorage.Sqlite
+namespace Kanban.Desktop.LocalBase.SqliteLocalStorage
 {
     public class SqliteLocalRepository
     {
@@ -22,12 +22,17 @@ namespace Data.Sources.LocalStorage.Sqlite
         }
 
         #region creating&updating entities
+
         public async Task<RowInfo> CreateOrUpdateRowAsync(RowInfo row)
         {
             using (context = new SqliteContext(BaseConnstr))
             {
-                if (row.Id == 0 || context.Row.Find(row.Id) == null)
+                if (row.Id == 0 || context.Row.AsNoTracking()
+                        .FirstOrDefault(c => c.Id == row.Id) == null)
+                {
+                    context.Attach(row.Board);
                     await context.AddAsync(row);
+                }
 
                 else context.Update(row);
                 await context.SaveChangesAsync();
@@ -41,8 +46,10 @@ namespace Data.Sources.LocalStorage.Sqlite
             {
                 if (column.Id == 0 || context.Column.AsNoTracking()
                         .FirstOrDefault(c => c.Id == column.Id) == null)
+                {
+                    context.Attach(column.Board);
                     await context.AddAsync(column);
-
+                }
 
                 else context.Update(column);
                 await context.SaveChangesAsync();
@@ -58,13 +65,15 @@ namespace Data.Sources.LocalStorage.Sqlite
                     .AsNoTracking()
                     .Include(i => i.Row)
                     .Include(i => i.Column)
+                    .Include(i => i.Board)
                     .FirstOrDefault(iss => iss.Id == issue.Id);
                 mapper.Map(issue, existed);
 
                 if (existed == null)
                 {
                     var newiss = mapper.Map<SqliteIssue>(issue);
-                    context.Attach(newiss.Row);
+                    var r = context.Row.AsNoTracking().First(rr => rr.Id == issue.Row.Id);
+                    context.Attach(r);
                     context.Attach(newiss.Column);
 
                     await context.AddAsync(newiss);
@@ -75,14 +84,33 @@ namespace Data.Sources.LocalStorage.Sqlite
                     return mapper.Map<LocalIssue>(newiss);
                 }
 
+                existed.Row = context.Row.AsNoTracking().First(rr => rr.Id == issue.Row.Id);
+                existed.Column =
+                    context.Column.AsNoTracking().First(cc => cc.Id == issue.Column.Id);
+
                 context.Update(existed);
                 await context.SaveChangesAsync();
                 return issue;
             }
         }
+
+        public async Task<BoardInfo> CreateOrUpdateBoardInfoAsync(BoardInfo info)
+        {
+            using (context = new SqliteContext(BaseConnstr))
+            {
+                if (info.Id == 0 || context.Board.AsNoTracking()
+                        .FirstOrDefault(c => c.Id == info.Id) == null)
+                    await context.AddAsync(info);
+
+                else context.Update(info);
+                await context.SaveChangesAsync();
+                return info;
+            }
+        }
         #endregion
 
         #region getting entities
+
         public List<LocalIssue> GetIssues(NameValueCollection filters)
         {
             using (context = new SqliteContext(BaseConnstr))
@@ -90,14 +118,15 @@ namespace Data.Sources.LocalStorage.Sqlite
                 var dbIssues = context.Issue
                     .Include(i => i.Row)
                     .Include(i => i.Column)
+                    .Include(i => i.Board)
                     .Select(i => mapper.Map<LocalIssue>(i));
 
                 var keys = filters.AllKeys;
 
-                if (keys.Contains("IssueId"))
+                if (keys.Contains("BoardId"))
                     dbIssues = dbIssues
-                        .Where(iss => filters.GetValues("IssueId")
-                            .Contains(iss.Id.ToString()));
+                        .Where(iss => filters.GetValues("RowId")
+                            .Contains(iss.Board.Id.ToString()));
 
                 if (keys.Contains("RowId"))
                     dbIssues = dbIssues
@@ -120,14 +149,15 @@ namespace Data.Sources.LocalStorage.Sqlite
                 var dbIssues = await context.Issue
                     .Include(i => i.Row)
                     .Include(i => i.Column)
+                    .Include(i => i.Board)
                     .Select(i => mapper.Map<LocalIssue>(i)).ToListAsync();
 
                 var keys = filters.AllKeys;
 
-                if (keys.Contains("IssueId"))
+                if (keys.Contains("BoardId"))
                     dbIssues = dbIssues
-                        .Where(iss => filters.GetValues("IssueId")
-                            .Contains(iss.Id.ToString())).ToList();
+                        .Where(iss => filters.GetValues("BoardId")
+                            .Contains(iss.Board.Id.ToString())).ToList();
 
                 if (keys.Contains("RowId"))
                     dbIssues = dbIssues
@@ -144,35 +174,47 @@ namespace Data.Sources.LocalStorage.Sqlite
 
         }
 
-        public List<RowInfo> GetRows()
+        public List<RowInfo> GetRows(int boardId)
         {
             using (context = new SqliteContext(BaseConnstr))
             {
-                return context.Row.ToList();
+                return context.Row
+                     .Include(i => i.Board)
+                     .Where(row => row.Board.Id == boardId)
+                     .ToList();
             }
         }
 
-        public async Task<List<RowInfo>> GetRowsAsync()
+        public async Task<List<RowInfo>> GetRowsAsync(int boardId)
         {
             using (context = new SqliteContext(BaseConnstr))
             {
-                return await context.Row.ToListAsync();
+                return await context.Row
+                     .Include(i => i.Board)
+                     .Where(row => row.Board.Id == boardId)
+                     .ToListAsync();
             }
         }
 
-        public List<ColumnInfo> GetColumns()
+        public List<ColumnInfo> GetColumns(int boardId)
         {
             using (context = new SqliteContext(BaseConnstr))
             {
-                return context.Column.ToList();
+                return context.Column
+                     .Include(i => i.Board)
+                     .Where(col => col.Board.Id == boardId)
+                     .ToList();
             }
         }
 
-        public async Task<List<ColumnInfo>> GetColumnsAsync()
+        public async Task<List<ColumnInfo>> GetColumnsAsync(int boardId)
         {
             using (context = new SqliteContext(BaseConnstr))
             {
-                return await context.Column.ToListAsync();
+                return await context.Column
+                     .Include(i => i.Board)
+                     .Where(col => col.Board.Id == boardId)
+                     .ToListAsync();
             }
         }
 
@@ -183,13 +225,36 @@ namespace Data.Sources.LocalStorage.Sqlite
                 return await context.Issue
                     .Include(i => i.Row)
                     .Include(i => i.Column)
+                    .Include(i => i.Board)
                     .Select(i => mapper.Map<LocalIssue>(i))
-                    .FirstAsync(i=>i.Id==issueId);
+                    .FirstAsync(i => i.Id == issueId);
+            }
+        }
+
+        public async Task<List<BoardInfo>> GetAllBoardsInFileAsync()
+        {
+            using (context = new SqliteContext(BaseConnstr))
+            {
+                var е= await  context.Board
+                    .ToListAsync();
+                return е;
+            }
+        }
+
+        public async Task<BoardInfo> GetBoardInfoAsync(int boardId)
+        {
+            using (context = new SqliteContext(BaseConnstr))
+            {
+                return await context.Board
+                    .FirstAsync(i => i.Id == boardId);
             }
         }
 
         #endregion
 
+
+        #region deleting entities
+        
         public async Task DeleteRowAsync(int? rowId)
         {
             using (context = new SqliteContext(BaseConnstr))
@@ -275,6 +340,8 @@ namespace Data.Sources.LocalStorage.Sqlite
 
         }
 
+        #endregion
+
         private IMapper CreateMapper()
         {
             var mapperConfig = new MapperConfiguration(cfg =>
@@ -288,7 +355,8 @@ namespace Data.Sources.LocalStorage.Sqlite
             {
                 CreateMap<LocalIssue, SqliteIssue>()
                     .ForMember("RowId", opt => opt.MapFrom(s => s.Row.Id))
-                    .ForMember("ColumnId", opt => opt.MapFrom(s => s.Column.Id));
+                    .ForMember("ColumnId", opt => opt.MapFrom(s => s.Column.Id))
+                    .ForMember("BoardId", opt => opt.MapFrom(s => s.Board.Id));
 
                 CreateMap<SqliteIssue, LocalIssue>();
             }

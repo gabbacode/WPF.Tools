@@ -2,7 +2,7 @@
 <package >
     <metadata>
         <id>Kanban.Desktop</id>
-        <version>1.0.30</version>
+        <version>1.0.34</version>
         <authors>Sergej Kochekovsky</authors>
         <licenseUrl>https://github.com/gabbacode/Kanban.Desktop/master/LICENSE</licenseUrl>
         <projectUrl>https://github.com/gabbacode/Kanban.Desktop</projectUrl>
@@ -16,7 +16,7 @@
                 <dependency id="Autofac" version="4.7.1"/>
                 <dependency id="ControlzEx" version="3.0.2.4"/>
                 <dependency id="Extended.Wpf.Toolkit" version="3.3.0"/>
-		<dependency id="FluentValidation" version="7.6.104"/>
+				<dependency id="FluentValidation" version="7.6.104"/>
                 <dependency id="Fody" version="2.0.7"/>
                 <dependency id="MahApps.Metro" version="1.6.1"/>
                 <dependency id="reactiveui" version="7.0.0"/>
@@ -34,11 +34,9 @@
     </metadata>
     <files>
         <file src="Ui.Wpf.Common\bin\Release\Ui.Wpf.Common.dll"                 target="lib"/>
+        <file src="Ui.Wpf.Common\bin\Release\Ui.Wpf.Common.pdb"                 target="lib"/>
         <file src="Ui.Wpf.KanbanControl\bin\Release\Ui.Wpf.KanbanControl.dll"   target="lib"/>
-<!--         <file src="Data.Entities.Common\bin\Release\Data.Entities.Common.dll"   target="lib"/>
-        <file src="Data.Sources.Common\bin\Release\Data.Sources.Common.dll"     target="lib"/>
-        <file src="Data.Sources.Redmine\bin\Release\Data.Sources.Redmine.dll"   target="lib"/>
- -->        
-        <file src="**\*.cs"                                                     target="src" />
+        <file src="Ui.Wpf.KanbanControl\bin\Release\Ui.Wpf.KanbanControl.pdb"   target="lib"/>
+        <file src="Ui.Wpf.*\**\*.cs"                                            target="src" />
     </files>
 </package>

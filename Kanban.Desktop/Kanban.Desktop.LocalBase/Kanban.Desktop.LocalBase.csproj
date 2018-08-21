@@ -63,11 +63,17 @@
     <Reference Include="ControlzEx, Version=3.0.2.4, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ControlzEx.3.0.2.4\lib\net462\ControlzEx.dll</HintPath>
     </Reference>
+    <Reference Include="FluentValidation, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7de548da2fbae0f0, processorArchitecture=MSIL">
+      <HintPath>..\packages\FluentValidation.7.6.104\lib\net45\FluentValidation.dll</HintPath>
+    </Reference>
     <Reference Include="GongSolutions.Wpf.DragDrop, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\gong-wpf-dragdrop.1.1.0\lib\net46\GongSolutions.Wpf.DragDrop.dll</HintPath>
     </Reference>
     <Reference Include="MahApps.Metro, Version=1.6.5.1, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MahApps.Metro.1.6.5\lib\net46\MahApps.Metro.dll</HintPath>
+    </Reference>
+    <Reference Include="MahApps.Metro.IconPacks, Version=2.3.0.4, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MahApps.Metro.IconPacks.2.3.0\lib\net46\MahApps.Metro.IconPacks.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Data.Sqlite, Version=2.1.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Data.Sqlite.Core.2.1.0\lib\netstandard2.0\Microsoft.Data.Sqlite.dll</HintPath>
@@ -117,6 +123,9 @@
     <Reference Include="Microsoft.Extensions.Primitives, Version=2.1.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Extensions.Primitives.2.1.1\lib\netstandard2.0\Microsoft.Extensions.Primitives.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="ReactiveUI, Version=7.4.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\reactiveui-core.7.4.0\lib\Net45\ReactiveUI.dll</HintPath>
     </Reference>
@@ -152,6 +161,11 @@
       <HintPath>..\packages\System.ComponentModel.Annotations.4.5.0\lib\net461\System.ComponentModel.Annotations.dll</HintPath>
     </Reference>
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.ComponentModel.Primitives, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ComponentModel.Primitives.4.3.0\lib\net45\System.ComponentModel.Primitives.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Diagnostics.DiagnosticSource, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Diagnostics.DiagnosticSource.4.5.0\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
@@ -211,9 +225,23 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="Xceed.Wpf.AvalonDock, Version=3.3.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Extended.Wpf.Toolkit.3.3.0\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
+    <Reference Include="Xceed.Wpf.AvalonDock, Version=3.4.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.4.0\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Aero, Version=3.4.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.4.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.Aero.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Metro, Version=3.4.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.4.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.Metro.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.VS2010, Version=3.4.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.4.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.VS2010.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.DataGrid, Version=3.4.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.4.0\lib\net40\Xceed.Wpf.DataGrid.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.Toolkit, Version=3.4.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.4.0\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -221,7 +249,19 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="DataBaseSelector\View\DataBaseSelectorView.xaml">
+    <Compile Include="Models\IDistinctShell.cs" />
+    <Compile Include="Models\ViewRequests.cs" />
+    <Compile Include="SqliteLocalStorage\Entities\BoardInfo.cs" />
+    <Compile Include="SqliteLocalStorage\Entities\ColumnInfo.cs" />
+    <Compile Include="SqliteLocalStorage\Entities\LocalIssue.cs" />
+    <Compile Include="SqliteLocalStorage\Entities\RowInfo.cs" />
+    <Compile Include="Views\WpfResources\ControlElements.cs" />
+    <Compile Include="Views\WpfResources\Validators.cs" />
+    <Page Include="Views\WizardView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\StartupView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -229,55 +269,43 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DataBaseSelector\ViewModel\DataBaseSelectorViewModel.cs" />
-    <Compile Include="DataBaseSelector\ViewModel\IDataBaseSelectorViewModel.cs" />
-    <Compile Include="DataBaseSelector\View\DataBaseSelectorView.xaml.cs">
-      <DependentUpon>DataBaseSelectorView.xaml</DependentUpon>
+    <Compile Include="Views\WpfResources\Converters.cs" />
+    <Compile Include="Models\AppModel.cs" />
+    <Compile Include="Models\ScopeModel.cs" />
+    <Compile Include="SqliteLocalStorage\Context\SqliteContext.cs" />
+    <Compile Include="SqliteLocalStorage\Context\SqliteIssue.cs" />
+    <Compile Include="SqliteLocalStorage\SqliteLocalRepository.cs" />
+    <Compile Include="ViewModels\WizardViewModel.cs" />
+    <Compile Include="ViewModels\StartupViewModel.cs" />
+    <Compile Include="Views\WizardView.xaml.cs">
+      <DependentUpon>WizardView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="DataBaseSelector\Model\DataBaseSelectorModel.cs" />
-    <Compile Include="DataBaseSelector\Model\IDataBaseSelectorModel.cs" />
-    <Compile Include="DataBaseSelector\View\IDataBaseSelectorView.cs" />
+    <Compile Include="Views\StartupView.xaml.cs">
+      <DependentUpon>StartupView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Bootstrapper.cs" />
-    <Compile Include="DimensionEdit-unused\Model\DimensionEditModel.cs" />
-    <Compile Include="DimensionEdit-unused\Model\DimensionViewRequest.cs" />
-    <Compile Include="DimensionEdit-unused\Model\IDimensionEditModel.cs" />
-    <Compile Include="DimensionEdit-unused\ViewModel\DimensionEditViewModel.cs" />
-    <Compile Include="DimensionEdit-unused\ViewModel\IDimensionEditViewModel.cs" />
-    <Compile Include="DimensionEdit-unused\View\DimensionEditView.xaml.cs">
-      <DependentUpon>DimensionEditView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="DimensionEdit-unused\View\IDimensionEditView.cs" />
-    <Compile Include="Issues\Model\IIssueModel.cs" />
-    <Compile Include="Issues\Model\IssueModel.cs" />
-    <Compile Include="Issues\ViewModel\IIssueViewModel.cs" />
-    <Compile Include="Issues\ViewModel\IssueViewModel.cs" />
-    <Compile Include="Issues\ViewModel\IssueViewRequest.cs" />
-    <Compile Include="Issues\View\IIssueView.cs" />
-    <Page Include="DimensionEdit-unused\View\DimensionEditView.xaml">
+    <Compile Include="ViewModels\IssueViewModel.cs" />
+    <Page Include="Views\IssueView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Issues\View\IssueView.xaml">
+    <Page Include="Views\BoardView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="LocalBoard\View\LocalBoardView.xaml">
+    <Page Include="Views\WpfResources\TemplatesDictionary.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Issues\View\IssueView.xaml.cs">
+    <Compile Include="Views\IssueView.xaml.cs">
       <DependentUpon>IssueView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="LocalBoard\Model\ILocalBoardModel.cs" />
-    <Compile Include="LocalBoard\Model\LocalBoardModel.cs" />
-    <Compile Include="LocalBoard\ViewModel\ILocalBoardViewModel.cs" />
-    <Compile Include="LocalBoard\ViewModel\LocalBoardDropHandler.cs" />
-    <Compile Include="LocalBoard\ViewModel\LocalBoardViewModel.cs" />
-    <Compile Include="LocalBoard\View\ILocalBoardView.cs" />
-    <Compile Include="LocalBoard\View\LocalBoardView.xaml.cs">
-      <DependentUpon>LocalBoardView.xaml</DependentUpon>
+    <Compile Include="ViewModels\BoardDropHandler.cs" />
+    <Compile Include="ViewModels\BoardViewModel.cs" />
+    <Compile Include="Views\BoardView.xaml.cs">
+      <DependentUpon>BoardView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
@@ -306,22 +334,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Data.Entities.Common\Data.Entities.Common.csproj">
-      <Project>{D70D3F81-6B4F-4F6C-873F-53482DE2DE52}</Project>
-      <Name>Data.Entities.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Data.Sources.Common\Data.Sources.Common.csproj">
-      <Project>{C1D73699-7C75-48BB-8076-913018DB6852}</Project>
-      <Name>Data.Sources.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Data.Sources.LocalStorage.Sqlite\Data.Sources.LocalStorage.Sqlite.csproj">
-      <Project>{947A8888-74FE-4789-B4A6-83CFFE394984}</Project>
-      <Name>Data.Sources.LocalStorage.Sqlite</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Kanban.Desktop\Kanban.Desktop.csproj">
-      <Project>{8DA7A6F2-737C-4EB7-82BB-0B1F06C0B27B}</Project>
-      <Name>Kanban.Desktop</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Ui.Wpf.Common\Ui.Wpf.Common.csproj">
       <Project>{FDB62508-AFFA-4281-8472-8D00FC1403BA}</Project>
       <Name>Ui.Wpf.Common</Name>
@@ -346,7 +358,6 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Fody.2.0.7\build\netstandard1.4\Fody.targets" Condition="Exists('..\packages\Fody.2.0.7\build\netstandard1.4\Fody.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.IO;
-using System.Linq;
-using System.Windows;
-using Data.Entities.Common.LocalBase;
 using Data.Entities.Common.Redmine;
-using MahApps.Metro.Controls;
-using MahApps.Metro.Controls.Dialogs;
+using Kanban.Desktop.LocalBase.SqliteLocalStorage;
+using Kanban.Desktop.LocalBase.SqliteLocalStorage.Entities;
 using NUnit.Framework;
 
 namespace Data.Sources.LocalStorage.Sqlite.Tests
@@ -16,7 +12,7 @@ namespace Data.Sources.LocalStorage.Sqlite.Tests
     public class LocalStorage
     {
 
-        private SqliteLocalRepository _repos;
+        private SqliteLocalRepository repos;
 
         public void old()
         {
@@ -147,7 +143,7 @@ namespace Data.Sources.LocalStorage.Sqlite.Tests
             //var t=await _repos.CreateOrUpdateIssueAsync(newiss);
             //var t = _repos.GetIssues(filt);
             //var tt = t.Where(i => i.Id == 1);
-            await _repos.DeleteIssueAsync(17);
+            await repos.DeleteIssueAsync(17);
            // var newnew = _repos.CreateOrUpdateIssueAsync(newiss);
 
         }
@@ -171,8 +167,8 @@ namespace Data.Sources.LocalStorage.Sqlite.Tests
 
            // _repos = new SqliteLocalRepository(@"C:\ArsMak\Kanban.Desktop\Kanban.Desktop\Data.Sources.LocalStorage.Sqlite.Tests\bin\Debug\lololo.db");
 
-            var cc = await _repos.CreateOrUpdateIssueAsync(c);
-            var tt = await _repos.CreateOrUpdateColumnAsync(t);
+            var cc = await repos.CreateOrUpdateIssueAsync(c);
+            var tt = await repos.CreateOrUpdateColumnAsync(t);
         }
     }
 }
