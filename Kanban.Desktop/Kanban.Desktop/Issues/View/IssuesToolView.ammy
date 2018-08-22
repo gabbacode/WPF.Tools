@@ -1,9 +1,0 @@
-﻿UserControl "Kanban.Desktop.Issues.View.IssuesToolView" 
-{
-	StackPanel 
-	{
-		Button { Content: "Action 1" }
-		Button { Content: "Action 2" }
-		Button { Content: "Action 3" }
-	}
-}

@@ -1,3 +1,0 @@
-UserControl "Kanban.Desktop.Settings.SettingsView" {
-  Grid { }
-}
