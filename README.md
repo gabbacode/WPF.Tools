@@ -11,20 +11,20 @@ tools that help to make wpf apps
 
 from packet manager:
 ```
-PM> Install-Package Ui.Wpf.Common -Source https://www.myget.org/F/wpftools/api/v3/index.json 
+PM> Install-Package Ui.Wpf.Common -Version 1.0.1 -Source https://www.myget.org/F/wpftools/api/v3/index.json 
 ```
 from nuget:
 ```
-nuget.exe install Ui.Wpf.Common -Source https://www.myget.org/F/wpftools/api/v3/index.json 
+nuget.exe install Ui.Wpf.Common -Version 1.0.1 -Source https://www.myget.org/F/wpftools/api/v3/index.json 
 ```
 
 ### Ui.Wpf.KanbanControl
 
 from packet manager:
 ```
-Install-Package Ui.Wpf.KanbanControl -Source https://www.myget.org/F/wpftools/api/v3/index.json 
+Install-Package Ui.Wpf.KanbanControl -Version 1.0.1 -Source https://www.myget.org/F/wpftools/api/v3/index.json 
 ```
 from nuget:
 ```
-nuget.exe install Ui.Wpf.KanbanControl -Source https://www.myget.org/F/wpftools/api/v3/index.json 
+nuget.exe install Ui.Wpf.KanbanControl -Version 1.0.1 -Source https://www.myget.org/F/wpftools/api/v3/index.json 
 ```
