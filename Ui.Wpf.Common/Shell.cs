@@ -81,6 +81,8 @@ namespace Ui.Wpf.Common
                 CanFloat    = false,
             };
 
+            AddTitleRefreshing(view, layoutAnchorable);
+
             layoutAnchorable.Content = view;
             ToolsPane.Children.Add(layoutAnchorable);
         }
@@ -180,7 +182,7 @@ namespace Ui.Wpf.Common
             }
         }
 
-        private static void AddTitleRefreshing<TView>(TView view, LayoutDocument layoutDocument)
+        private static void AddTitleRefreshing<TView>(TView view, LayoutContent layoutDocument)
             where TView : class, IView
         {
             var titleRefreshSubsription = view.ViewModel
