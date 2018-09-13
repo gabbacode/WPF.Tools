@@ -18,6 +18,8 @@ namespace Ui.Wpf.Common
 
         [Reactive] public string Title { get; set; }
 
+        [Reactive] public IView SelectedView { get; set; }
+
         public void ShowView<TView>(
             ViewRequest viewRequest = null,
             UiShowOptions options = null)

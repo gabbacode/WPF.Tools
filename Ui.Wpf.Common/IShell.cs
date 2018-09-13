@@ -1,9 +1,6 @@
 ﻿using Autofac;
-using Autofac.Core;
 using Ui.Wpf.Common.ShowOptions;
 using Xceed.Wpf.AvalonDock;
-using Xceed.Wpf.AvalonDock.Layout;
-using System;
 
 namespace Ui.Wpf.Common
 {
@@ -12,6 +9,8 @@ namespace Ui.Wpf.Common
         string Title { get; set; }
 
         IContainer Container { get; set; }
+
+        IView SelectedView { get; set; } 
 
         void ShowView<TView>(
             ViewRequest viewRequest = null, 

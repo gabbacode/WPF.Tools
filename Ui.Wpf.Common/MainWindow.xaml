@@ -11,7 +11,7 @@
         WindowState="Maximized">
     <dock:DockingManager 
         Name="DockingManager"
-        ActiveContentChanged="ActiveContentChanged">
+        ActiveContent="{Binding SelectedView, Mode=TwoWay}">
     </dock:DockingManager>
 </сontrols:MetroWindow>
                                                       

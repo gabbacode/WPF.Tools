@@ -10,6 +10,7 @@ namespace Ui.Wpf.Common
         public MainWindow(IShell shell)
         {
             Shell = shell;
+            DataContext = Shell;
             InitializeComponent();
         }
 
@@ -21,19 +22,12 @@ namespace Ui.Wpf.Common
 
             //TODO do with behavior
             Shell.AttachDockingManager(DockingManager);
-
-            DataContext = Shell;
         }
 
         protected override void OnClosed(EventArgs e)
         {
             base.OnClosed(e);
             Shell?.Container.Dispose();
-        }
-
-        private void ActiveContentChanged(object sender, EventArgs e)
-        {
-
         }
     }
 }
