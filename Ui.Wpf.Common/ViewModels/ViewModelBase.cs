@@ -24,10 +24,10 @@ namespace Ui.Wpf.Common.ViewModels
         public bool IsEnabled { get; set; } = true;
 
         [Reactive]
-        public bool CanHide { get; set; }
+        public bool CanHide { get; set; } = true;
 
         [Reactive]
-        public bool CanClose { get; set; }
+        public bool CanClose { get; set; } = true;
 
 
         public string ViewId { get; internal set; }

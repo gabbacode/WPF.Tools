@@ -74,18 +74,20 @@ namespace Ui.Wpf.Common
             if (options != null)
                 view.Configure(options);
 
-            (view.ViewModel as IInitializableViewModel)?.Initialize(viewRequest);
-
             var layoutAnchorable = new LayoutAnchorable
             {
-                CanClose    = false,
                 CanAutoHide = false,
-                CanHide     = false,
-                CanFloat    = false,
+                CanFloat = false,
             };
+            view.ViewModel.CanClose = false;
+            view.ViewModel.CanHide = false;
+
+            (view.ViewModel as IInitializableViewModel)?.Initialize(viewRequest);
+
 
             AddTitleRefreshing(view, layoutAnchorable);
             AddWindowBehaviour(view, layoutAnchorable);
+
 
             layoutAnchorable.Content = view;
             ToolsPane.Children.Add(layoutAnchorable);
