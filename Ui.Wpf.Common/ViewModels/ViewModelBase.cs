@@ -21,7 +21,7 @@ namespace Ui.Wpf.Common.ViewModels
         public bool IsBusy { get; set; }
 
         [Reactive]
-        public bool IsEnabled { get; set; }
+        public bool IsEnabled { get; set; } = true;
 
         [Reactive]
         public bool CanHide { get; set; }
