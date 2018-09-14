@@ -20,6 +20,16 @@ namespace Ui.Wpf.Common.ViewModels
         [Reactive]
         public bool IsBusy { get; set; }
 
+        [Reactive]
+        public bool IsEnabled { get; set; }
+
+        [Reactive]
+        public bool CanHide { get; set; }
+
+        [Reactive]
+        public bool CanClose { get; set; }
+
+
         public string ViewId { get; internal set; }
 
         
@@ -52,14 +62,14 @@ namespace Ui.Wpf.Common.ViewModels
 
         public void DisposeInternals()
         {
-            disposables.Dispose();
+            Disposables.Dispose();
         }
 
         internal event EventHandler<ViewModelCloseQueryArgs> CloseQuery;
 
         #endregion
 
-        protected CompositeDisposable disposables = new CompositeDisposable();
+        internal CompositeDisposable Disposables { get; set; }  = new CompositeDisposable();
 
         protected IValidator validator;
 

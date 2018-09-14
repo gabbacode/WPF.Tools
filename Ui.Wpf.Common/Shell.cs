@@ -47,6 +47,7 @@ namespace Ui.Wpf.Common
                     layoutDocument.CanClose = options.CanClose;
 
                 AddTitleRefreshing(view, layoutDocument);
+                AddWindowBehaviour(view, layoutDocument);
                 AddClosingByRequest(view, layoutDocument);
 
                 DocumentPane.Children.Add(layoutDocument);
@@ -84,6 +85,7 @@ namespace Ui.Wpf.Common
             };
 
             AddTitleRefreshing(view, layoutAnchorable);
+            AddWindowBehaviour(view, layoutAnchorable);
 
             layoutAnchorable.Content = view;
             ToolsPane.Children.Add(layoutAnchorable);
@@ -149,7 +151,6 @@ namespace Ui.Wpf.Common
         {
             if (view.ViewModel is ViewModelBase baseViewModel)
             {
-                var v = view.ViewModel as ViewModelBase;
                 var closeQuery = Observable.FromEventPattern<ViewModelCloseQueryArgs>(
                     x => baseViewModel.CloseQuery += x,
                     x => baseViewModel.CloseQuery -= x);
@@ -160,7 +161,7 @@ namespace Ui.Wpf.Common
                 layoutDocument.Closing += (s, e) =>
                 {
                     ViewModelCloseQueryArgs vcq = new ViewModelCloseQueryArgs { IsCanceled = false };
-                    v.Closing(vcq);
+                    baseViewModel.Closing(vcq);
 
                     if (vcq.IsCanceled)
                     {
@@ -174,7 +175,7 @@ namespace Ui.Wpf.Common
                 {
                     try
                     {
-                       v.Closed(new ViewModelCloseQueryArgs { IsCanceled = false });
+                       baseViewModel.Closed(new ViewModelCloseQueryArgs { IsCanceled = false });
                     }
                     finally
                     {
@@ -193,6 +194,33 @@ namespace Ui.Wpf.Common
 
             layoutDocument.Closed += (s, e) => titleRefreshSubsription.Dispose();
         }
+
+        private static void AddWindowBehaviour<TView>(TView view, LayoutContent layoutContent)
+            where TView : class, IView
+        {
+
+            if (view.ViewModel is ViewModelBase baseViewModel)
+            {
+                baseViewModel.Disposables.Add(
+                    baseViewModel
+                        .WhenAnyValue(x => x.IsEnabled)
+                        .Subscribe(x => layoutContent.IsEnabled = x));
+
+                baseViewModel.Disposables.Add(
+                    baseViewModel
+                        .WhenAnyValue(x => x.CanClose)
+                        .Subscribe(x => layoutContent.CanClose = x));
+
+                if (layoutContent is LayoutAnchorable layoutAnchorable)
+                {
+                    baseViewModel.Disposables.Add(
+                        baseViewModel
+                            .WhenAnyValue(x => x.CanHide)
+                            .Subscribe(x => layoutAnchorable.CanHide = x));
+                }
+            }
+        }
+
 
         //TODO replace to abstract manager
         private DockingManager DockingManager { get; set; }
