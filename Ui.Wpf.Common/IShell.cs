@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using Ui.Wpf.Common.ShowOptions;
+using Ui.Wpf.Common.ViewModels;
 using Xceed.Wpf.AvalonDock;
 
 namespace Ui.Wpf.Common
@@ -32,5 +33,8 @@ namespace Ui.Wpf.Common
 
         void AttachDockingManager(DockingManager dockingManager);
 
+        CommandItem AddGlobalCommand(string menuName, string cmdName, string cmdFunc, IViewModel vm);
+
+        CommandItem AddVMTypeCommand(string menuName, string cmdName, string cmdFunc, IViewModel vm);
     }
 }

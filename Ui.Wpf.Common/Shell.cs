@@ -12,7 +12,7 @@ using System.Linq;
 
 namespace Ui.Wpf.Common
 {
-    public class Shell : ReactiveObject, IShell
+    public partial class Shell : ReactiveObject, IShell
     {
         public IContainer Container { get; set; }
 
