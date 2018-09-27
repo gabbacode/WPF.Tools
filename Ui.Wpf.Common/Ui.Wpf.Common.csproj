@@ -119,6 +119,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\CommandItem.cs" />
     <Compile Include="IBootstraper.cs" />
     <Compile Include="IDockWindow.cs" />
     <Compile Include="IShell.cs" />
@@ -143,6 +144,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="ReactiveExtensions.cs" />
+    <Compile Include="Shell.Commands.cs" />
     <Compile Include="Shell.cs" />
     <Compile Include="ShowOptions\UiShowStartWindowOptions.cs" />
     <Compile Include="UiStarter.cs" />
@@ -177,5 +179,7 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Fody.3.2.1\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.3.2.1\build\Fody.targets'))" />
+    <Error Condition="!Exists('..\..\Kamban\KambanSolution\packages\Fody.3.2.4\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\Kamban\KambanSolution\packages\Fody.3.2.4\build\Fody.targets'))" />
   </Target>
+  <Import Project="..\..\Kamban\KambanSolution\packages\Fody.3.2.4\build\Fody.targets" Condition="Exists('..\..\Kamban\KambanSolution\packages\Fody.3.2.4\build\Fody.targets')" />
 </Project>

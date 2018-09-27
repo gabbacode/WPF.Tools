@@ -9,9 +9,20 @@
         d:DataContext="Shell"
         Title="{Binding Title}"
         WindowState="Maximized">
-    <dock:DockingManager 
-        Name="DockingManager"
-        ActiveContent="{Binding SelectedView, Mode=TwoWay}">
-    </dock:DockingManager>
+    <Grid>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="{Binding MenuHeight}"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <Menu ItemsSource="{Binding MenuItems}" FontSize="12"/>
+
+        <dock:DockingManager
+            Grid.Row="1"
+            Name="DockingManager"
+            ActiveContent="{Binding SelectedView, Mode=TwoWay}">
+        </dock:DockingManager>
+    </Grid>
 </сontrols:MetroWindow>
                                                       
