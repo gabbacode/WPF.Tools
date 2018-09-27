@@ -2,11 +2,8 @@
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Data;
 using Ui.Wpf.Common.ViewModels;
@@ -19,14 +16,19 @@ namespace Ui.Wpf.Common
 
         public ReactiveList<MenuItem> MenuItems { get; set; } = new ReactiveList<MenuItem>();
 
-        private List<CommandItem> GlobalCommandItems = new List<CommandItem>();
-        private Dictionary<Type, List<CommandItem>> VMTypeCommandItems = new Dictionary<Type, List<CommandItem>>();
+        private List<CommandItem> GlobalCommandItems;
+        private Dictionary<Type, List<CommandItem>> VMCommandItems;
+        private Dictionary<IViewModel, List<CommandItem>> InstanceCommandItems;
 
         private IView ActualCommandView;
 
         public Shell()
         {
+            MenuHeight = 0;
             ActualCommandView = null;
+            GlobalCommandItems = new List<CommandItem>();
+            VMCommandItems = new Dictionary<Type, List<CommandItem>>();
+            InstanceCommandItems = new Dictionary<IViewModel, List<CommandItem>>();
 
             MenuItems.Changed.Subscribe(_ => MenuHeight = MenuItems.Count > 0 ? 30 : 0);
 
@@ -66,11 +68,10 @@ namespace Ui.Wpf.Common
             return ci;
         }
 
-        public CommandItem AddVMTypeCommand(string menuName, string cmdName, string cmdFunc, IViewModel vm)
+        public CommandItem AddVMCommand(string menuName, string cmdName, string cmdFunc, IViewModel vm)
         {
             var m = GetMenu(menuName);
-
-            var cmdList = VMTypeCommandItems.GetOrCreate(vm.GetType());
+            var cmdList = VMCommandItems.GetOrCreate(vm.GetType());
 
             var ci = cmdList
                 .Where(x => x.Parent == m && (string)x.Item.Header == cmdName)
@@ -95,6 +96,39 @@ namespace Ui.Wpf.Common
             return ci;
         }
 
+        public CommandItem AddInstanceCommand(string menuName, string cmdName, string cmdFunc, IViewModel vm)
+        {
+            var m = GetMenu(menuName);
+            var cmdList = InstanceCommandItems.GetOrCreate(vm);
+
+            var ci = cmdList
+                .Where(x => x.Parent == m && (string)x.Item.Header == cmdName)
+                .FirstOrDefault();
+
+            if (ci == null)
+            {
+                var c = new MenuItem { Header = cmdName, DataContext = vm };
+                c.SetBinding(MenuItem.CommandProperty, new Binding(cmdFunc));
+
+                c.SetBinding(MenuItem.CommandParameterProperty,
+                    new Binding(".")
+                    { RelativeSource = new RelativeSource(RelativeSourceMode.Self) });
+
+                m.Items.Add(c);
+
+                ci = new CommandItem
+                {
+                    Type = CommandType.VMInstance,
+                    Item = c,
+                    Parent = m
+                };
+
+                cmdList.Add(ci);
+            }
+
+            return null;
+        }
+
         private MenuItem GetMenu(string menuName)
         {
             var m = MenuItems
@@ -117,7 +151,7 @@ namespace Ui.Wpf.Common
 
             var vm = ActualCommandView.ViewModel;
             var vmTyp = vm.GetType();
-            var cmdList = VMTypeCommandItems.GetOrCreate(vmTyp);
+            var cmdList = VMCommandItems.GetOrCreate(vmTyp);
             foreach (var ci in cmdList)
             {
                 ci.Item.DataContext = null;
@@ -129,13 +163,17 @@ namespace Ui.Wpf.Common
                     wnd.InputBindings.MatchedRemove(ci.KeyBind);
                 }
             }
+
+            cmdList = InstanceCommandItems.GetOrCreate(vm);
+            foreach (var ci in cmdList)
+                ci.Parent.Items.Remove(ci.Item);
         }
 
         private void ActivateVMCommands()
         {
             var vm = ActualCommandView.ViewModel;
             var vmTyp = vm.GetType();
-            var cmdList = VMTypeCommandItems.GetOrCreate(vmTyp);
+            var cmdList = VMCommandItems.GetOrCreate(vmTyp);
             foreach (var ci in cmdList)
             {
                 ci.Item.DataContext = vm;
@@ -149,6 +187,10 @@ namespace Ui.Wpf.Common
                     wnd.InputBindings.SkippedAdd(ci.KeyBind);
                 }
             }
+
+            cmdList = InstanceCommandItems.GetOrCreate(vm);
+            foreach (var ci in cmdList)
+                ci.Parent.Items.Add(ci.Item);
         }
     }//end of class
 }

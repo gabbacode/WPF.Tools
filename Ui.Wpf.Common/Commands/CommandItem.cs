@@ -18,8 +18,8 @@ namespace Ui.Wpf.Common
         Global,
         // cmd from selected view-type, disable when other view-type selected
         VMType,
-        // TODO: single cmd, show only for selected view
-        Instance
+        // single cmd, show only for selected view
+        VMInstance
     }
 
     public class CommandItem
