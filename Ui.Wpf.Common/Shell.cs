@@ -28,7 +28,7 @@ namespace Ui.Wpf.Common
             LayoutContent layoutContent = null;
             if (viewRequest?.ViewId != null)
             {
-                layoutContent = DocumentPane.Children.FirstOrDefault(x => x.ContentId == viewRequest?.ViewId);
+                layoutContent = DocumentPane.Children.FirstOrDefault(x => x.ContentId == viewRequest.ViewId);
             }
 
             if (layoutContent != null)
@@ -99,12 +99,15 @@ namespace Ui.Wpf.Common
             where TStartView : class, IView
         {
             if (options != null)
+            {
                 ToolPaneWidth = options.ToolPaneWidth;
+                Title = options.Title;
+            }
 
             var startObject = Container.Resolve<TStartWindow>();
 
             if (startObject == null)
-                throw new InvalidOperationException($"You shuld configurate {typeof(TStartWindow)}");
+                throw new InvalidOperationException($"You should configure {typeof(TStartWindow)}");
 
             var window = startObject as Window;
             if (window == null)
@@ -120,7 +123,10 @@ namespace Ui.Wpf.Common
             where TStartWindow : class
         {
             if (options != null)
+            {
                 ToolPaneWidth = options.ToolPaneWidth;
+                Title = options.Title;
+            }
 
             var startObject = Container.Resolve<TStartWindow>();
 
