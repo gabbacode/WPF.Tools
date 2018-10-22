@@ -58,6 +58,7 @@ namespace Ui.Wpf.Common
 
             CommandItem ci = new CommandItem
             {
+                Name = cmdName,
                 Type = CommandType.Global,
                 Item = c,
                 Parent = m
@@ -85,6 +86,7 @@ namespace Ui.Wpf.Common
 
                 ci = new CommandItem
                 {
+                    Name = cmdName,
                     Type = CommandType.VMType,
                     Item = c,
                     Parent = m
@@ -118,6 +120,7 @@ namespace Ui.Wpf.Common
 
                 ci = new CommandItem
                 {
+                    Name = cmdName,
                     Type = CommandType.VMInstance,
                     Item = c,
                     Parent = m
@@ -126,7 +129,7 @@ namespace Ui.Wpf.Common
                 cmdList.Add(ci);
             }
 
-            return null;
+            return ci;
         }
 
         private MenuItem GetMenu(string menuName)
