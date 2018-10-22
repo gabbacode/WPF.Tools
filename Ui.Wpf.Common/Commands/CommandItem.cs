@@ -1,7 +1,10 @@
 ﻿using MahApps.Metro.Controls;
+using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -22,12 +25,21 @@ namespace Ui.Wpf.Common
         VMInstance
     }
 
-    public class CommandItem
+    public class CommandItem : ReactiveObject
     {
+        [Reactive] public string Name { get; set; }
         public CommandType Type { get; set; }
         public MenuItem Item { get; set; }
         public MenuItem Parent { get; set; }
         public KeyBinding KeyBind { get; set; }
+
+        public CommandItem()
+        {
+            this.WhenAnyValue(x => x.Name)
+                .Where(x => Item != null)
+                .Subscribe(x => 
+                Item.Header = x);
+        }
 
         private string ModToStr(ModifierKeys mk)
         {
