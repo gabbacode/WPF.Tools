@@ -6,6 +6,7 @@ using System.Reactive.Disposables;
 using System.ComponentModel;
 using FluentValidation;
 using System.Linq;
+using DynamicData;
 
 namespace Ui.Wpf.Common.ViewModels
 {
@@ -32,20 +33,20 @@ namespace Ui.Wpf.Common.ViewModels
 
         public string ViewId { get; internal set; }
 
-        
+
         #region CloseQuery
 
 
         public void Close()
         {
-            var args=new ViewModelCloseQueryArgs();
+            var args = new ViewModelCloseQueryArgs();
 
             CloseQuery?.Invoke(this, args);
 
             if (args.IsCanceled)
                 return;
-        
-            
+
+
         }
 
 
@@ -69,12 +70,13 @@ namespace Ui.Wpf.Common.ViewModels
 
         #endregion
 
-        internal CompositeDisposable Disposables { get; set; }  = new CompositeDisposable();
+        internal CompositeDisposable Disposables { get; set; } = new CompositeDisposable();
 
         protected IValidator validator;
 
-        [Reactive] protected ReactiveList<KeyValuePair<string,string>> AllErrors { get; set; } =
-            new ReactiveList<KeyValuePair<string, string>>();
+        [Reactive]
+        protected SourceList<KeyValuePair<string, string>> AllErrors { get; set; } =
+            new SourceList<KeyValuePair<string, string>>();
 
         public string Error
         {
@@ -103,8 +105,8 @@ namespace Ui.Wpf.Common.ViewModels
                 {
                     var errs = validator.Validate(this).Errors;
                     AllErrors.Clear();
-                    AllErrors.AddRange(errs.Select(e=>
-                        new KeyValuePair<string, string>(e.PropertyName,e.ErrorMessage)));
+                    AllErrors.AddRange(errs.Select(e =>
+                        new KeyValuePair<string, string>(e.PropertyName, e.ErrorMessage)));
 
                     var firstOrDefault = errs.FirstOrDefault(lol => lol.PropertyName == columnName);
                     if (firstOrDefault != null)

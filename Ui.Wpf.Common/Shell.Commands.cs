@@ -1,8 +1,10 @@
-﻿using MahApps.Metro.Controls;
+﻿using DynamicData;
+using MahApps.Metro.Controls;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -14,7 +16,9 @@ namespace Ui.Wpf.Common
     {
         [Reactive] public int MenuHeight { get; set; }
 
-        public ReactiveList<MenuItem> MenuItems { get; set; } = new ReactiveList<MenuItem>();
+        public SourceList<MenuItem> InternalMenuItems { get; set; } = new SourceList<MenuItem>();
+
+        [Reactive] public ReadOnlyObservableCollection<MenuItem> MenuItems { get; set; }
 
         private List<CommandItem> GlobalCommandItems;
         private Dictionary<Type, List<CommandItem>> VMCommandItems;
@@ -30,7 +34,17 @@ namespace Ui.Wpf.Common
             VMCommandItems = new Dictionary<Type, List<CommandItem>>();
             InstanceCommandItems = new Dictionary<IViewModel, List<CommandItem>>();
 
-            MenuItems.Changed.Subscribe(_ => MenuHeight = MenuItems.Count > 0 ? 30 : 0);
+            ReadOnlyObservableCollection<MenuItem> coll;
+            InternalMenuItems
+                        .Connect()
+                        .Bind(out coll)
+                        .Subscribe();
+
+            MenuItems = coll;
+
+            InternalMenuItems
+                .CountChanged
+                .Subscribe(_ => MenuHeight = MenuItems.Count > 0 ? 30 : 0);
 
             this.ObservableForProperty(w => w.SelectedView)
                 .Subscribe(v =>
@@ -134,14 +148,14 @@ namespace Ui.Wpf.Common
 
         private MenuItem GetMenu(string menuName)
         {
-            var m = MenuItems
+            var m = InternalMenuItems.Items
                 .Where(x => (string)x.Header == menuName)
                 .FirstOrDefault();
 
             if (m == null)
             {
                 m = new MenuItem { Header = menuName };
-                MenuItems.Add(m);
+                InternalMenuItems.Add(m);
             }
 
             return m;
