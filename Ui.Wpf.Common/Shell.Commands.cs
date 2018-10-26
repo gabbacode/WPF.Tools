@@ -73,6 +73,7 @@ namespace Ui.Wpf.Common
             CommandItem ci = new CommandItem
             {
                 Name = cmdName,
+                IsChecked = false,
                 Type = CommandType.Global,
                 Item = c,
                 Parent = m
@@ -101,6 +102,7 @@ namespace Ui.Wpf.Common
                 ci = new CommandItem
                 {
                     Name = cmdName,
+                    IsChecked = false,
                     Type = CommandType.VMType,
                     Item = c,
                     Parent = m
@@ -135,6 +137,7 @@ namespace Ui.Wpf.Common
                 ci = new CommandItem
                 {
                     Name = cmdName,
+                    IsChecked = false,
                     Type = CommandType.VMInstance,
                     Item = c,
                     Parent = m

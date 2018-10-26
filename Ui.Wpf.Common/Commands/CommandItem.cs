@@ -28,6 +28,7 @@ namespace Ui.Wpf.Common
     public class CommandItem : ReactiveObject
     {
         [Reactive] public string Name { get; set; }
+        [Reactive] public bool IsChecked { get; set; }
         public CommandType Type { get; set; }
         public MenuItem Item { get; set; }
         public MenuItem Parent { get; set; }
@@ -37,8 +38,11 @@ namespace Ui.Wpf.Common
         {
             this.WhenAnyValue(x => x.Name)
                 .Where(x => Item != null)
-                .Subscribe(x => 
-                Item.Header = x);
+                .Subscribe(x => Item.Header = x);
+
+            this.WhenAnyValue(x => x.IsChecked)
+                .Where(x => Item != null)
+                .Subscribe(x => Item.IsChecked = x);
         }
 
         private string ModToStr(ModifierKeys mk)
