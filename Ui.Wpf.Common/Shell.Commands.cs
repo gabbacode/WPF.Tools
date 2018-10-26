@@ -55,7 +55,7 @@ namespace Ui.Wpf.Common
                 });
         }
 
-        public CommandItem AddGlobalCommand(string menuName, string cmdName, string cmdFunc, IViewModel vm)
+        public CommandItem AddGlobalCommand(string menuName, string cmdName, string cmdFunc, IViewModel vm, bool addSeparator = false)
         {
             var m = GetMenu(menuName);
 
@@ -69,6 +69,9 @@ namespace Ui.Wpf.Common
             var c = new MenuItem { Header = cmdName, DataContext = vm };
             c.SetBinding(MenuItem.CommandProperty, new Binding(cmdFunc));
             m.Items.Add(c);
+
+            if (addSeparator)
+                m.Items.Add(new Separator());
 
             CommandItem ci = new CommandItem
             {
@@ -84,7 +87,7 @@ namespace Ui.Wpf.Common
             return ci;
         }
 
-        public CommandItem AddVMCommand(string menuName, string cmdName, string cmdFunc, IViewModel vm)
+        public CommandItem AddVMCommand(string menuName, string cmdName, string cmdFunc, IViewModel vm, bool addSeparator = false)
         {
             var m = GetMenu(menuName);
             var cmdList = VMCommandItems.GetOrCreate(vm.GetType());
@@ -98,6 +101,9 @@ namespace Ui.Wpf.Common
                 var c = new MenuItem { Header = cmdName, DataContext = vm };
                 c.SetBinding(MenuItem.CommandProperty, new Binding(cmdFunc));
                 m.Items.Add(c);
+
+                if (addSeparator)
+                    m.Items.Add(new Separator());
 
                 ci = new CommandItem
                 {
