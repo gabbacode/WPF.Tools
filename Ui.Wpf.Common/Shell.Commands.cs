@@ -34,13 +34,7 @@ namespace Ui.Wpf.Common
             VMCommandItems = new Dictionary<Type, List<CommandItem>>();
             InstanceCommandItems = new Dictionary<IViewModel, List<CommandItem>>();
 
-            ReadOnlyObservableCollection<MenuItem> coll;
-            InternalMenuItems
-                        .Connect()
-                        .Bind(out coll)
-                        .Subscribe();
-
-            MenuItems = coll;
+            MenuItems = InternalMenuItems.SpawnCollection();
 
             InternalMenuItems
                 .CountChanged
