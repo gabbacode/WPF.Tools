@@ -153,6 +153,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\CommandItem.cs" />
+    <Compile Include="Reactive\DynamicHelper.cs" />
     <Compile Include="IBootstraper.cs" />
     <Compile Include="IDockWindow.cs" />
     <Compile Include="IShell.cs" />
@@ -211,5 +212,5 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Fody.3.2.13\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.3.2.13\build\Fody.targets'))" />
-  </Target>  
+  </Target>
 </Project>
