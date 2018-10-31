@@ -25,19 +25,15 @@ namespace Ui.Wpf.Common
             UiShowOptions options = null)
             where TView : class, IView
         {
-            var layoutContent = FindLayoutByViewRequest(DocumentPane, viewRequest);
+            var layoutDocument = FindLayoutByViewRequest(DocumentPane, viewRequest);
 
-            if (layoutContent != null)
-            {
-                layoutContent.IsActive = true;
-            }
-            else
+            if (layoutDocument == null)
             {
                 var view = Container.Resolve<TView>();
                 if (options != null)
                     view.Configure(options);
 
-                var layoutDocument = new LayoutDocument
+                layoutDocument = new LayoutDocument
                 {
                     ContentId = viewRequest?.ViewId,
                     Content = view
@@ -52,8 +48,9 @@ namespace Ui.Wpf.Common
                 DocumentPane.Children.Add(layoutDocument);
 
                 InitializeView(view, viewRequest);
-                layoutDocument.IsActive = true;
             }
+
+            ActivateContent(layoutDocument, viewRequest);
         }
 
         public void ShowTool<TToolView>(
@@ -63,11 +60,7 @@ namespace Ui.Wpf.Common
         {
             var layoutAnchorable = FindLayoutByViewRequest(ToolsPane, viewRequest);
             
-            if (layoutAnchorable != null)
-            {
-                layoutAnchorable.IsActive = true;
-            }
-            else
+            if (layoutAnchorable == null)
             {
                 var view = Container.Resolve<TToolView>();
                 if (options != null)
@@ -89,8 +82,9 @@ namespace Ui.Wpf.Common
                 ToolsPane.Children.Add(layoutAnchorable);
 
                 InitializeView(view, viewRequest);
-                layoutAnchorable.IsActive = true;
             }
+
+            ActivateContent(layoutAnchorable, viewRequest);
         }
 
         public void ShowStartView<TStartWindow, TStartView>(
@@ -174,7 +168,17 @@ namespace Ui.Wpf.Common
             }
         }
 
-        private static void AddClosingByRequest<TView>(TView view, LayoutDocument layoutDocument)
+        private static void ActivateContent(LayoutContent layoutContent, ViewRequest viewRequest)
+        {
+            layoutContent.IsActive = true;
+            if (layoutContent.Content is IView view &&
+                view.ViewModel is IActivatableViewModel activatableViewModel)
+            {
+                activatableViewModel.Activate(viewRequest);
+            }
+        }
+
+        private static void AddClosingByRequest<TView>(TView view, LayoutContent layoutDocument)
             where TView : class, IView
         {
             if (view.ViewModel is ViewModelBase baseViewModel)

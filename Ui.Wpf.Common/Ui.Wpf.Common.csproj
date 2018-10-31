@@ -149,6 +149,7 @@
     <Compile Include="ShowOptions\UiShowStartWindowOptions.cs" />
     <Compile Include="UiStarter.cs" />
     <Compile Include="ShowOptions\UiShowOptions.cs" />
+    <Compile Include="ViewModels\IActivatableViewModel.cs" />
     <Compile Include="ViewModels\IInitializibleViewModel.cs" />
     <Compile Include="ViewModels\IViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
