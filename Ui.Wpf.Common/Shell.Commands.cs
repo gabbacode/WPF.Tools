@@ -1,4 +1,5 @@
 ﻿using DynamicData;
+using DynamicData.Binding;
 using MahApps.Metro.Controls;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -171,7 +172,8 @@ namespace Ui.Wpf.Common
                 Type = CommandType.Global,
                 CmdFunc = cmdFunc,
                 Parent = root.Root,
-                Separator = addSeparator
+                Separator = addSeparator,
+                Visible = true
             };
 
             Commands.Add(ci);
@@ -199,7 +201,8 @@ namespace Ui.Wpf.Common
                     Type = CommandType.VMType,
                     CmdFunc = cmdFunc,
                     Parent = root.Root,
-                    Separator = addSeparator
+                    Separator = addSeparator,
+                    Visible = true
                 };
 
                 Commands.Add(ci);
@@ -228,7 +231,8 @@ namespace Ui.Wpf.Common
                     IsChecked = false,
                     Type = CommandType.VMInstance,
                     CmdFunc = cmdFunc,
-                    Parent = root.Root
+                    Parent = root.Root,
+                    Visible = false
                 };
 
                 Commands.Add(ci);
