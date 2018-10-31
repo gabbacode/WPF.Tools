@@ -45,8 +45,6 @@ namespace Ui.Wpf.Common.ViewModels
 
             if (args.IsCanceled)
                 return;
-
-
         }
 
 
@@ -61,7 +59,7 @@ namespace Ui.Wpf.Common.ViewModels
 
         }
 
-        public void DisposeInternals()
+        protected virtual void DisposeInternals()
         {
             Disposables.Dispose();
         }
@@ -70,7 +68,7 @@ namespace Ui.Wpf.Common.ViewModels
 
         #endregion
 
-        internal CompositeDisposable Disposables { get; set; } = new CompositeDisposable();
+        protected internal CompositeDisposable Disposables { get; }  = new CompositeDisposable();
 
         protected IValidator validator;
 
@@ -82,18 +80,15 @@ namespace Ui.Wpf.Common.ViewModels
         {
             get
             {
-                if (validator != null)
-                {
-                    var results = validator.Validate(this);
-                    if (results != null && results.Errors.Any())
-                    {
-                        var errors = string.Join(Environment.NewLine,
-                            results.Errors.Select(x => x.ErrorMessage).ToArray());
-                        return errors;
-                    }
-                }
+                var results = validator?.Validate(this);
 
-                return string.Empty;
+                if (results == null || !results.Errors.Any())
+                    return string.Empty;
+
+                var errors = string.Join(Environment.NewLine,
+                    results.Errors.Select(x => x.ErrorMessage).ToArray());
+
+                return errors;
             }
         }
 
