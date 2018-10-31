@@ -33,8 +33,8 @@ namespace Ui.Wpf.Common
 
         void AttachDockingManager(DockingManager dockingManager);
 
-        CommandItem AddGlobalCommand(string menuName, string cmdName, string cmdFunc, IViewModel vm);
-        CommandItem AddVMCommand(string menuName, string cmdName, string cmdFunc, IViewModel vm);
+        CommandItem AddGlobalCommand(string menuName, string cmdName, string cmdFunc, IViewModel vm, bool addSeparator = false);
+        CommandItem AddVMCommand(string menuName, string cmdName, string cmdFunc, IViewModel vm, bool addSeparator = false);
         CommandItem AddInstanceCommand(string menuName, string cmdName, string cmdFunc, IViewModel vm);
     }
 }

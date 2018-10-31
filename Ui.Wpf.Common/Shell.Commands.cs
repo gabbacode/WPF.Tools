@@ -1,8 +1,10 @@
-﻿using MahApps.Metro.Controls;
+﻿using DynamicData;
+using MahApps.Metro.Controls;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -14,7 +16,9 @@ namespace Ui.Wpf.Common
     {
         [Reactive] public int MenuHeight { get; set; }
 
-        public ReactiveList<MenuItem> MenuItems { get; set; } = new ReactiveList<MenuItem>();
+        public SourceList<MenuItem> InternalMenuItems { get; set; } = new SourceList<MenuItem>();
+
+        [Reactive] public ReadOnlyObservableCollection<MenuItem> MenuItems { get; set; }
 
         private List<CommandItem> GlobalCommandItems;
         private Dictionary<Type, List<CommandItem>> VMCommandItems;
@@ -30,7 +34,11 @@ namespace Ui.Wpf.Common
             VMCommandItems = new Dictionary<Type, List<CommandItem>>();
             InstanceCommandItems = new Dictionary<IViewModel, List<CommandItem>>();
 
-            MenuItems.Changed.Subscribe(_ => MenuHeight = MenuItems.Count > 0 ? 30 : 0);
+            MenuItems = InternalMenuItems.SpawnCollection();
+
+            InternalMenuItems
+                .CountChanged
+                .Subscribe(_ => MenuHeight = MenuItems.Count > 0 ? 30 : 0);
 
             this.ObservableForProperty(w => w.SelectedView)
                 .Subscribe(v =>
@@ -41,7 +49,7 @@ namespace Ui.Wpf.Common
                 });
         }
 
-        public CommandItem AddGlobalCommand(string menuName, string cmdName, string cmdFunc, IViewModel vm)
+        public CommandItem AddGlobalCommand(string menuName, string cmdName, string cmdFunc, IViewModel vm, bool addSeparator = false)
         {
             var m = GetMenu(menuName);
 
@@ -56,9 +64,13 @@ namespace Ui.Wpf.Common
             c.SetBinding(MenuItem.CommandProperty, new Binding(cmdFunc));
             m.Items.Add(c);
 
+            if (addSeparator)
+                m.Items.Add(new Separator());
+
             CommandItem ci = new CommandItem
             {
                 Name = cmdName,
+                IsChecked = false,
                 Type = CommandType.Global,
                 Item = c,
                 Parent = m
@@ -69,7 +81,7 @@ namespace Ui.Wpf.Common
             return ci;
         }
 
-        public CommandItem AddVMCommand(string menuName, string cmdName, string cmdFunc, IViewModel vm)
+        public CommandItem AddVMCommand(string menuName, string cmdName, string cmdFunc, IViewModel vm, bool addSeparator = false)
         {
             var m = GetMenu(menuName);
             var cmdList = VMCommandItems.GetOrCreate(vm.GetType());
@@ -84,9 +96,13 @@ namespace Ui.Wpf.Common
                 c.SetBinding(MenuItem.CommandProperty, new Binding(cmdFunc));
                 m.Items.Add(c);
 
+                if (addSeparator)
+                    m.Items.Add(new Separator());
+
                 ci = new CommandItem
                 {
                     Name = cmdName,
+                    IsChecked = false,
                     Type = CommandType.VMType,
                     Item = c,
                     Parent = m
@@ -121,6 +137,7 @@ namespace Ui.Wpf.Common
                 ci = new CommandItem
                 {
                     Name = cmdName,
+                    IsChecked = false,
                     Type = CommandType.VMInstance,
                     Item = c,
                     Parent = m
@@ -134,14 +151,14 @@ namespace Ui.Wpf.Common
 
         private MenuItem GetMenu(string menuName)
         {
-            var m = MenuItems
+            var m = InternalMenuItems.Items
                 .Where(x => (string)x.Header == menuName)
                 .FirstOrDefault();
 
             if (m == null)
             {
                 m = new MenuItem { Header = menuName };
-                MenuItems.Add(m);
+                InternalMenuItems.Add(m);
             }
 
             return m;
