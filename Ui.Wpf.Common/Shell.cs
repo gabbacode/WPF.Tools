@@ -1,14 +1,14 @@
-using System;
-using System.Reactive.Linq;
-using System.Windows;
 using Autofac;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
+using System;
+using System.Linq;
+using System.Reactive.Linq;
+using System.Windows;
 using Ui.Wpf.Common.ShowOptions;
 using Ui.Wpf.Common.ViewModels;
 using Xceed.Wpf.AvalonDock;
 using Xceed.Wpf.AvalonDock.Layout;
-using System.Linq;
 
 namespace Ui.Wpf.Common
 {
@@ -25,24 +25,19 @@ namespace Ui.Wpf.Common
             UiShowOptions options = null)
             where TView : class, IView
         {
-            LayoutContent layoutContent = null;
-            if (viewRequest?.ViewId != null)
-            {
-                layoutContent = DocumentPane.Children.FirstOrDefault(x => x.ContentId == viewRequest.ViewId);
-            }
+            var layoutDocument = FindLayoutByViewRequest(DocumentPane, viewRequest);
 
-            if (layoutContent != null)
-            {
-                layoutContent.IsActive = true;
-            }
-            else
+            if (layoutDocument == null)
             {
                 var view = Container.Resolve<TView>();
                 if (options != null)
                     view.Configure(options);
 
-                var layoutDocument = new LayoutDocument { Content = view };
-                layoutDocument.ContentId = viewRequest?.ViewId;
+                layoutDocument = new LayoutDocument
+                {
+                    ContentId = viewRequest?.ViewId,
+                    Content = view
+                };
                 if (options != null)
                     layoutDocument.CanClose = options.CanClose;
 
@@ -52,17 +47,10 @@ namespace Ui.Wpf.Common
 
                 DocumentPane.Children.Add(layoutDocument);
 
-                if (view.ViewModel is ViewModelBase vmb)
-                {
-                    vmb.ViewId = viewRequest?.ViewId;
-                }
-                if (view.ViewModel is IInitializableViewModel initializibleViewModel)
-                {
-                    initializibleViewModel.Initialize(viewRequest);
-                }
-
-                layoutDocument.IsActive = true;
+                InitializeView(view, viewRequest);
             }
+
+            ActivateContent(layoutDocument, viewRequest);
         }
 
         public void ShowTool<TToolView>(
@@ -70,27 +58,33 @@ namespace Ui.Wpf.Common
             UiShowOptions options = null)
             where TToolView : class, IToolView
         {
-            var view = Container.Resolve<TToolView>();
-            if (options != null)
-                view.Configure(options);
-
-            var layoutAnchorable = new LayoutAnchorable
+            var layoutAnchorable = FindLayoutByViewRequest(ToolsPane, viewRequest);
+            
+            if (layoutAnchorable == null)
             {
-                CanAutoHide = false,
-                CanFloat = false,
-            };
-            view.ViewModel.CanClose = false;
-            view.ViewModel.CanHide = false;
+                var view = Container.Resolve<TToolView>();
+                if (options != null)
+                    view.Configure(options);
 
-            (view.ViewModel as IInitializableViewModel)?.Initialize(viewRequest);
+                layoutAnchorable = new LayoutAnchorable
+                {
+                    ContentId = viewRequest?.ViewId,
+                    Content = view,
+                    CanAutoHide = false,
+                    CanFloat = false,
+                };
+                view.ViewModel.CanClose = false;
+                view.ViewModel.CanHide = false;
 
+                AddTitleRefreshing(view, layoutAnchorable);
+                AddWindowBehaviour(view, layoutAnchorable);
 
-            AddTitleRefreshing(view, layoutAnchorable);
-            AddWindowBehaviour(view, layoutAnchorable);
+                ToolsPane.Children.Add(layoutAnchorable);
 
+                InitializeView(view, viewRequest);
+            }
 
-            layoutAnchorable.Content = view;
-            ToolsPane.Children.Add(layoutAnchorable);
+            ActivateContent(layoutAnchorable, viewRequest);
         }
 
         public void ShowStartView<TStartWindow, TStartView>(
@@ -154,7 +148,37 @@ namespace Ui.Wpf.Common
             ToolsPane.DockWidth = new GridLength(ToolPaneWidth.GetValueOrDefault(410));
         }
 
-        private static void AddClosingByRequest<TView>(TView view, LayoutDocument layoutDocument)
+        private static T FindLayoutByViewRequest<T>(LayoutGroup<T> layoutGroup, ViewRequest viewRequest)
+            where T : LayoutContent
+        {
+            return viewRequest?.ViewId != null
+                ? layoutGroup.Children.FirstOrDefault(x => x.ContentId == viewRequest.ViewId)
+                : null;
+        }
+
+        private static void InitializeView(IView view, ViewRequest viewRequest)
+        {
+            if (view.ViewModel is ViewModelBase vmb)
+            {
+                vmb.ViewId = viewRequest?.ViewId;
+            }
+            if (view.ViewModel is IInitializableViewModel initializibleViewModel)
+            {
+                initializibleViewModel.Initialize(viewRequest);
+            }
+        }
+
+        private static void ActivateContent(LayoutContent layoutContent, ViewRequest viewRequest)
+        {
+            layoutContent.IsActive = true;
+            if (layoutContent.Content is IView view &&
+                view.ViewModel is IActivatableViewModel activatableViewModel)
+            {
+                activatableViewModel.Activate(viewRequest);
+            }
+        }
+
+        private static void AddClosingByRequest<TView>(TView view, LayoutContent layoutDocument)
             where TView : class, IView
         {
             if (view.ViewModel is ViewModelBase baseViewModel)
