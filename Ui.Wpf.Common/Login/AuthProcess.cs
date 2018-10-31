@@ -8,9 +8,18 @@ namespace Ui.Wpf.Common
     {
         private const int LoginTryCount = 3;
 
-        public static async void Start(
+        public static void Start(
             Func<Task<LoginDialogData>> getAuthenticationData,
             Func<LoginDialogData, Task<bool>> authentication,
+            Action authenticationSuccess,
+            Action authenticationFail)
+        {
+            Start<LoginDialogData>(getAuthenticationData, authentication, authenticationSuccess, authenticationFail);
+        }
+
+        public static async void Start<T>(
+            Func<Task<T>> getAuthenticationData,
+            Func<T, Task<bool>> authentication,
             Action authenticationSuccess,
             Action authenticationFail)
         {
