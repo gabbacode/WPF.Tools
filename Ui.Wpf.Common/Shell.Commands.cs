@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Input;
 using Ui.Wpf.Common.ViewModels;
 
 namespace Ui.Wpf.Common
@@ -15,14 +16,10 @@ namespace Ui.Wpf.Common
     public partial class Shell
     {
         [Reactive] public int MenuHeight { get; set; }
-
-        public SourceList<MenuItem> InternalMenuItems { get; set; } = new SourceList<MenuItem>();
-
         [Reactive] public ReadOnlyObservableCollection<MenuItem> MenuItems { get; set; }
 
-        private List<CommandItem> GlobalCommandItems;
-        private Dictionary<Type, List<CommandItem>> VMCommandItems;
-        private Dictionary<IViewModel, List<CommandItem>> InstanceCommandItems;
+        private SourceList<RootMenu> Roots;
+        private SourceList<CommandItem> Commands;
 
         private IView ActualCommandView;
 
@@ -30,13 +27,19 @@ namespace Ui.Wpf.Common
         {
             MenuHeight = 0;
             ActualCommandView = null;
-            GlobalCommandItems = new List<CommandItem>();
-            VMCommandItems = new Dictionary<Type, List<CommandItem>>();
-            InstanceCommandItems = new Dictionary<IViewModel, List<CommandItem>>();
+            Roots = new SourceList<RootMenu>();
+            Commands = new SourceList<CommandItem>();
 
-            MenuItems = InternalMenuItems.SpawnCollection();
+            Roots
+                .Connect()
+                .AutoRefresh()
+                .Transform(x => x.Root)
+                .Bind(out ReadOnlyObservableCollection<MenuItem> temp)
+                .Subscribe();
 
-            InternalMenuItems
+            MenuItems = temp;
+
+            Commands
                 .CountChanged
                 .Subscribe(_ => MenuHeight = MenuItems.Count > 0 ? 30 : 0);
 
@@ -49,66 +52,157 @@ namespace Ui.Wpf.Common
                 });
         }
 
+        private RootMenu CheckRoot(string menuName)
+        {
+            var root = Roots.Items.Where(x => x.Name == menuName).FirstOrDefault();
+            if (root != null)
+                return root;
+
+            root = new RootMenu { Name = menuName, Root = new MenuItem { Header = menuName } };
+            Roots.Add(root);
+
+            root.Observable = Commands
+                .Connect()
+                .AutoRefresh()
+                .Filter(x => x.MenuName == menuName && x.Visible);
+
+            root.Observable
+                .WhereReasonsAre(ListChangeReason.Add)
+                .Subscribe(x => x
+                        .Select(q => q.Item.Current)
+                        .ToList()
+                        .ForEach(cmd =>
+                        {
+                            var mi = PrepareMenuItem(cmd);
+                            cmd.Item = mi;
+                            root.Root.Items.Add(mi);
+
+                            if (cmd.Separator)
+                                root.Root.Items.Add(new Separator());
+                        }));
+
+            root.Observable
+                .WhereReasonsAre(ListChangeReason.Remove)
+                .Subscribe(x => x
+                        .Select(q => q.Item.Current)
+                        .ToList()
+                        .ForEach(cmd => root.Root.Items.Remove(cmd.Item)));
+
+            root.Observable
+                .WhenAnyPropertyChanged("KeyBind")
+                .Subscribe(cmd => RebindKeys(cmd));
+
+            return root;
+        }
+
+        private void RebindKeys(CommandItem cmd)
+        {
+            cmd.KeyBind.Command = cmd.Item.Command;
+
+            var wnd = cmd.Parent.FindParent<MetroWindow>();
+            wnd.InputBindings.SkippedAdd(cmd.KeyBind);
+
+            cmd.Item.InputGestureText =
+                $"{ModToStr(cmd.KeyBind.Modifiers)}{cmd.KeyBind.Key.ToString()}";
+        }
+
+        private MenuItem PrepareMenuItem(CommandItem ci)
+        {
+            var mi = new MenuItem
+            {
+                Header = ci.Name,
+                DataContext = ci.VM,
+                IsChecked = ci.IsChecked
+            };
+
+            mi.SetBinding(MenuItem.CommandProperty, new Binding(ci.CmdFunc));
+
+            if (ci.Type == CommandType.VMInstance)
+            {
+                mi.SetBinding(MenuItem.CommandParameterProperty,
+                  new Binding(".")
+                  { RelativeSource = new RelativeSource(RelativeSourceMode.Self) });
+            }
+
+            return mi;
+        }
+
+        private string ModToStr(ModifierKeys mk)
+        {
+            switch (mk)
+            {
+                case ModifierKeys.None:
+                    return "";
+                case ModifierKeys.Alt:
+                    return "Alt+";
+                case ModifierKeys.Control:
+                    return "Ctrl+";
+                case ModifierKeys.Shift:
+                    return "Shift";
+                case ModifierKeys.Control | ModifierKeys.Shift:
+                    return "Ctrl+Shift+";
+                case ModifierKeys.Alt | ModifierKeys.Shift:
+                    return "Shift+Alt+";
+                case ModifierKeys.Windows:
+                    return "Wnd+";
+                default:
+                    throw new NotImplementedException();
+            }
+        }
+
         public CommandItem AddGlobalCommand(string menuName, string cmdName, string cmdFunc, IViewModel vm, bool addSeparator = false)
         {
-            var m = GetMenu(menuName);
+            var root = CheckRoot(menuName);
 
-            var exsts = GlobalCommandItems
-                .Where(x => x.Parent == m && (string)x.Item.Header == cmdName)
+            var exsts = Commands.Items
+                .Where(x => x.Parent == root.Root && x.Name == cmdName)
                 .Count();
 
             if (exsts > 0)
                 throw new Exception("Command already exists");
 
-            var c = new MenuItem { Header = cmdName, DataContext = vm };
-            c.SetBinding(MenuItem.CommandProperty, new Binding(cmdFunc));
-            m.Items.Add(c);
-
-            if (addSeparator)
-                m.Items.Add(new Separator());
-
             CommandItem ci = new CommandItem
             {
+                MenuName = menuName,
+                VM = vm,
+                VMType = vm.GetType(),
                 Name = cmdName,
                 IsChecked = false,
                 Type = CommandType.Global,
-                Item = c,
-                Parent = m
+                CmdFunc = cmdFunc,
+                Parent = root.Root,
+                Separator = addSeparator
             };
 
-            GlobalCommandItems.Add(ci);
-
+            Commands.Add(ci);
             return ci;
         }
 
         public CommandItem AddVMCommand(string menuName, string cmdName, string cmdFunc, IViewModel vm, bool addSeparator = false)
         {
-            var m = GetMenu(menuName);
-            var cmdList = VMCommandItems.GetOrCreate(vm.GetType());
+            var root = CheckRoot(menuName);
 
-            var ci = cmdList
-                .Where(x => x.Parent == m && (string)x.Item.Header == cmdName)
+            var ci = Commands.Items
+                .Where(x => x.Parent == root.Root && x.Name == cmdName
+                    && x.Type == CommandType.VMType)
                 .FirstOrDefault();
 
             if (ci == null)
             {
-                var c = new MenuItem { Header = cmdName, DataContext = vm };
-                c.SetBinding(MenuItem.CommandProperty, new Binding(cmdFunc));
-                m.Items.Add(c);
-
-                if (addSeparator)
-                    m.Items.Add(new Separator());
-
                 ci = new CommandItem
                 {
+                    MenuName = menuName,
+                    VM = vm,
+                    VMType = vm.GetType(),
                     Name = cmdName,
                     IsChecked = false,
                     Type = CommandType.VMType,
-                    Item = c,
-                    Parent = m
+                    CmdFunc = cmdFunc,
+                    Parent = root.Root,
+                    Separator = addSeparator
                 };
 
-                cmdList.Add(ci);
+                Commands.Add(ci);
             }
 
             return ci;
@@ -116,52 +210,31 @@ namespace Ui.Wpf.Common
 
         public CommandItem AddInstanceCommand(string menuName, string cmdName, string cmdFunc, IViewModel vm)
         {
-            var m = GetMenu(menuName);
-            var cmdList = InstanceCommandItems.GetOrCreate(vm);
+            var root = CheckRoot(menuName);
 
-            var ci = cmdList
-                .Where(x => x.Parent == m && (string)x.Item.Header == cmdName)
+            var ci = Commands.Items
+                .Where(x => x.Parent == root.Root && x.Name == cmdName
+                    && x.VM == vm && x.Type == CommandType.VMInstance)
                 .FirstOrDefault();
 
             if (ci == null)
             {
-                var c = new MenuItem { Header = cmdName, DataContext = vm };
-                c.SetBinding(MenuItem.CommandProperty, new Binding(cmdFunc));
-
-                c.SetBinding(MenuItem.CommandParameterProperty,
-                    new Binding(".")
-                    { RelativeSource = new RelativeSource(RelativeSourceMode.Self) });
-
-                m.Items.Add(c);
-
                 ci = new CommandItem
                 {
+                    MenuName = menuName,
+                    VM = vm,
+                    VMType = vm.GetType(),
                     Name = cmdName,
                     IsChecked = false,
                     Type = CommandType.VMInstance,
-                    Item = c,
-                    Parent = m
+                    CmdFunc = cmdFunc,
+                    Parent = root.Root
                 };
 
-                cmdList.Add(ci);
+                Commands.Add(ci);
             }
 
             return ci;
-        }
-
-        private MenuItem GetMenu(string menuName)
-        {
-            var m = InternalMenuItems.Items
-                .Where(x => (string)x.Header == menuName)
-                .FirstOrDefault();
-
-            if (m == null)
-            {
-                m = new MenuItem { Header = menuName };
-                InternalMenuItems.Add(m);
-            }
-
-            return m;
         }
 
         private void DeactivateVMCommands()
@@ -170,47 +243,45 @@ namespace Ui.Wpf.Common
                 return;
 
             var vm = ActualCommandView.ViewModel;
-            var vmTyp = vm.GetType();
-            var cmdList = VMCommandItems.GetOrCreate(vmTyp);
-            foreach (var ci in cmdList)
-            {
-                ci.Item.DataContext = null;
-                ci.Item.IsEnabled = false;
 
-                if (ci.KeyBind != null)
+            Commands.Items
+                .Where(cmd => cmd.Type == CommandType.VMType && cmd.VMType == vm.GetType())
+                .ToList()
+                .ForEach(cmd =>
                 {
-                    var wnd = ci.Parent.FindParent<MetroWindow>();
-                    wnd.InputBindings.MatchedRemove(ci.KeyBind);
-                }
-            }
+                    cmd.Item.DataContext = null;
+                    cmd.Item.IsEnabled = false;
 
-            cmdList = InstanceCommandItems.GetOrCreate(vm);
-            foreach (var ci in cmdList)
-                ci.Parent.Items.Remove(ci.Item);
+                    var wnd = cmd.Parent.FindParent<MetroWindow>();
+                    wnd.InputBindings.MatchedRemove(cmd.KeyBind);
+                });
+
+            Commands.Items
+                .Where(cmd => cmd.Type == CommandType.VMInstance && cmd.VM == vm)
+                .ToList()
+                .ForEach(cmd => cmd.Visible = false);
         }
 
         private void ActivateVMCommands()
         {
             var vm = ActualCommandView.ViewModel;
-            var vmTyp = vm.GetType();
-            var cmdList = VMCommandItems.GetOrCreate(vmTyp);
-            foreach (var ci in cmdList)
-            {
-                ci.Item.DataContext = vm;
-                ci.Item.IsEnabled = true;
 
-                if (ci.KeyBind != null)
+            Commands.Items
+                .Where(cmd => cmd.Type == CommandType.VMType && cmd.VMType == vm.GetType())
+                .ToList()
+                .ForEach(cmd =>
                 {
-                    ci.KeyBind.Command = ci.Item.Command;
+                    cmd.Item.DataContext = vm;
+                    cmd.Item.IsEnabled = true;
 
-                    var wnd = ci.Parent.FindParent<MetroWindow>();
-                    wnd.InputBindings.SkippedAdd(ci.KeyBind);
-                }
-            }
+                    RebindKeys(cmd);
+                });
 
-            cmdList = InstanceCommandItems.GetOrCreate(vm);
-            foreach (var ci in cmdList)
-                ci.Parent.Items.Add(ci.Item);
+            Commands.Items
+                .Where(cmd => cmd.Type == CommandType.VMInstance && cmd.VM == vm &&
+                    !cmd.Parent.Items.Contains(cmd.Item))
+                .ToList()
+                .ForEach(cmd => cmd.Visible = true);
         }
     }//end of class
 }

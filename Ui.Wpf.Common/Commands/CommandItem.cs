@@ -1,8 +1,10 @@
-﻿using MahApps.Metro.Controls;
+﻿using DynamicData;
+using MahApps.Metro.Controls;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Text;
@@ -15,6 +17,14 @@ using Ui.Wpf.Common.ViewModels;
 
 namespace Ui.Wpf.Common
 {
+    public class RootMenu : ReactiveObject
+    {
+        public string Name { get; set; }
+        public MenuItem Root { get; set; }
+
+        public IObservable<IChangeSet<CommandItem>> Observable { get; set; }
+    }
+
     public enum CommandType
     {
         // single cmd, always visible
@@ -27,15 +37,24 @@ namespace Ui.Wpf.Common
 
     public class CommandItem : ReactiveObject
     {
+        [Reactive] public string MenuName { get; set; }
+        [Reactive] public IViewModel VM { get; set; }
+        [Reactive] public Type VMType { get; set; }
         [Reactive] public string Name { get; set; }
         [Reactive] public bool IsChecked { get; set; }
+        [Reactive] public string CmdFunc { get; set; }
         public CommandType Type { get; set; }
         public MenuItem Item { get; set; }
         public MenuItem Parent { get; set; }
-        public KeyBinding KeyBind { get; set; }
+        [Reactive] public KeyBinding KeyBind { get; set; }
+        [Reactive] public bool Visible { get; set; }
+        [Reactive] public bool Separator { get; set; }
 
         public CommandItem()
         {
+            KeyBind = new KeyBinding();
+            Visible = true;
+
             this.WhenAnyValue(x => x.Name)
                 .Where(x => Item != null)
                 .Subscribe(x => Item.Header = x);
@@ -45,42 +64,13 @@ namespace Ui.Wpf.Common
                 .Subscribe(x => Item.IsChecked = x);
         }
 
-        private string ModToStr(ModifierKeys mk)
-        {
-            switch (mk)
-            {
-                case ModifierKeys.None:
-                    return "";
-                case ModifierKeys.Alt:
-                    return "Alt+";
-                case ModifierKeys.Control:
-                    return "Ctrl+";
-                case ModifierKeys.Shift:
-                    return "Shift";
-                case ModifierKeys.Control | ModifierKeys.Shift:
-                    return "Ctrl+Shift+";
-                case ModifierKeys.Alt | ModifierKeys.Shift:
-                    return "Shift+Alt+";
-                case ModifierKeys.Windows:
-                    return "Wnd+";
-                default:
-                    throw new NotImplementedException();
-            }
-        }
-
         public CommandItem SetHotKey(ModifierKeys mk, Key ky)
         {
             KeyBind = new KeyBinding
             {
                 Key = ky,
-                Modifiers = mk,
-                Command = Item.Command
+                Modifiers = mk
             };
-
-            var wnd = Parent.FindParent<MetroWindow>();
-            wnd.InputBindings.SkippedAdd(KeyBind);
-
-            Item.InputGestureText = $"{ModToStr(mk)}{ky.ToString()}";
 
             return this;
         }
