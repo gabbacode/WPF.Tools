@@ -36,5 +36,6 @@ namespace Ui.Wpf.Common
         CommandItem AddGlobalCommand(string menuName, string cmdName, string cmdFunc, IViewModel vm, bool addSeparator = false);
         CommandItem AddVMCommand(string menuName, string cmdName, string cmdFunc, IViewModel vm, bool addSeparator = false);
         CommandItem AddInstanceCommand(string menuName, string cmdName, string cmdFunc, IViewModel vm);
+        void RemoveCommand(CommandItem ci);
     }
 }

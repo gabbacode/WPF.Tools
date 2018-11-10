@@ -241,6 +241,15 @@ namespace Ui.Wpf.Common
             return ci;
         }
 
+        public void RemoveCommand(CommandItem ci)
+        {
+            if (!Commands.Items.Contains(ci))
+                throw new Exception("CommandItem not found");
+
+            ci.Parent.Items.Remove(ci.Item);
+            Commands.Remove(ci);
+        }
+
         private void DeactivateVMCommands()
         {
             if (ActualCommandView == null)
