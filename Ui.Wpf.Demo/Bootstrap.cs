@@ -1,5 +1,7 @@
 ﻿using Autofac;
 using Ui.Wpf.Common;
+using Ui.Wpf.Demo.ViewModels;
+using Ui.Wpf.Demo.Views;
 
 namespace Ui.Wpf.Demo
 {
@@ -11,6 +13,12 @@ namespace Ui.Wpf.Demo
 
             builder.RegisterType<Shell>().As<IShell>().SingleInstance();
             builder.RegisterType<MainWindow>().As<IDockWindow>().SingleInstance();
+
+            builder.RegisterType<ToolsView>();
+            builder.RegisterType<ToolsViewModel>();
+
+            builder.RegisterType<MainView>();
+            builder.RegisterType<MainViewModel>();
 
             var container = builder.Build();
 

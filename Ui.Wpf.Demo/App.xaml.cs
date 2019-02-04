@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using Ui.Wpf.Common;
 using Ui.Wpf.Common.ShowOptions;
+using Ui.Wpf.Demo.Views;
 
 namespace Ui.Wpf.Demo
 {
@@ -22,7 +23,7 @@ namespace Ui.Wpf.Demo
                 }
             );
 
-            //shell.ShowTool<ToolsView>(new ViewRequest("Tools"), new UiShowOptions { Title = "Tools" });
+            shell.ShowTool<ToolsView>(new ViewRequest("Tools"), new UiShowOptions {Title = "Tools"});
         }
     }
 }
