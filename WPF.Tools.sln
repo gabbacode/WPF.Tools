@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ui.Wpf.KanbanControl.Tests"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{57F48F52-C087-4F23-84AB-62BC54C3D285}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ui.Wpf.Demo", "Ui.Wpf.Demo\Ui.Wpf.Demo.csproj", "{274F7DCF-D522-444A-AFAD-FCFBBE4E8F51}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,6 +31,10 @@ Global
 		{7FF04819-5DE0-4A2C-86CB-850A930897E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7FF04819-5DE0-4A2C-86CB-850A930897E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7FF04819-5DE0-4A2C-86CB-850A930897E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{274F7DCF-D522-444A-AFAD-FCFBBE4E8F51}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{274F7DCF-D522-444A-AFAD-FCFBBE4E8F51}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{274F7DCF-D522-444A-AFAD-FCFBBE4E8F51}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{274F7DCF-D522-444A-AFAD-FCFBBE4E8F51}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
