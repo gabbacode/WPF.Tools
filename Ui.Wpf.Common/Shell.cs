@@ -1,15 +1,18 @@
 using Autofac;
+using MahApps.Metro.Controls;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
+using System.ComponentModel;
 using System.Linq;
+using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Windows;
-using MahApps.Metro.Controls;
 using Ui.Wpf.Common.ShowOptions;
 using Ui.Wpf.Common.ViewModels;
 using Xceed.Wpf.AvalonDock;
 using Xceed.Wpf.AvalonDock.Layout;
+using IContainer = Autofac.IContainer;
 
 namespace Ui.Wpf.Common
 {
@@ -60,7 +63,7 @@ namespace Ui.Wpf.Common
             where TToolView : class, IToolView
         {
             var layoutAnchorable = FindLayoutByViewRequest(ToolsPane, viewRequest);
-            
+
             if (layoutAnchorable == null)
             {
                 var view = Container.Resolve<TToolView>();
@@ -201,6 +204,7 @@ namespace Ui.Wpf.Common
             {
                 vmb.ViewId = viewRequest?.ViewId;
             }
+
             if (view.ViewModel is IInitializableViewModel initializibleViewModel)
             {
                 initializibleViewModel.Initialize(viewRequest);
@@ -220,40 +224,38 @@ namespace Ui.Wpf.Common
         private static void AddClosingByRequest<TView>(TView view, LayoutContent layoutDocument)
             where TView : class, IView
         {
-            if (view.ViewModel is ViewModelBase baseViewModel)
-            {
-                var closeQuery = Observable.FromEventPattern<ViewModelCloseQueryArgs>(
+            if (!(view.ViewModel is ViewModelBase baseViewModel))
+                return;
+
+            Observable
+                .FromEventPattern<ViewModelCloseQueryArgs>(
                     x => baseViewModel.CloseQuery += x,
-                    x => baseViewModel.CloseQuery -= x);
+                    x => baseViewModel.CloseQuery -= x)
+                .Subscribe(x => { layoutDocument.Close(); })
+                .DisposeWith(baseViewModel.Disposables);
 
-                var subscription = closeQuery.Subscribe(x => { layoutDocument.Close(); });
-
-
-                layoutDocument.Closing += (s, e) =>
+            Observable
+                .FromEventPattern<CancelEventArgs>(
+                    x => layoutDocument.Closing += x,
+                    x => layoutDocument.Closing -= x)
+                .Subscribe(x =>
                 {
-                    ViewModelCloseQueryArgs vcq = new ViewModelCloseQueryArgs { IsCanceled = false };
+                    var vcq = new ViewModelCloseQueryArgs {IsCanceled = false};
                     baseViewModel.Closing(vcq);
 
                     if (vcq.IsCanceled)
                     {
-                       e.Cancel = true;
+                        x.EventArgs.Cancel = true;
                     }
-                       
-                };
+                })
+                .DisposeWith(baseViewModel.Disposables);
 
-
-                layoutDocument.Closed += (s, e) =>
-                {
-                    try
-                    {
-                       baseViewModel.Closed(new ViewModelCloseQueryArgs { IsCanceled = false });
-                    }
-                    finally
-                    {
-                        subscription.Dispose();
-                    }
-                };
-            }
+            Observable
+                .FromEventPattern(
+                    x => layoutDocument.Closed += x,
+                    x => layoutDocument.Closed -= x)
+                .Subscribe(_ => baseViewModel.Closed(new ViewModelCloseQueryArgs {IsCanceled = false}))
+                .DisposeWith(baseViewModel.Disposables);
         }
 
         private static void AddTitleRefreshing<TView>(TView view, LayoutContent layoutDocument)
@@ -263,32 +265,36 @@ namespace Ui.Wpf.Common
                 .WhenAnyValue(vm => vm.Title)
                 .Subscribe(x => layoutDocument.Title = x);
 
-            layoutDocument.Closed += (s, e) => titleRefreshSubsription.Dispose();
+            Observable
+                .FromEventPattern(
+                    x => layoutDocument.Closed += x,
+                    x => layoutDocument.Closed -= x)
+                .Take(1)
+                .Subscribe(_ => titleRefreshSubsription.Dispose());
         }
 
         private static void AddWindowBehaviour<TView>(TView view, LayoutContent layoutContent)
             where TView : class, IView
         {
+            if (!(view.ViewModel is ViewModelBase baseViewModel))
+                return;
 
-            if (view.ViewModel is ViewModelBase baseViewModel)
+            baseViewModel
+                .WhenAnyValue(x => x.IsEnabled)
+                .Subscribe(x => layoutContent.IsEnabled = x)
+                .DisposeWith(baseViewModel.Disposables);
+
+            baseViewModel
+                .WhenAnyValue(x => x.CanClose)
+                .Subscribe(x => layoutContent.CanClose = x)
+                .DisposeWith(baseViewModel.Disposables);
+
+            if (layoutContent is LayoutAnchorable layoutAnchorable)
             {
-                baseViewModel.Disposables.Add(
-                    baseViewModel
-                        .WhenAnyValue(x => x.IsEnabled)
-                        .Subscribe(x => layoutContent.IsEnabled = x));
-
-                baseViewModel.Disposables.Add(
-                    baseViewModel
-                        .WhenAnyValue(x => x.CanClose)
-                        .Subscribe(x => layoutContent.CanClose = x));
-
-                if (layoutContent is LayoutAnchorable layoutAnchorable)
-                {
-                    baseViewModel.Disposables.Add(
-                        baseViewModel
-                            .WhenAnyValue(x => x.CanHide)
-                            .Subscribe(x => layoutAnchorable.CanHide = x));
-                }
+                baseViewModel
+                    .WhenAnyValue(x => x.CanHide)
+                    .Subscribe(x => layoutAnchorable.CanHide = x)
+                    .DisposeWith(baseViewModel.Disposables);
             }
         }
 
