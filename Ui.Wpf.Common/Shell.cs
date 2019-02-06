@@ -5,6 +5,7 @@ using System;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Windows;
+using MahApps.Metro.Controls;
 using Ui.Wpf.Common.ShowOptions;
 using Ui.Wpf.Common.ViewModels;
 using Xceed.Wpf.AvalonDock;
@@ -87,6 +88,39 @@ namespace Ui.Wpf.Common
             ActivateContent(layoutAnchorable, viewRequest);
         }
 
+        public void ShowFlyoutView<TView>(
+            ViewRequest viewRequest = null,
+            UiShowFlyoutOptions options = null)
+            where TView : class, IView
+        {
+            var view = Container.Resolve<TView>();
+            if (options != null)
+                view.Configure(options);
+
+            options = options ?? new UiShowFlyoutOptions();
+
+            FlyoutsControl.Items.Add(new Flyout
+            {
+                Position = options.Position,
+                IsModal = options.IsModal,
+                CloseButtonVisibility =
+                    options.CanClose
+                        ? Visibility.Visible
+                        : Visibility.Collapsed,
+                IsPinned = options.IsPinned,
+                CloseButtonIsCancel = options.CloseButtonIsCancel,
+                CloseCommand = options.CloseCommand,
+                CloseCommandParameter = options.CloseCommandParameter,
+                Width = options.Width ?? double.NaN,
+                Height = options.Height ?? double.NaN,
+                Header = options.Title,
+                Content = view,
+                IsOpen = true
+            });
+
+            InitializeView(view, viewRequest);
+        }
+
         public void ShowStartView<TStartWindow, TStartView>(
             UiShowStartWindowOptions options = null)
             where TStartWindow : class
@@ -146,6 +180,11 @@ namespace Ui.Wpf.Common
             ToolsPane = new LayoutAnchorablePane();
             layoutRoot.RootPanel.Children.Insert(0, ToolsPane);
             ToolsPane.DockWidth = new GridLength(ToolPaneWidth.GetValueOrDefault(410));
+        }
+
+        public void AttachFlyoutsControl(FlyoutsControl flyoutsControl)
+        {
+            FlyoutsControl = flyoutsControl;
         }
 
         private static T FindLayoutByViewRequest<T>(LayoutGroup<T> layoutGroup, ViewRequest viewRequest)
@@ -256,6 +295,7 @@ namespace Ui.Wpf.Common
 
         //TODO replace to abstract manager
         private DockingManager DockingManager { get; set; }
+        private FlyoutsControl FlyoutsControl { get; set; }
 
         protected LayoutDocumentPane DocumentPane { get; set; }
 

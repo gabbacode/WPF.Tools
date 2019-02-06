@@ -24,5 +24,9 @@
             ActiveContent="{Binding SelectedView, Mode=TwoWay}">
         </dock:DockingManager>
     </Grid>
+
+    <сontrols:MetroWindow.Flyouts>
+        <сontrols:FlyoutsControl />
+    </сontrols:MetroWindow.Flyouts>
 </сontrols:MetroWindow>
                                                       
