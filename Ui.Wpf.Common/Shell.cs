@@ -104,20 +104,20 @@ namespace Ui.Wpf.Common
 
             var flyout = new Flyout
             {
-                Position = options.Position,
                 IsModal = options.IsModal,
-                CloseButtonVisibility =
-                    options.CanClose
-                        ? Visibility.Visible
-                        : Visibility.Collapsed,
-                IsPinned = options.IsPinned,
+                Position = options.Position,
                 Theme = options.Theme,
+                ExternalCloseButton = options.ExternalCloseButton,
+                IsPinned = options.IsPinned,
                 CloseButtonIsCancel = options.CloseButtonIsCancel,
                 CloseCommand = options.CloseCommand,
                 CloseCommandParameter = options.CloseCommandParameter,
+                AnimateOpacity = options.AnimateOpacity,
+                AreAnimationsEnabled = options.AreAnimationsEnabled,
+                IsAutoCloseEnabled = options.IsAutoCloseEnabled,
+                AutoCloseInterval = options.AutoCloseInterval,
                 Width = options.Width ?? double.NaN,
                 Height = options.Height ?? double.NaN,
-                Header = options.Title,
                 Content = view,
                 IsOpen = true
             };
@@ -133,20 +133,33 @@ namespace Ui.Wpf.Common
                     .DisposeWith(vm.Disposables);
             }
 
-            var titleRefreshSubsription = view.ViewModel
+            var disposables = new CompositeDisposable();
+            view.ViewModel
                 .WhenAnyValue(x => x.Title)
-                .Subscribe(x => flyout.Header = x);
+                .Subscribe(x =>
+                {
+                    flyout.Header = x;
+                    flyout.TitleVisibility =
+                        !string.IsNullOrEmpty(x)
+                            ? Visibility.Visible
+                            : Visibility.Collapsed;
+                })
+                .DisposeWith(disposables);
+            view.ViewModel
+                .WhenAnyValue(x => x.CanClose)
+                .Subscribe(x => flyout.CloseButtonVisibility = x ? Visibility.Visible : Visibility.Collapsed)
+                .DisposeWith(disposables);
 
             Observable
                 .FromEventPattern<RoutedEventHandler, RoutedEventArgs>(
                     x => flyout.ClosingFinished += x,
                     x => flyout.ClosingFinished -= x)
-                .Select(x => (Flyout)x.Sender)
+                .Select(x => (Flyout) x.Sender)
                 .Take(1)
                 .Subscribe(x =>
                 {
+                    disposables.Dispose();
                     vm?.Closed(new ViewModelCloseQueryArgs());
-                    titleRefreshSubsription.Dispose();
                     x.Content = null;
                     FlyoutsControl.Items.Remove(x);
                 });

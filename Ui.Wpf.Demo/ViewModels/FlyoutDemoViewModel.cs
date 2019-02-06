@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Disposables;
+using System.Windows.Input;
 using Ui.Wpf.Common;
 using Ui.Wpf.Common.ShowOptions;
 using Ui.Wpf.Common.ViewModels;
@@ -21,6 +22,9 @@ namespace Ui.Wpf.Demo.ViewModels
 
         public FlyoutTheme[] FlyoutThemeSource { get; set; } =
             Enum.GetValues(typeof(FlyoutTheme)).Cast<FlyoutTheme>().ToArray();
+
+        public MouseButton[] ExternalCloseButtonSource { get; set; } =
+            Enum.GetValues(typeof(MouseButton)).Cast<MouseButton>().ToArray();
 
         public int FlyoutWidth { get; set; }
         public bool FlyoutHasWidth { get; set; }

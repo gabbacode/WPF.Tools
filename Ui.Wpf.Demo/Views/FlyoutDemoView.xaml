@@ -18,10 +18,9 @@
                      mah:TextBoxHelper.UseFloatingWatermark="True"
                      mah:TextBoxHelper.Watermark="Title"
                      Text="{Binding Options.Title}" />
-            <CheckBox Margin="0 5 0 0" Content="CanClose" IsChecked="{Binding Options.CanClose}" />
-            <CheckBox Margin="0 5 0 0" Content="Modal" IsChecked="{Binding Options.IsModal}" />
-            <CheckBox Margin="0 5 0 0" Content="Pinned" IsChecked="{Binding Options.IsPinned}" />
-            <CheckBox Margin="0 5 0 0" Content="CloseButtonIsCancel" IsChecked="{Binding Options.CloseButtonIsCancel}" />
+            <CheckBox Margin="0 5 0 0"
+                      Content="Modal"
+                      IsChecked="{Binding Options.IsModal}" />
             <ComboBox Margin="0 5 0 0"
                       mah:TextBoxHelper.UseFloatingWatermark="True"
                       mah:TextBoxHelper.Watermark="Position"
@@ -32,12 +31,43 @@
                       mah:TextBoxHelper.Watermark="Theme"
                       SelectedItem="{Binding Options.Theme}"
                       ItemsSource="{Binding FlyoutThemeSource, Mode=OneTime}" />
-            <CheckBox Margin="0 5 0 0" IsChecked="{Binding FlyoutHasWidth}" HorizontalContentAlignment="Stretch">
+            <CheckBox Margin="0 5 0 0"
+                      Content="CanClose"
+                      IsChecked="{Binding Options.CanClose}" />
+            <ComboBox Margin="0 5 0 0"
+                      mah:TextBoxHelper.UseFloatingWatermark="True"
+                      mah:TextBoxHelper.Watermark="ExternalCloseButton"
+                      SelectedItem="{Binding Options.ExternalCloseButton}"
+                      ItemsSource="{Binding ExternalCloseButtonSource, Mode=OneTime}" />
+            <CheckBox Margin="0 5 0 0"
+                      Content="Pinned"
+                      IsChecked="{Binding Options.IsPinned}" />
+            <CheckBox Margin="0 5 0 0"
+                      Content="CloseButtonIsCancel"
+                      IsChecked="{Binding Options.CloseButtonIsCancel}" />
+            <CheckBox Margin="0 5 0 0"
+                      Content="AnimateOpacity"
+                      IsChecked="{Binding Options.AnimateOpacity}" />
+            <CheckBox Margin="0 5 0 0"
+                      Content="AreAnimationsEnabled"
+                      IsChecked="{Binding Options.AreAnimationsEnabled}" />
+            <CheckBox Margin="0 5 0 0"
+                      Content="IsAutoCloseEnabled"
+                      IsChecked="{Binding Options.IsAutoCloseEnabled}" />
+            <mah:NumericUpDown Margin="0 5 0 0"
+                               mah:TextBoxHelper.UseFloatingWatermark="True"
+                               mah:TextBoxHelper.Watermark="AutoCloseInterval"
+                               Value="{Binding Options.AutoCloseInterval}" />
+            <CheckBox Margin="0 5 0 0"
+                      IsChecked="{Binding FlyoutHasWidth}"
+                      HorizontalContentAlignment="Stretch">
                 <mah:NumericUpDown mah:TextBoxHelper.UseFloatingWatermark="True"
                                    mah:TextBoxHelper.Watermark="Width"
                                    Value="{Binding FlyoutWidth}" />
             </CheckBox>
-            <CheckBox Margin="0 5 0 0" IsChecked="{Binding FlyoutHasHeight}" HorizontalContentAlignment="Stretch">
+            <CheckBox Margin="0 5 0 0"
+                      IsChecked="{Binding FlyoutHasHeight}"
+                      HorizontalContentAlignment="Stretch">
                 <mah:NumericUpDown mah:TextBoxHelper.UseFloatingWatermark="True"
                                    mah:TextBoxHelper.Watermark="Height"
                                    Value="{Binding FlyoutHeight}" />
