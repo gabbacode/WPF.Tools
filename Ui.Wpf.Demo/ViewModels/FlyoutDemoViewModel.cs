@@ -3,6 +3,7 @@ using ReactiveUI;
 using System;
 using System.Linq;
 using System.Reactive;
+using System.Reactive.Disposables;
 using Ui.Wpf.Common;
 using Ui.Wpf.Common.ShowOptions;
 using Ui.Wpf.Common.ViewModels;
@@ -27,16 +28,26 @@ namespace Ui.Wpf.Demo.ViewModels
         public bool FlyoutHasHeight { get; set; }
 
         public string Text { get; set; } =
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque odio ante, sollicitudin non purus sagittis, lobortis ultrices nulla. Nam nulla dolor, venenatis sit amet eros quis, eleifend elementum sem. Nulla facilisi. Morbi non felis sed nulla fermentum accumsan faucibus sit amet elit. Sed interdum nunc diam. Proin pretium dolor in porta varius. Quisque nec ligula mollis, scelerisque sem id, ultrices dolor.";
+            @"Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+Quisque odio ante, sollicitudin non purus sagittis, lobortis ultrices nulla.
+Nam nulla dolor, venenatis sit amet eros quis, eleifend elementum sem.
+Nulla facilisi.
+Morbi non felis sed nulla fermentum accumsan faucibus sit amet elit.
+Sed interdum nunc diam.
+Proin pretium dolor in porta varius.
+Quisque nec ligula mollis, scelerisque sem id, ultrices dolor.";
 
         public FlyoutDemoViewModel(IShell shell)
         {
-            ShowFlyoutCommand = ReactiveCommand.Create(() =>
-            {
-                Options.Width = FlyoutHasWidth ? FlyoutWidth : (int?) null;
-                Options.Height = FlyoutHasHeight ? FlyoutHeight : (int?) null;
-                shell.ShowFlyoutView<TextBoxView>(new TextBoxViewRequest(Text), Options);
-            });
+            ShowFlyoutCommand =
+                ReactiveCommand
+                    .Create(() =>
+                    {
+                        Options.Width = FlyoutHasWidth ? FlyoutWidth : (int?) null;
+                        Options.Height = FlyoutHasHeight ? FlyoutHeight : (int?) null;
+                        shell.ShowFlyoutView<TextBoxView>(new TextBoxViewRequest(Text), Options);
+                    })
+                    .DisposeWith(Disposables);
         }
     }
 }

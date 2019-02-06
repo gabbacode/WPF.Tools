@@ -102,7 +102,7 @@ namespace Ui.Wpf.Common
 
             options = options ?? new UiShowFlyoutOptions();
 
-            FlyoutsControl.Items.Add(new Flyout
+            var flyout = new Flyout
             {
                 Position = options.Position,
                 IsModal = options.IsModal,
@@ -120,7 +120,38 @@ namespace Ui.Wpf.Common
                 Header = options.Title,
                 Content = view,
                 IsOpen = true
-            });
+            };
+
+            var vm = view.ViewModel as ViewModelBase;
+            if (vm != null)
+            {
+                Observable
+                    .FromEventPattern<ViewModelCloseQueryArgs>(
+                        x => vm.CloseQuery += x,
+                        x => vm.CloseQuery -= x)
+                    .Subscribe(x => flyout.IsOpen = false)
+                    .DisposeWith(vm.Disposables);
+            }
+
+            var titleRefreshSubsription = view.ViewModel
+                .WhenAnyValue(x => x.Title)
+                .Subscribe(x => flyout.Header = x);
+
+            Observable
+                .FromEventPattern<RoutedEventHandler, RoutedEventArgs>(
+                    x => flyout.ClosingFinished += x,
+                    x => flyout.ClosingFinished -= x)
+                .Select(x => (Flyout)x.Sender)
+                .Take(1)
+                .Subscribe(x =>
+                {
+                    vm?.Closed(new ViewModelCloseQueryArgs());
+                    titleRefreshSubsription.Dispose();
+                    x.Content = null;
+                    FlyoutsControl.Items.Remove(x);
+                });
+
+            FlyoutsControl.Items.Add(flyout);
 
             InitializeView(view, viewRequest);
         }
