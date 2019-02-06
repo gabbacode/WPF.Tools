@@ -96,6 +96,20 @@ namespace Ui.Wpf.Common
             UiShowFlyoutOptions options = null)
             where TView : class, IView
         {
+            if (!string.IsNullOrEmpty(viewRequest?.ViewId))
+            {
+                var viewOld = FlyoutsControl.Items
+                    .Cast<Flyout>()
+                    .Select(x => (IView) x.Content)
+                    .FirstOrDefault(x => (x.ViewModel as ViewModelBase)?.ViewId == viewRequest.ViewId);
+
+                if (viewOld != null)
+                {
+                    (viewOld.ViewModel as IActivatableViewModel)?.Activate(viewRequest);
+                    return;
+                }
+            }
+
             var view = Container.Resolve<TView>();
             if (options != null)
                 view.Configure(options);
@@ -167,6 +181,8 @@ namespace Ui.Wpf.Common
             FlyoutsControl.Items.Add(flyout);
 
             InitializeView(view, viewRequest);
+
+            (view.ViewModel as IActivatableViewModel)?.Activate(viewRequest);
         }
 
         public void ShowStartView<TStartWindow, TStartView>(

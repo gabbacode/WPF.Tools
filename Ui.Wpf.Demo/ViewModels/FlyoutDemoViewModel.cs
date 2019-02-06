@@ -31,6 +31,8 @@ namespace Ui.Wpf.Demo.ViewModels
         public int FlyoutHeight { get; set; }
         public bool FlyoutHasHeight { get; set; }
 
+        public string FlyoutViewId { get; set; }
+
         public string Text { get; set; } =
             @"Lorem ipsum dolor sit amet, consectetur adipiscing elit.
 Quisque odio ante, sollicitudin non purus sagittis, lobortis ultrices nulla.
@@ -49,7 +51,11 @@ Quisque nec ligula mollis, scelerisque sem id, ultrices dolor.";
                     {
                         Options.Width = FlyoutHasWidth ? FlyoutWidth : (int?) null;
                         Options.Height = FlyoutHasHeight ? FlyoutHeight : (int?) null;
-                        shell.ShowFlyoutView<TextBoxView>(new TextBoxViewRequest(Text), Options);
+                        shell.ShowFlyoutView<TextBoxView>(new TextBoxViewRequest
+                        {
+                            Text = Text,
+                            ViewId = FlyoutViewId
+                        }, Options);
                     })
                     .DisposeWith(Disposables);
         }
