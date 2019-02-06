@@ -20,6 +20,12 @@ namespace Ui.Wpf.Demo
             builder.RegisterType<MainView>();
             builder.RegisterType<MainViewModel>();
 
+            builder.RegisterType<FlyoutDemoView>();
+            builder.RegisterType<FlyoutDemoViewModel>();
+
+            builder.RegisterType<TextBoxView>();
+            builder.RegisterType<TextBoxViewModel>();
+
             var container = builder.Build();
 
             var shell = container.Resolve<IShell>();

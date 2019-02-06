@@ -10,6 +10,7 @@ namespace Ui.Wpf.Demo.ViewModels
     public class ToolsViewModel : ViewModelBase
     {
         public ReactiveCommand<Unit, Unit> ShowMainViewCommand { get; set; }
+        public ReactiveCommand<Unit, Unit> ShowFlyoutDemoViewCommand { get; set; }
 
         public ToolsViewModel(IShell shell)
         {
@@ -18,6 +19,13 @@ namespace Ui.Wpf.Demo.ViewModels
                 shell.ShowView<MainView>(
                     new ViewRequest("main-view"),
                     new UiShowOptions {Title = nameof(MainView)}
+                );
+            });
+            ShowFlyoutDemoViewCommand = ReactiveCommand.Create(() =>
+            {
+                shell.ShowView<FlyoutDemoView>(
+                    new ViewRequest("flyout-demo-view"),
+                    new UiShowOptions { Title = nameof(FlyoutDemoView) }
                 );
             });
         }

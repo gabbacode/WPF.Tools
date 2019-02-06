@@ -62,10 +62,18 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ViewModels\FlyoutDemoViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="ViewModels\TextBoxViewModel.cs" />
     <Compile Include="ViewModels\ToolsViewModel.cs" />
+    <Compile Include="Views\FlyoutDemoView.xaml.cs">
+      <DependentUpon>FlyoutDemoView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\MainView.xaml.cs">
       <DependentUpon>MainView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\TextBoxView.xaml.cs">
+      <DependentUpon>TextBoxView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ToolsView.xaml.cs">
       <DependentUpon>ToolsView.xaml</DependentUpon>
@@ -99,7 +107,15 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Views\FlyoutDemoView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\MainView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\TextBoxView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

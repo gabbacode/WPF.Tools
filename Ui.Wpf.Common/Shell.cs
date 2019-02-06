@@ -111,6 +111,7 @@ namespace Ui.Wpf.Common
                         ? Visibility.Visible
                         : Visibility.Collapsed,
                 IsPinned = options.IsPinned,
+                Theme = options.Theme,
                 CloseButtonIsCancel = options.CloseButtonIsCancel,
                 CloseCommand = options.CloseCommand,
                 CloseCommandParameter = options.CloseCommandParameter,
