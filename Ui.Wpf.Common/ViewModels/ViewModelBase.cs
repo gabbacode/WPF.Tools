@@ -62,6 +62,7 @@ namespace Ui.Wpf.Common.ViewModels
         protected virtual void DisposeInternals()
         {
             Disposables.Dispose();
+            CloseQuery = null;
         }
 
         internal event EventHandler<ViewModelCloseQueryArgs> CloseQuery;

@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using MahApps.Metro.Controls;
 using Ui.Wpf.Common.ShowOptions;
 using Ui.Wpf.Common.ViewModels;
 using Xceed.Wpf.AvalonDock;
@@ -24,6 +25,11 @@ namespace Ui.Wpf.Common
             UiShowOptions options = null)
             where TToolView : class, IToolView;
 
+        void ShowFlyoutView<TView>(
+            ViewRequest viewRequest = null,
+            UiShowFlyoutOptions options = null)
+            where TView : class, IView;
+
         void ShowStartView<TStartWindow>(UiShowStartWindowOptions options = null)
             where TStartWindow : class;
 
@@ -32,6 +38,7 @@ namespace Ui.Wpf.Common
             where TStartView : class, IView;
 
         void AttachDockingManager(DockingManager dockingManager);
+        void AttachFlyoutsControl(FlyoutsControl flyoutsControl);
 
         CommandItem AddGlobalCommand(string menuName, string cmdName, string cmdFunc, IViewModel vm, bool addSeparator = false);
         CommandItem AddVMCommand(string menuName, string cmdName, string cmdFunc, IViewModel vm, bool addSeparator = false);

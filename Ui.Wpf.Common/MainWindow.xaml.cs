@@ -22,6 +22,7 @@ namespace Ui.Wpf.Common
 
             //TODO do with behavior
             Shell.AttachDockingManager(DockingManager);
+            Shell.AttachFlyoutsControl(Flyouts);
         }
 
         protected override void OnClosed(EventArgs e)

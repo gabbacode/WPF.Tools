@@ -1,14 +1,18 @@
 using Autofac;
+using MahApps.Metro.Controls;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
+using System.ComponentModel;
 using System.Linq;
+using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Windows;
 using Ui.Wpf.Common.ShowOptions;
 using Ui.Wpf.Common.ViewModels;
 using Xceed.Wpf.AvalonDock;
 using Xceed.Wpf.AvalonDock.Layout;
+using IContainer = Autofac.IContainer;
 
 namespace Ui.Wpf.Common
 {
@@ -59,7 +63,7 @@ namespace Ui.Wpf.Common
             where TToolView : class, IToolView
         {
             var layoutAnchorable = FindLayoutByViewRequest(ToolsPane, viewRequest);
-            
+
             if (layoutAnchorable == null)
             {
                 var view = Container.Resolve<TToolView>();
@@ -85,6 +89,100 @@ namespace Ui.Wpf.Common
             }
 
             ActivateContent(layoutAnchorable, viewRequest);
+        }
+
+        public void ShowFlyoutView<TView>(
+            ViewRequest viewRequest = null,
+            UiShowFlyoutOptions options = null)
+            where TView : class, IView
+        {
+            if (!string.IsNullOrEmpty(viewRequest?.ViewId))
+            {
+                var viewOld = FlyoutsControl.Items
+                    .Cast<Flyout>()
+                    .Select(x => (IView) x.Content)
+                    .FirstOrDefault(x => (x.ViewModel as ViewModelBase)?.ViewId == viewRequest.ViewId);
+
+                if (viewOld != null)
+                {
+                    (viewOld.ViewModel as IActivatableViewModel)?.Activate(viewRequest);
+                    return;
+                }
+            }
+
+            var view = Container.Resolve<TView>();
+            if (options != null)
+                view.Configure(options);
+
+            options = options ?? new UiShowFlyoutOptions();
+
+            var flyout = new Flyout
+            {
+                IsModal = options.IsModal,
+                Position = options.Position,
+                Theme = options.Theme,
+                ExternalCloseButton = options.ExternalCloseButton,
+                IsPinned = options.IsPinned,
+                CloseButtonIsCancel = options.CloseButtonIsCancel,
+                CloseCommand = options.CloseCommand,
+                CloseCommandParameter = options.CloseCommandParameter,
+                AnimateOpacity = options.AnimateOpacity,
+                AreAnimationsEnabled = options.AreAnimationsEnabled,
+                IsAutoCloseEnabled = options.IsAutoCloseEnabled,
+                AutoCloseInterval = options.AutoCloseInterval,
+                Width = options.Width ?? double.NaN,
+                Height = options.Height ?? double.NaN,
+                Content = view,
+                IsOpen = true
+            };
+
+            var vm = view.ViewModel as ViewModelBase;
+            if (vm != null)
+            {
+                Observable
+                    .FromEventPattern<ViewModelCloseQueryArgs>(
+                        x => vm.CloseQuery += x,
+                        x => vm.CloseQuery -= x)
+                    .Subscribe(x => flyout.IsOpen = false)
+                    .DisposeWith(vm.Disposables);
+            }
+
+            var disposables = new CompositeDisposable();
+            view.ViewModel
+                .WhenAnyValue(x => x.Title)
+                .Subscribe(x =>
+                {
+                    flyout.Header = x;
+                    flyout.TitleVisibility =
+                        !string.IsNullOrEmpty(x)
+                            ? Visibility.Visible
+                            : Visibility.Collapsed;
+                })
+                .DisposeWith(disposables);
+            view.ViewModel
+                .WhenAnyValue(x => x.CanClose)
+                .Subscribe(x => flyout.CloseButtonVisibility = x ? Visibility.Visible : Visibility.Collapsed)
+                .DisposeWith(disposables);
+
+            Observable
+                .FromEventPattern<RoutedEventHandler, RoutedEventArgs>(
+                    x => flyout.ClosingFinished += x,
+                    x => flyout.ClosingFinished -= x)
+                .Select(x => (Flyout) x.Sender)
+                .Take(1)
+                .Subscribe(x =>
+                {
+                    disposables.Dispose();
+                    vm?.Closed(new ViewModelCloseQueryArgs());
+                    x.Content = null;
+                    FlyoutsControl.Items.Remove(x);
+                });
+
+            FlyoutsControl.Items.Add(flyout);
+
+            InitializeView(view, viewRequest);
+
+            (view.ViewModel as IActivatableViewModel)?.Activate(viewRequest);
         }
 
         public void ShowStartView<TStartWindow, TStartView>(
@@ -148,6 +246,11 @@ namespace Ui.Wpf.Common
             ToolsPane.DockWidth = new GridLength(ToolPaneWidth.GetValueOrDefault(410));
         }
 
+        public void AttachFlyoutsControl(FlyoutsControl flyoutsControl)
+        {
+            FlyoutsControl = flyoutsControl;
+        }
+
         private static T FindLayoutByViewRequest<T>(LayoutGroup<T> layoutGroup, ViewRequest viewRequest)
             where T : LayoutContent
         {
@@ -162,6 +265,7 @@ namespace Ui.Wpf.Common
             {
                 vmb.ViewId = viewRequest?.ViewId;
             }
+
             if (view.ViewModel is IInitializableViewModel initializibleViewModel)
             {
                 initializibleViewModel.Initialize(viewRequest);
@@ -181,40 +285,38 @@ namespace Ui.Wpf.Common
         private static void AddClosingByRequest<TView>(TView view, LayoutContent layoutDocument)
             where TView : class, IView
         {
-            if (view.ViewModel is ViewModelBase baseViewModel)
-            {
-                var closeQuery = Observable.FromEventPattern<ViewModelCloseQueryArgs>(
+            if (!(view.ViewModel is ViewModelBase baseViewModel))
+                return;
+
+            Observable
+                .FromEventPattern<ViewModelCloseQueryArgs>(
                     x => baseViewModel.CloseQuery += x,
-                    x => baseViewModel.CloseQuery -= x);
+                    x => baseViewModel.CloseQuery -= x)
+                .Subscribe(x => { layoutDocument.Close(); })
+                .DisposeWith(baseViewModel.Disposables);
 
-                var subscription = closeQuery.Subscribe(x => { layoutDocument.Close(); });
-
-
-                layoutDocument.Closing += (s, e) =>
+            Observable
+                .FromEventPattern<CancelEventArgs>(
+                    x => layoutDocument.Closing += x,
+                    x => layoutDocument.Closing -= x)
+                .Subscribe(x =>
                 {
-                    ViewModelCloseQueryArgs vcq = new ViewModelCloseQueryArgs { IsCanceled = false };
+                    var vcq = new ViewModelCloseQueryArgs {IsCanceled = false};
                     baseViewModel.Closing(vcq);
 
                     if (vcq.IsCanceled)
                     {
-                       e.Cancel = true;
+                        x.EventArgs.Cancel = true;
                     }
-                       
-                };
+                })
+                .DisposeWith(baseViewModel.Disposables);
 
-
-                layoutDocument.Closed += (s, e) =>
-                {
-                    try
-                    {
-                       baseViewModel.Closed(new ViewModelCloseQueryArgs { IsCanceled = false });
-                    }
-                    finally
-                    {
-                        subscription.Dispose();
-                    }
-                };
-            }
+            Observable
+                .FromEventPattern(
+                    x => layoutDocument.Closed += x,
+                    x => layoutDocument.Closed -= x)
+                .Subscribe(_ => baseViewModel.Closed(new ViewModelCloseQueryArgs {IsCanceled = false}))
+                .DisposeWith(baseViewModel.Disposables);
         }
 
         private static void AddTitleRefreshing<TView>(TView view, LayoutContent layoutDocument)
@@ -224,38 +326,43 @@ namespace Ui.Wpf.Common
                 .WhenAnyValue(vm => vm.Title)
                 .Subscribe(x => layoutDocument.Title = x);
 
-            layoutDocument.Closed += (s, e) => titleRefreshSubsription.Dispose();
+            Observable
+                .FromEventPattern(
+                    x => layoutDocument.Closed += x,
+                    x => layoutDocument.Closed -= x)
+                .Take(1)
+                .Subscribe(_ => titleRefreshSubsription.Dispose());
         }
 
         private static void AddWindowBehaviour<TView>(TView view, LayoutContent layoutContent)
             where TView : class, IView
         {
+            if (!(view.ViewModel is ViewModelBase baseViewModel))
+                return;
 
-            if (view.ViewModel is ViewModelBase baseViewModel)
+            baseViewModel
+                .WhenAnyValue(x => x.IsEnabled)
+                .Subscribe(x => layoutContent.IsEnabled = x)
+                .DisposeWith(baseViewModel.Disposables);
+
+            baseViewModel
+                .WhenAnyValue(x => x.CanClose)
+                .Subscribe(x => layoutContent.CanClose = x)
+                .DisposeWith(baseViewModel.Disposables);
+
+            if (layoutContent is LayoutAnchorable layoutAnchorable)
             {
-                baseViewModel.Disposables.Add(
-                    baseViewModel
-                        .WhenAnyValue(x => x.IsEnabled)
-                        .Subscribe(x => layoutContent.IsEnabled = x));
-
-                baseViewModel.Disposables.Add(
-                    baseViewModel
-                        .WhenAnyValue(x => x.CanClose)
-                        .Subscribe(x => layoutContent.CanClose = x));
-
-                if (layoutContent is LayoutAnchorable layoutAnchorable)
-                {
-                    baseViewModel.Disposables.Add(
-                        baseViewModel
-                            .WhenAnyValue(x => x.CanHide)
-                            .Subscribe(x => layoutAnchorable.CanHide = x));
-                }
+                baseViewModel
+                    .WhenAnyValue(x => x.CanHide)
+                    .Subscribe(x => layoutAnchorable.CanHide = x)
+                    .DisposeWith(baseViewModel.Disposables);
             }
         }
 
 
         //TODO replace to abstract manager
         private DockingManager DockingManager { get; set; }
+        private FlyoutsControl FlyoutsControl { get; set; }
 
         protected LayoutDocumentPane DocumentPane { get; set; }
 
