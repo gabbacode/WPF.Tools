@@ -1,5 +1,6 @@
 ﻿using MahApps.Metro.Controls;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 using System;
 using System.Linq;
 using System.Reactive;
@@ -33,6 +34,7 @@ namespace Ui.Wpf.Demo.ViewModels
 
         public string FlyoutViewId { get; set; }
 
+        [Reactive]
         public string Text { get; set; } =
             @"Lorem ipsum dolor sit amet, consectetur adipiscing elit.
 Quisque odio ante, sollicitudin non purus sagittis, lobortis ultrices nulla.
@@ -47,15 +49,18 @@ Quisque nec ligula mollis, scelerisque sem id, ultrices dolor.";
         {
             ShowFlyoutCommand =
                 ReactiveCommand
-                    .Create(() =>
+                    .CreateFromTask(async () =>
                     {
                         Options.Width = FlyoutHasWidth ? FlyoutWidth : (int?) null;
                         Options.Height = FlyoutHasHeight ? FlyoutHeight : (int?) null;
-                        shell.ShowFlyoutView<TextBoxView>(new TextBoxViewRequest
+                        var text = await shell.ShowFlyoutView<TextBoxView, string>(new TextBoxViewRequest
                         {
                             Text = Text,
                             ViewId = FlyoutViewId
                         }, Options);
+
+                        if (text != null)
+                            Text = text;
                     })
                     .DisposeWith(Disposables);
         }

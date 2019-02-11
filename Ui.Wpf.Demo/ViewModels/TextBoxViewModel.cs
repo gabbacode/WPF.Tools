@@ -1,4 +1,6 @@
-﻿using ReactiveUI.Fody.Helpers;
+﻿using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
+using System.Reactive;
 using Ui.Wpf.Common;
 using Ui.Wpf.Common.ViewModels;
 
@@ -14,14 +16,27 @@ namespace Ui.Wpf.Demo.ViewModels
         }
     }
 
-    public class TextBoxViewModel : ViewModelBase, IInitializableViewModel
+    public class TextBoxViewModel : ViewModelBase, IInitializableViewModel, IResultableViewModel<string>
     {
         [Reactive] public string Text { get; set; }
+
+        public ReactiveCommand<Unit, Unit> OkCommand { get; set; }
+
+        public TextBoxViewModel()
+        {
+            OkCommand = ReactiveCommand.Create(() =>
+            {
+                ViewResult = Text;
+                Close();
+            });
+        }
 
         public void Initialize(ViewRequest viewRequest)
         {
             if (viewRequest is TextBoxViewRequest tbRequest)
                 Text = tbRequest.Text;
         }
+
+        public string ViewResult { get; set; }
     }
 }

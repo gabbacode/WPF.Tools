@@ -3,10 +3,18 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:viewModels="clr-namespace:Ui.Wpf.Demo.ViewModels"
              mc:Ignorable="d"
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450"
+             d:DesignWidth="800"
+             d:DataContext="{d:DesignInstance viewModels:TextBoxViewModel}">
     <Grid>
-        <TextBox Margin="5"
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <TextBox Grid.Row="0"
+                 Margin="5"
                  Padding="5"
                  VerticalContentAlignment="Center"
                  HorizontalContentAlignment="Center"
@@ -17,5 +25,9 @@
                  AcceptsTab="True"
                  xml:space="preserve"
                  Text="{Binding Text}" />
+        <Button Grid.Row="1"
+                Margin="5"
+                Command="{Binding OkCommand}"
+                Content="OK" />
     </Grid>
 </UserControl>

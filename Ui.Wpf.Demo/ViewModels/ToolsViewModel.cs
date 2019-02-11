@@ -11,6 +11,7 @@ namespace Ui.Wpf.Demo.ViewModels
     {
         public ReactiveCommand<Unit, Unit> ShowMainViewCommand { get; set; }
         public ReactiveCommand<Unit, Unit> ShowFlyoutDemoViewCommand { get; set; }
+        public ReactiveCommand<Unit, Unit> ShowChildWindowViewCommand { get; set; }
 
         public ToolsViewModel(IShell shell)
         {
@@ -25,7 +26,14 @@ namespace Ui.Wpf.Demo.ViewModels
             {
                 shell.ShowView<FlyoutDemoView>(
                     new ViewRequest("flyout-demo-view"),
-                    new UiShowOptions { Title = nameof(FlyoutDemoView) }
+                    new UiShowOptions {Title = nameof(FlyoutDemoView)}
+                );
+            });
+            ShowChildWindowViewCommand = ReactiveCommand.Create(() =>
+            {
+                shell.ShowView<ChildWindowDemoView>(
+                    new ViewRequest("child-window-demo-view"),
+                    new UiShowOptions {Title = nameof(ChildWindowDemoView)}
                 );
             });
         }

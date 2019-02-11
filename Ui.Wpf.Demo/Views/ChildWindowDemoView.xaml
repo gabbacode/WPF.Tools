@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Ui.Wpf.Demo.Views.FlyoutDemoView"
+﻿<UserControl x:Class="Ui.Wpf.Demo.Views.ChildWindowDemoView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -8,56 +8,49 @@
              mc:Ignorable="d"
              d:DesignHeight="450"
              d:DesignWidth="800"
-             d:DataContext="{d:DesignInstance viewModels:FlyoutDemoViewModel}">
+             d:DataContext="{d:DesignInstance viewModels:ChildWindowDemoViewModel}">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <StackPanel Grid.Column="0" MaxWidth="300">
-            <Button Command="{Binding ShowFlyoutCommand}"
-                    Content="Show Flyout" />
+            <Button Command="{Binding ShowChildWindowCommand}"
+                    Content="Show Child Window" />
             <TextBox Margin="0 5 0 0"
                      mah:TextBoxHelper.UseFloatingWatermark="True"
                      mah:TextBoxHelper.Watermark="ViewId"
-                     Text="{Binding FlyoutViewId}" />
+                     Text="{Binding ChildWindowViewId}" />
             <TextBox Margin="0 5 0 0"
                      mah:TextBoxHelper.UseFloatingWatermark="True"
                      mah:TextBoxHelper.Watermark="Title"
                      Text="{Binding Options.Title}" />
             <CheckBox Margin="0 5 0 0"
-                      Content="Modal"
-                      IsChecked="{Binding Options.IsModal}" />
+                      Content="Show Title Bar"
+                      IsChecked="{Binding Options.ShowTitleBar}" />
+            <CheckBox Margin="0 5 0 0"
+                      Content="Drop Shadow"
+                      IsChecked="{Binding Options.EnableDropShadow}" />
             <ComboBox Margin="0 5 0 0"
                       mah:TextBoxHelper.UseFloatingWatermark="True"
                       mah:TextBoxHelper.Watermark="Position"
-                      SelectedItem="{Binding Options.Position}"
-                      ItemsSource="{Binding PositionSource, Mode=OneTime}" />
-            <ComboBox Margin="0 5 0 0"
-                      mah:TextBoxHelper.UseFloatingWatermark="True"
-                      mah:TextBoxHelper.Watermark="Theme"
-                      SelectedItem="{Binding Options.Theme}"
-                      ItemsSource="{Binding FlyoutThemeSource, Mode=OneTime}" />
+                      SelectedItem="{Binding Options.OverlayFillBehavior}"
+                      ItemsSource="{Binding OverlayFillBehaviorSource, Mode=OneTime}" />
+            <CheckBox Margin="0 5 0 0"
+                      Content="Modal"
+                      IsChecked="{Binding Options.IsModal}" />
+            <CheckBox Margin="0 5 0 0"
+                      Content="Allow Move"
+                      IsChecked="{Binding Options.AllowMove}" />
             <CheckBox Margin="0 5 0 0"
                       Content="CanClose"
                       IsChecked="{Binding Options.CanClose}" />
-            <ComboBox Margin="0 5 0 0"
-                      mah:TextBoxHelper.UseFloatingWatermark="True"
-                      mah:TextBoxHelper.Watermark="ExternalCloseButton"
-                      SelectedItem="{Binding Options.ExternalCloseButton}"
-                      ItemsSource="{Binding ExternalCloseButtonSource, Mode=OneTime}" />
             <CheckBox Margin="0 5 0 0"
-                      Content="Pinned"
-                      IsChecked="{Binding Options.IsPinned}" />
+                      Content="CloseOnOverlay"
+                      IsChecked="{Binding Options.CloseOnOverlay}" />
             <CheckBox Margin="0 5 0 0"
                       Content="CloseByEscape"
                       IsChecked="{Binding Options.CloseByEscape}" />
-            <CheckBox Margin="0 5 0 0"
-                      Content="AnimateOpacity"
-                      IsChecked="{Binding Options.AnimateOpacity}" />
-            <CheckBox Margin="0 5 0 0"
-                      Content="AreAnimationsEnabled"
-                      IsChecked="{Binding Options.AreAnimationsEnabled}" />
             <CheckBox Margin="0 5 0 0"
                       Content="IsAutoCloseEnabled"
                       IsChecked="{Binding Options.IsAutoCloseEnabled}" />
@@ -66,18 +59,18 @@
                                mah:TextBoxHelper.Watermark="AutoCloseInterval"
                                Value="{Binding Options.AutoCloseInterval}" />
             <CheckBox Margin="0 5 0 0"
-                      IsChecked="{Binding FlyoutHasWidth}"
+                      IsChecked="{Binding ChildWindowHasWidth}"
                       HorizontalContentAlignment="Stretch">
                 <mah:NumericUpDown mah:TextBoxHelper.UseFloatingWatermark="True"
                                    mah:TextBoxHelper.Watermark="Width"
-                                   Value="{Binding FlyoutWidth}" />
+                                   Value="{Binding ChildWindowWidth}" />
             </CheckBox>
             <CheckBox Margin="0 5 0 0"
-                      IsChecked="{Binding FlyoutHasHeight}"
+                      IsChecked="{Binding ChildWindowHasHeight}"
                       HorizontalContentAlignment="Stretch">
                 <mah:NumericUpDown mah:TextBoxHelper.UseFloatingWatermark="True"
                                    mah:TextBoxHelper.Watermark="Height"
-                                   Value="{Binding FlyoutHeight}" />
+                                   Value="{Binding ChildWindowHeight}" />
             </CheckBox>
         </StackPanel>
         <TextBox Grid.Column="1"

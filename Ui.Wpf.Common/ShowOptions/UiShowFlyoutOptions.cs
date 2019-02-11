@@ -12,10 +12,7 @@ namespace Ui.Wpf.Common.ShowOptions
         public MouseButton ExternalCloseButton { get; set; } = MouseButton.Left;
         public bool IsPinned { get; set; } = true;
 
-        /// <summary>
-        /// Can be closed with ESC
-        /// </summary>
-        public bool CloseButtonIsCancel { get; set; } = false;
+        public bool CloseByEscape { get; set; } = false;
 
         public bool AnimateOpacity { get; set; } = false;
         public bool AreAnimationsEnabled { get; set; } = true;

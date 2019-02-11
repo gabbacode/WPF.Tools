@@ -22,6 +22,7 @@ namespace Ui.Wpf.Demo.Views
         public void Configure(UiShowOptions options)
         {
             ViewModel.Title = options.Title;
+            ViewModel.CanClose = options.CanClose;
         }
 
         public IViewModel ViewModel { get; set; }

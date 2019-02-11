@@ -1,13 +1,17 @@
 using Autofac;
 using MahApps.Metro.Controls;
+using MahApps.Metro.SimpleChildWindow;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
 using System.ComponentModel;
 using System.Linq;
+using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using Ui.Wpf.Common.ShowOptions;
 using Ui.Wpf.Common.ViewModels;
 using Xceed.Wpf.AvalonDock;
@@ -91,7 +95,7 @@ namespace Ui.Wpf.Common
             ActivateContent(layoutAnchorable, viewRequest);
         }
 
-        public void ShowFlyoutView<TView>(
+        public async Task<TResult> ShowFlyoutView<TView, TResult>(
             ViewRequest viewRequest = null,
             UiShowFlyoutOptions options = null)
             where TView : class, IView
@@ -106,7 +110,7 @@ namespace Ui.Wpf.Common
                 if (viewOld != null)
                 {
                     (viewOld.ViewModel as IActivatableViewModel)?.Activate(viewRequest);
-                    return;
+                    return default(TResult);
                 }
             }
 
@@ -123,7 +127,7 @@ namespace Ui.Wpf.Common
                 Theme = options.Theme,
                 ExternalCloseButton = options.ExternalCloseButton,
                 IsPinned = options.IsPinned,
-                CloseButtonIsCancel = options.CloseButtonIsCancel,
+                CloseButtonIsCancel = options.CloseByEscape,
                 CloseCommand = options.CloseCommand,
                 CloseCommandParameter = options.CloseCommandParameter,
                 AnimateOpacity = options.AnimateOpacity,
@@ -164,26 +168,144 @@ namespace Ui.Wpf.Common
                 .Subscribe(x => flyout.CloseButtonVisibility = x ? Visibility.Visible : Visibility.Collapsed)
                 .DisposeWith(disposables);
 
-            Observable
+            var closedObservable = Observable
                 .FromEventPattern<RoutedEventHandler, RoutedEventArgs>(
                     x => flyout.ClosingFinished += x,
-                    x => flyout.ClosingFinished -= x)
-                .Select(x => (Flyout) x.Sender)
+                    x => flyout.ClosingFinished -= x);
+
+            FlyoutsControl.Items.Add(flyout);
+            InitializeView(view, viewRequest);
+            (view.ViewModel as IActivatableViewModel)?.Activate(viewRequest);
+
+            await closedObservable.FirstAsync();
+
+            disposables.Dispose();
+            vm?.Closed(new ViewModelCloseQueryArgs());
+            flyout.Content = null;
+            FlyoutsControl.Items.Remove(flyout);
+
+            if (vm is IResultableViewModel<TResult> model)
+                return model.ViewResult;
+
+            return default(TResult);
+        }
+
+        public async void ShowFlyoutView<TView>(
+            ViewRequest viewRequest = null,
+            UiShowFlyoutOptions options = null)
+            where TView : class, IView
+        {
+            await ShowFlyoutView<TView, Unit>();
+        }
+
+        public Task<TResult> ShowChildWindowView<TView, TResult>(
+            ViewRequest viewRequest = null,
+            UiShowChildWindowOptions options = null)
+            where TView : class, IView
+        {
+            if (!string.IsNullOrEmpty(viewRequest?.ViewId))
+            {
+                var metroDialogContainer = Window.Template.FindName("PART_MetroActiveDialogContainer", Window) as Grid;
+                metroDialogContainer = metroDialogContainer ??
+                                       Window.Template.FindName("PART_MetroInactiveDialogsContainer", Window) as Grid;
+
+                if (metroDialogContainer == null)
+                    throw new InvalidOperationException(
+                        "The provided child window can not add, there is no container defined.");
+
+                var viewOld = metroDialogContainer.Children
+                    .Cast<ChildWindowView>()
+                    .Select(x => (IView) x.Content)
+                    .FirstOrDefault(x => (x.ViewModel as ViewModelBase)?.ViewId == viewRequest.ViewId);
+
+                if (viewOld != null)
+                {
+                    (viewOld.ViewModel as IActivatableViewModel)?.Activate(viewRequest);
+                    return Task.FromResult(default(TResult));
+                }
+            }
+
+            var view = Container.Resolve<TView>();
+            if (options != null)
+                view.Configure(options);
+
+            InitializeView(view, viewRequest);
+            (view.ViewModel as IActivatableViewModel)?.Activate(viewRequest);
+
+            options = options ?? new UiShowChildWindowOptions();
+
+            var childWindow = new ChildWindowView(options) {Content = view};
+
+            var vm = view.ViewModel as ViewModelBase;
+            if (vm != null)
+            {
+                Observable
+                    .FromEventPattern<ViewModelCloseQueryArgs>(
+                        x => vm.CloseQuery += x,
+                        x => vm.CloseQuery -= x)
+                    .Subscribe(x =>
+                    {
+                        if (vm is IResultableViewModel<TResult> model)
+                            childWindow.Close(model.ViewResult);
+                        else
+                            childWindow.Close();
+                    })
+                    .DisposeWith(vm.Disposables);
+
+                Observable
+                    .FromEventPattern<CancelEventArgs>(
+                        x => childWindow.Closing += x,
+                        x => childWindow.Closing -= x)
+                    .Subscribe(x =>
+                    {
+                        var vcq = new ViewModelCloseQueryArgs {IsCanceled = false};
+                        vm.Closing(vcq);
+
+                        if (vcq.IsCanceled)
+                        {
+                            x.EventArgs.Cancel = true;
+                        }
+                    })
+                    .DisposeWith(vm.Disposables);
+            }
+
+            var disposables = new CompositeDisposable();
+            view.ViewModel
+                .WhenAnyValue(x => x.Title)
+                .Subscribe(x => childWindow.Title = x)
+                .DisposeWith(disposables);
+            view.ViewModel
+                .WhenAnyValue(x => x.CanClose)
+                .Subscribe(x => childWindow.ShowCloseButton = x)
+                .DisposeWith(disposables);
+
+            Observable
+                .FromEventPattern<RoutedEventHandler, RoutedEventArgs>(
+                    x => childWindow.ClosingFinished += x,
+                    x => childWindow.ClosingFinished -= x)
+                .Select(x => (ChildWindow) x.Sender)
                 .Take(1)
                 .Subscribe(x =>
                 {
                     disposables.Dispose();
                     vm?.Closed(new ViewModelCloseQueryArgs());
                     x.Content = null;
-                    FlyoutsControl.Items.Remove(x);
                 });
 
-            FlyoutsControl.Items.Add(flyout);
-
-            InitializeView(view, viewRequest);
-
-            (view.ViewModel as IActivatableViewModel)?.Activate(viewRequest);
+            return Window.ShowChildWindowAsync<TResult>(
+                childWindow,
+                options.OverlayFillBehavior
+            );
         }
+
+        public void ShowChildWindowView<TView>(
+            ViewRequest viewRequest = null,
+            UiShowChildWindowOptions options = null)
+            where TView : class, IView
+        {
+            ShowChildWindowView<TView, Unit>();
+        }
+
 
         public void ShowStartView<TStartWindow, TStartView>(
             UiShowStartWindowOptions options = null)
@@ -196,18 +318,15 @@ namespace Ui.Wpf.Common
                 Title = options.Title;
             }
 
-            var startObject = Container.Resolve<TStartWindow>();
+            var startObject = Container.Resolve<TStartWindow>() ??
+                              throw new InvalidOperationException($"You should configure {typeof(TStartWindow)}");
 
-            if (startObject == null)
-                throw new InvalidOperationException($"You should configure {typeof(TStartWindow)}");
-
-            var window = startObject as Window;
-            if (window == null)
-                throw new InvalidCastException($"{startObject.GetType()} is not a window");
+            Window = startObject as Window ??
+                     throw new InvalidCastException($"{startObject.GetType()} is not a window");
 
             ShowView<TStartView>();
 
-            window.Show();
+            Window.Show();
         }
 
         public void ShowStartView<TStartWindow>(
@@ -220,16 +339,13 @@ namespace Ui.Wpf.Common
                 Title = options.Title;
             }
 
-            var startObject = Container.Resolve<TStartWindow>();
+            var startObject = Container.Resolve<TStartWindow>() ??
+                              throw new InvalidOperationException($"You shuld configurate {typeof(TStartWindow)}");
 
-            if (startObject == null)
-                throw new InvalidOperationException($"You shuld configurate {typeof(TStartWindow)}");
+            Window = startObject as Window ??
+                     throw new InvalidCastException($"{startObject.GetType()} is not a window");
 
-            var window = startObject as Window;
-            if (window == null)
-                throw new InvalidCastException($"{startObject.GetType()} is not a window");
-
-            window.Show();
+            Window.Show();
         }
 
         public void AttachDockingManager(DockingManager dockingManager)
@@ -365,8 +481,8 @@ namespace Ui.Wpf.Common
         private FlyoutsControl FlyoutsControl { get; set; }
 
         protected LayoutDocumentPane DocumentPane { get; set; }
-
         private LayoutAnchorablePane ToolsPane { get; set; }
+        private Window Window { get; set; }
 
         private int? ToolPaneWidth { get; set; }
     }

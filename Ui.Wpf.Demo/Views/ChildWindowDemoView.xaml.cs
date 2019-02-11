@@ -7,11 +7,11 @@ using Ui.Wpf.Demo.ViewModels;
 namespace Ui.Wpf.Demo.Views
 {
     /// <summary>
-    /// Interaction logic for FlyoutDemoView.xaml
+    /// Interaction logic for ChildWindowDemoView.xaml
     /// </summary>
-    public partial class FlyoutDemoView : UserControl, IView
+    public partial class ChildWindowDemoView : UserControl, IView
     {
-        public FlyoutDemoView(FlyoutDemoViewModel vm)
+        public ChildWindowDemoView(ChildWindowDemoViewModel vm)
         {
             ViewModel = vm;
             DataContext = vm;
