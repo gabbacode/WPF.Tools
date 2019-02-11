@@ -1,32 +1,31 @@
 ﻿<сontrols:MetroWindow x:Class="Ui.Wpf.Common.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:сontrols="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-        xmlns:dock="http://schemas.xceed.com/wpf/xaml/avalondock"
-        mc:Ignorable="d"
-        d:DataContext="Shell"
-        Title="{Binding Title}"
-        WindowState="Maximized">
+                      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                      xmlns:dock="http://schemas.xceed.com/wpf/xaml/avalondock"
+                      xmlns:сontrols="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+                      xmlns:common="clr-namespace:Ui.Wpf.Common"
+                      mc:Ignorable="d"
+                      d:DataContext="{d:DesignInstance Type=common:Shell}"
+                      Title="{Binding Title}"
+                      WindowState="Maximized">
     <Grid>
 
         <Grid.RowDefinitions>
-            <RowDefinition Height="{Binding MenuHeight}"/>
-            <RowDefinition/>
+            <RowDefinition Height="{Binding MenuHeight}" />
+            <RowDefinition />
         </Grid.RowDefinitions>
 
-        <Menu ItemsSource="{Binding MenuItems}" FontSize="12"/>
+        <Menu ItemsSource="{Binding MenuItems}" FontSize="12" />
 
         <dock:DockingManager
             Grid.Row="1"
             Name="DockingManager"
-            ActiveContent="{Binding SelectedView, Mode=TwoWay}">
-        </dock:DockingManager>
+            ActiveContent="{Binding SelectedView, Mode=TwoWay}" />
     </Grid>
 
     <сontrols:MetroWindow.Flyouts>
         <сontrols:FlyoutsControl />
     </сontrols:MetroWindow.Flyouts>
 </сontrols:MetroWindow>
-                                                      

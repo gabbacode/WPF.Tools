@@ -5,8 +5,7 @@
                                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                                xmlns:simpleChildWindow="clr-namespace:MahApps.Metro.SimpleChildWindow;assembly=MahApps.Metro.SimpleChildWindow"
                                xmlns:local="clr-namespace:Ui.Wpf.Common"
-                               d:DesignHeight="300"
-                               d:DesignWidth="300"
+                               xmlns:options="clr-namespace:Ui.Wpf.Common.ShowOptions"
                                BorderBrush="{DynamicResource AccentBaseColorBrush}"
                                GlowBrush="{DynamicResource AccentColorBrush}"
                                BorderThickness="1"
@@ -21,6 +20,9 @@
                                AutoCloseInterval="{Binding AutoCloseInterval}"
                                CloseButtonCommand="{Binding CloseButtonCommand}"
                                CloseButtonCommandParameter="{Binding CloseButtonCommandParameter}"
+                               d:DesignHeight="300"
+                               d:DesignWidth="300"
+                               d:DataContext="{d:DesignInstance Type=options:UiShowChildWindowOptions}"
                                mc:Ignorable="d">
 
     <simpleChildWindow:ChildWindow.Resources>
