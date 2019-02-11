@@ -26,9 +26,19 @@ namespace Ui.Wpf.Common
             UiShowOptions options = null)
             where TToolView : class, IToolView;
 
+        Task<TResult> ShowFlyoutView<TView, TResult>(
+            ViewRequest viewRequest = null,
+            UiShowFlyoutOptions options = null)
+            where TView : class, IView;
+
         void ShowFlyoutView<TView>(
             ViewRequest viewRequest = null,
             UiShowFlyoutOptions options = null)
+            where TView : class, IView;
+
+        void ShowChildWindowView<TView>(
+            ViewRequest viewRequest = null,
+            UiShowChildWindowOptions options = null)
             where TView : class, IView;
 
         Task<TResult> ShowChildWindowView<TView, TResult>(

@@ -1,15 +1,16 @@
 using Autofac;
 using MahApps.Metro.Controls;
+using MahApps.Metro.SimpleChildWindow;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
 using System.ComponentModel;
 using System.Linq;
+using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using MahApps.Metro.SimpleChildWindow;
 using Ui.Wpf.Common.ShowOptions;
 using Ui.Wpf.Common.ViewModels;
 using Xceed.Wpf.AvalonDock;
@@ -93,7 +94,7 @@ namespace Ui.Wpf.Common
             ActivateContent(layoutAnchorable, viewRequest);
         }
 
-        public void ShowFlyoutView<TView>(
+        public async Task<TResult> ShowFlyoutView<TView, TResult>(
             ViewRequest viewRequest = null,
             UiShowFlyoutOptions options = null)
             where TView : class, IView
@@ -108,7 +109,7 @@ namespace Ui.Wpf.Common
                 if (viewOld != null)
                 {
                     (viewOld.ViewModel as IActivatableViewModel)?.Activate(viewRequest);
-                    return;
+                    return default(TResult);
                 }
             }
 
@@ -166,25 +167,34 @@ namespace Ui.Wpf.Common
                 .Subscribe(x => flyout.CloseButtonVisibility = x ? Visibility.Visible : Visibility.Collapsed)
                 .DisposeWith(disposables);
 
-            Observable
+            var closedObservable = Observable
                 .FromEventPattern<RoutedEventHandler, RoutedEventArgs>(
                     x => flyout.ClosingFinished += x,
-                    x => flyout.ClosingFinished -= x)
-                .Select(x => (Flyout) x.Sender)
-                .Take(1)
-                .Subscribe(x =>
-                {
-                    disposables.Dispose();
-                    vm?.Closed(new ViewModelCloseQueryArgs());
-                    x.Content = null;
-                    FlyoutsControl.Items.Remove(x);
-                });
+                    x => flyout.ClosingFinished -= x);
 
             FlyoutsControl.Items.Add(flyout);
-
             InitializeView(view, viewRequest);
-
             (view.ViewModel as IActivatableViewModel)?.Activate(viewRequest);
+
+            await closedObservable.FirstAsync();
+
+            disposables.Dispose();
+            vm?.Closed(new ViewModelCloseQueryArgs());
+            flyout.Content = null;
+            FlyoutsControl.Items.Remove(flyout);
+
+            if (vm is IResultableViewModel<TResult> model)
+                return model.ViewResult;
+
+            return default(TResult);
+        }
+
+        public async void ShowFlyoutView<TView>(
+            ViewRequest viewRequest = null,
+            UiShowFlyoutOptions options = null)
+            where TView : class, IView
+        {
+            await ShowFlyoutView<TView, Unit>();
         }
 
         public Task<TResult> ShowChildWindowView<TView, TResult>(
@@ -206,12 +216,17 @@ namespace Ui.Wpf.Common
             var vm = view.ViewModel as ViewModelBase;
             if (vm != null)
             {
-
                 Observable
                     .FromEventPattern<ViewModelCloseQueryArgs>(
                         x => vm.CloseQuery += x,
                         x => vm.CloseQuery -= x)
-                    .Subscribe(x => childWindow.Close((vm as IResultableViewModel)?.ViewResult))
+                    .Subscribe(x =>
+                    {
+                        if (vm is IResultableViewModel<TResult> model)
+                            childWindow.Close(model.ViewResult);
+                        else
+                            childWindow.Close();
+                    })
                     .DisposeWith(vm.Disposables);
 
                 Observable
@@ -220,7 +235,7 @@ namespace Ui.Wpf.Common
                         x => childWindow.Closing -= x)
                     .Subscribe(x =>
                     {
-                        var vcq = new ViewModelCloseQueryArgs { IsCanceled = false };
+                        var vcq = new ViewModelCloseQueryArgs {IsCanceled = false};
                         vm.Closing(vcq);
 
                         if (vcq.IsCanceled)
@@ -235,11 +250,10 @@ namespace Ui.Wpf.Common
                 .FromEventPattern<RoutedEventHandler, RoutedEventArgs>(
                     x => childWindow.ClosingFinished += x,
                     x => childWindow.ClosingFinished -= x)
-                .Select(x => (ChildWindow)x.Sender)
+                .Select(x => (ChildWindow) x.Sender)
                 .Take(1)
                 .Subscribe(x =>
                 {
-                    //disposables.Dispose();
                     vm?.Closed(new ViewModelCloseQueryArgs());
                     x.Content = null;
                 });
@@ -249,6 +263,15 @@ namespace Ui.Wpf.Common
                 ChildWindowManager.OverlayFillBehavior.FullWindow
             );
         }
+
+        public void ShowChildWindowView<TView>(
+            ViewRequest viewRequest = null,
+            UiShowChildWindowOptions options = null)
+            where TView : class, IView
+        {
+            ShowChildWindowView<TView, Unit>();
+        }
+
 
         public void ShowStartView<TStartWindow, TStartView>(
             UiShowStartWindowOptions options = null)

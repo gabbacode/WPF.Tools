@@ -1,7 +1,7 @@
 ﻿namespace Ui.Wpf.Common.ViewModels
 {
-    public interface IResultableViewModel
+    public interface IResultableViewModel<TResult>
     {
-        object ViewResult { get; set; }
+        TResult ViewResult { get; set; }
     }
 }

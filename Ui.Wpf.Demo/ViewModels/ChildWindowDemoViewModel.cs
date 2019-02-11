@@ -1,4 +1,5 @@
 ﻿using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 using System.Reactive;
 using System.Reactive.Disposables;
 using Ui.Wpf.Common;
@@ -21,6 +22,7 @@ namespace Ui.Wpf.Demo.ViewModels
 
         public string ChildWindowViewId { get; set; }
 
+        [Reactive]
         public string Text { get; set; } =
             @"Lorem ipsum dolor sit amet, consectetur adipiscing elit.
 Quisque odio ante, sollicitudin non purus sagittis, lobortis ultrices nulla.
@@ -35,15 +37,19 @@ Quisque nec ligula mollis, scelerisque sem id, ultrices dolor.";
         {
             ShowChildWindowCommand =
                 ReactiveCommand
-                    .Create(() =>
+                    .CreateFromTask(async () =>
                     {
                         Options.Width = ChildWindowHasWidth ? ChildWindowWidth : (int?) null;
                         Options.Height = ChildWindowHasHeight ? ChildWindowHeight : (int?) null;
-                        shell.ShowChildWindowView<TextBoxView, Unit>(new TextBoxViewRequest
+                        var text = await shell.ShowChildWindowView<TextBoxView, string>(new TextBoxViewRequest
                         {
                             Text = Text,
                             ViewId = ChildWindowViewId
                         }, Options);
+
+                        // update text property
+                        if (text != null)
+                            Text = text;
                     })
                     .DisposeWith(Disposables);
         }
