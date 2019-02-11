@@ -1,4 +1,5 @@
-﻿using System.Windows.Input;
+﻿using MahApps.Metro.SimpleChildWindow;
+using System.Windows.Input;
 
 namespace Ui.Wpf.Common.ShowOptions
 {
@@ -16,5 +17,8 @@ namespace Ui.Wpf.Common.ShowOptions
 
         public ICommand CloseButtonCommand { get; set; }
         public object CloseButtonCommandParameter { get; set; }
+
+        public ChildWindowManager.OverlayFillBehavior OverlayFillBehavior { get; set; } =
+            ChildWindowManager.OverlayFillBehavior.FullWindow;
     }
 }

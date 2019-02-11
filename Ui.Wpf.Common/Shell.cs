@@ -11,6 +11,7 @@ using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using Ui.Wpf.Common.ShowOptions;
 using Ui.Wpf.Common.ViewModels;
 using Xceed.Wpf.AvalonDock;
@@ -202,6 +203,28 @@ namespace Ui.Wpf.Common
             UiShowChildWindowOptions options = null)
             where TView : class, IView
         {
+            if (!string.IsNullOrEmpty(viewRequest?.ViewId))
+            {
+                var metroDialogContainer = Window.Template.FindName("PART_MetroActiveDialogContainer", Window) as Grid;
+                metroDialogContainer = metroDialogContainer ??
+                                       Window.Template.FindName("PART_MetroInactiveDialogsContainer", Window) as Grid;
+
+                if (metroDialogContainer == null)
+                    throw new InvalidOperationException(
+                        "The provided child window can not add, there is no container defined.");
+
+                var viewOld = metroDialogContainer.Children
+                    .Cast<ChildWindowView>()
+                    .Select(x => (IView) x.Content)
+                    .FirstOrDefault(x => (x.ViewModel as ViewModelBase)?.ViewId == viewRequest.ViewId);
+
+                if (viewOld != null)
+                {
+                    (viewOld.ViewModel as IActivatableViewModel)?.Activate(viewRequest);
+                    return Task.FromResult(default(TResult));
+                }
+            }
+
             var view = Container.Resolve<TView>();
             if (options != null)
                 view.Configure(options);
@@ -246,6 +269,16 @@ namespace Ui.Wpf.Common
                     .DisposeWith(vm.Disposables);
             }
 
+            var disposables = new CompositeDisposable();
+            view.ViewModel
+                .WhenAnyValue(x => x.Title)
+                .Subscribe(x => childWindow.Title = x)
+                .DisposeWith(disposables);
+            view.ViewModel
+                .WhenAnyValue(x => x.CanClose)
+                .Subscribe(x => childWindow.ShowCloseButton = x)
+                .DisposeWith(disposables);
+
             Observable
                 .FromEventPattern<RoutedEventHandler, RoutedEventArgs>(
                     x => childWindow.ClosingFinished += x,
@@ -254,13 +287,14 @@ namespace Ui.Wpf.Common
                 .Take(1)
                 .Subscribe(x =>
                 {
+                    disposables.Dispose();
                     vm?.Closed(new ViewModelCloseQueryArgs());
                     x.Content = null;
                 });
 
             return Window.ShowChildWindowAsync<TResult>(
                 childWindow,
-                ChildWindowManager.OverlayFillBehavior.FullWindow
+                options.OverlayFillBehavior
             );
         }
 

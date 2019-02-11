@@ -1,5 +1,8 @@
-﻿using ReactiveUI;
+﻿using MahApps.Metro.SimpleChildWindow;
+using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
+using System;
+using System.Linq;
 using System.Reactive;
 using System.Reactive.Disposables;
 using Ui.Wpf.Common;
@@ -14,6 +17,10 @@ namespace Ui.Wpf.Demo.ViewModels
         public ReactiveCommand<Unit, Unit> ShowChildWindowCommand { get; set; }
 
         public UiShowChildWindowOptions Options { get; set; } = new UiShowChildWindowOptions();
+
+        public ChildWindowManager.OverlayFillBehavior[] OverlayFillBehaviorSource { get; set; } =
+            Enum.GetValues(typeof(ChildWindowManager.OverlayFillBehavior))
+                .Cast<ChildWindowManager.OverlayFillBehavior>().ToArray();
 
         public int ChildWindowWidth { get; set; }
         public bool ChildWindowHasWidth { get; set; }
