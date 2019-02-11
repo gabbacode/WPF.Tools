@@ -26,14 +26,14 @@ namespace Ui.Wpf.Demo.ViewModels
             {
                 shell.ShowView<FlyoutDemoView>(
                     new ViewRequest("flyout-demo-view"),
-                    new UiShowOptions { Title = nameof(FlyoutDemoView) }
+                    new UiShowOptions {Title = nameof(FlyoutDemoView)}
                 );
             });
             ShowChildWindowViewCommand = ReactiveCommand.Create(() =>
             {
                 shell.ShowView<ChildWindowDemoView>(
                     new ViewRequest("child-window-demo-view"),
-                    new UiShowOptions { Title = nameof(FlyoutDemoView) }
+                    new UiShowOptions {Title = nameof(ChildWindowDemoView)}
                 );
             });
         }
