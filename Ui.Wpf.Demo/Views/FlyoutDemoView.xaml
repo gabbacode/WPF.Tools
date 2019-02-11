@@ -47,8 +47,8 @@
                       Content="Pinned"
                       IsChecked="{Binding Options.IsPinned}" />
             <CheckBox Margin="0 5 0 0"
-                      Content="CloseButtonIsCancel"
-                      IsChecked="{Binding Options.CloseButtonIsCancel}" />
+                      Content="CloseByEscape"
+                      IsChecked="{Binding Options.CloseByEscape}" />
             <CheckBox Margin="0 5 0 0"
                       Content="AnimateOpacity"
                       IsChecked="{Binding Options.AnimateOpacity}" />

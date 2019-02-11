@@ -3,12 +3,75 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
         <StackPanel Grid.Column="0" MaxWidth="300">
             <Button Command="{Binding ShowChildWindowCommand}"
                     Content="Show Child Window" />
+            <TextBox Margin="0 5 0 0"
+                     mah:TextBoxHelper.UseFloatingWatermark="True"
+                     mah:TextBoxHelper.Watermark="ViewId"
+                     Text="{Binding ChildWindowViewId}" />
+            <TextBox Margin="0 5 0 0"
+                     mah:TextBoxHelper.UseFloatingWatermark="True"
+                     mah:TextBoxHelper.Watermark="Title"
+                     Text="{Binding Options.Title}" />
+            <CheckBox Margin="0 5 0 0"
+                      Content="Show Title Bar"
+                      IsChecked="{Binding Options.ShowTitleBar}" />
+            <CheckBox Margin="0 5 0 0"
+                      Content="Drop Shadow"
+                      IsChecked="{Binding Options.EnableDropShadow}" />
+            <CheckBox Margin="0 5 0 0"
+                      Content="Modal"
+                      IsChecked="{Binding Options.IsModal}" />
+            <CheckBox Margin="0 5 0 0"
+                      Content="Allow Move"
+                      IsChecked="{Binding Options.AllowMove}" />
+            <CheckBox Margin="0 5 0 0"
+                      Content="CanClose"
+                      IsChecked="{Binding Options.CanClose}" />
+            <CheckBox Margin="0 5 0 0"
+                      Content="CloseOnOverlay"
+                      IsChecked="{Binding Options.CloseOnOverlay}" />
+            <CheckBox Margin="0 5 0 0"
+                      Content="CloseByEscape"
+                      IsChecked="{Binding Options.CloseByEscape}" />
+            <CheckBox Margin="0 5 0 0"
+                      Content="IsAutoCloseEnabled"
+                      IsChecked="{Binding Options.IsAutoCloseEnabled}" />
+            <mah:NumericUpDown Margin="0 5 0 0"
+                               mah:TextBoxHelper.UseFloatingWatermark="True"
+                               mah:TextBoxHelper.Watermark="AutoCloseInterval"
+                               Value="{Binding Options.AutoCloseInterval}" />
+            <CheckBox Margin="0 5 0 0"
+                      IsChecked="{Binding ChildWindowHasWidth}"
+                      HorizontalContentAlignment="Stretch">
+                <mah:NumericUpDown mah:TextBoxHelper.UseFloatingWatermark="True"
+                                   mah:TextBoxHelper.Watermark="Width"
+                                   Value="{Binding ChildWindowWidth}" />
+            </CheckBox>
+            <CheckBox Margin="0 5 0 0"
+                      IsChecked="{Binding ChildWindowHasHeight}"
+                      HorizontalContentAlignment="Stretch">
+                <mah:NumericUpDown mah:TextBoxHelper.UseFloatingWatermark="True"
+                                   mah:TextBoxHelper.Watermark="Height"
+                                   Value="{Binding ChildWindowHeight}" />
+            </CheckBox>
         </StackPanel>
+        <TextBox Grid.Column="1"
+                 Margin="5"
+                 Padding="5"
+                 TextWrapping="Wrap"
+                 AcceptsReturn="True"
+                 AcceptsTab="True"
+                 xml:space="preserve"
+                 Text="{Binding Text}" />
     </Grid>
 </UserControl>

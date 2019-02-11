@@ -125,7 +125,7 @@ namespace Ui.Wpf.Common
                 Theme = options.Theme,
                 ExternalCloseButton = options.ExternalCloseButton,
                 IsPinned = options.IsPinned,
-                CloseButtonIsCancel = options.CloseButtonIsCancel,
+                CloseButtonIsCancel = options.CloseByEscape,
                 CloseCommand = options.CloseCommand,
                 CloseCommandParameter = options.CloseCommandParameter,
                 AnimateOpacity = options.AnimateOpacity,
@@ -199,8 +199,53 @@ namespace Ui.Wpf.Common
             InitializeView(view, viewRequest);
             (view.ViewModel as IActivatableViewModel)?.Activate(viewRequest);
 
+            options = options ?? new UiShowChildWindowOptions();
+
+            var childWindow = new ChildWindowView(options) {Content = view};
+
+            var vm = view.ViewModel as ViewModelBase;
+            if (vm != null)
+            {
+
+                Observable
+                    .FromEventPattern<ViewModelCloseQueryArgs>(
+                        x => vm.CloseQuery += x,
+                        x => vm.CloseQuery -= x)
+                    .Subscribe(x => childWindow.Close((vm as IResultableViewModel)?.ViewResult))
+                    .DisposeWith(vm.Disposables);
+
+                Observable
+                    .FromEventPattern<CancelEventArgs>(
+                        x => childWindow.Closing += x,
+                        x => childWindow.Closing -= x)
+                    .Subscribe(x =>
+                    {
+                        var vcq = new ViewModelCloseQueryArgs { IsCanceled = false };
+                        vm.Closing(vcq);
+
+                        if (vcq.IsCanceled)
+                        {
+                            x.EventArgs.Cancel = true;
+                        }
+                    })
+                    .DisposeWith(vm.Disposables);
+            }
+
+            Observable
+                .FromEventPattern<RoutedEventHandler, RoutedEventArgs>(
+                    x => childWindow.ClosingFinished += x,
+                    x => childWindow.ClosingFinished -= x)
+                .Select(x => (ChildWindow)x.Sender)
+                .Take(1)
+                .Subscribe(x =>
+                {
+                    //disposables.Dispose();
+                    vm?.Closed(new ViewModelCloseQueryArgs());
+                    x.Content = null;
+                });
+
             return Window.ShowChildWindowAsync<TResult>(
-                new ChildWindowView(options) {Content = view},
+                childWindow,
                 ChildWindowManager.OverlayFillBehavior.FullWindow
             );
         }

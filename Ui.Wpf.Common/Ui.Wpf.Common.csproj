@@ -193,6 +193,7 @@
     <Compile Include="ShowOptions\UiShowOptions.cs" />
     <Compile Include="ViewModels\IActivatableViewModel.cs" />
     <Compile Include="ViewModels\IInitializibleViewModel.cs" />
+    <Compile Include="ViewModels\IResultableViewModel.cs" />
     <Compile Include="ViewModels\IViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="ViewModels\ViewModelCloseQueryArgs.cs" />
