@@ -1,23 +1,24 @@
 ﻿using Autofac;
 using MahApps.Metro.Controls;
+using System.Threading.Tasks;
 using Ui.Wpf.Common.ShowOptions;
 using Ui.Wpf.Common.ViewModels;
 using Xceed.Wpf.AvalonDock;
 
 namespace Ui.Wpf.Common
 {
-    public interface IShell 
+    public interface IShell
     {
         string Title { get; set; }
 
         IContainer Container { get; set; }
 
-        IView SelectedView { get; set; } 
+        IView SelectedView { get; set; }
 
         void ShowView<TView>(
-            ViewRequest viewRequest = null, 
+            ViewRequest viewRequest = null,
             UiShowOptions options = null
-            )
+        )
             where TView : class, IView;
 
         void ShowTool<TToolView>(
@@ -30,6 +31,11 @@ namespace Ui.Wpf.Common
             UiShowFlyoutOptions options = null)
             where TView : class, IView;
 
+        Task<TResult> ShowChildWindowView<TView, TResult>(
+            ViewRequest viewRequest = null,
+            UiShowChildWindowOptions options = null)
+            where TView : class, IView;
+
         void ShowStartView<TStartWindow>(UiShowStartWindowOptions options = null)
             where TStartWindow : class;
 
@@ -40,8 +46,12 @@ namespace Ui.Wpf.Common
         void AttachDockingManager(DockingManager dockingManager);
         void AttachFlyoutsControl(FlyoutsControl flyoutsControl);
 
-        CommandItem AddGlobalCommand(string menuName, string cmdName, string cmdFunc, IViewModel vm, bool addSeparator = false);
-        CommandItem AddVMCommand(string menuName, string cmdName, string cmdFunc, IViewModel vm, bool addSeparator = false);
+        CommandItem AddGlobalCommand(string menuName, string cmdName, string cmdFunc, IViewModel vm,
+            bool addSeparator = false);
+
+        CommandItem AddVMCommand(string menuName, string cmdName, string cmdFunc, IViewModel vm,
+            bool addSeparator = false);
+
         CommandItem AddInstanceCommand(string menuName, string cmdName, string cmdFunc, IViewModel vm);
         void RemoveCommand(CommandItem ci);
     }

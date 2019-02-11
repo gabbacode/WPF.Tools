@@ -7,7 +7,9 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
 using System.Windows;
+using MahApps.Metro.SimpleChildWindow;
 using Ui.Wpf.Common.ShowOptions;
 using Ui.Wpf.Common.ViewModels;
 using Xceed.Wpf.AvalonDock;
@@ -185,6 +187,24 @@ namespace Ui.Wpf.Common
             (view.ViewModel as IActivatableViewModel)?.Activate(viewRequest);
         }
 
+        public Task<TResult> ShowChildWindowView<TView, TResult>(
+            ViewRequest viewRequest = null,
+            UiShowChildWindowOptions options = null)
+            where TView : class, IView
+        {
+            var view = Container.Resolve<TView>();
+            if (options != null)
+                view.Configure(options);
+
+            InitializeView(view, viewRequest);
+            (view.ViewModel as IActivatableViewModel)?.Activate(viewRequest);
+
+            return Window.ShowChildWindowAsync<TResult>(
+                new ChildWindowView(options) {Content = view},
+                ChildWindowManager.OverlayFillBehavior.FullWindow
+            );
+        }
+
         public void ShowStartView<TStartWindow, TStartView>(
             UiShowStartWindowOptions options = null)
             where TStartWindow : class
@@ -196,18 +216,15 @@ namespace Ui.Wpf.Common
                 Title = options.Title;
             }
 
-            var startObject = Container.Resolve<TStartWindow>();
+            var startObject = Container.Resolve<TStartWindow>() ??
+                              throw new InvalidOperationException($"You should configure {typeof(TStartWindow)}");
 
-            if (startObject == null)
-                throw new InvalidOperationException($"You should configure {typeof(TStartWindow)}");
-
-            var window = startObject as Window;
-            if (window == null)
-                throw new InvalidCastException($"{startObject.GetType()} is not a window");
+            Window = startObject as Window ??
+                     throw new InvalidCastException($"{startObject.GetType()} is not a window");
 
             ShowView<TStartView>();
 
-            window.Show();
+            Window.Show();
         }
 
         public void ShowStartView<TStartWindow>(
@@ -220,16 +237,13 @@ namespace Ui.Wpf.Common
                 Title = options.Title;
             }
 
-            var startObject = Container.Resolve<TStartWindow>();
+            var startObject = Container.Resolve<TStartWindow>() ??
+                              throw new InvalidOperationException($"You shuld configurate {typeof(TStartWindow)}");
 
-            if (startObject == null)
-                throw new InvalidOperationException($"You shuld configurate {typeof(TStartWindow)}");
+            Window = startObject as Window ??
+                     throw new InvalidCastException($"{startObject.GetType()} is not a window");
 
-            var window = startObject as Window;
-            if (window == null)
-                throw new InvalidCastException($"{startObject.GetType()} is not a window");
-
-            window.Show();
+            Window.Show();
         }
 
         public void AttachDockingManager(DockingManager dockingManager)
@@ -365,8 +379,8 @@ namespace Ui.Wpf.Common
         private FlyoutsControl FlyoutsControl { get; set; }
 
         protected LayoutDocumentPane DocumentPane { get; set; }
-
         private LayoutAnchorablePane ToolsPane { get; set; }
+        private Window Window { get; set; }
 
         private int? ToolPaneWidth { get; set; }
     }

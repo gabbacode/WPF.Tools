@@ -62,10 +62,14 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ViewModels\ChildWindowDemoViewModel.cs" />
     <Compile Include="ViewModels\FlyoutDemoViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\TextBoxViewModel.cs" />
     <Compile Include="ViewModels\ToolsViewModel.cs" />
+    <Compile Include="Views\ChildWindowDemoView.xaml.cs">
+      <DependentUpon>ChildWindowDemoView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\FlyoutDemoView.xaml.cs">
       <DependentUpon>FlyoutDemoView.xaml</DependentUpon>
     </Compile>
@@ -107,6 +111,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Views\ChildWindowDemoView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\FlyoutDemoView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

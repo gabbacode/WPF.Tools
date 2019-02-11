@@ -23,6 +23,9 @@ namespace Ui.Wpf.Demo
             builder.RegisterType<FlyoutDemoView>();
             builder.RegisterType<FlyoutDemoViewModel>();
 
+            builder.RegisterType<ChildWindowDemoView>();
+            builder.RegisterType<ChildWindowDemoViewModel>();
+
             builder.RegisterType<TextBoxView>();
             builder.RegisterType<TextBoxViewModel>();
 
