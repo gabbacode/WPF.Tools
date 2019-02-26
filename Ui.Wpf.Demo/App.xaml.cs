@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using Ui.Wpf.Common;
+using Ui.Wpf.Common.DockingManagers;
 using Ui.Wpf.Common.ShowOptions;
 using Ui.Wpf.Demo.Views;
 
@@ -19,11 +20,17 @@ namespace Ui.Wpf.Demo
                 new UiShowStartWindowOptions
                 {
                     Title = "WPF.Tools.Demo",
-                    ToolPaneWidth = 300
+                    DockingManager = new VsDockingManager() // new CustomDockingManager()
                 }
             );
 
-            shell.ShowTool<ToolsView>(new ViewRequest("Tools"), new UiShowOptions {Title = "Tools"});
+            var tools = new[] {"ToolsLeft", "ToolsRight", "ToolsBottom"};
+            foreach (var tool in tools)
+                shell.ShowToolIn<ToolsView>(
+                    tool,
+                    new ViewRequest(tool),
+                    new UiShowOptions {Title = tool}
+                );
         }
     }
 }

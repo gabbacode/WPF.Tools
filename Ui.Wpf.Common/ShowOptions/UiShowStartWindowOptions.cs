@@ -1,7 +1,9 @@
-﻿namespace Ui.Wpf.Common.ShowOptions
+﻿using Xceed.Wpf.AvalonDock;
+
+namespace Ui.Wpf.Common.ShowOptions
 {
     public class UiShowStartWindowOptions : UiShowOptions
     {
-        public int? ToolPaneWidth { get; set; }
+        public DockingManager DockingManager { get; set; }
     }
 }
