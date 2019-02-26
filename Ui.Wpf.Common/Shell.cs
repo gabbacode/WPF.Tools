@@ -36,6 +36,43 @@ namespace Ui.Wpf.Common
 
         private Window Window { get; set; }
 
+        public void SetContainerWidth(string containerName, GridLength width)
+        {
+            var toolContainer = FindChildByName<LayoutAnchorablePane>(DockingManager.Layout, containerName);
+            if (toolContainer != null)
+                toolContainer.DockWidth = width;
+            var viewContainer = FindChildByName<LayoutDocumentPane>(DockingManager.Layout, containerName);
+            if (viewContainer != null)
+                viewContainer.DockWidth = width;
+        }
+
+        public void SetContainerHeight(string containerName, GridLength height)
+        {
+            var toolContainer = FindChildByName<LayoutAnchorablePane>(DockingManager.Layout, containerName);
+            if (toolContainer != null)
+                toolContainer.DockHeight = height;
+            var viewContainer = FindChildByName<LayoutDocumentPane>(DockingManager.Layout, containerName);
+            if (viewContainer != null)
+                viewContainer.DockHeight = height;
+        }
+
+        public void SetContainerSize(string containerName, GridLength width, GridLength height)
+        {
+            var toolContainer = FindChildByName<LayoutAnchorablePane>(DockingManager.Layout, containerName);
+            if (toolContainer != null)
+            {
+                toolContainer.DockWidth = width;
+                toolContainer.DockHeight = height;
+            }
+
+            var viewContainer = FindChildByName<LayoutDocumentPane>(DockingManager.Layout, containerName);
+            if (viewContainer != null)
+            {
+                viewContainer.DockWidth = width;
+                viewContainer.DockHeight = height;
+            }
+        }
+
         public void ShowView<TView>(
             ViewRequest viewRequest = null,
             UiShowOptions options = null)
@@ -370,7 +407,7 @@ namespace Ui.Wpf.Common
                         .FromEventPattern(
                             x => dm.ActiveContentChanged += x,
                             x => dm.ActiveContentChanged -= x)
-                        .Select(x => ((DockingManager)x.Sender).ActiveContent as IView)
+                        .Select(x => ((DockingManager) x.Sender).ActiveContent as IView)
                         .Subscribe(x => SelectedView = x);
                 });
 

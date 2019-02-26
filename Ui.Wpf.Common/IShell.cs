@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using MahApps.Metro.Controls;
 using System.Threading.Tasks;
+using System.Windows;
 using Ui.Wpf.Common.ShowOptions;
 using Ui.Wpf.Common.ViewModels;
 using Xceed.Wpf.AvalonDock;
@@ -14,6 +15,10 @@ namespace Ui.Wpf.Common
         IContainer Container { get; set; }
 
         IView SelectedView { get; set; }
+
+        void SetContainerWidth(string containerName, GridLength width);
+        void SetContainerHeight(string containerName, GridLength height);
+        void SetContainerSize(string containerName, GridLength width, GridLength height);
 
         void ShowView<TView>(
             ViewRequest viewRequest = null,
