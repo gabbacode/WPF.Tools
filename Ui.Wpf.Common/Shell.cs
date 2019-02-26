@@ -12,6 +12,8 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using Ui.Wpf.Common.AttachedProperties;
+using Ui.Wpf.Common.DockingManagers;
 using Ui.Wpf.Common.ShowOptions;
 using Ui.Wpf.Common.ViewModels;
 using Xceed.Wpf.AvalonDock;
@@ -28,12 +30,65 @@ namespace Ui.Wpf.Common
 
         [Reactive] public IView SelectedView { get; set; }
 
+        [Reactive] public DockingManager DockingManager { get; set; }
+
+        public FlyoutsControl FlyoutsControl { get; set; }
+
+        private Window Window { get; set; }
+
+        public void SetContainerWidth(string containerName, GridLength width)
+        {
+            var toolContainer = FindChildByName<LayoutAnchorablePane>(DockingManager.Layout, containerName);
+            if (toolContainer != null)
+                toolContainer.DockWidth = width;
+            var viewContainer = FindChildByName<LayoutDocumentPane>(DockingManager.Layout, containerName);
+            if (viewContainer != null)
+                viewContainer.DockWidth = width;
+        }
+
+        public void SetContainerHeight(string containerName, GridLength height)
+        {
+            var toolContainer = FindChildByName<LayoutAnchorablePane>(DockingManager.Layout, containerName);
+            if (toolContainer != null)
+                toolContainer.DockHeight = height;
+            var viewContainer = FindChildByName<LayoutDocumentPane>(DockingManager.Layout, containerName);
+            if (viewContainer != null)
+                viewContainer.DockHeight = height;
+        }
+
+        public void SetContainerSize(string containerName, GridLength width, GridLength height)
+        {
+            var toolContainer = FindChildByName<LayoutAnchorablePane>(DockingManager.Layout, containerName);
+            if (toolContainer != null)
+            {
+                toolContainer.DockWidth = width;
+                toolContainer.DockHeight = height;
+            }
+
+            var viewContainer = FindChildByName<LayoutDocumentPane>(DockingManager.Layout, containerName);
+            if (viewContainer != null)
+            {
+                viewContainer.DockWidth = width;
+                viewContainer.DockHeight = height;
+            }
+        }
+
         public void ShowView<TView>(
             ViewRequest viewRequest = null,
             UiShowOptions options = null)
             where TView : class, IView
         {
-            var layoutDocument = FindLayoutByViewRequest(DocumentPane, viewRequest);
+            ShowViewIn<TView>("Views", viewRequest, options);
+        }
+
+        public void ShowViewIn<TView>(
+            string containerName,
+            ViewRequest viewRequest = null,
+            UiShowOptions options = null)
+            where TView : class, IView
+        {
+            var documentPane = FindChildByName<LayoutDocumentPane>(DockingManager.Layout, containerName);
+            var layoutDocument = FindLayoutByViewRequest<LayoutDocument>(documentPane, viewRequest);
 
             if (layoutDocument == null)
             {
@@ -53,7 +108,7 @@ namespace Ui.Wpf.Common
                 AddWindowBehaviour(view, layoutDocument);
                 AddClosingByRequest(view, layoutDocument);
 
-                DocumentPane.Children.Add(layoutDocument);
+                documentPane.Children.Add(layoutDocument);
 
                 InitializeView(view, viewRequest);
             }
@@ -66,7 +121,17 @@ namespace Ui.Wpf.Common
             UiShowOptions options = null)
             where TToolView : class, IToolView
         {
-            var layoutAnchorable = FindLayoutByViewRequest(ToolsPane, viewRequest);
+            ShowToolIn<TToolView>("Tools", viewRequest, options);
+        }
+
+        public void ShowToolIn<TToolView>(
+            string containerName,
+            ViewRequest viewRequest = null,
+            UiShowOptions options = null)
+            where TToolView : class, IToolView
+        {
+            var toolsPane = FindChildByName<LayoutAnchorablePane>(DockingManager.Layout, containerName);
+            var layoutAnchorable = FindLayoutByViewRequest<LayoutAnchorable>(toolsPane, viewRequest);
 
             if (layoutAnchorable == null)
             {
@@ -87,7 +152,7 @@ namespace Ui.Wpf.Common
                 AddTitleRefreshing(view, layoutAnchorable);
                 AddWindowBehaviour(view, layoutAnchorable);
 
-                ToolsPane.Children.Add(layoutAnchorable);
+                toolsPane.Children.Add(layoutAnchorable);
 
                 InitializeView(view, viewRequest);
             }
@@ -312,20 +377,8 @@ namespace Ui.Wpf.Common
             where TStartWindow : class
             where TStartView : class, IView
         {
-            if (options != null)
-            {
-                ToolPaneWidth = options.ToolPaneWidth;
-                Title = options.Title;
-            }
-
-            var startObject = Container.Resolve<TStartWindow>() ??
-                              throw new InvalidOperationException($"You should configure {typeof(TStartWindow)}");
-
-            Window = startObject as Window ??
-                     throw new InvalidCastException($"{startObject.GetType()} is not a window");
-
+            InitOnStart<TStartWindow>(options);
             ShowView<TStartView>();
-
             Window.Show();
         }
 
@@ -333,46 +386,36 @@ namespace Ui.Wpf.Common
             UiShowStartWindowOptions options = null)
             where TStartWindow : class
         {
+            InitOnStart<TStartWindow>(options);
+            Window.Show();
+        }
+
+        private void InitOnStart<TStartWindow>(UiShowStartWindowOptions options)
+            where TStartWindow : class
+        {
             if (options != null)
-            {
-                ToolPaneWidth = options.ToolPaneWidth;
                 Title = options.Title;
-            }
+
+            DockingManager = options?.DockingManager ?? new DefaultDockingManager();
+            IDisposable dockingManagerSubscription = null;
+            this.WhenAnyValue(x => x.DockingManager)
+                .Subscribe(dm =>
+                {
+                    dockingManagerSubscription?.Dispose();
+                    if (dm == null) return;
+                    dockingManagerSubscription = Observable
+                        .FromEventPattern(
+                            x => dm.ActiveContentChanged += x,
+                            x => dm.ActiveContentChanged -= x)
+                        .Select(x => ((DockingManager) x.Sender).ActiveContent as IView)
+                        .Subscribe(x => SelectedView = x);
+                });
 
             var startObject = Container.Resolve<TStartWindow>() ??
                               throw new InvalidOperationException($"You shuld configurate {typeof(TStartWindow)}");
 
             Window = startObject as Window ??
                      throw new InvalidCastException($"{startObject.GetType()} is not a window");
-
-            Window.Show();
-        }
-
-        public void AttachDockingManager(DockingManager dockingManager)
-        {
-            DockingManager = dockingManager;
-
-            var layoutRoot = new LayoutRoot();
-            DockingManager.Layout = layoutRoot;
-
-            DocumentPane = layoutRoot.RootPanel.Children[0] as LayoutDocumentPane;
-
-            ToolsPane = new LayoutAnchorablePane();
-            layoutRoot.RootPanel.Children.Insert(0, ToolsPane);
-            ToolsPane.DockWidth = new GridLength(ToolPaneWidth.GetValueOrDefault(410));
-        }
-
-        public void AttachFlyoutsControl(FlyoutsControl flyoutsControl)
-        {
-            FlyoutsControl = flyoutsControl;
-        }
-
-        private static T FindLayoutByViewRequest<T>(LayoutGroup<T> layoutGroup, ViewRequest viewRequest)
-            where T : LayoutContent
-        {
-            return viewRequest?.ViewId != null
-                ? layoutGroup.Children.FirstOrDefault(x => x.ContentId == viewRequest.ViewId)
-                : null;
         }
 
         private static void InitializeView(IView view, ViewRequest viewRequest)
@@ -475,15 +518,44 @@ namespace Ui.Wpf.Common
             }
         }
 
+        private static T FindChildByName<T>(DependencyObject root, string name) where T : DependencyObject
+        {
+            if (LogicalTreeHelper.FindLogicalNode(root, name) is T logicalTreeResult)
+                return logicalTreeResult;
 
-        //TODO replace to abstract manager
-        private DockingManager DockingManager { get; set; }
-        private FlyoutsControl FlyoutsControl { get; set; }
+            if (DockContainer.GetName(root) == name && root is T rootResult)
+                return rootResult;
 
-        protected LayoutDocumentPane DocumentPane { get; set; }
-        private LayoutAnchorablePane ToolsPane { get; set; }
-        private Window Window { get; set; }
+            if (root is ILayoutContainer container)
+            {
+                foreach (var child in container.Children.OfType<DependencyObject>())
+                {
+                    var childResult = FindChildByName<T>(child, name);
+                    if (childResult != null)
+                        return childResult;
+                }
+            }
 
-        private int? ToolPaneWidth { get; set; }
+            return null;
+        }
+
+        private static T FindLayoutByViewRequest<T>(ILayoutContainer root, ViewRequest viewRequest)
+            where T : LayoutContent
+        {
+            foreach (var child in root.Children)
+            {
+                if (child is T childResult && childResult.ContentId == viewRequest.ViewId)
+                    return childResult;
+
+                if (child is ILayoutContainer container)
+                {
+                    var childChildResult = FindLayoutByViewRequest<T>(container, viewRequest);
+                    if (childChildResult != null)
+                        return childChildResult;
+                }
+            }
+
+            return null;
+        }
     }
 }

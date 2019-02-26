@@ -19,10 +19,7 @@ namespace Ui.Wpf.Common
         protected override void OnInitialized(EventArgs e)
         {
             base.OnInitialized(e);
-
-            //TODO do with behavior
-            Shell.AttachDockingManager(DockingManager);
-            Shell.AttachFlyoutsControl(Flyouts);
+            Shell.FlyoutsControl = Flyouts;
         }
 
         protected override void OnClosed(EventArgs e)

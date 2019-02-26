@@ -153,10 +153,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AttachedProperties\DockContainer.cs" />
     <Compile Include="ChildWindowView.xaml.cs">
       <DependentUpon>ChildWindowView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Commands\CommandItem.cs" />
+    <Compile Include="DockingManagers\DefaultDockingManager.xaml.cs">
+      <DependentUpon>DefaultDockingManager.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DockingManagers\VsDockingManager.xaml.cs">
+      <DependentUpon>VsDockingManager.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Reactive\DynamicHelper.cs" />
     <Compile Include="IBootstraper.cs" />
     <Compile Include="IDockWindow.cs" />
@@ -209,6 +216,14 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="ChildWindowView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DockingManagers\DefaultDockingManager.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DockingManagers\VsDockingManager.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
