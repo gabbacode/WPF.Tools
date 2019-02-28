@@ -12,8 +12,8 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using Ui.Wpf.Common.AttachedProperties;
 using Ui.Wpf.Common.DockingManagers;
+using Ui.Wpf.Common.Extensions;
 using Ui.Wpf.Common.ShowOptions;
 using Ui.Wpf.Common.ViewModels;
 using Xceed.Wpf.AvalonDock;
@@ -36,43 +36,6 @@ namespace Ui.Wpf.Common
 
         private Window Window { get; set; }
 
-        public void SetContainerWidth(string containerName, GridLength width)
-        {
-            var toolContainer = FindChildByName<LayoutAnchorablePane>(DockingManager.Layout, containerName);
-            if (toolContainer != null)
-                toolContainer.DockWidth = width;
-            var viewContainer = FindChildByName<LayoutDocumentPane>(DockingManager.Layout, containerName);
-            if (viewContainer != null)
-                viewContainer.DockWidth = width;
-        }
-
-        public void SetContainerHeight(string containerName, GridLength height)
-        {
-            var toolContainer = FindChildByName<LayoutAnchorablePane>(DockingManager.Layout, containerName);
-            if (toolContainer != null)
-                toolContainer.DockHeight = height;
-            var viewContainer = FindChildByName<LayoutDocumentPane>(DockingManager.Layout, containerName);
-            if (viewContainer != null)
-                viewContainer.DockHeight = height;
-        }
-
-        public void SetContainerSize(string containerName, GridLength width, GridLength height)
-        {
-            var toolContainer = FindChildByName<LayoutAnchorablePane>(DockingManager.Layout, containerName);
-            if (toolContainer != null)
-            {
-                toolContainer.DockWidth = width;
-                toolContainer.DockHeight = height;
-            }
-
-            var viewContainer = FindChildByName<LayoutDocumentPane>(DockingManager.Layout, containerName);
-            if (viewContainer != null)
-            {
-                viewContainer.DockWidth = width;
-                viewContainer.DockHeight = height;
-            }
-        }
-
         public void ShowView<TView>(
             ViewRequest viewRequest = null,
             UiShowOptions options = null)
@@ -87,8 +50,8 @@ namespace Ui.Wpf.Common
             UiShowOptions options = null)
             where TView : class, IView
         {
-            var documentPane = FindChildByName<LayoutDocumentPane>(DockingManager.Layout, containerName);
-            var layoutDocument = FindLayoutByViewRequest<LayoutDocument>(documentPane, viewRequest);
+            var documentPane = DockingManager.FindObjectByName<LayoutDocumentPane>(containerName);
+            var layoutDocument = documentPane.FindByViewRequest<LayoutDocument>(viewRequest);
 
             if (layoutDocument == null)
             {
@@ -130,8 +93,8 @@ namespace Ui.Wpf.Common
             UiShowOptions options = null)
             where TToolView : class, IToolView
         {
-            var toolsPane = FindChildByName<LayoutAnchorablePane>(DockingManager.Layout, containerName);
-            var layoutAnchorable = FindLayoutByViewRequest<LayoutAnchorable>(toolsPane, viewRequest);
+            var toolsPane = DockingManager.FindObjectByName<LayoutAnchorablePane>(containerName);
+            var layoutAnchorable = toolsPane.FindByViewRequest<LayoutAnchorable>(viewRequest);
 
             if (layoutAnchorable == null)
             {
@@ -516,46 +479,6 @@ namespace Ui.Wpf.Common
                     .Subscribe(x => layoutAnchorable.CanHide = x)
                     .DisposeWith(baseViewModel.Disposables);
             }
-        }
-
-        private static T FindChildByName<T>(DependencyObject root, string name) where T : DependencyObject
-        {
-            if (LogicalTreeHelper.FindLogicalNode(root, name) is T logicalTreeResult)
-                return logicalTreeResult;
-
-            if (DockContainer.GetName(root) == name && root is T rootResult)
-                return rootResult;
-
-            if (root is ILayoutContainer container)
-            {
-                foreach (var child in container.Children.OfType<DependencyObject>())
-                {
-                    var childResult = FindChildByName<T>(child, name);
-                    if (childResult != null)
-                        return childResult;
-                }
-            }
-
-            return null;
-        }
-
-        private static T FindLayoutByViewRequest<T>(ILayoutContainer root, ViewRequest viewRequest)
-            where T : LayoutContent
-        {
-            foreach (var child in root.Children)
-            {
-                if (child is T childResult && childResult.ContentId == viewRequest.ViewId)
-                    return childResult;
-
-                if (child is ILayoutContainer container)
-                {
-                    var childChildResult = FindLayoutByViewRequest<T>(container, viewRequest);
-                    if (childChildResult != null)
-                        return childChildResult;
-                }
-            }
-
-            return null;
         }
     }
 }
