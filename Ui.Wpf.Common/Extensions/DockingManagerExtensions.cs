@@ -8,7 +8,8 @@ namespace Ui.Wpf.Common.Extensions
 {
     public static class DockingManagerExtensions
     {
-        public static T FindObjectByName<T>(this DockingManager dm, string name) where T : DependencyObject
+        public static T FindObjectByName<T>(this DockingManager dm, string name)
+            where T : DependencyObject
         {
             if (dm == null)
                 return null;
@@ -26,7 +27,8 @@ namespace Ui.Wpf.Common.Extensions
                 .FirstOrDefault(x => x != null);
         }
 
-        public static T FindChildByName<T>(this DependencyObject root, string name) where T : DependencyObject
+        public static T FindChildByName<T>(this DependencyObject root, string name)
+            where T : DependencyObject
         {
             if (root == null || string.IsNullOrEmpty(name))
                 return null;
@@ -53,17 +55,23 @@ namespace Ui.Wpf.Common.Extensions
         public static T FindByViewRequest<T>(this ILayoutContainer root, ViewRequest viewRequest)
             where T : LayoutContent
         {
-            if (string.IsNullOrEmpty(viewRequest?.ViewId))
+            return viewRequest != null ? root.FindByViewId<T>(viewRequest.ViewId) : null;
+        }
+
+        public static T FindByViewId<T>(this ILayoutContainer root, string viewId)
+            where T : LayoutContent
+        {
+            if (string.IsNullOrEmpty(viewId))
                 return null;
 
             foreach (var child in root.Children)
             {
-                if (child is T childResult && childResult.ContentId == viewRequest.ViewId)
+                if (child is T childResult && childResult.ContentId == viewId)
                     return childResult;
 
                 if (child is ILayoutContainer container)
                 {
-                    var childChildResult = container.FindByViewRequest<T>(viewRequest);
+                    var childChildResult = container.FindByViewId<T>(viewId);
                     if (childChildResult != null)
                         return childChildResult;
                 }

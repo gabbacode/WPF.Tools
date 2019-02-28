@@ -24,6 +24,9 @@ namespace Ui.Wpf.Common
 {
     public partial class Shell : ReactiveObject, IShell
     {
+        private readonly string VIEWS_CONTAINER = "Views";
+        private readonly string TOOLS_CONTAINER = "Tools";
+
         public IContainer Container { get; set; }
 
         [Reactive] public string Title { get; set; }
@@ -36,12 +39,43 @@ namespace Ui.Wpf.Common
 
         private Window Window { get; set; }
 
+        public void CloseView(string viewId)
+        {
+            CloseViewIn(VIEWS_CONTAINER, viewId);
+        }
+
+        public void CloseTool(string viewId)
+        {
+            CloseToolIn(TOOLS_CONTAINER, viewId);
+        }
+
+        public void CloseViewIn(string containerName, string viewId)
+        {
+            var container = DockingManager.FindObjectByName<LayoutDocumentPane>(containerName);
+            var layout = container.FindByViewId<LayoutDocument>(viewId);
+            CloseContent(layout);
+        }
+
+        public void CloseToolIn(string containerName, string viewId)
+        {
+            var container = DockingManager.FindObjectByName<LayoutAnchorablePane>(containerName);
+            var layout = container.FindByViewId<LayoutAnchorable>(viewId);
+            CloseContent(layout);
+        }
+
+        private void CloseContent(LayoutContent layout)
+        {
+            if (layout.Content is IView view &&
+                view.ViewModel is ViewModelBase vm)
+                vm.Close();
+        }
+
         public void ShowView<TView>(
             ViewRequest viewRequest = null,
             UiShowOptions options = null)
             where TView : class, IView
         {
-            ShowViewIn<TView>("Views", viewRequest, options);
+            ShowViewIn<TView>(VIEWS_CONTAINER, viewRequest, options);
         }
 
         public void ShowViewIn<TView>(
@@ -84,7 +118,7 @@ namespace Ui.Wpf.Common
             UiShowOptions options = null)
             where TToolView : class, IToolView
         {
-            ShowToolIn<TToolView>("Tools", viewRequest, options);
+            ShowToolIn<TToolView>(TOOLS_CONTAINER, viewRequest, options);
         }
 
         public void ShowToolIn<TToolView>(

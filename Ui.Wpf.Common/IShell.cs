@@ -20,6 +20,11 @@ namespace Ui.Wpf.Common
         void SetContainerHeight(string containerName, GridLength height);
         void SetContainerSize(string containerName, GridLength width, GridLength height);
 
+        void CloseView(string viewId);
+        void CloseTool(string viewId);
+        void CloseViewIn(string containerName, string viewId);
+        void CloseToolIn(string containerName, string viewId);
+
         void ShowView<TView>(
             ViewRequest viewRequest = null,
             UiShowOptions options = null)
