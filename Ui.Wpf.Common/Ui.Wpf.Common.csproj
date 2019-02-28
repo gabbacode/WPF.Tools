@@ -164,6 +164,7 @@
     <Compile Include="DockingManagers\VsDockingManager.xaml.cs">
       <DependentUpon>VsDockingManager.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Extensions\DockingManagerExtensions.cs" />
     <Compile Include="Reactive\DynamicHelper.cs" />
     <Compile Include="IBootstraper.cs" />
     <Compile Include="IDockWindow.cs" />
@@ -190,6 +191,7 @@
     </Compile>
     <Compile Include="Shell.Commands.cs" />
     <Compile Include="Shell.cs" />
+    <Compile Include="Shell.ResizeContainer.cs" />
     <Compile Include="ShowOptions\UiShowChildWindowOptions.cs" />
     <Compile Include="ShowOptions\UiShowFlyoutOptions.cs" />
     <Compile Include="ShowOptions\UiShowStartWindowOptions.cs" />

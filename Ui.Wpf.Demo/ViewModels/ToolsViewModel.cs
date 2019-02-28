@@ -12,6 +12,7 @@ namespace Ui.Wpf.Demo.ViewModels
         public ReactiveCommand<Unit, Unit> ShowMainViewCommand { get; set; }
         public ReactiveCommand<Unit, Unit> ShowFlyoutDemoViewCommand { get; set; }
         public ReactiveCommand<Unit, Unit> ShowChildWindowViewCommand { get; set; }
+        public ReactiveCommand<Unit, Unit> CloseMainViewCommand { get; set; }
 
         public ToolsViewModel(IShell shell)
         {
@@ -35,6 +36,10 @@ namespace Ui.Wpf.Demo.ViewModels
                     new ViewRequest("child-window-demo-view"),
                     new UiShowOptions {Title = nameof(ChildWindowDemoView)}
                 );
+            });
+            CloseMainViewCommand = ReactiveCommand.Create(() =>
+            {
+                shell.CloseView("main-view");
             });
         }
     }
