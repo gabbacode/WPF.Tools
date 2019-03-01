@@ -5,15 +5,27 @@
                      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                      xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
                      xmlns:ap="clr-namespace:Ui.Wpf.Common.AttachedProperties;assembly=Ui.Wpf.Common"
+                     xmlns:dm="clr-namespace:Ui.Wpf.Demo"
                      mc:Ignorable="d"
                      d:DesignHeight="450" d:DesignWidth="800">
     <xcad:LayoutRoot>
-        <xcad:LayoutPanel Orientation="Vertical">
-            <xcad:LayoutPanel Orientation="Horizontal">
-                <xcad:LayoutAnchorablePane ap:DockContainer.Name="Tools" DockWidth="300"/>
-                <xcad:LayoutDocumentPane ap:DockContainer.Name="Views" />
-            </xcad:LayoutPanel>
-            <xcad:LayoutAnchorablePane ap:DockContainer.Name="Tools2" DockHeight="300"/>
+        <xcad:LayoutPanel>
+            <xcad:LayoutDocumentPane ap:DockContainer.Name="{x:Static dm:CustomDockingManager.Views}" />
         </xcad:LayoutPanel>
+        <xcad:LayoutRoot.LeftSide>
+            <xcad:LayoutAnchorSide>
+                <xcad:LayoutAnchorGroup ap:DockContainer.Name="{x:Static dm:CustomDockingManager.ToolsLeft}" />
+            </xcad:LayoutAnchorSide>
+        </xcad:LayoutRoot.LeftSide>
+        <xcad:LayoutRoot.RightSide>
+            <xcad:LayoutAnchorSide>
+                <xcad:LayoutAnchorGroup ap:DockContainer.Name="{x:Static dm:CustomDockingManager.ToolsRight}" />
+            </xcad:LayoutAnchorSide>
+        </xcad:LayoutRoot.RightSide>
+        <xcad:LayoutRoot.BottomSide>
+            <xcad:LayoutAnchorSide>
+                <xcad:LayoutAnchorGroup ap:DockContainer.Name="{x:Static dm:CustomDockingManager.ToolsBottom}" />
+            </xcad:LayoutAnchorSide>
+        </xcad:LayoutRoot.BottomSide>
     </xcad:LayoutRoot>
 </xcad:DockingManager>

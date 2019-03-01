@@ -24,9 +24,6 @@ namespace Ui.Wpf.Common
 {
     public partial class Shell : ReactiveObject, IShell
     {
-        private readonly string VIEWS_CONTAINER = "Views";
-        private readonly string TOOLS_CONTAINER = "Tools";
-
         public IContainer Container { get; set; }
 
         [Reactive] public string Title { get; set; }
@@ -41,25 +38,25 @@ namespace Ui.Wpf.Common
 
         public void CloseView(string viewId)
         {
-            CloseViewIn(VIEWS_CONTAINER, viewId);
+            CloseViewIn(DefaultDockingManager.Views, viewId);
         }
 
         public void CloseTool(string viewId)
         {
-            CloseToolIn(TOOLS_CONTAINER, viewId);
+            CloseToolIn(DefaultDockingManager.Tools, viewId);
         }
 
         public void CloseViewIn(string containerName, string viewId)
         {
-            var container = DockingManager.FindObjectByName<LayoutDocumentPane>(containerName);
-            var layout = container.FindByViewId<LayoutDocument>(viewId);
+            var container = DockingManager.FindObjectByName<LayoutGroup<LayoutDocument>>(containerName);
+            var layout = container.FindByViewId<LayoutContent>(viewId);
             CloseContent(layout);
         }
 
         public void CloseToolIn(string containerName, string viewId)
         {
-            var container = DockingManager.FindObjectByName<LayoutAnchorablePane>(containerName);
-            var layout = container.FindByViewId<LayoutAnchorable>(viewId);
+            var container = DockingManager.FindObjectByName<LayoutGroup<LayoutAnchorable>>(containerName);
+            var layout = container.FindByViewId<LayoutContent>(viewId);
             CloseContent(layout);
         }
 
@@ -75,7 +72,7 @@ namespace Ui.Wpf.Common
             UiShowOptions options = null)
             where TView : class, IView
         {
-            ShowViewIn<TView>(VIEWS_CONTAINER, viewRequest, options);
+            ShowViewIn<TView>(DefaultDockingManager.Views, viewRequest, options);
         }
 
         public void ShowViewIn<TView>(
@@ -84,7 +81,7 @@ namespace Ui.Wpf.Common
             UiShowOptions options = null)
             where TView : class, IView
         {
-            var documentPane = DockingManager.FindObjectByName<LayoutDocumentPane>(containerName);
+            var documentPane = DockingManager.FindObjectByName<LayoutGroup<LayoutDocument>>(containerName);
             var layoutDocument = documentPane.FindByViewRequest<LayoutDocument>(viewRequest);
 
             if (layoutDocument == null)
@@ -118,7 +115,7 @@ namespace Ui.Wpf.Common
             UiShowOptions options = null)
             where TToolView : class, IToolView
         {
-            ShowToolIn<TToolView>(TOOLS_CONTAINER, viewRequest, options);
+            ShowToolIn<TToolView>(DefaultDockingManager.Tools, viewRequest, options);
         }
 
         public void ShowToolIn<TToolView>(
@@ -127,7 +124,7 @@ namespace Ui.Wpf.Common
             UiShowOptions options = null)
             where TToolView : class, IToolView
         {
-            var toolsPane = DockingManager.FindObjectByName<LayoutAnchorablePane>(containerName);
+            var toolsPane = DockingManager.FindObjectByName<LayoutGroup<LayoutAnchorable>>(containerName);
             var layoutAnchorable = toolsPane.FindByViewRequest<LayoutAnchorable>(viewRequest);
 
             if (layoutAnchorable == null)
