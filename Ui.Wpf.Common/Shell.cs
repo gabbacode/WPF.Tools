@@ -48,7 +48,7 @@ namespace Ui.Wpf.Common
 
         public void CloseViewIn(string containerName, string viewId)
         {
-            var container = DockingManager.FindObjectByName<LayoutGroup<LayoutDocument>>(containerName);
+            var container = DockingManager.FindObjectByName<LayoutGroup<LayoutContent>>(containerName);
             var layout = container.FindByViewId<LayoutContent>(viewId);
             CloseContent(layout);
         }
@@ -81,8 +81,8 @@ namespace Ui.Wpf.Common
             UiShowOptions options = null)
             where TView : class, IView
         {
-            var documentPane = DockingManager.FindObjectByName<LayoutGroup<LayoutDocument>>(containerName);
-            var layoutDocument = documentPane.FindByViewRequest<LayoutDocument>(viewRequest);
+            var documentPane = DockingManager.FindObjectByName<LayoutGroup<LayoutContent>>(containerName);
+            var layoutDocument = documentPane.FindByViewRequest<LayoutContent>(viewRequest);
 
             if (layoutDocument == null)
             {
