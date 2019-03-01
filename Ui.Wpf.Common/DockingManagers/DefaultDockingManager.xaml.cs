@@ -7,6 +7,9 @@ namespace Ui.Wpf.Common.DockingManagers
     /// </summary>
     public partial class DefaultDockingManager : DockingManager
     {
+        public const string Tools = "Tools";
+        public const string Views = "Views";
+
         public DefaultDockingManager()
         {
             InitializeComponent();

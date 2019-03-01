@@ -11,20 +11,7 @@ namespace Ui.Wpf.Common.Extensions
         public static T FindObjectByName<T>(this DockingManager dm, string name)
             where T : DependencyObject
         {
-            if (dm == null)
-                return null;
-
-            return new DependencyObject[]
-                {
-                    dm.Layout,
-                    dm.LeftSidePanel,
-                    dm.TopSidePanel,
-                    dm.RightSidePanel,
-                    dm.BottomSidePanel
-                }
-                .Concat(dm.FloatingWindows)
-                .Select(x => x.FindChildByName<T>(name))
-                .FirstOrDefault(x => x != null);
+            return dm?.Layout?.FindChildByName<T>(name);
         }
 
         public static T FindChildByName<T>(this DependencyObject root, string name)

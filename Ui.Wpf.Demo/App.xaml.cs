@@ -24,7 +24,7 @@ namespace Ui.Wpf.Demo
                 }
             );
 
-            var tools = new[] {"ToolsLeft", "ToolsRight", "ToolsBottom"};
+            var tools = new[] {VsDockingManager.ToolsLeft, VsDockingManager.ToolsRight, VsDockingManager.ToolsBottom};
             foreach (var tool in tools)
                 shell.ShowToolIn<ToolsView>(
                     tool,
