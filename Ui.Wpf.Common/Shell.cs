@@ -4,6 +4,7 @@ using MahApps.Metro.SimpleChildWindow;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reactive;
@@ -12,6 +13,7 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using Ui.Wpf.Common.AttachedProperties;
 using Ui.Wpf.Common.DockingManagers;
 using Ui.Wpf.Common.Extensions;
 using Ui.Wpf.Common.ShowOptions;
@@ -145,6 +147,7 @@ namespace Ui.Wpf.Common
 
                 AddTitleRefreshing(view, layoutAnchorable);
                 AddWindowBehaviour(view, layoutAnchorable);
+                AddClosingByRequest(view, layoutAnchorable);
 
                 toolsPane.Children.Add(layoutAnchorable);
 
@@ -392,9 +395,14 @@ namespace Ui.Wpf.Common
 
             DockingManager = options?.DockingManager ?? new DefaultDockingManager();
             IDisposable dockingManagerSubscription = null;
+            Dictionary<ILayoutPane, LayoutContent> placeholders = null;
             this.WhenAnyValue(x => x.DockingManager)
                 .Subscribe(dm =>
                 {
+                    if (placeholders != null)
+                        foreach (var placeholder in placeholders.Values)
+                            placeholder.Close();
+
                     dockingManagerSubscription?.Dispose();
                     if (dm == null) return;
                     dockingManagerSubscription = Observable
@@ -403,6 +411,31 @@ namespace Ui.Wpf.Common
                             x => dm.ActiveContentChanged -= x)
                         .Select(x => ((DockingManager) x.Sender).ActiveContent as IView)
                         .Subscribe(x => SelectedView = x);
+
+                    var dmDescendents = dm.Layout.Descendents().ToList();
+                    placeholders = dmDescendents
+                        .OfType<DependencyObject>()
+                        .Where(x => !string.IsNullOrEmpty(DockContainer.GetName(x)))
+                        .OfType<ILayoutPane>()
+                        .ToDictionary(
+                            x => x,
+                            x =>
+                            {
+                                var content = new LayoutAnchorable();
+                                switch (x)
+                                {
+                                    case LayoutGroup<LayoutAnchorable> la:
+                                        la.Children.Add(content);
+                                        break;
+                                    case LayoutGroup<LayoutContent> ld:
+                                        ld.Children.Add(content);
+                                        break;
+                                }
+
+                                content.IsVisible = false;
+
+                                return (LayoutContent) content;
+                            });
                 });
 
             var startObject = Container.Resolve<TStartWindow>() ??

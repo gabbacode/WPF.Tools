@@ -51,7 +51,6 @@ namespace Ui.Wpf.Common.ViewModels
         protected internal virtual void Closed(ViewModelCloseQueryArgs args)
         {
             DisposeInternals();
-
         }
 
         protected internal virtual void Closing(ViewModelCloseQueryArgs args)
@@ -61,7 +60,7 @@ namespace Ui.Wpf.Common.ViewModels
 
         protected virtual void DisposeInternals()
         {
-            Disposables.Dispose();
+            Disposables.Clear();
             CloseQuery = null;
         }
 
