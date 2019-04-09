@@ -62,33 +62,26 @@ namespace Ui.Wpf.Common
             CloseContent(layout);
         }
 
-        private void CloseContent(LayoutContent layout)
-        {
-            if (layout.Content is IView view &&
-                view.ViewModel is ViewModelBase vm)
-                vm.Close();
-        }
-
-        public void ShowView<TView>(
+        public void ShowView(
+            Func<ILifetimeScope, IView> viewFactory,
             ViewRequest viewRequest = null,
             UiShowOptions options = null)
-            where TView : class, IView
         {
-            ShowViewIn<TView>(DefaultDockingManager.Views, viewRequest, options);
+            ShowViewIn(DefaultDockingManager.Views, viewFactory, viewRequest, options);
         }
 
-        public void ShowViewIn<TView>(
+        public void ShowViewIn(
             string containerName,
+            Func<ILifetimeScope, IView> viewFactory,
             ViewRequest viewRequest = null,
             UiShowOptions options = null)
-            where TView : class, IView
         {
             var documentPane = DockingManager.FindObjectByName<LayoutGroup<LayoutContent>>(containerName);
             var layoutDocument = documentPane.FindByViewRequest<LayoutContent>(viewRequest);
 
             if (layoutDocument == null)
             {
-                var view = Container.Resolve<TView>();
+                var view = viewFactory(Container);
                 if (options != null)
                     view.Configure(options);
 
@@ -112,26 +105,49 @@ namespace Ui.Wpf.Common
             ActivateContent(layoutDocument, viewRequest);
         }
 
-        public void ShowTool<TToolView>(
+        public void ShowView<TView>(
             ViewRequest viewRequest = null,
             UiShowOptions options = null)
-            where TToolView : class, IToolView
+            where TView : class, IView
         {
-            ShowToolIn<TToolView>(DefaultDockingManager.Tools, viewRequest, options);
+            ShowViewIn(DefaultDockingManager.Views,
+                container => container.Resolve<TView>(),
+                viewRequest,
+                options);
         }
 
-        public void ShowToolIn<TToolView>(
+        public void ShowViewIn<TView>(
             string containerName,
             ViewRequest viewRequest = null,
             UiShowOptions options = null)
-            where TToolView : class, IToolView
+            where TView : class, IView
+        {
+            ShowViewIn(containerName,
+                container => container.Resolve<TView>(),
+                viewRequest,
+                options);
+        }
+
+        public void ShowTool(
+            Func<ILifetimeScope, IToolView> toolFactory,
+            ViewRequest viewRequest = null,
+            UiShowOptions options = null)
+        {
+            ShowToolIn(DefaultDockingManager.Tools, toolFactory, viewRequest, options);
+        }
+
+        public void ShowToolIn(
+            string containerName,
+            Func<ILifetimeScope, IToolView> toolFactory,
+            ViewRequest viewRequest = null,
+            UiShowOptions options = null)
         {
             var toolsPane = DockingManager.FindObjectByName<LayoutGroup<LayoutAnchorable>>(containerName);
             var layoutAnchorable = toolsPane.FindByViewRequest<LayoutAnchorable>(viewRequest);
 
             if (layoutAnchorable == null)
             {
-                var view = Container.Resolve<TToolView>();
+                var view = toolFactory(Container);
                 if (options != null)
                     view.Configure(options);
 
@@ -157,10 +173,31 @@ namespace Ui.Wpf.Common
             ActivateContent(layoutAnchorable, viewRequest);
         }
 
-        public async Task<TResult> ShowFlyoutView<TView, TResult>(
+        public void ShowTool<TToolView>(
             ViewRequest viewRequest = null,
-            UiShowFlyoutOptions options = null)
-            where TView : class, IView
+            UiShowOptions options = null)
+            where TToolView : class, IToolView
+        {
+            ShowToolIn(DefaultDockingManager.Tools,
+                container => container.Resolve<TToolView>(),
+                viewRequest,
+                options);
+        }
+
+        public void ShowToolIn<TToolView>(
+            string containerName,
+            ViewRequest viewRequest = null,
+            UiShowOptions options = null)
+            where TToolView : class, IToolView
+        {
+            ShowToolIn(containerName,
+                container => container.Resolve<TToolView>(),
+                viewRequest,
+                options);
+        }
+
+        public async Task<TResult> ShowFlyoutView<TResult>(Func<ILifetimeScope, IView> viewFactory,
+            ViewRequest viewRequest = null, UiShowFlyoutOptions options = null)
         {
             if (!string.IsNullOrEmpty(viewRequest?.ViewId))
             {
@@ -176,7 +213,7 @@ namespace Ui.Wpf.Common
                 }
             }
 
-            var view = Container.Resolve<TView>();
+            var view = viewFactory(Container);
             if (options != null)
                 view.Configure(options);
 
@@ -252,6 +289,23 @@ namespace Ui.Wpf.Common
             return default(TResult);
         }
 
+        public Task<TResult> ShowFlyoutView<TView, TResult>(
+            ViewRequest viewRequest = null,
+            UiShowFlyoutOptions options = null)
+            where TView : class, IView
+        {
+            return ShowFlyoutView<TResult>(
+                container => container.Resolve<TView>(),
+                viewRequest,
+                options);
+        }
+
+        public async void ShowFlyoutView(Func<ILifetimeScope, IView> viewFactory, ViewRequest viewRequest = null,
+            UiShowFlyoutOptions options = null)
+        {
+            await ShowFlyoutView<Unit>(viewFactory, viewRequest, options);
+        }
+
         public async void ShowFlyoutView<TView>(
             ViewRequest viewRequest = null,
             UiShowFlyoutOptions options = null)
@@ -260,10 +314,9 @@ namespace Ui.Wpf.Common
             await ShowFlyoutView<TView, Unit>();
         }
 
-        public Task<TResult> ShowChildWindowView<TView, TResult>(
+        public Task<TResult> ShowChildWindowView<TResult>(Func<ILifetimeScope, IView> viewFactory,
             ViewRequest viewRequest = null,
             UiShowChildWindowOptions options = null)
-            where TView : class, IView
         {
             if (!string.IsNullOrEmpty(viewRequest?.ViewId))
             {
@@ -287,7 +340,7 @@ namespace Ui.Wpf.Common
                 }
             }
 
-            var view = Container.Resolve<TView>();
+            var view = viewFactory(Container);
             if (options != null)
                 view.Configure(options);
 
@@ -358,6 +411,23 @@ namespace Ui.Wpf.Common
                 childWindow,
                 options.OverlayFillBehavior
             );
+        }
+
+        public Task<TResult> ShowChildWindowView<TView, TResult>(
+            ViewRequest viewRequest = null,
+            UiShowChildWindowOptions options = null)
+            where TView : class, IView
+        {
+            return ShowChildWindowView<TResult>(
+                container => container.Resolve<TView>(),
+                viewRequest,
+                options);
+        }
+
+        public async void ShowChildWindowView(Func<ILifetimeScope, IView> viewFactory, ViewRequest viewRequest = null,
+            UiShowChildWindowOptions options = null)
+        {
+            await ShowChildWindowView<Unit>(viewFactory, viewRequest, options);
         }
 
         public void ShowChildWindowView<TView>(
@@ -439,7 +509,8 @@ namespace Ui.Wpf.Common
                 });
 
             var startObject = Container.Resolve<TStartWindow>() ??
-                              throw new InvalidOperationException($"You shuld configurate {typeof(TStartWindow)}");
+                              throw new InvalidOperationException(
+                                  $"You should register {typeof(TStartWindow)} in container");
 
             Window = startObject as Window ??
                      throw new InvalidCastException($"{startObject.GetType()} is not a window");
@@ -543,6 +614,13 @@ namespace Ui.Wpf.Common
                     .Subscribe(x => layoutAnchorable.CanHide = x)
                     .DisposeWith(baseViewModel.Disposables);
             }
+        }
+
+        private static void CloseContent(LayoutContent layout)
+        {
+            if (layout.Content is IView view &&
+                view.ViewModel is ViewModelBase vm)
+                vm.Close();
         }
     }
 }

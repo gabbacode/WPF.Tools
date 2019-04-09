@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using MahApps.Metro.Controls;
+using System;
 using System.Threading.Tasks;
 using System.Windows;
 using Ui.Wpf.Common.ShowOptions;
@@ -25,6 +26,17 @@ namespace Ui.Wpf.Common
         void CloseViewIn(string containerName, string viewId);
         void CloseToolIn(string containerName, string viewId);
 
+        void ShowView(
+            Func<ILifetimeScope, IView> viewFactory,
+            ViewRequest viewRequest = null,
+            UiShowOptions options = null);
+
+        void ShowViewIn(
+            string containerName,
+            Func<ILifetimeScope, IView> viewFactory,
+            ViewRequest viewRequest = null,
+            UiShowOptions options = null);
+
         void ShowView<TView>(
             ViewRequest viewRequest = null,
             UiShowOptions options = null)
@@ -35,6 +47,17 @@ namespace Ui.Wpf.Common
             ViewRequest viewRequest = null,
             UiShowOptions options = null)
             where TView : class, IView;
+
+        void ShowTool(
+            Func<ILifetimeScope, IToolView> toolFactory,
+            ViewRequest viewRequest = null,
+            UiShowOptions options = null);
+
+        void ShowToolIn(
+            string containerName,
+            Func<ILifetimeScope, IToolView> toolFactory,
+            ViewRequest viewRequest = null,
+            UiShowOptions options = null);
 
         void ShowTool<TToolView>(
             ViewRequest viewRequest = null,
@@ -47,22 +70,42 @@ namespace Ui.Wpf.Common
             UiShowOptions options = null)
             where TToolView : class, IToolView;
 
+        Task<TResult> ShowFlyoutView<TResult>(
+            Func<ILifetimeScope, IView> viewFactory,
+            ViewRequest viewRequest = null,
+            UiShowFlyoutOptions options = null);
+
         Task<TResult> ShowFlyoutView<TView, TResult>(
             ViewRequest viewRequest = null,
             UiShowFlyoutOptions options = null)
             where TView : class, IView;
+
+        void ShowFlyoutView(
+            Func<ILifetimeScope, IView> viewFactory,
+            ViewRequest viewRequest = null,
+            UiShowFlyoutOptions options = null);
 
         void ShowFlyoutView<TView>(
             ViewRequest viewRequest = null,
             UiShowFlyoutOptions options = null)
             where TView : class, IView;
 
-        void ShowChildWindowView<TView>(
+        Task<TResult> ShowChildWindowView<TResult>(
+            Func<ILifetimeScope, IView> viewFactory,
+            ViewRequest viewRequest = null,
+            UiShowChildWindowOptions options = null);
+
+        Task<TResult> ShowChildWindowView<TView, TResult>(
             ViewRequest viewRequest = null,
             UiShowChildWindowOptions options = null)
             where TView : class, IView;
 
-        Task<TResult> ShowChildWindowView<TView, TResult>(
+        void ShowChildWindowView(
+            Func<ILifetimeScope, IView> viewFactory,
+            ViewRequest viewRequest = null,
+            UiShowChildWindowOptions options = null);
+
+        void ShowChildWindowView<TView>(
             ViewRequest viewRequest = null,
             UiShowChildWindowOptions options = null)
             where TView : class, IView;
