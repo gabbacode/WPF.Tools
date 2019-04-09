@@ -11,6 +11,7 @@
     <Grid>
         <StackPanel>
             <Button Margin="5 5 5 0" Command="{Binding ShowMainViewCommand}">Show Main View</Button>
+            <Button Margin="5 5 5 0" Command="{Binding ShowMainViewNamedCommand}">Show Main View Named</Button>
             <Button Margin="5 5 5 0" Command="{Binding ShowFlyoutDemoViewCommand}">Show Flyout Demo View</Button>
             <Button Margin="5 5 5 0" Command="{Binding ShowChildWindowViewCommand}">Show Child Window View</Button>
             <Button Margin="5 5 5 0" Command="{Binding CloseMainViewCommand}">Close Main View</Button>
