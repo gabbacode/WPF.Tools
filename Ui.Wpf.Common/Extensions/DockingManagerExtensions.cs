@@ -27,7 +27,7 @@ namespace Ui.Wpf.Common.Extensions
         public static T FindByViewId<T>(this ILayoutContainer root, string viewId)
             where T : LayoutContent
         {
-            return root.Descendents()
+            return root?.Descendents()
                 .OfType<T>()
                 .FirstOrDefault(x => x.ContentId == viewId);
         }

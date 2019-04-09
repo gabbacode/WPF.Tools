@@ -618,7 +618,8 @@ namespace Ui.Wpf.Common
 
         private static void CloseContent(LayoutContent layout)
         {
-            if (layout.Content is IView view &&
+            if (layout != null &&
+                layout.Content is IView view &&
                 view.ViewModel is ViewModelBase vm)
                 vm.Close();
         }
