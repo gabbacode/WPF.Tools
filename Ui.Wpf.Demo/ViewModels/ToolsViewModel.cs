@@ -1,4 +1,5 @@
-﻿using ReactiveUI;
+﻿using Autofac;
+using ReactiveUI;
 using System.Reactive;
 using Ui.Wpf.Common;
 using Ui.Wpf.Common.ShowOptions;
@@ -10,6 +11,7 @@ namespace Ui.Wpf.Demo.ViewModels
     public class ToolsViewModel : ViewModelBase
     {
         public ReactiveCommand<Unit, Unit> ShowMainViewCommand { get; set; }
+        public ReactiveCommand<Unit, Unit> ShowMainViewNamedCommand { get; set; }
         public ReactiveCommand<Unit, Unit> ShowFlyoutDemoViewCommand { get; set; }
         public ReactiveCommand<Unit, Unit> ShowChildWindowViewCommand { get; set; }
         public ReactiveCommand<Unit, Unit> CloseMainViewCommand { get; set; }
@@ -21,6 +23,14 @@ namespace Ui.Wpf.Demo.ViewModels
                 shell.ShowView<MainView>(
                     new ViewRequest("main-view"),
                     new UiShowOptions {Title = nameof(MainView)}
+                );
+            });
+            ShowMainViewNamedCommand = ReactiveCommand.Create(() =>
+            {
+                shell.ShowView(
+                    c => c.ResolveNamed<IView>("main_view"),
+                    new ViewRequest("main-view-named"),
+                    new UiShowOptions { Title = nameof(MainView) }
                 );
             });
             ShowFlyoutDemoViewCommand = ReactiveCommand.Create(() =>

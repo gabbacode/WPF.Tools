@@ -20,6 +20,10 @@ namespace Ui.Wpf.Demo
             builder.RegisterType<MainView>();
             builder.RegisterType<MainViewModel>();
 
+            builder
+                .RegisterType<MainView>()
+                .Named<IView>("main_view");
+
             builder.RegisterType<FlyoutDemoView>();
             builder.RegisterType<FlyoutDemoViewModel>();
 
