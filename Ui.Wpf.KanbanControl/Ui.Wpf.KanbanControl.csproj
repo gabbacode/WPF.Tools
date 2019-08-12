@@ -28,12 +28,5 @@
 
     <Page Include="**\*.xaml" SubType="Designer" Generator="MSBuild:UpdateDesignTimeXaml" Exclude="App.xaml" />
     <Compile Update="**\*.xaml.cs" SubType="Code" DependentUpon="%(Filename)" />
-
-    <Content Include="FodyWeavers.xml" />
-    <Folder Include="Workflow\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="gong-wpf-dragdrop" Version="2.0.4" />
   </ItemGroup>
 </Project>
