@@ -30,11 +30,11 @@
 
   <ItemGroup>
     <PackageReference Include="FluentValidation" Version="8.4.0" />
-    <PackageReference Include="Autofac" Version="4.9.3" />
+    <PackageReference Include="Autofac" Version="4.9.4" />
     <PackageReference Include="Extended.Wpf.Toolkit" Version="3.5.0" />
     <PackageReference Include="MahApps.Metro" Version="1.6.5" />
     <PackageReference Include="MahApps.Metro.SimpleChildWindow" Version="1.5.0" />
-    <PackageReference Include="ReactiveUI.Fody" Version="9.20.1" />
-    <PackageReference Include="ReactiveUI.WPF" Version="9.20.1" />
+    <PackageReference Include="ReactiveUI.Fody" Version="9.22.1" />
+    <PackageReference Include="ReactiveUI.WPF" Version="9.22.1" />
   </ItemGroup>
 </Project>
