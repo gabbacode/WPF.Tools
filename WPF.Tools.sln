@@ -1,17 +1,24 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27703.2018
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ui.Wpf.Common", "Ui.Wpf.Common\Ui.Wpf.Common.csproj", "{FDB62508-AFFA-4281-8472-8D00FC1403BA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ui.Wpf.Common", "Ui.Wpf.Common\Ui.Wpf.Common.csproj", "{FDB62508-AFFA-4281-8472-8D00FC1403BA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ui.Wpf.KanbanControl", "Ui.Wpf.KanbanControl\Ui.Wpf.KanbanControl.csproj", "{7F46F76E-EE01-4E40-9C31-BB61FFF33E47}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ui.Wpf.KanbanControl", "Ui.Wpf.KanbanControl\Ui.Wpf.KanbanControl.csproj", "{7F46F76E-EE01-4E40-9C31-BB61FFF33E47}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ui.Wpf.KanbanControl.Tests", "Tests\Ui.Wpf.KanbanControl.Tests\Ui.Wpf.KanbanControl.Tests.csproj", "{7FF04819-5DE0-4A2C-86CB-850A930897E5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ui.Wpf.KanbanControl.Tests", "Tests\Ui.Wpf.KanbanControl.Tests\Ui.Wpf.KanbanControl.Tests.csproj", "{7FF04819-5DE0-4A2C-86CB-850A930897E5}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{57F48F52-C087-4F23-84AB-62BC54C3D285}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ui.Wpf.Demo", "Ui.Wpf.Demo\Ui.Wpf.Demo.csproj", "{274F7DCF-D522-444A-AFAD-FCFBBE4E8F51}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ui.Wpf.Demo", "Ui.Wpf.Demo\Ui.Wpf.Demo.csproj", "{274F7DCF-D522-444A-AFAD-FCFBBE4E8F51}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5582DEB9-10E7-47D8-85ED-ACDC33C0661A}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\build.yml = .github\workflows\build.yml
+		.github\workflows\publish_common.yml = .github\workflows\publish_common.yml
+		.github\workflows\publish_control.yml = .github\workflows\publish_control.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

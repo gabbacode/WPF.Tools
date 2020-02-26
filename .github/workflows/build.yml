@@ -1,0 +1,16 @@
+name: Build on branches push
+on:
+  push:
+    branches:
+      - "*"
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@master
+    - uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '3.1.100' # SDK Version to use.
+    - run: dotnet build WPF.Tools.sln
+    - run: dotnet test WPF.Tools.sln

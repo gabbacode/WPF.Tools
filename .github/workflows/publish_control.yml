@@ -1,0 +1,24 @@
+name: Publish Ui.Wpf.KanbanControl
+on:
+  push:
+    tags:
+      - 'Ui.Wpf.KanbanControl/v[0-9]+.[0-9]+.[0-9]+'
+
+jobs:
+  publish:
+    runs-on: windows-latest
+    steps:
+    - name: Set env
+      run:  echo "##[set-env name=RELEASE_VERSION;]$($env:GITHUB_REF.substring(32))"
+    - name: print version
+      run: echo $env:RELEASE_VERSION
+    - uses: actions/checkout@master
+    - uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '3.1.100' # SDK Version to use.
+    - run: dotnet pack ./Ui.Wpf.KanbanControl/Ui.Wpf.KanbanControl.csproj -c Release -o NuGetPackages /p:Version=$env:RELEASE_VERSION
+    - name: Push to feeds
+      env:
+        MYGET_SOURCE: https://www.myget.org/F/wpftools/api/v3/index.json
+      run: |
+        dotnet nuget push ./NuGetPackages/Ui.Wpf.KanbanControl.$env:RELEASE_VERSION.nupkg -k ${{ secrets.MYGET_APIKEY }} -s $env:MYGET_SOURCE
