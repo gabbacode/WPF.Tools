@@ -208,7 +208,7 @@ namespace Ui.Wpf.Common
 
                 if (viewOld != null)
                 {
-                    (viewOld.ViewModel as IActivatableViewModel)?.Activate(viewRequest);
+                    (viewOld.ViewModel as Ui.Wpf.Common.ViewModels.IActivatableViewModel)?.Activate(viewRequest);
                     return default(TResult);
                 }
             }
@@ -274,7 +274,7 @@ namespace Ui.Wpf.Common
 
             FlyoutsControl.Items.Add(flyout);
             InitializeView(view, viewRequest);
-            (view.ViewModel as IActivatableViewModel)?.Activate(viewRequest);
+            (view.ViewModel as Ui.Wpf.Common.ViewModels.IActivatableViewModel)?.Activate(viewRequest);
 
             await closedObservable.FirstAsync();
 
@@ -335,7 +335,7 @@ namespace Ui.Wpf.Common
 
                 if (viewOld != null)
                 {
-                    (viewOld.ViewModel as IActivatableViewModel)?.Activate(viewRequest);
+                    (viewOld.ViewModel as Ui.Wpf.Common.ViewModels.IActivatableViewModel)?.Activate(viewRequest);
                     return Task.FromResult(default(TResult));
                 }
             }
@@ -345,7 +345,7 @@ namespace Ui.Wpf.Common
                 view.Configure(options);
 
             InitializeView(view, viewRequest);
-            (view.ViewModel as IActivatableViewModel)?.Activate(viewRequest);
+            (view.ViewModel as Ui.Wpf.Common.ViewModels.IActivatableViewModel)?.Activate(viewRequest);
 
             options = options ?? new UiShowChildWindowOptions();
 
@@ -533,7 +533,7 @@ namespace Ui.Wpf.Common
         {
             layoutContent.IsActive = true;
             if (layoutContent.Content is IView view &&
-                view.ViewModel is IActivatableViewModel activatableViewModel)
+                view.ViewModel is Ui.Wpf.Common.ViewModels.IActivatableViewModel activatableViewModel)
             {
                 activatableViewModel.Activate(viewRequest);
             }

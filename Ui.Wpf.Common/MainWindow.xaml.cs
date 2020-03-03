@@ -12,6 +12,7 @@ namespace Ui.Wpf.Common
             Shell = shell;
             DataContext = Shell;
             InitializeComponent();
+            
         }
 
         private IShell Shell { get; }
